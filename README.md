@@ -15,6 +15,8 @@ For more information, go to http://hrrr.chpc.utah.edu/
 - [Part 4: Opening GRIB2 files in Python with `xarray` and `cfgrib`](https://github.com/blaylockbk/HRRR_archive_download/blob/master/demo_download_hrrr_archive_part4.ipynb)
 
 ## Useful Functions
+Feel free to use these functions and imporve upon them to fit your needs. If you wrote a function that is really cool and want to share it here, make a pull request.
+
 - [`HRRR_archive.py`](https://github.com/blaylockbk/HRRR_archive_download/blob/master/HRRR_archive.py)
 
 To use these functions, copy this file to the path with your own python scripts and import them
@@ -23,12 +25,15 @@ To use these functions, copy this file to the path with your own python scripts 
     
 Requires `xarray`, `cfgrib`, `cartopy`, `pandas`, `requests`, `urllib`
 
----
+⚠ The functions in `HRRR_archive.py` might be slightly different than those used in the demonstration Jupyter Notebooks. These are usually better changes.
+
 
 > **Note on precipitation field (APCP)**
 >A lot of users have asked why the precipitation accumulation fields are all zero for the model analysis (F00). That is becuase it is an accumulation variable over a period of time. At the model analysis, there has been no precipitaiton because no time has passed.
 > When looking at precipitation, consider looking at F01, which will be the precipitiation amount between F00 and F01.
 
+
+---
 ---
 
 🌐 HRRR Archive Website: http://hrrr.chpc.utah.edu/  
