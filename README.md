@@ -14,7 +14,7 @@ For more information, go to http://hrrr.chpc.utah.edu/
 - [Part 3: A function that can download many full files, or subset of files](https://github.com/blaylockbk/HRRR_archive_download/blob/master/demo_download_hrrr_archive_part3.ipynb)
 - [Part 4: Opening GRIB2 files in Python with `xarray` and `cfgrib`](https://github.com/blaylockbk/HRRR_archive_download/blob/master/demo_download_hrrr_archive_part4.ipynb)
 
-## Useful Functions
+## Useful Functions in `HRRR_archive.py`
 Feel free to use these functions and imporve upon them to fit your needs. If you wrote a function that is really cool and want to share it here, make a pull request.
 
 - [`HRRR_archive.py`](https://github.com/blaylockbk/HRRR_archive_download/blob/master/HRRR_archive.py)
@@ -24,6 +24,23 @@ To use these functions, copy this file to the path with your own python scripts 
     from HRRR_archive import *
     
 Requires `xarray`, `cfgrib`, `cartopy`, `pandas`, `requests`, `urllib`
+
+For reference, here are some useful values you can set `searchString` to download certain variables.
+
+
+|`searchString=`| GRIB fields that will be downloaded
+|--|--
+|`':TMP:2 m'`      | Temperature at 2 m.
+|`':TMP:'`         | Temperature fields at all levels.
+|`':500 mb:'`      | All variables on the 500 mb level.
+|`':APCP:'`        | All accumulated precipitation fields.
+|`':UGRD:10 m:'`   | U wind component at 10 meters.
+|`':(U|V)GRD:'`    | U and V wind component at all levels.
+|`':.GRD:'`        | (Same as above)
+|`':(TMP|DPT):'`   | Temperature and Dew Point for all levels .
+|`':(TMP|DPT|RH):'`| TMP, DPT, and Relative Humidity for all levels.
+|`':REFC:'`        | Composite Reflectivity
+|`':surface:'`     | All variables at the surface.
 
 ⚠ The functions in `HRRR_archive.py` might be slightly different than those used in the demonstration Jupyter Notebooks. These are usually better changes.
 
