@@ -35,10 +35,10 @@ For reference, here are some useful values you can set `searchString` to downloa
 |`':500 mb:'`      | All variables on the 500 mb level.
 |`':APCP:'`        | All accumulated precipitation fields.
 |`':UGRD:10 m:'`   | U wind component at 10 meters.
-|`':(U|V)GRD:'`    | U and V wind component at all levels.
+|`':(U\|V)GRD:'`    | U and V wind component at all levels.
 |`':.GRD:'`        | (Same as above)
-|`':(TMP|DPT):'`   | Temperature and Dew Point for all levels .
-|`':(TMP|DPT|RH):'`| TMP, DPT, and Relative Humidity for all levels.
+|`':(TMP\|DPT):'`   | Temperature and Dew Point for all levels .
+|`':(TMP\|DPT\|RH):'`| TMP, DPT, and Relative Humidity for all levels.
 |`':REFC:'`        | Composite Reflectivity
 |`':surface:'`     | All variables at the surface.
 
