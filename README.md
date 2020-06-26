@@ -1,4 +1,7 @@
 **Brian Blaylock**  
+**June 26, 2020**  
+
+---
 
 # How to download archived HRRR GRIB2 files
 The High Resolution Rapid Refresh model output is archived by the MesoWest group at the University of Utah on the
@@ -27,3 +30,12 @@ Requires `xarray`, `cfgrib`, `cartopy`, `pandas`, `requests`, `urllib`
 
 > Note: A lot of users have asked why the precipitation accumulation fields are all zero for the model analysis (F00). That is becuase it is an accumulation variable over a period of time. At the model analysis, there has been no precipitaiton because no time has passed.
 > When looking at precipitation, consider looking at F01, which will be the precipitiation amount between F00 and F01.
+
+
+---
+🌐 HRRR Archive Website: http://hrrr.chpc.utah.edu/  
+🚑 Support: atmos-mesowest@lists.utah.edu  
+📧 Brian Blaylock: blaylockbk@gmail.com  
+✒ Citation this details:
+> Blaylock B., J. Horel and S. Liston, 2017: Cloud Archiving and Data Mining of High Resolution Rapid Refresh Model Output. Computers and Geosciences. 109, 43-50. https://doi.org/10.1016/j.cageo.2017.08.005
+
