@@ -486,7 +486,7 @@ def get_HRRR(DATE, searchString, *, fxx=0, DATE_is_valid_time=False,
     """
     Download HRRR data and return as an xarray Dataset (or Datasets)
     
-    May only request one `DATE` and lead time (`fxx`).
+    Only request one `DATE` and `fxx` (forecast lead time).
     
     Parameters
     ----------
@@ -518,13 +518,18 @@ def get_HRRR(DATE, searchString, *, fxx=0, DATE_is_valid_time=False,
         Forecast lead time. Default will get the analysis, F00.
     DATE_is_valid_time: bool
         False - (default) The DATE argument represents the model 
-                initializeation datetime.
+                initialization datetime.
         True  - The DATE argument represents the model valid time.
                 This is handy when you want a specific forecast leadtime
                 that is valid at a certian date.
     remove_grib2 : bool
         True  - (default) Delete the GRIB2 file after reading into a Dataset.
+                This requires a copy to memory, so it might slow things down.
         False - Keep the GRIB2 file downloaded.
+                This might be a better option performance-wise, because it
+                does not need to copy the data but keeps the file on disk.
+                You would be responsible for removing files when you don't
+                need them.
     add_crs : bool
         True  - (default) Append the Cartopy coordinate reference system (crs) 
                 projection as an attribute to the Dataset.
@@ -532,6 +537,8 @@ def get_HRRR(DATE, searchString, *, fxx=0, DATE_is_valid_time=False,
         Any other key word argument accepted by ``download_HRRR`.
         {model, field, SAVEDIR, dryrun, verbose}
     """
+    inputs = locals()
+
     assert not hasattr(DATE, '__len__'), "`DATE` must be a single datetime, not a list."
     assert not hasattr(fxx, '__len__'), "`fxx` must be a single integer, not a list."
         
@@ -558,7 +565,7 @@ def get_HRRR(DATE, searchString, *, fxx=0, DATE_is_valid_time=False,
         crs = get_crs(H[0])
 
     for ds in H:
-        ds.attrs['get_HRRR inputs'] = locals()
+        ds.attrs['get_HRRR inputs'] = inputs
         ds.attrs['url'] = url
         if add_crs:
             # Add the crs projection info as a Dataset attribute
