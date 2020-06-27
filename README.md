@@ -58,7 +58,7 @@ To use these functions, copy the `HRRR_archive.py` file to the directory path yo
 > When looking at precipitation, consider looking at F01, which will be the precipitation amount between F00 and F01.
 
 ## 🐍  Anaconda Environment
-I provide an `environment.yml` with all the packages you should install. If this is new to you, I suggest you become be familiar with [managing conda environments](https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html).
+I provide an `environment.yml` with all the packages you should install. If this is new to you, I suggest you become familiar with [managing conda environments](https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html).
 
     conda env create -f environment.yml
 
