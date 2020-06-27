@@ -9,15 +9,15 @@ This repository demonstrates how to download HRRR files from the archive.
 For more information, go to http://hrrr.chpc.utah.edu/
 
 ## Jupyter Notebooks
-- [Part 1: How to download a bunch of HRRR grib2 files (full file)](https://github.com/blaylockbk/HRRR_archive_download/blob/master/demo_download_hrrr_archive_part1.ipynb)
-- [Part 2: How to download a subset of variables from a HRRR file](https://github.com/blaylockbk/HRRR_archive_download/blob/master/demo_download_hrrr_archive_part2.ipynb)
-- [Part 3: A function that can download many full files, or subset of files](https://github.com/blaylockbk/HRRR_archive_download/blob/master/demo_download_hrrr_archive_part3.ipynb)
-- [Part 4: Opening GRIB2 files in Python with `xarray` and `cfgrib`](https://github.com/blaylockbk/HRRR_archive_download/blob/master/demo_download_hrrr_archive_part4.ipynb)
+- [Part 1: How to download a bunch of HRRR grib2 files (full file)](./notebooks/demo_download_hrrr_archive_part1.ipynb)
+- [Part 2: How to download a subset of variables from a HRRR file](./notebooks/demo_download_hrrr_archive_part2.ipynb)
+- [Part 3: A function that can download many full files, or subset of files](./notebooks/demo_download_hrrr_archive_part3.ipynb)
+- [Part 4: Opening GRIB2 files in Python with xarray and cfgrib](./notebooks/demo_download_hrrr_archive_part4.ipynb)
 
 ## Useful Functions in `HRRR_archive.py`
 Feel free to use these functions and imporve upon them to fit your needs. If you wrote a function that is really cool and want to share it here, make a pull request.
 
-- [`HRRR_archive.py`](https://github.com/blaylockbk/HRRR_archive_download/blob/master/HRRR_archive.py)
+- [`HRRR_archive.py`](./HRRR_archive.py)
 
 To use these functions, copy this file to the path with your own python scripts and import them
 
