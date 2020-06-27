@@ -11,11 +11,18 @@ Download HRRR GRIB2 files
 Can download HRRR files from the University of Utah HRRR archive on Pando
 or from the NOMADS server.
 
-- ``reporthook`` : Prints download progress when downloading full files.
-- ``download_HRRR_subset`` : Download parts of a HRRR file.
-- ``download_HRRR`` : Main function for downloading many HRRR files.
-- ``get_crs`` : Get cartopy projection object from xarray.Dataset
-- ``get_HRRR`` : Read HRRR data as an xarray Dataset with cfgrib engine.
+reporthook
+     Prints download progress when downloading full files.
+searchString_help
+    Prints examples for the `searchString` argument when there is an error.
+download_HRRR_subset
+    Download parts of a HRRR file.
+download_HRRR
+    Main function for downloading many HRRR files.
+get_crs
+    Get cartopy projection object from xarray.Dataset
+get_HRRR
+    Read HRRR data as an xarray Dataset with cfgrib engine.
 """
 
 import os
@@ -26,7 +33,6 @@ import numpy as np
 import urllib.request  # Used to download the file
 import requests        # Used to check if a URL exists
 import warnings
-import pandas as pd    # Just used for the date_range function
 import cartopy.crs as ccrs
 import cfgrib
 import xarray as xr
@@ -45,10 +51,10 @@ def reporthook(a, b, c):
     total_size_MB =  c / 1000000.
     print(f"\r Download Progress: {chunk_progress:.2f}% of {total_size_MB:.1f} MB\r", end='')
 
-def searchString_error(searchString):
+def searchString_help(searchString):
     msg = [
         f"There is something wrong with `searchString='{searchString}'`",
-        'Try something like',
+        "\nHere are some examples you can use for `searchString`",
         "    ================ ===============================================",
         "    ``searchString`` Messages that will be downloaded",
         "    ================ ===============================================",
@@ -64,7 +70,7 @@ def searchString_error(searchString):
         "    ':REFC:'         Composite Reflectivity",
         "    ':surface:'      All variables at the surface.",
         "    ================ ===============================================",
-        "  If you need help with regular expression, try a websearch",
+        "\n  If you need help with regular expression, search the web",
         "  or look at this cheatsheet: https://www.petefreitag.com/cheatsheets/regex/",
         "PLEASE FIX THE `searchString`"
         ]
@@ -159,7 +165,7 @@ def download_HRRR_subset(url, searchString, SAVEDIR='./',
         expr = re.compile(searchString)
     except Exception as e: 
         print('re.compile error:', e)
-        raise Exception(searchString_error(searchString))
+        raise Exception(searchString_help(searchString))
 
     # Store the byte ranges in a dictionary
     #     {byte-range-as-string: line}
@@ -192,7 +198,7 @@ def download_HRRR_subset(url, searchString, SAVEDIR='./',
     if len(byte_ranges) == 0:
         # Loop didn't find the searchString in the index file.
         print(f'❌ WARNING: Sorry, I did not find {searchString} in the index file {idx}')
-        print(searchString_error(searchString))
+        print(searchString_help(searchString))
         return None
     
     # What should we name the file we save this data to?
@@ -227,13 +233,15 @@ def download_HRRR_subset(url, searchString, SAVEDIR='./',
         return outFile
     
 def download_HRRR(DATES, searchString=None, fxx=range(0, 1), *,
-                  model='hrrr', field='sfc', SOURCE='pando',
+                  model='hrrr', field='sfc',
                   SAVEDIR='./', dryrun=False, verbose=True):
     """
     Downloads full HRRR grib2 files for a list of dates and forecasts.
     
     Files are downloaded from the University of Utah HRRR archive (Pando) 
-    or NOAA Operational Model Archive and Distribution System (NOMADS).
+    or NOAA Operational Model Archive and Distribution System (NOMADS). This
+    function will automatically change the download source for each datetime
+    requested.
     
     Parameters
     ----------
@@ -295,12 +303,6 @@ def download_HRRR(DATES, searchString=None, fxx=range(0, 1), *,
         - 'prs' pressure fields
         - 'nat' native fields      ('nat' files are not available on Pando)
         - 'subh' subhourly fields  ('subh' files are not available on Pando)
-    SOURCE : {'pando', 'nomads'}
-        Specify the source from which to download the HRRR files.
-        - 'pando' downloads HRRR files from University of Utah archive:
-        http://hrrr.chpc.utah.edu/        
-        - 'nomads' downloads HRRR files from NCEP NOMADS server:
-        https://nomads.ncep.noaa.gov/pub/data/nccf/com/hrrr/prod/
     SAVEDIR : str
         Directory path to save the downloaded HRRR files.
     dryrun : bool
@@ -312,61 +314,53 @@ def download_HRRR(DATES, searchString=None, fxx=range(0, 1), *,
 
     Returns
     -------
-    The file name for the HRRR files we downloaded 
+    The file name for the HRRR files we downloaded and the URL it was from.
     (i.e. `20170101_hrrr.t00z.wrfsfcf00.grib2`)
     """
     
     #**************************************************************************
     ## Check function input
     #**************************************************************************
-      
-    # Ping Pando first. This *might* prevent a "bad handshake" error.
-    if SOURCE == 'pando':
-        try:
-            requests.head('https://pando-rgw01.chpc.utah.edu/')
-        except:
-            print('bad handshake...am I able to on?')
-            pass
     
-    # Force the `SOURCE` and `field` input string to be lower case.
-    SOURCE = SOURCE.lower()
+    # Force the `field` input string to be lower case.
     field = field.lower()
+
+    # Ping Pando first. This *might* prevent a "bad handshake" error.
+    try:
+        requests.head('https://pando-rgw01.chpc.utah.edu/')
+    except Exception as e:
+        print(f'Ran into an error: {e}')
+        print('bad handshake...am I able to on?')
+        pass
 
     # `DATES` and `fxx` should be a list-like object, but if it doesn't have
     # length, (like if the user requests a single date or forecast hour),
     # then turn it item into a list-like object.
     if not hasattr(DATES, '__len__'): DATES = np.array([DATES])
     if not hasattr(fxx, '__len__'): fxx = [fxx]
-    
-    assert all([i < datetime.utcnow() for i in DATES]), "🦨 Whoops! You asked for a DATE in the future."
-    
-    # HRRR data on NOMADS is only available for today's and yesterday's runs.
-    # If any of the DATES are older than yesterday, raise a warning and
-    # change SOURCE to pando.
-    if SOURCE == 'nomads':
-        yesterday = datetime.utcnow() - timedelta(days=1)
-        yesterday = datetime(yesterday.year, yesterday.month, yesterday.day)
-        if any(DATES < yesterday):
-            warnings.warn("Changed the SOURCE to 'pando' because one or more of the requested DATES are for more than two days ago.")
-            SOURCE = 'pando'
-    
+
+    assert all([i < datetime.utcnow() for i in DATES]), "🦨 Whoops! One or more of your DATES is in the future."
+
+    ## Set the download SOURCE for each of the DATES
+    ## ---------------------------------------------
+    # HRRR data is available on NOMADS for today's and yesterday's runs.
+    # I will set the download source to get HRRR data from pando if the
+    # datetime is for older than yesterday, and set to nomads for datetimes
+    # of yesterday or today.
+    yesterday = datetime.utcnow() - timedelta(days=1)
+    yesterday = datetime(yesterday.year, yesterday.month, yesterday.day)   
+    SOURCE = ['pando' if i < yesterday else 'nomads' for i in DATES]
+
     # The user may set `model='alaska'` as an alias for 'hrrrak'.
     if model.lower() == 'alaska': model = 'hrrrak'
-      
-    _SOURCE = {'pando', 'nomads'}
-    assert SOURCE in _SOURCE, f'`SOURCE` must be one of {_SOURCE}'
-    
-    # The model type and field depends on the SOURCE the files are downloaded.
-    if SOURCE == 'pando':
-        _models = {'hrrr', 'hrrrak', 'hrrrX'}
-        _fields = {'sfc', 'prs'}
-    elif SOURCE == 'nomads':
-        _models = {'hrrr', 'hrrrak'}
-        _fields = {'sfc', 'prs', 'nat', 'subh'}
-        
-    assert model in _models, f'`model` should be set to one of {_models} for `SOURCE={SOURCE}`'
-    assert field in _fields, f'`field` should be set to one of {_fields} for `SOURCE={SOURCE}`'
-    
+
+    # The model type and field available depends on the download SOURCE.
+    available = {'pando':{'models':{}, 'fields':{}}, 'nomads':{'models':{}, 'fields':{}}}
+    available['pando']['models'] = {'hrrr', 'hrrrak', 'hrrrX'}
+    available['pando']['fields'] = {'sfc', 'prs'}
+    available['nomads']['models'] = {'hrrr', 'hrrrak'}
+    available['nomads']['fields'] = {'sfc', 'prs', 'nat', 'subh'}
+
     # Make SAVEDIR if path doesn't exist
     if not os.path.exists(SAVEDIR):
         os.makedirs(SAVEDIR)
@@ -380,18 +374,29 @@ def download_HRRR(DATES, searchString=None, fxx=range(0, 1), *,
     # 
     # An example URL for a file from NOMADS is
     # https://nomads.ncep.noaa.gov/pub/data/nccf/com/hrrr/prod/hrrr.20200624/conus/hrrr.t00z.wrfsfcf09.grib2
+    URL_list = []
+    for source, DATE in zip(SOURCE, DATES):
+        if source == 'pando':
+            base = f'https://pando-rgw01.chpc.utah.edu/{model}/{field}'
+            URL_list += [f'{base}/{DATE:%Y%m%d}/{model}.t{DATE:%H}z.wrf{field}f{f:02d}.grib2' for f in fxx]
+            
+            if model not in available[source]['models']:
+                warnings.warn(f"model='{model}' is not available from [{source}]. Only {available[source]['models']}")
+            if field not in available[source]['fields']:
+                warnings.warn(f"field='{field}' is not available from [{source}]. Only {available[source]['fields']}")
+
+        elif source == 'nomads':
+            base = 'https://nomads.ncep.noaa.gov/pub/data/nccf/com/hrrr/prod'
+            if model == 'hrrr':
+                URL_list += [f'{base}/hrrr.{DATE:%Y%m%d}/conus/hrrr.t{DATE:%H}z.wrf{field}f{f:02d}.grib2' for f in fxx]
+            elif model == 'hrrrak':
+                URL_list += [f'{base}/hrrr.{DATE:%Y%m%d}/alaska/hrrr.t{DATE:%H}z.wrf{field}f{f:02d}.ak.grib2' for f in fxx]
+                
+            if model not in available[source]['models']:
+                warnings.warn(f"model='{model}' is not available from [{source}]. Only {available[source]['models']}")
+            if field not in available[source]['fields']:
+                warnings.warn(f"field='{field}' is not available from [{source}]. Only {available[source]['fields']}")
         
-    if SOURCE == 'pando':
-        base = f'https://pando-rgw01.chpc.utah.edu/{model}/{field}'
-        URL_list = [f'{base}/{DATE:%Y%m%d}/{model}.t{DATE:%H}z.wrf{field}f{f:02d}.grib2' for DATE in DATES for f in fxx]
-    
-    elif SOURCE == 'nomads':
-        base = 'https://nomads.ncep.noaa.gov/pub/data/nccf/com/hrrr/prod'
-        if model == 'hrrr':
-            URL_list = [f'{base}/hrrr.{DATE:%Y%m%d}/conus/hrrr.t{DATE:%H}z.wrf{field}f{f:02d}.grib2' for DATE in DATES for f in fxx]
-        elif model == 'hrrrak':
-            URL_list = [f'{base}/hrrr.{DATE:%Y%m%d}/alaska/hrrr.t{DATE:%H}z.wrf{field}f{f:02d}.ak.grib2' for DATE in DATES for f in fxx]
-    
     #**************************************************************************
     # Ok, so we have a URL and filename for each requested forecast hour.
     # Now we need to check if each of those files exist, and if it does,
@@ -403,12 +408,12 @@ def download_HRRR(DATES, searchString=None, fxx=range(0, 1), *,
         if verbose: print(f'💡 Info: Downloading {len(URL_list)} GRIB2 files')
     
     all_files = []
-    for file_URL in URL_list:
+    for source, file_URL in zip(SOURCE, URL_list):
         # We want to prepend the filename with the run date, YYYYMMDD
-        if SOURCE == 'pando':
+        if source == 'pando':
             outFile = '_'.join(file_URL.split('/')[-2:])
             outFile = os.path.join(SAVEDIR, outFile)
-        elif SOURCE == 'nomads':
+        elif source == 'nomads':
             outFile = file_URL.split('/')[-3][5:] + '_' + file_URL.split('/')[-1]
             outFile = os.path.join(SAVEDIR, outFile)
         
@@ -429,9 +434,10 @@ def download_HRRR(DATES, searchString=None, fxx=range(0, 1), *,
                     # Download the full file.
                     urllib.request.urlretrieve(file_URL, outFile, reporthook)
                     all_files.append(outFile)
-                if verbose: print(f'✅ Success! Downloaded {file_URL} as {outFile}')
+                    if verbose: print(f'✅ Success! Downloaded {file_URL} as {outFile}')
             else:
                 # Download a subset of the full file based on the seachString.
+                if verbose: print(f"Download subset from [{source}]:")
                 thisfile = download_HRRR_subset(file_URL, 
                                                 searchString, 
                                                 SAVEDIR=SAVEDIR, 
@@ -447,9 +453,9 @@ def download_HRRR(DATES, searchString=None, fxx=range(0, 1), *,
     if verbose: print("\nFinished 🍦")
     
     if len(all_files) == 1:
-        return all_files[0]  # return a string, not list
+        return all_files[0], URL_list[0]  # return a string, not list
     else:
-        return all_files     # return the list of file names
+        return [all_files, URL_list]  # return the list of file names and URLs
     
 def get_crs(ds):
     """
@@ -524,7 +530,7 @@ def get_HRRR(DATE, searchString, *, fxx=0, DATE_is_valid_time=False,
                 projection as an attribute to the Dataset.
     **download_kwargs :
         Any other key word argument accepted by ``download_HRRR`.
-        {model, field, SOURCE, SAVEDIR, dryrun, verbose}
+        {model, field, SAVEDIR, dryrun, verbose}
     """
     assert not hasattr(DATE, '__len__'), "`DATE` must be a single datetime, not a list."
     assert not hasattr(fxx, '__len__'), "`fxx` must be a single integer, not a list."
@@ -536,7 +542,7 @@ def get_HRRR(DATE, searchString, *, fxx=0, DATE_is_valid_time=False,
         DATE = DATE - timedelta(hours=fxx)
     
     # Download the GRIB2 file
-    grib2file = download_HRRR(DATE, searchString, fxx=fxx, **download_kwargs)
+    grib2file, url = download_HRRR(DATE, searchString, fxx=fxx, **download_kwargs)
     
     # Some extra backend kwargs for cfgrib
     backend_kwargs = {'indexpath':'',
@@ -547,14 +553,20 @@ def get_HRRR(DATE, searchString, *, fxx=0, DATE_is_valid_time=False,
     # for what we requested.
     H = cfgrib.open_datasets(grib2file, backend_kwargs=backend_kwargs)
 
-    if add_crs:
+    # Create a cartopy projection object
+    if add_crs: 
         crs = get_crs(H[0])
-        for ds in H:
+
+    for ds in H:
+        ds.attrs['get_HRRR inputs'] = locals()
+        ds.attrs['url'] = url
+        if add_crs:
             # Add the crs projection info as a Dataset attribute
             ds.attrs['crs'] = crs
             # ...and add attrs for each variable for ease of access.
             for var in list(ds):
-                ds[var].attrs['crs'] = crs
+
+                    ds[var].attrs['crs'] = crs
     if remove_grib2:
         H = [ds.copy(deep=True) for ds in H]
         os.remove(grib2file)
