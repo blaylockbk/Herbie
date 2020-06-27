@@ -1,0 +1,24 @@
+name: hrrr_archive
+channels:
+  - conda-forge
+dependencies:
+  - python=3
+  - numpy
+  - matplotlib
+  - cartopy
+  - requests
+  - jupyter
+  - jupyterlab
+  - netcdf4
+  - pandas
+  - scipy
+  - metpy
+  - siphon
+  - xarray
+  - pyproj
+  - h5py
+  - pygrib
+  - cfgrib
+  - pylint
+  - s3fs
+  #- wgrib2  # Uncomment if you are on a Linux machine
