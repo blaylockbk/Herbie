@@ -30,7 +30,7 @@ To use these functions, copy the `HRRR_archive.py` file to the directory path yo
     
 > Requires `xarray`, `cfgrib`, `cartopy`, `pandas`, `requests`, `urllib`
 
-### [Some Examples](./notebooks/examples.ipynb)
+### [👉 Click Here for some simple examples](./notebooks/examples.ipynb)
 
 **A note on the `searchString` argument:** These functions have an option to define a `searchString` that is used to specify variables you want to download. For example, instead of downloading the full HRRR file, you could download just the wind or precipitation variables. Read the docstring for the functions or look at [notebook #2](./notebooks/demo_download_hrrr_archive_part2.ipynb) for more details. For reference, here are some useful examples to give you some ideas...
 
