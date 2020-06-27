@@ -45,15 +45,14 @@ Requires `xarray`, `cfgrib`, `cartopy`, `pandas`, `requests`, `urllib`
 |`':(TMP\|DPT):'`   | Temperature and Dew Point for all levels
 |`':(TMP\|DPT\|RH):'`| TMP, DPT, and Relative Humidity for all levels
 |`':REFC:'`        | Composite Reflectivity
-|`:(APCP|REFC):`| Precipitation and reflectivity
+|`:(APCP\|REFC):`| Precipitation and reflectivity
 |`':surface:'`     | All variables at the surface
 
-⚠ The functions in `HRRR_archive.py` might be slightly different than those used in the demonstration Jupyter Notebooks. These are usually better changes.
+⚠ The functions in `HRRR_archive.py` might be slightly different than those used in the demonstration Jupyter Notebooks. These differences should be for the better.
 
-
-> **Note on precipitation field (APCP)**
->A lot of users have asked why the precipitation accumulation fields are all zero for the model analysis (F00). That is becuase it is an accumulation variable over a period of time. At the model analysis, there has been no precipitaiton because no time has passed.
-> When looking at precipitation, consider looking at F01, which will be the precipitiation amount between F00 and F01.
+> **Note on precipitation fields (e.g., APCP)**
+>A lot of users have asked why the precipitation accumulation fields are all zero for the model analysis (F00). That is because it is an accumulation variable over a period of time. At the model analysis, there has been no precipitation because no time has passed.
+> When looking at precipitation, consider looking at F01, which will be the precipitation amount between F00 and F01.
 
 ## 🐍  Anaconda Environment
 I provide an `environment.yml` with all the packages you should install. If this is new to you, I suggest you become be familiar with [managing conda environments](https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html).
