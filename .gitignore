@@ -1,6 +1,7 @@
 .ipynb_checkpoints
 .vscode
-.grib2
+
+*.grib2
 
 __pycache__/
 *.py[cod]

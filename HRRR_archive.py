@@ -45,6 +45,31 @@ def reporthook(a, b, c):
     total_size_MB =  c / 1000000.
     print(f"\r Download Progress: {chunk_progress:.2f}% of {total_size_MB:.1f} MB\r", end='')
 
+def searchString_error(searchString):
+    msg = [
+        f"There is something wrong with `searchString='{searchString}'`",
+        'Try something like',
+        "    ================ ===============================================",
+        "    ``searchString`` Messages that will be downloaded",
+        "    ================ ===============================================",
+        "    ':TMP:2 m'       Temperature at 2 m.",
+        "    ':TMP:'          Temperature fields at all levels.",
+        "    ':500 mb:'       All variables on the 500 mb level.",
+        "    ':APCP:'         All accumulated precipitation fields.",
+        "    ':UGRD:10 m'     U wind component at 10 meters.",
+        "    ':(U|V)GRD:'     U and V wind component at all levels.",
+        "    ':.GRD:'         (Same as above)",
+        "    ':(TMP|DPT):'    Temperature and Dew Point for all levels .",
+        "    ':(TMP|DPT|RH):' TMP, DPT, and Relative Humidity for all levels.",
+        "    ':REFC:'         Composite Reflectivity",
+        "    ':surface:'      All variables at the surface.",
+        "    ================ ===============================================",
+        "  If you need help with regular expression, try a websearch",
+        "  or look at this cheatsheet: https://www.petefreitag.com/cheatsheets/regex/",
+        "PLEASE FIX THE `searchString`"
+        ]
+    return '\n'.join(msg)
+
 def download_HRRR_subset(url, searchString, SAVEDIR='./',
                          dryrun=False, verbose=True):
     """
@@ -82,7 +107,7 @@ def download_HRRR_subset(url, searchString, SAVEDIR='./',
         ':TMP:'          Temperature fields at all levels.
         ':500 mb:'       All variables on the 500 mb level.
         ':APCP:'         All accumulated precipitation fields.
-        ':UGRD:10 m:'    U wind component at 10 meters.
+        ':UGRD:10 m'    U wind component at 10 meters.
         ':(U|V)GRD:'     U and V wind component at all levels.
         ':.GRD:'         (Same as above)
         ':(TMP|DPT):'    Temperature and Dew Point for all levels .
@@ -130,7 +155,11 @@ def download_HRRR_subset(url, searchString, SAVEDIR='./',
     lines = r.text.split('\n')
     
     # Search expression
-    expr = re.compile(searchString)
+    try:
+        expr = re.compile(searchString)
+    except Exception as e: 
+        print('re.compile error:', e)
+        raise Exception(searchString_error(searchString))
 
     # Store the byte ranges in a dictionary
     #     {byte-range-as-string: line}
@@ -163,6 +192,7 @@ def download_HRRR_subset(url, searchString, SAVEDIR='./',
     if len(byte_ranges) == 0:
         # Loop didn't find the searchString in the index file.
         print(f'❌ WARNING: Sorry, I did not find {searchString} in the index file {idx}')
+        print(searchString_error(searchString))
         return None
     
     # What should we name the file we save this data to?
@@ -242,7 +272,7 @@ def download_HRRR(DATES, searchString=None, fxx=range(0, 1), *,
         ':TMP:'          Temperature fields at all levels.
         ':500 mb:'       All variables on the 500 mb level.
         ':APCP:'         All accumulated precipitation fields.
-        ':UGRD:10 m:'    U wind component at 10 meters.
+        ':UGRD:10 m'    U wind component at 10 meters.
         ':(U|V)GRD:'     U and V wind component at all levels.
         ':.GRD:'         (Same as above)
         ':(TMP|DPT):'    Temperature and Dew Point for all levels .
@@ -469,7 +499,7 @@ def get_HRRR(DATE, searchString, *, fxx=0, DATE_is_valid_time=False,
         ':TMP:'          Temperature fields at all levels.
         ':500 mb:'       All variables on the 500 mb level.
         ':APCP:'         All accumulated precipitation fields.
-        ':UGRD:10 m:'    U wind component at 10 meters.
+        ':UGRD:10 m'    U wind component at 10 meters.
         ':(U|V)GRD:'     U and V wind component at all levels.
         ':.GRD:'         (Same as above)
         ':(TMP|DPT):'    Temperature and Dew Point for all levels .

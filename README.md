@@ -8,7 +8,7 @@ This repository demonstrates how to download HRRR files from the archive.
 
 For more information, go to http://hrrr.chpc.utah.edu/
 
-## Jupyter Notebooks
+## Detailed Jupyter Notebooks
 - [Part 1: How to download a bunch of HRRR grib2 files (full file)](./notebooks/demo_download_hrrr_archive_part1.ipynb)
 - [Part 2: How to download a subset of variables from a HRRR file](./notebooks/demo_download_hrrr_archive_part2.ipynb)
 - [Part 3: A function that can download many full files, or subset of files](./notebooks/demo_download_hrrr_archive_part3.ipynb)
@@ -21,14 +21,16 @@ Feel free to use these functions and improve upon them to fit your needs. If you
 
 |Function| what it will do for you
 |--|--
-|`download_HRRR`| Downloads full or partial HRRR files for one or more datetimes and forecast hours.  
+|`download_HRRR`| Downloads full or partial HRRR files for one or more datetimes and forecast hours.
 |`get_HRRR` | Downloads HRRR data for a single datetime/forecast and returns as an xarray Dataset or list of Datasets.
 
 To use these functions, copy the `HRRR_archive.py` file to the directory path you are working in or include the path in your PYTHONPATH.
 
     from HRRR_archive import download_HRRR, get_HRRR
     
-Requires `xarray`, `cfgrib`, `cartopy`, `pandas`, `requests`, `urllib`
+> Requires `xarray`, `cfgrib`, `cartopy`, `pandas`, `requests`, `urllib`
+
+### [Some Examples](./notebooks/examples.ipynb)
 
 **A note on the `searchString` argument:** These functions have an option to define a `searchString` that is used to specify variables you want to download. For example, instead of downloading the full HRRR file, you could download just the wind or precipitation variables. Read the docstring for the functions or look at [notebook #2](./notebooks/demo_download_hrrr_archive_part2.ipynb) for more details. For reference, here are some useful examples to give you some ideas...
 
