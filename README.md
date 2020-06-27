@@ -42,6 +42,7 @@ Requires `xarray`, `cfgrib`, `cartopy`, `pandas`, `requests`, `urllib`
 |`':UGRD:10 m'`   | U wind component at 10 meters
 |`':(U\|V)GRD:'`    | U and V wind component at all levels
 |`':.GRD:'`        | (Same as above)
+|`'(WIND\|GUST\|UGRD\|VGRD):(surface\|10 m)`| Surface wind, surface gusts, and 10 m u- v-components
 |`':(TMP\|DPT):'`   | Temperature and Dew Point for all levels
 |`':(TMP\|DPT\|RH):'`| TMP, DPT, and Relative Humidity for all levels
 |`':REFC:'`        | Composite Reflectivity
