@@ -29,6 +29,7 @@ In these notebooks, I give a bit of discussion on how I download HRRR files from
 - [Part 2: How to download a subset of variables from a HRRR file](./notebooks/demo_download_hrrr_archive_part2.ipynb)
 - [Part 3: A function that can download many full files, or subset of files](./notebooks/demo_download_hrrr_archive_part3.ipynb)
 - [Part 4: Opening GRIB2 files in Python with xarray and cfgrib](./notebooks/demo_download_hrrr_archive_part4.ipynb)
+- [Examples that import `HRRR_archive.py`](./notebooks/examples.ipynb)
 
 ---
 
