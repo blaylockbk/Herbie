@@ -49,18 +49,45 @@ If you are looking for a no-fuss method to download the HRRR data you want, use 
 
 ## [👉 Click Here For Some Examples](./notebooks/examples.ipynb)
 
-***How do I import these functions?*** That depends on where you put the module and where the script is you are running. If `HRRR_archive.py` is in your current working directory or if it is in a directory included in your [PYTHONPATH](https://www.tutorialspoint.com/What-is-PYTHONPATH-environment-variable-in-Python), then simply import the functions with
+***How do I import these functions?*** That depends on where you put the module and where the script you are running is located. If `HRRR_archive.py` is in your current working directory or if it is in a directory included in your [PYTHONPATH](https://www.tutorialspoint.com/What-is-PYTHONPATH-environment-variable-in-Python), then simply import the functions with
 
     from HRRR_archive import download_HRRR, get_HRRR
 
-If you put `HRRR_archive.py` in a different directory, you will need to tell your Python script where to find it. You can do that by appending the `sys.path`.
+If you put `HRRR_archive.py` in a different directory, you will need to tell your Python script where to find it. You can do that by appending the `sys.path` in your script.
 
     import sys
     sys.path.append('/directory/location/of/the/HRRR_achive/module/')
 
     from HRRR_archive import download_HRRR, get_HRRR
 
-***A note on the `searchString` argument:*** One of the function's arguments is `searchString` which is used to specify variables you want to download. For example, instead of downloading the full GRIB2 file, you could download just the wind or precipitation variables. Read the docstring for the functions or look at [notebook #2](./notebooks/demo_download_hrrr_archive_part2.ipynb) for more details. 
+#### Function arguments
+    
+    download_HRRR(DATES, searchString=None, fxx=range(0, 1), *,
+                  model='hrrr', field='sfc',
+                  SAVEDIR='./', dryrun=False, verbose=True)
+
+    get_HRRR(DATE, searchString, *, fxx=0, DATE_is_valid_time=False, 
+             remove_grib2=True, add_crs=True, **download_kwargs):
+
+- `DATES` Datetime or list of datetimes representing the model initialization time.
+- `searchString` **See note below**
+- `fxx` Range or list of forecast hours.
+    - e.g., `range(0,19)` for F00-F18
+- `model` The type of model. 
+    - Options are `hrrr`, `alaska`, `hrrrX`
+- `field` The type of field file. 
+    - Options are `sfc` and `prs`
+    - `nat` and `subh` are only available for today and yesterday.
+- `SAVEDIR` The directory path the files will be saved in.
+- `dryrun` If `True`, the function will tell you what it will download but not actually download anything.
+- `verbose` If `True`, prints lots of info to the screen.
+- `DATE_is_valid_time` For get_HRRR, the inpute DATE will represent the valid time instead of the model run time.
+- `remove_grib2` For get_HRRR, the grib2 file downloaded will be removed after reading the data into an xarray Dataset.
+- `add_crs` For get_HRRR, will create a cartopy coordinate reference system object and append it as a Dataset attribute.
+
+
+#### A note on the `searchString` argument
+`searchString` is used to specify select variables you want to download. For example, instead of downloading the full GRIB2 file, you could download just the wind or precipitation variables. Read the docstring for the functions or look at [notebook #2](./notebooks/demo_download_hrrr_archive_part2.ipynb) for more details. 
 
 For reference, here are some useful examples to give you some ideas...
 
@@ -81,7 +108,9 @@ For reference, here are some useful examples to give you some ideas...
 |`':surface:'`     | All variables at the surface
 |`'((U\|V)GRD:10 m\|TMP:2 m\|APCP)'` | 10-m wind, 2-m temp, and precip.
 
-> **Note on precipitation fields (e.g., APCP)**
+<br><br><br>
+
+> **Are you working with precipitation fields? (e.g., APCP)**  
 >A lot of users have asked why the precipitation accumulation fields are all zero for the model analysis (F00). That is because it is an *accumulation* variable over a period of time. At the model analysis time, there has been no precipitation because no time has passed.
 >
 >- **F00** only has a 0-0 hour accumulation (always zero)
@@ -90,7 +119,7 @@ For reference, here are some useful examples to give you some ideas...
 >- **F03** has a 0-3 hour accumulation and a 2-3 hour accumulation.
 >- etc.
 
-<br>
+<br><br>
 
 **Best of luck 🍀**  
 \- Brian
