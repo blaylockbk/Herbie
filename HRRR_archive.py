@@ -53,7 +53,7 @@ def reporthook(a, b, c):
 
 def searchString_help(searchString):
     msg = [
-        f"There is something wrong with `searchString='{searchString}'`",
+        f"There is something wrong with [[  searchString='{searchString}'  ]]",
         "\nHere are some examples you can use for `searchString`",
         "    ================ ===============================================",
         "    ``searchString`` Messages that will be downloaded",
@@ -69,6 +69,7 @@ def searchString_help(searchString):
         "    ':(TMP|DPT|RH):' TMP, DPT, and Relative Humidity for all levels.",
         "    ':REFC:'         Composite Reflectivity",
         "    ':surface:'      All variables at the surface.",
+        "    '((U|V)GRD:10 m|TMP:2 m|APCP)' 10-m wind, 2-m temp, and precip.",
         "    ================ ===============================================",
         "\n  If you need help with regular expression, search the web",
         "  or look at this cheatsheet: https://www.petefreitag.com/cheatsheets/regex/",
@@ -197,7 +198,7 @@ def download_HRRR_subset(url, searchString, SAVEDIR='./',
     
     if len(byte_ranges) == 0:
         # Loop didn't find the searchString in the index file.
-        print(f'❌ WARNING: Sorry, I did not find {searchString} in the index file {idx}')
+        print(f'❌ WARNING: Sorry, I did not find [{searchString}] in the index file {idx}')
         print(searchString_help(searchString))
         return None
     
@@ -219,14 +220,14 @@ def download_HRRR_subset(url, searchString, SAVEDIR='./',
         num, byte, date, var, level, forecast, _ = line.split(':')
         
         if dryrun:
-            print(f'    🐫 Dry Run: Found GRIB line [{num:>3}]: variable={var}, level={level}, forecast={forecast}')
+            if verbose: print(f'    🐫 Dry Run: Found GRIB line [{num:>3}]: variable={var}, level={level}, forecast={forecast}')
             #print(f'    🐫 Dry Run: `{curl}`')
         else:
             if verbose: print(f'  Downloading GRIB line [{num:>3}]: variable={var}, level={level}, forecast={forecast}')    
             os.system(curl)
     
     if dryrun:
-        print(f'🌵 Dry Run: Success! Searched for [{searchString}] and found [{len(byte_ranges)}] GRIB fields. Would save as {outFile}')
+        if verbose: print(f'🌵 Dry Run: Success! Searched for [{searchString}] and found [{len(byte_ranges)}] GRIB fields. Would save as {outFile}')
     else:
         if verbose: print(f'✅ Success! Searched for [{searchString}] and got [{len(byte_ranges)}] GRIB fields and saved as {outFile}')
     
@@ -287,6 +288,7 @@ def download_HRRR(DATES, searchString=None, fxx=range(0, 1), *,
         ':(TMP|DPT|RH):' TMP, DPT, and Relative Humidity for all levels.
         ':REFC:'         Composite Reflectivity
         ':surface:'      All variables at the surface.
+        ''
         ================ =============================================== 
     fxx : int or list of ints
         Forecast lead time or list of forecast lead times to download.
@@ -402,18 +404,24 @@ def download_HRRR(DATES, searchString=None, fxx=range(0, 1), *,
     # Now we need to check if each of those files exist, and if it does,
     # we will download that file to the SAVEDIR location.
     
+    n = len(URL_list)
     if dryrun:
-        print(f'🌵 Info: Dry Run {len(URL_list)} GRIB2 files')
+        print(f'🌵 Info: Dry Run {n} GRIB2 files\n')
     else:
-        if verbose: print(f'💡 Info: Downloading {len(URL_list)} GRIB2 files')
+        print(f'💡 Info: Downloading {n} GRIB2 files\n')
+    
     
     all_files = []
-    for source, file_URL in zip(SOURCE, URL_list):
+    for i, file_URL in enumerate(URL_list):
+        if not verbose: 
+            # Still show a little indicator of what is downloading.
+            print(f"\r Download Progress: ({i+1}/{n}) files {file_URL}\r", end='')
+        
         # We want to prepend the filename with the run date, YYYYMMDD
-        if source == 'pando':
+        if 'pando' in file_URL:
             outFile = '_'.join(file_URL.split('/')[-2:])
             outFile = os.path.join(SAVEDIR, outFile)
-        elif source == 'nomads':
+        elif 'nomads' in file_URL:
             outFile = file_URL.split('/')[-3][5:] + '_' + file_URL.split('/')[-1]
             outFile = os.path.join(SAVEDIR, outFile)
         
@@ -429,7 +437,8 @@ def download_HRRR(DATES, searchString=None, fxx=range(0, 1), *,
             # Download the file
             if searchString in [None, ':']:
                 if dryrun:
-                    print(f'🌵 Dry Run Success! Would have downloaded {file_URL} as {outFile}')
+                    if verbose: print(f'🌵 Dry Run Success! Would have downloaded {file_URL} as {outFile}')
+                    all_files.append(None)
                 else:
                     # Download the full file.
                     urllib.request.urlretrieve(file_URL, outFile, reporthook)
