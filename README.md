@@ -81,9 +81,9 @@ If you put `HRRR_archive.py` in a different directory, you will need to tell you
 - `SAVEDIR` The directory path the files will be saved in.
 - `dryrun` If `True`, the function will tell you what it will download but not actually download anything.
 - `verbose` If `True`, prints lots of info to the screen.
-- `DATE_is_valid_time` For get_HRRR, the inpute DATE will represent the valid time instead of the model run time.
-- `remove_grib2` For get_HRRR, the grib2 file downloaded will be removed after reading the data into an xarray Dataset.
-- `add_crs` For get_HRRR, will create a cartopy coordinate reference system object and append it as a Dataset attribute.
+- `DATE_is_valid_time` For *get_HRRR*, if `True` the input DATE will represent the valid time. If `False`, DATE represents the the model run time.
+- `remove_grib2` For *get_HRRR*, the grib2 file downloaded will be removed after reading the data into an xarray Dataset.
+- `add_crs` For *get_HRRR*, will create a cartopy coordinate reference system object and append it as a Dataset attribute.
 
 
 #### A note on the `searchString` argument
