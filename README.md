@@ -106,9 +106,9 @@ For reference, here are some useful examples to give you some ideas...
 |`':REFC:'`        | Composite Reflectivity
 |`:(APCP\|REFC):`| Precipitation and reflectivity
 |`':surface:'`     | All variables at the surface
-|`'((U\|V)GRD:10 m\|TMP:2 m\|APCP)'` | 10-m wind, 2-m temp, and precip.
+|`'((U\|V)GRD:10 m\|TMP:2 m\|APCP)'` | 10-m wind, 2-m temp, and accumulated precipitation.
 
-<br><br><br>
+<br><br>
 
 > **Are you working with precipitation fields? (e.g., APCP)**  
 >A lot of users have asked why the precipitation accumulation fields are all zero for the model analysis (F00). That is because it is an *accumulation* variable over a period of time. At the model analysis time, there has been no precipitation because no time has passed.
@@ -119,7 +119,7 @@ For reference, here are some useful examples to give you some ideas...
 >- **F03** has a 0-3 hour accumulation and a 2-3 hour accumulation.
 >- etc.
 
-<br><br>
+<br>
 
 **Best of luck 🍀**  
 \- Brian
