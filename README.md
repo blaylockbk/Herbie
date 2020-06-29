@@ -82,9 +82,13 @@ For reference, here are some useful examples to give you some ideas...
 |`'((U\|V)GRD:10 m\|TMP:2 m\|APCP)'` | 10-m wind, 2-m temp, and precip.
 
 > **Note on precipitation fields (e.g., APCP)**
->A lot of users have asked why the precipitation accumulation fields are all zero for the model analysis (F00). That is because it is an accumulation variable over a period of time. At the model analysis, there has been no precipitation because no time has passed.
-> When looking at precipitation, consider looking at F01, which will be the precipitation amount between F00 and F01.
-
+>A lot of users have asked why the precipitation accumulation fields are all zero for the model analysis (F00). That is because it is an *accumulation* variable over a period of time. At the model analysis time, there has been no precipitation because no time has passed.
+>
+>- **F00** only has a 0-0 hour accumulation (always zero)
+>- **F01** only has a 0-1 hour accumulation
+>- **F02** has a 0-2 hour accumulation and a 1-2 hour accumulation.
+>- **F03** has a 0-3 hour accumulation and a 2-3 hour accumulation.
+>- etc.
 
 <br>
 
