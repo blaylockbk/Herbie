@@ -290,6 +290,7 @@ def download_HRRR(DATES, searchString=None, fxx=range(0, 1), *,
         ':surface:'      All variables at the surface.
         ''
         ================ =============================================== 
+        
     fxx : int or list of ints
         Forecast lead time or list of forecast lead times to download.
         Default only grabs analysis hour (f00), but you might want all
@@ -311,8 +312,8 @@ def download_HRRR(DATES, searchString=None, fxx=range(0, 1), *,
         If True, instead of downloading the files, it will print out the
         files that could be downloaded. This is set to False by default.
     verbose :bool
-        If True, print lots of information (default). Does not apply to
-        print messages when ``dryrun=True``.
+        If True, print lots of information (default).
+        If False, only print some info about download progress.
 
     Returns
     -------
@@ -410,12 +411,20 @@ def download_HRRR(DATES, searchString=None, fxx=range(0, 1), *,
     else:
         print(f'💡 Info: Downloading {n} GRIB2 files\n')
     
+    # For keeping track of total time spent downloading data
+    loop_time = timedelta()
     
     all_files = []
     for i, file_URL in enumerate(URL_list):
+        timer = datetime.now()
+        
+        # Time keeping: *crude* method to estimate remaining time.
+        mean_dt_per_loop = loop_time/(i+1)
+        est_rem_time = mean_dt_per_loop * (n-i+1)
+        
         if not verbose: 
-            # Still show a little indicator of what is downloading.
-            print(f"\r Download Progress: ({i+1}/{n}) files {file_URL}\r", end='')
+            # Still show a little indicator of what is downloading.    
+            print(f"\r Download Progress: ({i+1}/{n}) files {file_URL} (Est. Time Remaining {str(est_rem_time):16})\r", end='')
         
         # We want to prepend the filename with the run date, YYYYMMDD
         if 'pando' in file_URL:
@@ -433,6 +442,7 @@ def download_HRRR(DATES, searchString=None, fxx=range(0, 1), *,
         check_exists = head.ok
         check_content = int(head.raw.info()['Content-Length']) > 1000000
         
+        if verbose: print(f"\nDownload Progress: ({i+1}/{n}) files {file_URL} (Est. Time Remaining {str(est_rem_time):16})")
         if check_exists and check_content:
             # Download the file
             if searchString in [None, ':']:
@@ -459,12 +469,14 @@ def download_HRRR(DATES, searchString=None, fxx=range(0, 1), *,
             print(f'❌ WARNING: Status code {head.status_code}: {head.reason}. Content-Length: {int(head.raw.info()["Content-Length"]):,} bytes')
             print(f'❌ Could not download {head.url}')
     
-    if verbose: print("\nFinished 🍦")
+        loop_time += datetime.now() - timer
+        
+    print(f"\nFinished 🍦  (Time spent downloading: {loop_time})")
     
     if len(all_files) == 1:
         return all_files[0], URL_list[0]  # return a string, not list
     else:
-        return [all_files, URL_list]  # return the list of file names and URLs
+        return np.array(all_files), np.array(URL_list)  # return the list of file names and URLs
     
 def get_crs(ds):
     """
