@@ -480,15 +480,21 @@ def download_HRRR(DATES, searchString=None, fxx=range(0, 1), *,
     
 def get_crs(ds):
     """
-    Get the cartopy coordinate reference system from a cfgrib's xarray Dataset
+    Get the cartopy coordinate reference system (crs) from a cfgrib xarray Dataset
+    
+    Projection in formation is from the grib2 message for each variable.
     
     Parameters
     ----------
     ds : xarray.Dataset
         An xarray.Dataset from a GRIB2 file opened by the cfgrib engine.
     """
-    # Base projection on the attributes from the 1st variable in the Dataset
-    attrs = ds[list(ds)[0]].attrs  
+    # Get projection from the attributes of the first variable in the Dataset
+    
+    if isinstance(ds, xr.Dataset):
+        attrs = ds[list(ds)[0]].attrs
+    if isinstance(ds, xr.DataArray):
+        attrs = ds.attrs
     if attrs['GRIB_gridType'] == 'lambert':
         lc_HRRR_kwargs = {
             'globe': ccrs.Globe(ellipse='sphere'),
@@ -586,17 +592,41 @@ def get_HRRR(DATE, searchString, *, fxx=0, DATE_is_valid_time=False,
         crs = get_crs(H[0])
 
     for ds in H:
-        ds.attrs['get_HRRR inputs'] = inputs
+        ds.attrs['history'] = inputs
         ds.attrs['url'] = url
-        if add_crs:
-            # Add the crs projection info as a Dataset attribute
-            ds.attrs['crs'] = crs
-            # ...and add attrs for each variable for ease of access.
-            for var in list(ds):
-
-                    ds[var].attrs['crs'] = crs
+        
+        # CF 1.8 map projection information for the HRRR model
+        # http://cfconventions.org/Data/cf-conventions/cf-conventions-1.8/cf-conventions.html#_lambert_conformal
+        
+        ##
+        ## I'm not sure why, but when I assign an attribute for the main Dataset
+        ## with a cartopy.crs and then copy it (for the remove_grib2 case),
+        ## the cartopy.crs is reset to the default proj4_params.
+        ## This isn't an issue when I set cartopy.crs as an attribute for
+        ## a variable (DataArray). 
+        ## For this reason, I will return the 'crs' as an attribute for 
+        ## each variable's DataArray, but not for the full Dataset.
+        ##
+        
+        ds.attrs['grid_mapping_name'] = 'lambert_conformal_conic'
+        ds.attrs['standard_parallel'] = (38.5, 38.5)
+        ds.attrs['longitude_of_central_meridian'] = 262.5
+        ds.attrs['latitude_of_projection_origin'] = 38.5
+        
+        # This is redundant, but I want every variable to also have the
+        # map projection information...
+        for var in list(ds):
+            ds[var].attrs['grid_mapping_name'] = 'lambert_conformal_conic'
+            ds[var].attrs['standard_parallel'] = (38.5, 38.5)
+            ds[var].attrs['longitude_of_central_meridian'] = 262.5
+            ds[var].attrs['latitude_of_projection_origin'] = 38.5
+            if add_crs:
+                ds[var].attrs['crs'] = crs
+                    
     if remove_grib2:
+        # Copy the data to memory before removing the file
         H = [ds.copy(deep=True) for ds in H]
+        # Ok, now we can remove the grib2 file
         os.remove(grib2file)
     
     if len(H) == 1:
