@@ -1,20 +1,43 @@
 #!/usr/bin/env python3
 
 ## Brian Blaylock
-## June 26, 2020
+## July 8, 2020
 
 """
 =========================
 Download HRRR GRIB2 files
 =========================
 
-Can download HRRR files from the University of Utah HRRR archive on Pando
-or from the NOMADS server.
+Can download HRRR files from the University of Utah HRRR archive on Pando, the
+NOMADS server, or Google Cloud Platform.
 
+A .idx file must also exist for subsetting the file by variable.
+
+HRRR Data Sources Download Order
+--------------------------------
+1. NOMAS: NOAA Operational Model Archive and Distribution System
+    - https://nomads.ncep.noaa.gov/
+    - Available for today's and yesterday's runs
+    - Original data source. All available data.
+2. Pando: The University of Utah HRRR archive
+    - http://hrrr.chpc.utah.edu/
+    - Available from July 15, 2016 to Present.
+    - A subset of prs and sfc files.
+    - Contains a ``.idx`` file for *every* GRIB2 file for subsetting.
+3. Google: Google Cloud Platform Earth 
+    - https://console.cloud.google.com/storage/browser/high-resolution-rapid-refresh
+    - Available from July 30, 2014 to Present.
+    - Does not have ``.idx`` files before September 17, 2018.
+    - Has all nat, subh, prs, and sfc files for all forecast hours.
+
+Functions
+---------
 reporthook
      Prints download progress when downloading full files.
 searchString_help
     Prints examples for the `searchString` argument when there is an error.
+outFile_from_url
+    Create an file name to save the data to based on the grib2 URL.
 download_HRRR_subset
     Download parts of a HRRR file.
 download_HRRR
@@ -30,6 +53,7 @@ import re
 from datetime import datetime, timedelta
 
 import numpy as np
+import pandas as pd    # Used to organize download URLs from each source
 import urllib.request  # Used to download the file
 import requests        # Used to check if a URL exists
 import warnings
@@ -77,12 +101,31 @@ def searchString_help(searchString):
         ]
     return '\n'.join(msg)
 
+def outFile_from_url(url, SAVEDIR):
+    """
+    Define the filename for a grib2 file from its URL.
+    
+    Parameters
+    ----------
+    url : str
+        A URL string for a grib2 file we want to download.
+    SAVEDIR : dir
+        The directory path to save the file.    
+    """
+    if 'pando' in url:
+        outFile = '_'.join(url.split('/')[-2:])
+        outFile = os.path.join(SAVEDIR, outFile)
+    elif 'nomads' in url or 'google' in url:
+        outFile = url.split('/')[-3][5:] + '_' + url.split('/')[-1]
+        outFile = os.path.join(SAVEDIR, outFile)
+    return outFile
+
 def download_HRRR_subset(url, searchString, SAVEDIR='./',
                          dryrun=False, verbose=True):
     """
-    Download a subset of GRIB fields from a HRRR file.
+    Download a subset of GRIB fields from a HRRR file located at a URL.
     
-    This assumes there is an index (.idx) file available for the file.
+    The must be index (.idx) file available for the file.
     
     Parameters
     ----------
@@ -155,8 +198,13 @@ def download_HRRR_subset(url, searchString, SAVEDIR='./',
 
     # Check that the file exists. If there isn't an index, you will get a 404 error.
     if not r.ok: 
-        print('❌ SORRY! Status Code:', r.status_code, r.reason)
-        print(f'❌ It does not look like the index file exists: {idx}')
+        notice = [
+            '',
+            f'❌ SORRY! Status Code: {r.status_code} {r.reason}',
+            f'❌ It does not look like the index file exists: {idx}',
+            f'❌ Please change your request or download the full grib2 file with `download_HRRR`.'
+        ]
+        raise Exception('\n'.join(notice))
 
     # Read the text lines of the request
     lines = r.text.split('\n')
@@ -237,12 +285,13 @@ def download_HRRR(DATES, searchString=None, fxx=range(0, 1), *,
                   model='hrrr', field='sfc',
                   SAVEDIR='./', dryrun=False, verbose=True):
     """
-    Downloads full HRRR grib2 files for a list of dates and forecasts.
+    Download full HRRR grib2 files for a list of dates and forecasts.
     
-    Files are downloaded from the University of Utah HRRR archive (Pando) 
-    or NOAA Operational Model Archive and Distribution System (NOMADS). This
-    function will automatically change the download source for each datetime
-    requested.
+    Attempts to download grib2 files from three different sources in the 
+    following order:
+        1. NOAA Operational Model Archive and Distribution System (NOMADS).
+        2. University of Utah HRRR archive (Pando) 
+        3. Google Cloud Platform (Google)
     
     Parameters
     ----------
@@ -255,15 +304,14 @@ def download_HRRR(DATES, searchString=None, fxx=range(0, 1), *,
         ``download_hrrr_subset`` to looking for sepecific byte ranges
         from the file to download. 
         
-        Default is None, meaning to not search for variables, but to
-        download the full file. ':' is an alias for None, becuase
-        it is equivalent to identifying every line in the .idx file.
-        Read the details below for more help on defining a suitable 
-        ``searchString``.
+        Default is None, meaning to not search for variables. Furthermore,
+        ':' is an alias for None, becuase it is equivalent to identifying 
+        every line in the .idx file.
         
         Take a look at the .idx file at 
         https://pando-rgw01.chpc.utah.edu/hrrr/sfc/20200624/hrrr.t01z.wrfsfcf17.grib2.idx
         to get familiar with what an index file is.
+        
         Also look at this webpage: http://hrrr.chpc.utah.edu/HRRR_archive/hrrr_sfc_table_f00-f01.html
         for additional details.**You should focus on the variable and level 
         field for your searches**.
@@ -299,13 +347,15 @@ def download_HRRR(DATES, searchString=None, fxx=range(0, 1), *,
         The model type you want to download.
         - 'hrrr' HRRR Contiguous United States (operational)
         - 'hrrrak' HRRR Alaska. You can also use 'alaska' as an alias.
-        - 'hrrrX' HRRR *experimental*
+        - 'hrrrX' *experimental* HRRR (exerimental version run at ESRL)
     field : {'prs', 'sfc', 'nat', 'subh'}
-        Variable fields you wish to download. 
+        Variable fields you wish to download. Only 'sfc' and 'prs' are
+        available on Pando, but 'nat' and 'subh' might be attainable 
+        from NOMADS or Google.
         - 'sfc' surface fields
         - 'prs' pressure fields
-        - 'nat' native fields      ('nat' files are not available on Pando)
-        - 'subh' subhourly fields  ('subh' files are not available on Pando)
+        - 'nat' native fields
+        - 'subh' subhourly fields
     SAVEDIR : str
         Directory path to save the downloaded HRRR files.
     dryrun : bool
@@ -318,13 +368,17 @@ def download_HRRR(DATES, searchString=None, fxx=range(0, 1), *,
     Returns
     -------
     The file name for the HRRR files we downloaded and the URL it was from.
-    (i.e. `20170101_hrrr.t00z.wrfsfcf00.grib2`)
+    For example:
+    
+        ('20170101_hrrr.t00z.wrfsfcf00.grib2', 'https://pando-rgw01...')
     """
     
     #**************************************************************************
     ## Check function input
     #**************************************************************************
-    
+    # The user may set `model='alaska'` as an alias for 'hrrrak'.
+    if model.lower() == 'alaska': model = 'hrrrak'
+
     # Force the `field` input string to be lower case.
     field = field.lower()
 
@@ -336,147 +390,156 @@ def download_HRRR(DATES, searchString=None, fxx=range(0, 1), *,
         print('bad handshake...am I able to on?')
         pass
 
-    # `DATES` and `fxx` should be a list-like object, but if it doesn't have
+    # `DATES` and `fxx` should be a list-like object, but if they have no
     # length, (like if the user requests a single date or forecast hour),
     # then turn it item into a list-like object.
     if not hasattr(DATES, '__len__'): DATES = np.array([DATES])
     if not hasattr(fxx, '__len__'): fxx = [fxx]
 
-    assert all([i < datetime.utcnow() for i in DATES]), "🦨 Whoops! One or more of your DATES is in the future."
-
-    ## Set the download SOURCE for each of the DATES
-    ## ---------------------------------------------
-    # HRRR data is available on NOMADS for today's and yesterday's runs.
-    # I will set the download source to get HRRR data from pando if the
-    # datetime is for older than yesterday, and set to nomads for datetimes
-    # of yesterday or today.
-    yesterday = datetime.utcnow() - timedelta(days=1)
-    yesterday = datetime(yesterday.year, yesterday.month, yesterday.day)   
-    SOURCE = ['pando' if i < yesterday else 'nomads' for i in DATES]
-
-    # The user may set `model='alaska'` as an alias for 'hrrrak'.
-    if model.lower() == 'alaska': model = 'hrrrak'
-
-    # The model type and field available depends on the download SOURCE.
-    available = {'pando':{'models':{}, 'fields':{}}, 'nomads':{'models':{}, 'fields':{}}}
-    available['pando']['models'] = {'hrrr', 'hrrrak', 'hrrrX'}
-    available['pando']['fields'] = {'sfc', 'prs'}
-    available['nomads']['models'] = {'hrrr', 'hrrrak'}
-    available['nomads']['fields'] = {'sfc', 'prs', 'nat', 'subh'}
+    if not all([i < datetime.utcnow() for i in DATES]):
+        warnings.warn("🦨 Whoops! One or more of your DATES is in the future.")
 
     # Make SAVEDIR if path doesn't exist
     if not os.path.exists(SAVEDIR):
         os.makedirs(SAVEDIR)
         print(f'Created directory: {SAVEDIR}')
+    
+    
+    #**************************************************************************
+    # Specify Download Source URL and priority order
+    #**************************************************************************
+    # Base URLs of each downlaod source, in order of priority.
+    # Attempt to download from NOMADS first, then Pando, then Google Cloud Platform
+    base_url = {}
+    base_url['nomads'] = 'https://nomads.ncep.noaa.gov/pub/data/nccf/com/hrrr/prod'
+    base_url['pando'] = 'https://pando-rgw01.chpc.utah.edu'
+    base_url['google'] = 'https://storage.googleapis.com/high-resolution-rapid-refresh'
 
+    
     #**************************************************************************
     # Build the URL path for every file we want
     #**************************************************************************
-    # An example URL for a file from Pando is 
-    # https://pando-rgw01.chpc.utah.edu/hrrr/sfc/20200624/hrrr.t01z.wrfsfcf17.grib2
-    # 
-    # An example URL for a file from NOMADS is
-    # https://nomads.ncep.noaa.gov/pub/data/nccf/com/hrrr/prod/hrrr.20200624/conus/hrrr.t00z.wrfsfcf09.grib2
-    URL_list = []
-    for source, DATE in zip(SOURCE, DATES):
-        if source == 'pando':
-            base = f'https://pando-rgw01.chpc.utah.edu/{model}/{field}'
-            URL_list += [f'{base}/{DATE:%Y%m%d}/{model}.t{DATE:%H}z.wrf{field}f{f:02d}.grib2' for f in fxx]
-            
-            if model not in available[source]['models']:
-                warnings.warn(f"model='{model}' is not available from [{source}]. Only {available[source]['models']}")
-            if field not in available[source]['fields']:
-                warnings.warn(f"field='{field}' is not available from [{source}]. Only {available[source]['fields']}")
+    # Full URL Examples
+    # NOMADS 
+    #   https://nomads.ncep.noaa.gov/pub/data/nccf/com/hrrr/prod/hrrr.20200624/conus/hrrr.t00z.wrfsfcf09.grib2
+    # Pando 
+    #   https://pando-rgw01.chpc.utah.edu/hrrr/sfc/20200624/hrrr.t01z.wrfsfcf17.grib2
+    # Google
+    #   https://storage.googleapis.com/high-resolution-rapid-refresh/hrrr.20200101/conus/hrrr.t00z.wrfnatf04.grib2
+    
+    URL_list = {i: [] for i in base_url}
+    for DATE in DATES:
+        # Pando URL is unique
+        URL_list['pando'] += [f"{base_url['pando']}/{model}/{field}/{DATE:%Y%m%d}/{model}.t{DATE:%H}z.wrf{field}f{f:02d}.grib2" for f in fxx]
 
-        elif source == 'nomads':
-            base = 'https://nomads.ncep.noaa.gov/pub/data/nccf/com/hrrr/prod'
+        # NOMADS and Google URL are the same after the base_url
+        for s in ['nomads', 'google']:
             if model == 'hrrr':
-                URL_list += [f'{base}/hrrr.{DATE:%Y%m%d}/conus/hrrr.t{DATE:%H}z.wrf{field}f{f:02d}.grib2' for f in fxx]
+                URL_list[s] += [f"{base_url[s]}/hrrr.{DATE:%Y%m%d}/conus/hrrr.t{DATE:%H}z.wrf{field}f{f:02d}.grib2" for f in fxx]
             elif model == 'hrrrak':
-                URL_list += [f'{base}/hrrr.{DATE:%Y%m%d}/alaska/hrrr.t{DATE:%H}z.wrf{field}f{f:02d}.ak.grib2' for f in fxx]
+                URL_list[s] += [f"{base_url[s]}/hrrr.{DATE:%Y%m%d}/alaska/hrrr.t{DATE:%H}z.wrf{field}f{f:02d}.ak.grib2" for f in fxx]
+            else:
+                URL_list[s] = f'https://pando-rgw01.chpc.utah.edu/hrrrX/nonhere_{s}' # There are no experimental HRRR (hrrrX) on NOMADS or Google
+
+    # A pandas.DataFrame to keep track of the URLs. We will iterate over each row.
+    URL_df = pd.DataFrame(URL_list)
                 
-            if model not in available[source]['models']:
-                warnings.warn(f"model='{model}' is not available from [{source}]. Only {available[source]['models']}")
-            if field not in available[source]['fields']:
-                warnings.warn(f"field='{field}' is not available from [{source}]. Only {available[source]['fields']}")
-        
     #**************************************************************************
-    # Ok, so we have a URL and filename for each requested forecast hour.
-    # Now we need to check if each of those files exist, and if it does,
-    # we will download that file to the SAVEDIR location.
+    # Download Files that exist
+    #**************************************************************************
+    # Attempt download from sources in order of source priority
     
-    n = len(URL_list)
+    n = len(URL_df)
+    
     if dryrun:
-        print(f'🌵 Info: Dry Run {n} GRIB2 files\n')
+        print(f'🌵 Info: Dry Run [{n}] GRIB2 files\n')
     else:
-        print(f'💡 Info: Downloading {n} GRIB2 files\n')
+        print(f'💡 Info: Downloading [{n}] GRIB2 files\n')
     
-    # For keeping track of total time spent downloading data
+    # Keep track of total time spent in the download loop.
     loop_time = timedelta()
     
+    # We want to return lists of the filenames we retrive and the URLs
     all_files = []
-    for i, file_URL in enumerate(URL_list):
-        timer = datetime.now()
-        
+    all_urls = []
+    
+    for index, row in URL_df.iterrows():
+        #---------------------------------------------------------
         # Time keeping: *crude* method to estimate remaining time.
-        mean_dt_per_loop = loop_time/(i+1)
-        est_rem_time = mean_dt_per_loop * (n-i+1)
+        #---------------------------------------------------------
+        timer = datetime.now()
+        #---------------------------------------------------------
         
-        if not verbose: 
-            # Still show a little indicator of what is downloading.    
-            print(f"\r Download Progress: ({i+1}/{n}) files {file_URL} (Est. Time Remaining {str(est_rem_time):16})\r", end='')
-        
-        # We want to prepend the filename with the run date, YYYYMMDD
-        if 'pando' in file_URL:
-            outFile = '_'.join(file_URL.split('/')[-2:])
-            outFile = os.path.join(SAVEDIR, outFile)
-        elif 'nomads' in file_URL:
-            outFile = file_URL.split('/')[-3][5:] + '_' + file_URL.split('/')[-1]
-            outFile = os.path.join(SAVEDIR, outFile)
-        
-        # Check if the URL returns a status code of 200 (meaning the URL is ok)
-        # Also check that the Content-Length is >1000000 bytes (if it's smaller,
-        # the file on the server might be incomplete)
-        head = requests.head(file_URL)
-        
-        check_exists = head.ok
-        check_content = int(head.raw.info()['Content-Length']) > 1000000
-        
-        if verbose: print(f"\nDownload Progress: ({i+1}/{n}) files {file_URL} (Est. Time Remaining {str(est_rem_time):16})")
-        if check_exists and check_content:
-            # Download the file
-            if searchString in [None, ':']:
-                if dryrun:
-                    if verbose: print(f'🌵 Dry Run Success! Would have downloaded {file_URL} as {outFile}')
-                    all_files.append(None)
+        # We will set this to True when we have downloaded a file from a source
+        # For example, this will prevents us from downloading a file from 
+        # google if we already got the file from pando.
+        one_exists = False
+
+        for source, url in row.items():    
+            # Check if the URL exists and the filesize is large enough to be a file.
+            head = requests.head(url)
+            check_exists = head.ok
+            check_content = int(head.raw.info()['Content-Length']) > 1_000_000
+
+            if check_exists and check_content:
+                # Yippie, a grib2 file exists
+                one_exists = True
+
+                # Define the filename we want to save the data as
+                outFile = outFile_from_url(url, SAVEDIR)
+
+                # Download the data
+                #------------------
+                if searchString in [None, ':']:
+                    if dryrun:
+                        if verbose: print(f'🌵 Dry Run! Would get from [{source}] {url} as {outFile}')
+                        all_files.append(None)
+                    else:
+                        # Download the full file.
+                        urllib.request.urlretrieve(url, outFile, reporthook)
+                        all_files.append(outFile)
+                        if verbose: print(f'✅ Success! Downloaded from [{source}] {url} as {outFile}')
                 else:
-                    # Download the full file.
-                    urllib.request.urlretrieve(file_URL, outFile, reporthook)
-                    all_files.append(outFile)
-                    if verbose: print(f'✅ Success! Downloaded {file_URL} as {outFile}')
-            else:
-                # Download a subset of the full file based on the seachString.
-                if verbose: print(f"Download subset from [{source}]:")
-                thisfile = download_HRRR_subset(file_URL, 
-                                                searchString, 
-                                                SAVEDIR=SAVEDIR, 
-                                                dryrun=dryrun, 
-                                                verbose=verbose)
-                all_files.append(thisfile)
-        else:
-            # The URL request is bad. If status code == 404, the URL does not exist.
+                    # Download a subset of the full file based on the seachString.
+                    if verbose: print(f"Download subset from [{source}]:")
+                    thisfile = download_HRRR_subset(url, 
+                                                    searchString, 
+                                                    SAVEDIR=SAVEDIR, 
+                                                    dryrun=dryrun, 
+                                                    verbose=verbose)
+                    all_files.append(thisfile)
+                all_urls.append(url)
+                break # because we downloaded a file and don't need it from another source
+
+        if not one_exists:
+            # The URL request is bad or file size is small and the file is not
+            # available from any of the sources.
             print()
             print(f'❌ WARNING: Status code {head.status_code}: {head.reason}. Content-Length: {int(head.raw.info()["Content-Length"]):,} bytes')
-            print(f'❌ Could not download {head.url}')
-    
-        loop_time += datetime.now() - timer
+            print(f"❌ Could not download file for [{model}] [{field}]. Tried to get the following:")
+            for i, url in enumerate(row, start=1):
+                print(f'    {i}: {url}')
+            print('')
         
-    print(f"\nFinished 🍦  (Time spent downloading: {loop_time})")
+        #---------------------------------------------------------
+        # Time keeping: *crude* method to estimate remaining time.
+        #---------------------------------------------------------
+        loop_time += datetime.now() - timer
+        mean_dt_per_loop = loop_time/(index+1)
+        remaining_loops = n-index-1
+        est_rem_time = mean_dt_per_loop * remaining_loops
+        if verbose: print(f"Download Progress: [{index+1}/{n} completed] >> Est. Time Remaining {str(est_rem_time):16}\n")    
+        #---------------------------------------------------------
+        
+    print(f"\n🍦 Finished 🍦  Time spent on download: {loop_time}")
     
     if len(all_files) == 1:
-        return all_files[0], URL_list[0]  # return a string, not list
+        return all_files[0], all_urls[0]  # return a string, not list
     else:
-        return np.array(all_files), np.array(URL_list)  # return the list of file names and URLs
+        return np.array(all_files), np.array(all_urls)  # return the list of file names and URLs
+
+#=======================================================================
+#=======================================================================
     
 def get_crs(ds):
     """
