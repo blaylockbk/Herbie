@@ -271,8 +271,8 @@ def download_HRRR_subset(url, searchString, SAVEDIR='./',
         else:
             # If we are working on not the first item, append the existing file.
             curl = f'curl -s --range {byteRange} {url} >> {outFile}'
-            
-        num, byte, date, var, level, forecast, _ = line.split(':')
+        
+        num, byte, date, var, level, forecast, *_ = line.split(':')
         
         if dryrun:
             if verbose: print(f'    🐫 Dry Run: Found GRIB line [{num:>3}]: variable={var}, level={level}, forecast={forecast}')
@@ -887,7 +887,7 @@ def _concat_HRRR(inputs):
     DATE, searchString, fxx, kwargs = inputs
     return get_HRRR(DATE, searchString, fxx=fxx, **kwargs)
 
-def concat_HRRR(DATE, searchString, fxxs=range(19), **get_HRRR_kwargs):
+def concat_HRRR(DATES, searchString, fxxs=range(19), **get_HRRR_kwargs):
     """
     Download variables 
     """
