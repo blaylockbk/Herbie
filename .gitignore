@@ -1,5 +1,6 @@
 .ipynb_checkpoints
 .vscode
+*.log
 
 *.grib2
 
@@ -7,6 +8,6 @@ __pycache__/
 *.py[cod]
 *$py.class
 
-
 sandbox/
+sandbox*
 

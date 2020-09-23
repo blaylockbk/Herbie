@@ -532,7 +532,7 @@ def get_HRRR(DATE, searchString, *, fxx=0, DATE_is_valid_time=False,
         ':TMP:'          Temperature fields at all levels.
         ':500 mb:'       All variables on the 500 mb level.
         ':APCP:'         All accumulated precipitation fields.
-        ':UGRD:10 m'    U wind component at 10 meters.
+        ':UGRD:10 m'     U wind component at 10 meters.
         ':(U|V)GRD:'     U and V wind component at all levels.
         ':.GRD:'         (Same as above)
         ':(TMP|DPT):'    Temperature and Dew Point for all levels .
@@ -624,8 +624,8 @@ def get_HRRR(DATE, searchString, *, fxx=0, DATE_is_valid_time=False,
                 ds[var].attrs['crs'] = crs
                     
     if remove_grib2:
-        # Copy the data to memory before removing the file
-        H = [ds.copy(deep=True) for ds in H]
+        # Load the data to memory before removing the file
+        H = [ds.load() for ds in H]
         # Ok, now we can remove the grib2 file
         os.remove(grib2file)
     
