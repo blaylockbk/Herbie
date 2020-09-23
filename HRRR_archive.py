@@ -1,35 +1,66 @@
 #!/usr/bin/env python3
 
 ## Brian Blaylock
-## June 26, 2020
+## July 8, 2020
 
 """
 =========================
 Download HRRR GRIB2 files
 =========================
 
-Can download HRRR files from the University of Utah HRRR archive on Pando
-or from the NOMADS server.
+Downloads HRRR grib2 files from different archive sources.
 
-reporthook
+A ``.idx`` file must also exist for subsetting the file by variable.
+
+HRRR Data Source Priority
+-------------------------
+1. NOMAS: NOAA Operational Model Archive and Distribution System
+    - https://nomads.ncep.noaa.gov/
+    - Available for today's and yesterday's runs
+    - Original data source. All available data.
+2. Pando: The University of Utah HRRR archive
+    - http://hrrr.chpc.utah.edu/
+    - Available from July 15, 2016 to Present.
+    - A subset of prs and sfc files.
+    - Contains a ``.idx`` file for *every* GRIB2 file for subsetting.
+3. Google: Google Cloud Platform Earth 
+    - https://console.cloud.google.com/storage/browser/high-resolution-rapid-refresh
+    - Available from July 30, 2014 to Present.
+    - Does not have ``.idx`` files before September 17, 2018.
+    - Has all nat, subh, prs, and sfc files for all forecast hours.
+
+Functions
+---------
+_reporthook
      Prints download progress when downloading full files.
 searchString_help
     Prints examples for the `searchString` argument when there is an error.
+outFile_from_url
+    Create an file name to save the data to based on the grib2 URL.
 download_HRRR_subset
     Download parts of a HRRR file.
 download_HRRR
     Main function for downloading many HRRR files.
-get_crs
+
+
+_to_180
+    For longitude values to be from -180 W to 180 E (not 0-360 E).
+_get_crs
     Get cartopy projection object from xarray.Dataset
 get_HRRR
     Read HRRR data as an xarray Dataset with cfgrib engine.
+    
+pluck_points
+    Pluck values at specific latitude/longitude points.
 """
 
 import os
 import re
 from datetime import datetime, timedelta
+import multiprocessing
 
 import numpy as np
+import pandas as pd    # Used to organize download URLs from each source
 import urllib.request  # Used to download the file
 import requests        # Used to check if a URL exists
 import warnings
@@ -37,7 +68,7 @@ import cartopy.crs as ccrs
 import cfgrib
 import xarray as xr
 
-def reporthook(a, b, c):
+def _reporthook(a, b, c):
     """
     Report download progress in megabytes (prints progress to screen).
     
@@ -77,12 +108,31 @@ def searchString_help(searchString):
         ]
     return '\n'.join(msg)
 
+def outFile_from_url(url, SAVEDIR):
+    """
+    Define the filename for a grib2 file from its URL.
+    
+    Parameters
+    ----------
+    url : str
+        A URL string for a grib2 file we want to download.
+    SAVEDIR : dir
+        The directory path to save the file.    
+    """
+    if 'pando' in url:
+        outFile = '_'.join(url.split('/')[-2:])
+        outFile = os.path.join(SAVEDIR, outFile)
+    elif 'nomads' in url or 'google' in url:
+        outFile = url.split('/')[-3][5:] + '_' + url.split('/')[-1]
+        outFile = os.path.join(SAVEDIR, outFile)
+    return outFile
+
 def download_HRRR_subset(url, searchString, SAVEDIR='./',
                          dryrun=False, verbose=True):
     """
-    Download a subset of GRIB fields from a HRRR file.
+    Download a subset of GRIB fields from a HRRR file located at a URL.
     
-    This assumes there is an index (.idx) file available for the file.
+    The must be index (.idx) file available for the file.
     
     Parameters
     ----------
@@ -155,8 +205,13 @@ def download_HRRR_subset(url, searchString, SAVEDIR='./',
 
     # Check that the file exists. If there isn't an index, you will get a 404 error.
     if not r.ok: 
-        print('❌ SORRY! Status Code:', r.status_code, r.reason)
-        print(f'❌ It does not look like the index file exists: {idx}')
+        notice = [
+            '',
+            f'❌ SORRY! Status Code: {r.status_code} {r.reason}',
+            f'❌ It does not look like the index file exists: {idx}',
+            f'❌ Please change your request or download the full grib2 file with `download_HRRR`.'
+        ]
+        raise Exception('\n'.join(notice))
 
     # Read the text lines of the request
     lines = r.text.split('\n')
@@ -216,8 +271,8 @@ def download_HRRR_subset(url, searchString, SAVEDIR='./',
         else:
             # If we are working on not the first item, append the existing file.
             curl = f'curl -s --range {byteRange} {url} >> {outFile}'
-            
-        num, byte, date, var, level, forecast, _ = line.split(':')
+        
+        num, byte, date, var, level, forecast, *_ = line.split(':')
         
         if dryrun:
             if verbose: print(f'    🐫 Dry Run: Found GRIB line [{num:>3}]: variable={var}, level={level}, forecast={forecast}')
@@ -237,12 +292,13 @@ def download_HRRR(DATES, searchString=None, fxx=range(0, 1), *,
                   model='hrrr', field='sfc',
                   SAVEDIR='./', dryrun=False, verbose=True):
     """
-    Downloads full HRRR grib2 files for a list of dates and forecasts.
+    Download full HRRR grib2 files for a list of dates and forecasts.
     
-    Files are downloaded from the University of Utah HRRR archive (Pando) 
-    or NOAA Operational Model Archive and Distribution System (NOMADS). This
-    function will automatically change the download source for each datetime
-    requested.
+    Attempts to download grib2 files from three different sources in the 
+    following order:
+        1. NOAA Operational Model Archive and Distribution System (NOMADS).
+        2. University of Utah HRRR archive (Pando) 
+        3. Google Cloud Platform (Google)
     
     Parameters
     ----------
@@ -255,15 +311,14 @@ def download_HRRR(DATES, searchString=None, fxx=range(0, 1), *,
         ``download_hrrr_subset`` to looking for sepecific byte ranges
         from the file to download. 
         
-        Default is None, meaning to not search for variables, but to
-        download the full file. ':' is an alias for None, becuase
-        it is equivalent to identifying every line in the .idx file.
-        Read the details below for more help on defining a suitable 
-        ``searchString``.
+        Default is None, meaning to not search for variables. Furthermore,
+        ':' is an alias for None, becuase it is equivalent to identifying 
+        every line in the .idx file.
         
         Take a look at the .idx file at 
         https://pando-rgw01.chpc.utah.edu/hrrr/sfc/20200624/hrrr.t01z.wrfsfcf17.grib2.idx
         to get familiar with what an index file is.
+        
         Also look at this webpage: http://hrrr.chpc.utah.edu/HRRR_archive/hrrr_sfc_table_f00-f01.html
         for additional details.**You should focus on the variable and level 
         field for your searches**.
@@ -299,13 +354,15 @@ def download_HRRR(DATES, searchString=None, fxx=range(0, 1), *,
         The model type you want to download.
         - 'hrrr' HRRR Contiguous United States (operational)
         - 'hrrrak' HRRR Alaska. You can also use 'alaska' as an alias.
-        - 'hrrrX' HRRR *experimental*
+        - 'hrrrX' *experimental* HRRR (exerimental version run at ESRL)
     field : {'prs', 'sfc', 'nat', 'subh'}
-        Variable fields you wish to download. 
+        Variable fields you wish to download. Only 'sfc' and 'prs' are
+        available on Pando, but 'nat' and 'subh' might be attainable 
+        from NOMADS or Google.
         - 'sfc' surface fields
         - 'prs' pressure fields
-        - 'nat' native fields      ('nat' files are not available on Pando)
-        - 'subh' subhourly fields  ('subh' files are not available on Pando)
+        - 'nat' native fields
+        - 'subh' subhourly fields
     SAVEDIR : str
         Directory path to save the downloaded HRRR files.
     dryrun : bool
@@ -318,13 +375,17 @@ def download_HRRR(DATES, searchString=None, fxx=range(0, 1), *,
     Returns
     -------
     The file name for the HRRR files we downloaded and the URL it was from.
-    (i.e. `20170101_hrrr.t00z.wrfsfcf00.grib2`)
+    For example:
+    
+        ('20170101_hrrr.t00z.wrfsfcf00.grib2', 'https://pando-rgw01...')
     """
     
     #**************************************************************************
     ## Check function input
     #**************************************************************************
-    
+    # The user may set `model='alaska'` as an alias for 'hrrrak'.
+    if model.lower() == 'alaska': model = 'hrrrak'
+
     # Force the `field` input string to be lower case.
     field = field.lower()
 
@@ -336,149 +397,158 @@ def download_HRRR(DATES, searchString=None, fxx=range(0, 1), *,
         print('bad handshake...am I able to on?')
         pass
 
-    # `DATES` and `fxx` should be a list-like object, but if it doesn't have
+    # `DATES` and `fxx` should be a list-like object, but if they have no
     # length, (like if the user requests a single date or forecast hour),
     # then turn it item into a list-like object.
     if not hasattr(DATES, '__len__'): DATES = np.array([DATES])
     if not hasattr(fxx, '__len__'): fxx = [fxx]
 
-    assert all([i < datetime.utcnow() for i in DATES]), "🦨 Whoops! One or more of your DATES is in the future."
-
-    ## Set the download SOURCE for each of the DATES
-    ## ---------------------------------------------
-    # HRRR data is available on NOMADS for today's and yesterday's runs.
-    # I will set the download source to get HRRR data from pando if the
-    # datetime is for older than yesterday, and set to nomads for datetimes
-    # of yesterday or today.
-    yesterday = datetime.utcnow() - timedelta(days=1)
-    yesterday = datetime(yesterday.year, yesterday.month, yesterday.day)   
-    SOURCE = ['pando' if i < yesterday else 'nomads' for i in DATES]
-
-    # The user may set `model='alaska'` as an alias for 'hrrrak'.
-    if model.lower() == 'alaska': model = 'hrrrak'
-
-    # The model type and field available depends on the download SOURCE.
-    available = {'pando':{'models':{}, 'fields':{}}, 'nomads':{'models':{}, 'fields':{}}}
-    available['pando']['models'] = {'hrrr', 'hrrrak', 'hrrrX'}
-    available['pando']['fields'] = {'sfc', 'prs'}
-    available['nomads']['models'] = {'hrrr', 'hrrrak'}
-    available['nomads']['fields'] = {'sfc', 'prs', 'nat', 'subh'}
+    if not all([i < datetime.utcnow() for i in DATES]):
+        warnings.warn("🦨 Whoops! One or more of your DATES is in the future.")
 
     # Make SAVEDIR if path doesn't exist
     if not os.path.exists(SAVEDIR):
         os.makedirs(SAVEDIR)
         print(f'Created directory: {SAVEDIR}')
+    
+    
+    #**************************************************************************
+    # Specify Download Source URL and priority order
+    #**************************************************************************
+    # Base URLs of each downlaod source, in order of priority.
+    # Attempt to download from NOMADS first, then Pando, then Google Cloud Platform
+    base_url = {}
+    base_url['nomads'] = 'https://nomads.ncep.noaa.gov/pub/data/nccf/com/hrrr/prod'
+    base_url['pando'] = 'https://pando-rgw01.chpc.utah.edu'
+    base_url['google'] = 'https://storage.googleapis.com/high-resolution-rapid-refresh'
 
+    
     #**************************************************************************
     # Build the URL path for every file we want
     #**************************************************************************
-    # An example URL for a file from Pando is 
-    # https://pando-rgw01.chpc.utah.edu/hrrr/sfc/20200624/hrrr.t01z.wrfsfcf17.grib2
-    # 
-    # An example URL for a file from NOMADS is
-    # https://nomads.ncep.noaa.gov/pub/data/nccf/com/hrrr/prod/hrrr.20200624/conus/hrrr.t00z.wrfsfcf09.grib2
-    URL_list = []
-    for source, DATE in zip(SOURCE, DATES):
-        if source == 'pando':
-            base = f'https://pando-rgw01.chpc.utah.edu/{model}/{field}'
-            URL_list += [f'{base}/{DATE:%Y%m%d}/{model}.t{DATE:%H}z.wrf{field}f{f:02d}.grib2' for f in fxx]
-            
-            if model not in available[source]['models']:
-                warnings.warn(f"model='{model}' is not available from [{source}]. Only {available[source]['models']}")
-            if field not in available[source]['fields']:
-                warnings.warn(f"field='{field}' is not available from [{source}]. Only {available[source]['fields']}")
+    # Full URL Examples
+    # NOMADS 
+    #   https://nomads.ncep.noaa.gov/pub/data/nccf/com/hrrr/prod/hrrr.20200624/conus/hrrr.t00z.wrfsfcf09.grib2
+    # Pando 
+    #   https://pando-rgw01.chpc.utah.edu/hrrr/sfc/20200624/hrrr.t01z.wrfsfcf17.grib2
+    # Google
+    #   https://storage.googleapis.com/high-resolution-rapid-refresh/hrrr.20200101/conus/hrrr.t00z.wrfnatf04.grib2
+    
+    URL_list = {i: [] for i in base_url}
+    for DATE in DATES:
+        # Pando URL is unique
+        URL_list['pando'] += [f"{base_url['pando']}/{model}/{field}/{DATE:%Y%m%d}/{model}.t{DATE:%H}z.wrf{field}f{f:02d}.grib2" for f in fxx]
 
-        elif source == 'nomads':
-            base = 'https://nomads.ncep.noaa.gov/pub/data/nccf/com/hrrr/prod'
+        # NOMADS and Google URL are the same after the base_url
+        for s in ['nomads', 'google']:
             if model == 'hrrr':
-                URL_list += [f'{base}/hrrr.{DATE:%Y%m%d}/conus/hrrr.t{DATE:%H}z.wrf{field}f{f:02d}.grib2' for f in fxx]
+                URL_list[s] += [f"{base_url[s]}/hrrr.{DATE:%Y%m%d}/conus/hrrr.t{DATE:%H}z.wrf{field}f{f:02d}.grib2" for f in fxx]
             elif model == 'hrrrak':
-                URL_list += [f'{base}/hrrr.{DATE:%Y%m%d}/alaska/hrrr.t{DATE:%H}z.wrf{field}f{f:02d}.ak.grib2' for f in fxx]
+                URL_list[s] += [f"{base_url[s]}/hrrr.{DATE:%Y%m%d}/alaska/hrrr.t{DATE:%H}z.wrf{field}f{f:02d}.ak.grib2" for f in fxx]
+            else:
+                URL_list[s] = f'https://pando-rgw01.chpc.utah.edu/hrrrX/nonhere_{s}' # There are no experimental HRRR (hrrrX) on NOMADS or Google
+
+    # A pandas.DataFrame to keep track of the URLs. We will iterate over each row.
+    URL_df = pd.DataFrame(URL_list)
                 
-            if model not in available[source]['models']:
-                warnings.warn(f"model='{model}' is not available from [{source}]. Only {available[source]['models']}")
-            if field not in available[source]['fields']:
-                warnings.warn(f"field='{field}' is not available from [{source}]. Only {available[source]['fields']}")
-        
     #**************************************************************************
-    # Ok, so we have a URL and filename for each requested forecast hour.
-    # Now we need to check if each of those files exist, and if it does,
-    # we will download that file to the SAVEDIR location.
+    # Download Files that exist
+    #**************************************************************************
+    # Attempt download from sources in order of source priority
     
-    n = len(URL_list)
+    n = len(URL_df)
+    
     if dryrun:
-        print(f'🌵 Info: Dry Run {n} GRIB2 files\n')
+        print(f'🌵 Info: Dry Run [{n}] GRIB2 files\n')
     else:
-        print(f'💡 Info: Downloading {n} GRIB2 files\n')
+        print(f'💡 Info: Downloading [{n}] GRIB2 files\n')
     
-    # For keeping track of total time spent downloading data
+    # Keep track of total time spent in the download loop.
     loop_time = timedelta()
     
+    # We want to return lists of the filenames we retrive and the URLs
     all_files = []
-    for i, file_URL in enumerate(URL_list):
-        timer = datetime.now()
-        
+    all_urls = []
+    
+    for index, row in URL_df.iterrows():
+        #---------------------------------------------------------
         # Time keeping: *crude* method to estimate remaining time.
-        mean_dt_per_loop = loop_time/(i+1)
-        est_rem_time = mean_dt_per_loop * (n-i+1)
+        #---------------------------------------------------------
+        timer = datetime.now()
+        #---------------------------------------------------------
         
-        if not verbose: 
-            # Still show a little indicator of what is downloading.    
-            print(f"\r Download Progress: ({i+1}/{n}) files {file_URL} (Est. Time Remaining {str(est_rem_time):16})\r", end='')
-        
-        # We want to prepend the filename with the run date, YYYYMMDD
-        if 'pando' in file_URL:
-            outFile = '_'.join(file_URL.split('/')[-2:])
-            outFile = os.path.join(SAVEDIR, outFile)
-        elif 'nomads' in file_URL:
-            outFile = file_URL.split('/')[-3][5:] + '_' + file_URL.split('/')[-1]
-            outFile = os.path.join(SAVEDIR, outFile)
-        
-        # Check if the URL returns a status code of 200 (meaning the URL is ok)
-        # Also check that the Content-Length is >1000000 bytes (if it's smaller,
-        # the file on the server might be incomplete)
-        head = requests.head(file_URL)
-        
-        check_exists = head.ok
-        check_content = int(head.raw.info()['Content-Length']) > 1000000
-        
-        if verbose: print(f"\nDownload Progress: ({i+1}/{n}) files {file_URL} (Est. Time Remaining {str(est_rem_time):16})")
-        if check_exists and check_content:
-            # Download the file
-            if searchString in [None, ':']:
-                if dryrun:
-                    if verbose: print(f'🌵 Dry Run Success! Would have downloaded {file_URL} as {outFile}')
-                    all_files.append(None)
+        # We will set this to True when we have downloaded a file from a source
+        # For example, this will prevents us from downloading a file from 
+        # google if we already got the file from pando.
+        one_exists = False
+
+        for source, url in row.items():    
+            # Check if the URL exists and the filesize is large enough to be a file.
+            head = requests.head(url)
+            check_exists = head.ok
+            check_content = int(head.raw.info()['Content-Length']) > 1_000_000
+
+            if check_exists and check_content:
+                # Yippie, a grib2 file exists
+                one_exists = True
+
+                # Define the filename we want to save the data as
+                outFile = outFile_from_url(url, SAVEDIR)
+
+                # Download the data
+                #------------------
+                if searchString in [None, ':']:
+                    if dryrun:
+                        if verbose: print(f'🌵 Dry Run! Would get from [{source}] {url} as {outFile}')
+                        all_files.append(None)
+                    else:
+                        # Download the full file.
+                        urllib.request.urlretrieve(url, outFile, _reporthook)
+                        all_files.append(outFile)
+                        if verbose: print(f'✅ Success! Downloaded from [{source}] {url} as {outFile}')
                 else:
-                    # Download the full file.
-                    urllib.request.urlretrieve(file_URL, outFile, reporthook)
-                    all_files.append(outFile)
-                    if verbose: print(f'✅ Success! Downloaded {file_URL} as {outFile}')
-            else:
-                # Download a subset of the full file based on the seachString.
-                if verbose: print(f"Download subset from [{source}]:")
-                thisfile = download_HRRR_subset(file_URL, 
-                                                searchString, 
-                                                SAVEDIR=SAVEDIR, 
-                                                dryrun=dryrun, 
-                                                verbose=verbose)
-                all_files.append(thisfile)
-        else:
-            # The URL request is bad. If status code == 404, the URL does not exist.
+                    # Download a subset of the full file based on the seachString.
+                    if verbose: print(f"Download subset from [{source}]:")
+                    thisfile = download_HRRR_subset(url, 
+                                                    searchString, 
+                                                    SAVEDIR=SAVEDIR, 
+                                                    dryrun=dryrun, 
+                                                    verbose=verbose)
+                    all_files.append(thisfile)
+                all_urls.append(url)
+                break # because we downloaded a file and don't need it from another source
+
+        if not one_exists:
+            # The URL request is bad or file size is small and the file is not
+            # available from any of the sources.
             print()
             print(f'❌ WARNING: Status code {head.status_code}: {head.reason}. Content-Length: {int(head.raw.info()["Content-Length"]):,} bytes')
-            print(f'❌ Could not download {head.url}')
-    
-        loop_time += datetime.now() - timer
+            print(f"❌ Could not download file for [{model}] [{field}]. Tried to get the following:")
+            for i, url in enumerate(row, start=1):
+                print(f'    {i}: {url}')
+            print('')
         
-    print(f"\nFinished 🍦  (Time spent downloading: {loop_time})")
+        #---------------------------------------------------------
+        # Time keeping: *crude* method to estimate remaining time.
+        #---------------------------------------------------------
+        loop_time += datetime.now() - timer
+        mean_dt_per_loop = loop_time/(index+1)
+        remaining_loops = n-index-1
+        est_rem_time = mean_dt_per_loop * remaining_loops
+        if verbose: print(f"Download Progress: [{index+1}/{n} completed] >> Est. Time Remaining {str(est_rem_time):16}\n")    
+        #---------------------------------------------------------
+        
+    print(f"\n🍦 Finished 🍦  Time spent on download: {loop_time}")
     
     if len(all_files) == 1:
-        return all_files[0], URL_list[0]  # return a string, not list
+        return all_files[0], all_urls[0]  # return a string, not list
     else:
-        return np.array(all_files), np.array(URL_list)  # return the list of file names and URLs
-    
-def get_crs(ds):
+        return np.array(all_files), np.array(all_urls)  # return the list of file names and URLs
+
+#=======================================================================
+#=======================================================================
+
+def _get_crs(ds):
     """
     Get the cartopy coordinate reference system (crs) from a cfgrib xarray Dataset
     
@@ -589,7 +659,7 @@ def get_HRRR(DATE, searchString, *, fxx=0, DATE_is_valid_time=False,
 
     # Create a cartopy projection object
     if add_crs: 
-        crs = get_crs(H[0])
+        crs = _get_crs(H[0])
 
     for ds in H:
         ds.attrs['history'] = inputs
@@ -605,7 +675,8 @@ def get_HRRR(DATE, searchString, *, fxx=0, DATE_is_valid_time=False,
         ## This isn't an issue when I set cartopy.crs as an attribute for
         ## a variable (DataArray). 
         ## For this reason, I will return the 'crs' as an attribute for 
-        ## each variable's DataArray, but not for the full Dataset.
+        ## each variable's DataArray. Later, I will add the 'crs' as
+        ## a Dataset attribute for convience.
         ##
         
         ds.attrs['grid_mapping_name'] = 'lambert_conformal_conic'
@@ -631,8 +702,203 @@ def get_HRRR(DATE, searchString, *, fxx=0, DATE_is_valid_time=False,
     
     if len(H) == 1:
         H = H[0]
+        # Add the cartopy map projection object as an attribute, for convience.
+        H.attrs['crs'] = crs
     else:
         warnings.warn('⚠ ALERT! Could not load grib2 data into a single xarray Dataset. You might consider refining your `searchString` if you are getting data you do not need.')
+        # Add the cartopy map projection object as an attribute, for convience.
+        for i in H:
+            i.attrs['crs'] = crs
+    
     
     return H
+
+#=======================================================================
+#=======================================================================
+
+def _to_180(lon):
+    """
+    Wrap longitude from degrees [0, 360] to degrees [-180, 180].
+
+    An alternative method is
+        lon[lon>180] -= 360
+
+    Parameters
+    ----------
+    lon : array_like
+        Longitude values
+    """
+    lon = np.array(lon)
+    lon = (lon + 180) % 360 - 180
+    return lon
+
+def pluck_points(ds, points, names=None, dist_thresh=10_000, verbose=True):
+    """
+    Pluck values at point nearest a give list of latitudes and longitudes pairs.
     
+    Uses a nearest neighbor approach to get the values. The general 
+    methodology is illustrated in this 
+    `GitHub Notebook <https://github.com/blaylockbk/pyBKB_v3/blob/master/demo/Nearest_lat-lon_Grid.ipynb>`_.
+        
+    Parameters
+    ----------
+    ds : xarray.Dataset
+        The Dataset should include coordinates for both 'latitude' and 
+        'longitude'.
+    points : tuple or list of tuples
+        The latitude and longitude (lat, lon) coordinate pair (as a tuple)
+        for the points you want to pluck from the gridded Dataset. 
+        A list of tuples may be given to return the values from multiple points.
+    names : list
+        A list of names for each point location (i.e., station name).
+        None will not append any names. names should be the same
+        length as points.
+    dist_thresh: int or float
+        The maximum distance (m) between a plucked point and a matched point.
+        Default is 10,000 m. If the distance is larger than this, the point
+        is disregarded.
+    
+    Returns
+    -------
+    The Dataset values at the points nearest the requested lat/lon points.
+    """
+    if 'lat' in ds:
+        ds = ds.rename(dict(lat='latitude', lon='longitude'))
+    
+    if isinstance(points, tuple):
+        # If a tuple is give, turn into a one-item list.
+        points = [points]
+
+    if names is not None:
+        assert len(points) == len(names), '`points` and `names` must be same length.'
+        
+    # Find the index for the nearest points
+    xs = []  # x index values
+    ys = []  # y index values 
+    for point in points:
+        assert len(point) == 2, "``points`` should be a tuple or list of tuples (lat, lon)"
+        
+        p_lat, p_lon = point
+
+        # Force longitude values to range from -180 to 180 degrees.
+        p_lon = _to_180(p_lon)
+        ds['longitude'][:] = _to_180(ds.longitude)
+
+        # Find absolute difference between requested point and the grid coordinates.
+        abslat = np.abs(ds.latitude - p_lat)
+        abslon = np.abs(ds.longitude - p_lon)
+
+        # Create grid of the maximum values of the two absolute grids
+        c = np.maximum(abslon, abslat)
+
+        # Find location where lat/lon minimum absolute value intersects
+        if ds.latitude.dims == ('y', 'x'):
+            y, x = np.where(c == np.min(c))
+        elif ds.latitude.dims == ('x', 'y'):
+            x, y = np.where(c == np.min(c))
+        else:
+            raise ValueError(f"Sorry, I do not understand dimensions {ds.latitude.dims}. Expected ('y', 'x')" )
+        xs.append(x[0])
+        ys.append(y[0])
+
+    #===================================================================
+    # Select Method 1:
+    # This method works, but returns more data than you ask for.
+    # It returns an NxN matrix where N is the number of points, 
+    # and matches each point with each point (not just the coordinate
+    # pairs). The points you want will be along the diagonal.
+    # I leave this here so I remember not to do this.
+    #
+    #ds = ds.isel(x=xs, y=ys)   
+    #
+    #===================================================================
+    
+    #===================================================================
+    # Select Method 2:
+    # This is only *slightly* slower, but returns just the data at the
+    # points you requested. Creates a new dimension, called 'point'
+    ds = xr.concat([ds.isel(x=i, y=j) for i, j in zip(xs, ys)], dim='point')
+    #===================================================================
+    
+    #-------------------------------------------------------------------
+    # 📐Approximate the Great Circle distance between matched point and 
+    # requested point.
+    # Based on https://andrew.hedges.name/experiments/haversine/
+    #-------------------------------------------------------------------
+    lat1 = np.deg2rad([i[0] for i in points])
+    lon1 = np.deg2rad([i[1] for i in points])
+    
+    lat2 = np.deg2rad(ds.latitude.data)
+    lon2 = np.deg2rad(ds.longitude.data)
+    
+    R = 6373.0 # approximate radius of earth in km
+    
+    dlon = lon2 - lon1
+    dlat = lat2 - lat1
+
+    a = np.sin(dlat / 2)**2 + np.cos(lat1) * np.cos(lat2) * np.sin(dlon / 2)**2
+    c = 2 * np.arctan2(np.sqrt(a), np.sqrt(1 - a))
+
+    distance = R * c * 1000  # converted to meters
+    
+    # Add the distance values as a coordinate
+    ds.coords['distance'] = ('point', distance)
+    ds['distance'].attrs = dict(long_name='Distance between requested point and matched grid point', units='m')
+    
+    #-------------------------------------------------------------------
+    #-------------------------------------------------------------------
+    
+    # Add list of names as a coordinate
+    if hasattr(names, '__len__'):
+        # Assign the point dimension as the names.
+        assert len(ds.point) == len(names), f'`names` must be same length as `points` pairs.'
+        ds['point'] = names
+    
+    ## Print some info about each point:
+    if verbose:
+        zipped = zip([i[0] for i in points], [i[1] for i in points],
+                     ds.latitude.data, ds.longitude.data, ds.distance.data, ds.point.data)
+        for plat, plon, glat, glon, d, name in zipped:
+            print(f"🔎 Matched requested point [{name}] ({plat:.3f}, {plon:.3f}) to grid point ({glat:.3f}, {glon:.3f})...distance of {d/1000:,.2f} km.")
+            if d > dist_thresh:
+                print(f'   💀 Point [{name}] Failed distance threshold')
+    
+    
+        
+    ds.attrs['x_index'] = xs
+    ds.attrs['y_index'] = ys
+    
+    # Drop points that do not meet the dist_thresh criteria
+    failed = ds.distance < dist_thresh
+    print(len(failed), failed.data)
+    warnings.warn(f' 💀 Dropped {np.sum(failed).data} point(s) that exceeded dist_thresh.')
+    ds = ds.where(failed, drop=True)  
+    
+    return ds
+
+#=======================================================================
+#=======================================================================
+
+## WORK IN PROGRESS 🏗 
+
+# A method to download multiple forecasts and read into xarray
+def _concat_HRRR(inputs):
+    """Multiprocessing Helper"""
+    DATE, searchString, fxx, kwargs = inputs
+    return get_HRRR(DATE, searchString, fxx=fxx, **kwargs)
+
+def concat_HRRR(DATES, searchString, fxxs=range(19), **get_HRRR_kwargs):
+    """
+    Download variables 
+    """
+    inputs = [(DATE, searchString, f, get_HRRR_kwargs) for f in fxxs]
+    
+    cores = np.minimum(len(inputs), multiprocessing.cpu_count())
+    print('cores=', cores)
+                       
+    with multiprocessing.Pool(cores) as p:
+        result = p.map(_concat_HRRR, inputs)
+        p.close()
+        p.join()
+    
+    return xr.concat(result, dim='lead')
