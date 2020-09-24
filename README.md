@@ -2,16 +2,16 @@
 |:--|:--|
 
 
-# HRRR-B: High-Resolution Rapid Refresh - Brian
-## A python Package for downloading recent and archived HRRR forecasts.
+# Brian's High-Resolution Rapid Refresh code: HRRR-B
+## A python Package for downloading recent and archived HRRR forecasts
 
-<img src='https://raw.githubusercontent.com/blaylockbk/HRRR_archive_download/master/images/Herbie3.png' width=350 style='float:right;margin:10px'>
+<img src='https://raw.githubusercontent.com/blaylockbk/HRRR_archive_download/master/images/Herbie3.png' width=350 style='float:right;margin:10px' align=right>
 
 More difficult than writing good code (an iterative process) is deciding on a good name for a package. I am settling on the name **HRRR-B**, pronounced "Herbie." This package deals with getting gridded data from the High-Resolution Rapid Refresh (HRRR) model, and I wrote it (B is for Brian). Is it a little pretentious to attach your own name to a package? Maybe someone else can come up with a clever word for what the B stands for.
 
 I thought about **HRRR-BIE**, for *HRRR-Brian's Integrated Experience**, but I didn't want anyone to pronounce it "HRRR Bye." I also thought of just naming it **Herbie** and coming up with a crazy acronym no one would remember, but then thought no one would know this package is used for HRRR data. So I've stuck with the name **HRRR-B** and like it.
 
-# How to download archived HRRR GRIB2 files with **HRRR-B**
+# Download archived HRRR GRIB2 files with **HRRR-B**
 The High Resolution Rapid Refresh model output is archived by the MesoWest group at the University of Utah on the
 CHPC Pando Archive System. This repository demonstrates how to download HRRR files from the archive with Python.
 
@@ -144,3 +144,12 @@ For reference, here are some useful examples to give you some ideas...
 📧 Brian Blaylock: blaylockbk@gmail.com  
 ✒ Citation this details:
 > Blaylock B., J. Horel and S. Liston, 2017: Cloud Archiving and Data Mining of High Resolution Rapid Refresh Model Output. Computers and Geosciences. 109, 43-50. https://doi.org/10.1016/j.cageo.2017.08.005
+
+
+### Contributing Guidelines (and disclaimer)
+Since this package is a work in progress, it is distributed "as is." I do not make any guarantee it will work for you out of the box. Any revisions I make are purely for my benefit. Sorry if I break something, but I usually only push updates to GitHub if the code is in a reasonably functional state (at least, in the way I use it).
+
+With that said, I am happy to share this project with you. You are welcome to open issues and submit pull requests, but know that I may or may not get around to doing anything about it. If this is helpful to you in any way, I'm glad.
+
+Thanks for using HRRR-B
+![](https://raw.githubusercontent.com/blaylockbk/HRRR_archive_download/master/images/herbie.jpg)
