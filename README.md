@@ -1,12 +1,25 @@
-**Brian Blaylock**  
+|![](https://raw.githubusercontent.com/blaylockbk/SynopticPy/master/images/Balloon_logo/balloon_bkb_sm.png)|**Brian Blaylock**<br>🌐 [Webpage](http://home.chpc.utah.edu/~u0553130/Brian_Blaylock/home.html)
+|:--|:--|
 
-# How to download archived HRRR GRIB2 files
+
+# HRRR-B: High-Resolution Rapid Refresh - Brian
+## A python Package for downloading recent and archived HRRR forecasts.
+
+<img src='./images/herbie3.png' width=350 style='float:right;margin:10px'>
+
+More difficult than writing good code (an iterative process) is deciding on a good name for a package. I am settling on the name **HRRR-B**, pronounced "Herbie." This package deals with getting gridded data from the High-Resolution Rapid Refresh (HRRR) model, and I wrote it (B is for Brian). Is it a little pretentious to attach your own name to a package? Maybe someone else can come up with a clever word for what the B stands for.
+
+I thought about **HRRR-BIE**, for *HRRR-Brian's Integrated Experience**, but I didn't want anyone to pronounce it "HRRR Bye." I also thought of just naming it **Herbie** and coming up with a crazy acronym no one would remember, but then thought no one would know this package is used for HRRR data. So I've stuck with the name **HRRR-B** and like it.
+
+# How to download archived HRRR GRIB2 files with **HRRR-B**
 The High Resolution Rapid Refresh model output is archived by the MesoWest group at the University of Utah on the
 CHPC Pando Archive System. This repository demonstrates how to download HRRR files from the archive with Python.
 
 |HRRR Archive Webpage|
 |:--:|
 |**http://hrrr.chpc.utah.edu/**|
+
+> The HRRR archive is in [process of moving to Amazon Web Services](https://github.com/blaylockbk/HRRR_archive_download/issues/2) as a public [Earth](https://aws.amazon.com/earth/) dataset. It will be available in [zarr](https://zarr.readthedocs.io/en/stable/) format that will allow for more flexibility for chunked data requests.
 
 ---
 
