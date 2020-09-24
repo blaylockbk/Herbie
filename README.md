@@ -5,7 +5,7 @@
 # HRRR-B: High-Resolution Rapid Refresh - Brian
 ## A python Package for downloading recent and archived HRRR forecasts.
 
-<img src='./images/herbie3.png' width=350 style='float:right;margin:10px'>
+<img src='https://raw.githubusercontent.com/blaylockbk/HRRR_archive_download/master/images/Herbie3.png' width=350 style='float:right;margin:10px'>
 
 More difficult than writing good code (an iterative process) is deciding on a good name for a package. I am settling on the name **HRRR-B**, pronounced "Herbie." This package deals with getting gridded data from the High-Resolution Rapid Refresh (HRRR) model, and I wrote it (B is for Brian). Is it a little pretentious to attach your own name to a package? Maybe someone else can come up with a clever word for what the B stands for.
 
