@@ -3,23 +3,45 @@
 
 
 # Brian's High-Resolution Rapid Refresh code: HRRR-B
-## A python Package for downloading recent and archived HRRR forecasts
+
+|HRRR Archive Website|**http://hrrr.chpc.utah.edu/**|
+|--:|:--|
+
+**HRRR-B**, or "Herbie," is a python package for downloading recent and archived High Resolution Rapid Refresh (HRRR) model forecasts. I created a lot of this during my PhD and decided to organize what I had into a more coherent package. It will continue to evolve at my leisure.
+
+HRRR model output is archived by the MesoWest group at the University of Utah on the [CHPC Pando Archive System](http://hrrr.chpc.utah.edu/). The GRIB2 files are copied from from NCEP every couple hours. Google also has a growing HRRR archive. Between these three data sources, there is a lot of archived HRRR data available.
+
+This package demonstrates how to download those HRRR files with Python.
+
+- Download full or partial HRRR GRIB2 files. Partial files are downloaded by GRIB message.
+- Three different data sources: [NCEP-NOMADS](https://nomads.ncep.noaa.gov/), [Pando (University of Utah)](http://hrrr.chpc.utah.edu/), and [Google Cloud](https://console.cloud.google.com/storage/browser/high-resolution-rapid-refresh?pli=1). 
+    - > The Pando HRRR archive is in [process of moving to Amazon Web Services](https://github.com/blaylockbk/HRRR_archive_download/issues/2) as a public [Earth](https://aws.amazon.com/earth/) dataset. It will be available in [zarr](https://zarr.readthedocs.io/en/stable/) format that will allow for more flexibility for chunked data requests.
+- Open HRRR data as an xarray.Dataset.
+- Other useful tools (in development), like indexing nearest neighbor points and getting a cartopy crs object.
+
+> ## Goals
+> This package is still being developed. I want to make it so you can do this:
+> ```python
+> import hrrrb.archive as ha
+> ```
+> or
+> ``` python
+> from hrrrb.archive import get_hrrr
+> ```
+> And I want to publish this on PyPI.
 
 <img src='https://raw.githubusercontent.com/blaylockbk/HRRR_archive_download/master/images/Herbie3.png' width=350 style='float:right;margin:10px' align=right>
 
-More difficult than writing good code (an iterative process) is deciding on a good name for a package. I am settling on the name **HRRR-B**, pronounced "Herbie." This package deals with getting gridded data from the High-Resolution Rapid Refresh (HRRR) model, and I wrote it (B is for Brian). Is it a little pretentious to attach your own name to a package? Maybe someone else can come up with a clever word for what the B stands for.
+## 🌹 What's in a name? 
+How do you pick the right name? For now, I settled on the name **HRRR-B**, pronounced "Herbie," because this package helps you get data from the High-Resolution Rapid Refresh (HRRR) model, and the B is for Brian. Is it a little pretentious to attach your own name to a package? Maybe the B stands for something else someday. I'm also thinking about just naming this "Herbie" and you would import with `import herbie.archive as ha`
 
-I thought about **HRRR-BIE**, for *HRRR-Brian's Integrated Experience**, but I didn't want anyone to pronounce it "HRRR Bye." I also thought of just naming it **Herbie** and coming up with a crazy acronym no one would remember, but then thought no one would know this package is used for HRRR data. So I've stuck with the name **HRRR-B** and like it.
 
-# Download archived HRRR GRIB2 files with **HRRR-B**
-The High Resolution Rapid Refresh model output is archived by the MesoWest group at the University of Utah on the
-CHPC Pando Archive System. This repository demonstrates how to download HRRR files from the archive with Python.
 
-|HRRR Archive Webpage|
-|:--:|
-|**http://hrrr.chpc.utah.edu/**|
 
-> The HRRR archive is in [process of moving to Amazon Web Services](https://github.com/blaylockbk/HRRR_archive_download/issues/2) as a public [Earth](https://aws.amazon.com/earth/) dataset. It will be available in [zarr](https://zarr.readthedocs.io/en/stable/) format that will allow for more flexibility for chunked data requests.
+## Contributing Guidelines (and disclaimer)
+The intent of this package is to serve as an _example_ of how you can download HRRR data from the Pando HRRR archive. Since this package is a work in progress, it is distributed "as is." I do not make any guarantee it will work for you out of the box. Any revisions I make are purely for my benefit. Sorry if I break something, but I usually only push updates to GitHub if the code is in a reasonably functional state (at least, in the way I use it).
+
+With that said, I am happy to share this project with you. You are welcome to open issues and submit pull requests, but know that I may or may not get around to doing anything about it. If this is helpful to you in any way, I'm glad.
 
 ---
 
@@ -145,11 +167,6 @@ For reference, here are some useful examples to give you some ideas...
 ✒ Citation this details:
 > Blaylock B., J. Horel and S. Liston, 2017: Cloud Archiving and Data Mining of High Resolution Rapid Refresh Model Output. Computers and Geosciences. 109, 43-50. https://doi.org/10.1016/j.cageo.2017.08.005
 
-
-### Contributing Guidelines (and disclaimer)
-Since this package is a work in progress, it is distributed "as is." I do not make any guarantee it will work for you out of the box. Any revisions I make are purely for my benefit. Sorry if I break something, but I usually only push updates to GitHub if the code is in a reasonably functional state (at least, in the way I use it).
-
-With that said, I am happy to share this project with you. You are welcome to open issues and submit pull requests, but know that I may or may not get around to doing anything about it. If this is helpful to you in any way, I'm glad.
 
 Thanks for using HRRR-B
 ![](https://raw.githubusercontent.com/blaylockbk/HRRR_archive_download/master/images/herbie.jpg)
