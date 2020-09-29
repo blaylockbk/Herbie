@@ -1,13 +1,17 @@
+__pycache__/
 .ipynb_checkpoints
 .vscode
-*.log
-
-*.grib2
-
-__pycache__/
 *.py[cod]
 *$py.class
+*.log
+*.grib2
+env_pypi.yml
 
 sandbox/
 sandbox*
 
+dist/*
+build/*
+*.egg-info
+MANIFEST
+.eggs/
