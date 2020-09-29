@@ -1,4 +1,4 @@
-name: hrrr_archive
+name: hrrrb
 channels:
   - conda-forge
 dependencies:

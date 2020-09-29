@@ -35,9 +35,6 @@ This package demonstrates how to download those HRRR files with Python.
 ## 🌹 What's in a name? 
 How do you pick the right name? For now, I settled on the name **HRRR-B**, pronounced "Herbie," because this package helps you get data from the High-Resolution Rapid Refresh (HRRR) model, and the B is for Brian. Is it a little pretentious to attach your own name to a package? Maybe the B stands for something else someday. I'm also thinking about just naming this "Herbie" and you would import with `import herbie.archive as ha`
 
-
-
-
 ## Contributing Guidelines (and disclaimer)
 The intent of this package is to serve as an _example_ of how you can download HRRR data from the Pando HRRR archive. Since this package is a work in progress, it is distributed "as is." I do not make any guarantee it will work for you out of the box. Any revisions I make are purely for my benefit. Sorry if I break something, but I usually only push updates to GitHub if the code is in a reasonably functional state (at least, in the way I use it).
 
@@ -46,83 +43,101 @@ With that said, I am happy to share this project with you. You are welcome to op
 ---
 
 ## 🐍  Conda Environment
-These examples use Python 3. The `environment.yml` file lists all the packages you will need. If you have [Anaconda](https://www.anaconda.com/products/individual) installed, create this envrionment with 
+These examples use Python 3. The `environment.yml` file lists all the packages you will need, plus a few useful extras. If you have [Anaconda](https://www.anaconda.com/products/individual) installed, create this envrionment with 
 
     conda env create -f environment.yml
 
-Then activate the `hrrr_archive` environment with
+Then activate the `hrrrb` environment with
 
-    conda activate hrrr_archive
+    conda activate hrrrb
 
 If conda environments are new to you, I suggest you become familiar with [managing conda environments](https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html).
 
 ---
 
 ## 📝 Detailed Jupyter Notebooks
-In these notebooks, I give a bit of discussion on how I download HRRR files from Pando.
-- [Part 1: How to download a bunch of HRRR grib2 files (full file)](./notebooks/demo_download_hrrr_archive_part1.ipynb)
-- [Part 2: How to download a subset of variables from a HRRR file](./notebooks/demo_download_hrrr_archive_part2.ipynb)
-- [Part 3: A function that can download many full files, or subset of files](./notebooks/demo_download_hrrr_archive_part3.ipynb)
-- [Part 4: Opening GRIB2 files in Python with xarray and cfgrib](./notebooks/demo_download_hrrr_archive_part4.ipynb)
-- [Examples that import `HRRR_archive.py`](./notebooks/examples.ipynb)
+
+These notebooks show practical use case of the `hrrrb` package:
+- [Package Examples](https://github.com/blaylockbk/HRRR_archive_download/blob/master/notebooks/examples.ipynb)
+
+These notebooks offer a bit of discussion on how the download package works. They aren't as practical, (and have probably changed a little), but helps illustrate the download method.
+- [Part 1: How to download a bunch of HRRR grib2 files (full file)](https://github.com/blaylockbk/HRRR_archive_download/blob/master/notebooks/demo_download_hrrr_archive_part1.ipynb)
+- [Part 2: How to download a subset of variables from a HRRR file](https://github.com/blaylockbk/HRRR_archive_download/blob/master/notebooks/demo_download_hrrr_archive_part2.ipynb)
+- [Part 3: A function that can download many full files, or subset of files](https://github.com/blaylockbk/HRRR_archive_download/blob/master/notebooks/demo_download_hrrr_archive_part3.ipynb)
+- [Part 4: Opening GRIB2 files in Python with xarray and cfgrib](https://github.com/blaylockbk/HRRR_archive_download/blob/master/notebooks/demo_download_hrrr_archive_part4.ipynb)
+
+⚠ The functions in `hrrrb.archive` slightly different than (and better than) these discussion notebooks.
 
 ---
 
-## 👨🏻‍💻 `HRRR_archive.py` -- All the useful functions in one module 
-If you are looking for a no-fuss method to download the HRRR data you want, use the `HRRR_archive.py` module. Feel free to edit/improve it to fit your needs. If you write a useful function, send me a `.py` file or make a pull request to share your script.
+## 👨🏻‍💻 `hrrrb.archive` -- All the useful functions in one module 
+If you are looking for a no-fuss method to download the HRRR data you want, use the `hrrrb.archive` module. Feel free to edit/improve it to fit your needs. If you write a useful function, send me a `.py` file or make a pull request to share your script.
 
 > Requires `xarray`, `cfgrib`, `cartopy`, `requests`
 
-### [`HRRR_archive.py`](./HRRR_archive.py)
-
 |Function| what it will do for you
 |--|--
-|`download_HRRR`| Downloads full or partial HRRR files for one or more datetimes and forecast hours.
-|`get_HRRR` | Downloads HRRR data for a single datetime/forecast and returns as an xarray Dataset or list of Datasets.
+|`download_hrrr`| Downloads full or partial HRRR files for one or more datetimes and forecast hours.
+|`get_hrrr` | Downloads HRRR data for a single datetime/forecast and returns as an xarray Dataset or list of Datasets.
 
-⚠ The functions in `HRRR_archive.py` are different than (and better than) those used in the demonstration Jupyter Notebooks.
 
-## [👉 Click Here For Some Examples](./notebooks/examples.ipynb)
+## [👉 Click Here For Some Examples](https://github.com/blaylockbk/HRRR_archive_download/blob/master/notebooks/examples.ipynb)
 
-***How do I import these functions?*** That depends on where you put the module and where the script you are running is located. If `HRRR_archive.py` is in your current working directory or if it is in a directory included in your [PYTHONPATH](https://www.tutorialspoint.com/What-is-PYTHONPATH-environment-variable-in-Python), then simply import the functions with
+***How do I import these functions?*** That depends on where you put the module and where the script you are running is located. 
 
-    from HRRR_archive import download_HRRR, get_HRRR
+Install via PyPiI(coming soon)
 
-If you put `HRRR_archive.py` in a different directory, you will need to tell your Python script where to find it. You can do that by appending the `sys.path` in your script.
+```bash
+pip install hrrrb
+```
+If `hrrrb` is in your current working directory or if it is in a directory included in your [PYTHONPATH](https://www.tutorialspoint.com/What-is-PYTHONPATH-environment-variable-in-Python), then simply import the functions with
+```python
+from hrrrb.archive import download_hrrr, get_hrrr
+```
 
-    import sys
-    sys.path.append('/directory/location/of/the/HRRR_achive/module/')
+If `hrrrb` is in a different directory, you will need to tell your Python script where to find it. You can do that by appending the `sys.path` in your script.
+```python
+import sys
+sys.path.append('/directory/location/of/hrrrb')
 
-    from HRRR_archive import download_HRRR, get_HRRR
+from hrrrb.archive import download_hrrr, get_hrrr
+```
+## Function arguments
 
-#### Function arguments
-    
-    download_HRRR(DATES, searchString=None, fxx=range(0, 1), *,
-                  model='hrrr', field='sfc',
-                  SAVEDIR='./', dryrun=False, verbose=True)
+```python
+download_hrrr(DATES, searchString=None, fxx=range(0, 1), *,
+              model='hrrr', field='sfc',
+              download_dir='./', dryrun=False, verbose=True)
 
-    get_HRRR(DATE, searchString, *, fxx=0, DATE_is_valid_time=False, 
-             remove_grib2=True, add_crs=True, **download_kwargs):
+get_hrrr(DATE, searchString, *, fxx=0, DATE_is_valid_time=False, 
+         remove_grib2=True, add_crs=True, **download_kwargs):
+```
 
 - `DATES` Datetime or list of datetimes representing the model initialization time.
 - `searchString` **See note below**
 - `fxx` Range or list of forecast hours.
     - e.g., `range(0,19)` for F00-F18
+    - Default is the model analysis (F00).
 - `model` The type of model. 
     - Options are `hrrr`, `alaska`, `hrrrX`
 - `field` The type of field file. 
     - Options are `sfc` and `prs`
     - `nat` and `subh` are only available for today and yesterday.
-- `SAVEDIR` The directory path the files will be saved in.
+- `download_dir` The directory path the files will be saved in. 
+    - Default downloads files into the user's home directory `~/data/hrrr`.
 - `dryrun` If `True`, the function will tell you what it will download but not actually download anything.
 - `verbose` If `True`, prints lots of info to the screen.
-- `DATE_is_valid_time` For *get_HRRR*, if `True` the input DATE will represent the valid time. If `False`, DATE represents the the model run time.
-- `remove_grib2` For *get_HRRR*, the grib2 file downloaded will be removed after reading the data into an xarray Dataset.
-- `add_crs` For *get_HRRR*, will create a cartopy coordinate reference system object and append it as a Dataset attribute.
+
+Specific to `get_hrrr`:
+- `DATE_is_valid_time` For *get_hrrr*, if `True` the input DATE will represent the valid time. If `False`, DATE represents the the model run time.
+- `remove_grib2` For *get_hrrr*, the grib2 file downloaded will be removed after reading the data into an xarray Dataset.
+- `add_crs` For *get_hrrr*, will create a cartopy coordinate reference system object and append it as a Dataset attribute.
 
 
-#### A note on the `searchString` argument
+## The important `searchString` argument
 `searchString` is used to specify select variables you want to download. For example, instead of downloading the full GRIB2 file, you could download just the wind or precipitation variables. Read the docstring for the functions or look at [notebook #2](./notebooks/demo_download_hrrr_archive_part2.ipynb) for more details. 
+
+`searchString` uses regular expression to search for GRIB message lines in the files .idx file. There must be a .idx file for the GRIB2 file for the search to work. 
 
 For reference, here are some useful examples to give you some ideas...
 

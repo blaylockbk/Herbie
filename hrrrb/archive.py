@@ -50,6 +50,7 @@ import os
 import re
 from datetime import datetime, timedelta
 import multiprocessing
+from pathlib import Path
 
 import numpy as np
 import pandas as pd    # Used to organize download URLs from each source
@@ -61,6 +62,8 @@ import cfgrib
 import xarray as xr
 
 from hrrrb.tools import to_180, get_crs
+
+_default_download_dir = Path('~').expanduser() / 'data'
 
 def _reporthook(a, b, c):
     """
@@ -102,7 +105,7 @@ def searchString_help(searchString):
         ]
     return '\n'.join(msg)
 
-def outFile_from_url(url, SAVEDIR):
+def outFile_from_url(url, download_dir):
     """
     Define the filename for a grib2 file from its URL.
     
@@ -110,18 +113,17 @@ def outFile_from_url(url, SAVEDIR):
     ----------
     url : str
         A URL string for a grib2 file we want to download.
-    SAVEDIR : dir
+    download_dir : dir
         The directory path to save the file.    
     """
     if 'pando' in url:
         outFile = '_'.join(url.split('/')[-2:])
-        outFile = os.path.join(SAVEDIR, outFile)
     elif 'nomads' in url or 'google' in url:
         outFile = url.split('/')[-3][5:] + '_' + url.split('/')[-1]
-        outFile = os.path.join(SAVEDIR, outFile)
+    outFile = download_dir / outFile
     return outFile
 
-def download_hrrr_subset(url, searchString, SAVEDIR='./',
+def download_hrrr_subset(url, searchString, download_dir=_default_download_dir,
                          dryrun=False, verbose=True):
     """
     Download a subset of GRIB fields from a HRRR file located at a URL.
@@ -167,7 +169,7 @@ def download_hrrr_subset(url, searchString, SAVEDIR='./',
         ':surface:'      All variables at the surface.
         ================ ===============================================    
         
-    SAVEDIR : string
+    download_dir : string
         Directory path to save the file, default is the current directory.
     dryrun : bool
         If True, do not actually download, but print out what the function will
@@ -187,11 +189,10 @@ def download_hrrr_subset(url, searchString, SAVEDIR='./',
             print('bad handshake...am I able to on?')
             pass
     
-    # Make SAVEDIR if path doesn't exist
-    if not os.path.exists(SAVEDIR):
-        os.makedirs(SAVEDIR)
-        print(f'Created directory: {SAVEDIR}')
-
+    # Make download_dir if path doesn't exist
+    if not download_dir.is_dir():
+        download_dir.mkdir(parents=True, exist_ok=True)
+        print(f'👨🏻‍🏭 Created directory: [{download_dir}]')
     
     # Make a request for the .idx file for the above URL
     idx = url + '.idx'
@@ -255,7 +256,7 @@ def download_hrrr_subset(url, searchString, SAVEDIR='./',
     # Let's name it something like `subset_20200624_hrrr.t01z.wrfsfcf17.grib2`
     runDate = list(byte_ranges.items())[0][1].split(':')[2][2:-2]
     outFile = '_'.join(['subset', runDate, url.split('/')[-1]])
-    outFile = os.path.join(SAVEDIR, outFile)
+    outFile = os.path.join(download_dir, outFile)
     
     for i, (byteRange, line) in enumerate(byte_ranges.items()):
         
@@ -284,7 +285,7 @@ def download_hrrr_subset(url, searchString, SAVEDIR='./',
     
 def download_hrrr(DATES, searchString=None, fxx=range(0, 1), *,
                   model='hrrr', field='sfc',
-                  SAVEDIR='./', dryrun=False, verbose=True):
+                  download_dir=_default_download_dir, dryrun=False, verbose=True):
     """
     Download full HRRR grib2 files for a list of dates and forecasts.
     
@@ -357,7 +358,7 @@ def download_hrrr(DATES, searchString=None, fxx=range(0, 1), *,
         - 'prs' pressure fields
         - 'nat' native fields
         - 'subh' subhourly fields
-    SAVEDIR : str
+    download_dir : str
         Directory path to save the downloaded HRRR files.
     dryrun : bool
         If True, instead of downloading the files, it will print out the
@@ -400,10 +401,11 @@ def download_hrrr(DATES, searchString=None, fxx=range(0, 1), *,
     if not all([i < datetime.utcnow() for i in DATES]):
         warnings.warn("🦨 Whoops! One or more of your DATES is in the future.")
 
-    # Make SAVEDIR if path doesn't exist
-    if not os.path.exists(SAVEDIR):
-        os.makedirs(SAVEDIR)
-        print(f'Created directory: {SAVEDIR}')
+    # Make download_dir if path doesn't exist
+    download_dir = download_dir / model
+    if not download_dir.is_dir():
+        download_dir.mkdir(parents=True, exist_ok=True)
+        print(f'👨🏻‍🏭 Created directory: [{download_dir}]')
     
     
     #**************************************************************************
@@ -487,7 +489,7 @@ def download_hrrr(DATES, searchString=None, fxx=range(0, 1), *,
                 one_exists = True
 
                 # Define the filename we want to save the data as
-                outFile = outFile_from_url(url, SAVEDIR)
+                outFile = outFile_from_url(url, download_dir / f'{DATE:%Y%m%d}')
 
                 # Download the data
                 #------------------
@@ -505,7 +507,7 @@ def download_hrrr(DATES, searchString=None, fxx=range(0, 1), *,
                     if verbose: print(f"Download subset from [{source}]:")
                     thisfile = download_hrrr_subset(url, 
                                                     searchString, 
-                                                    SAVEDIR=SAVEDIR, 
+                                                    download_dir=outFile.parent, 
                                                     dryrun=dryrun, 
                                                     verbose=verbose)
                     all_files.append(thisfile)
@@ -529,7 +531,7 @@ def download_hrrr(DATES, searchString=None, fxx=range(0, 1), *,
         mean_dt_per_loop = loop_time/(index+1)
         remaining_loops = n-index-1
         est_rem_time = mean_dt_per_loop * remaining_loops
-        if verbose: print(f"Download Progress: [{index+1}/{n} completed] >> Est. Time Remaining {str(est_rem_time):16}\n")    
+        if verbose: print(f"🚛💨 Download Progress: [{index+1}/{n} completed] >> Est. Time Remaining {str(est_rem_time):16}\n")    
         #---------------------------------------------------------
         
     print(f"\n🍦 Finished 🍦  Time spent on download: {loop_time}")
@@ -596,7 +598,7 @@ def get_hrrr(DATE, searchString, *, fxx=0, DATE_is_valid_time=False,
                 projection as an attribute to the Dataset.
     **download_kwargs :
         Any other key word argument accepted by ``download_hrrr`.
-        {model, field, SAVEDIR, dryrun, verbose}
+        {model, field, download_dir, dryrun, verbose}
     """
     inputs = locals()
 
