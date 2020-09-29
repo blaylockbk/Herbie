@@ -120,7 +120,13 @@ def outFile_from_url(url, download_dir):
         outFile = '_'.join(url.split('/')[-2:])
     elif 'nomads' in url or 'google' in url:
         outFile = url.split('/')[-3][5:] + '_' + url.split('/')[-1]
+    
     outFile = download_dir / outFile
+    
+    if not outFile.parent.is_dir():
+        outFile.parent.mkdir(parents=True, exist_ok=True)
+        print(f'👨🏻‍🏭 Created directory: [{outFile.parent}]')
+
     return outFile
 
 def download_hrrr_subset(url, searchString, download_dir=_default_download_dir,

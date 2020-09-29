@@ -9,7 +9,7 @@ setup(
     version = '0.0.1',
     author = 'Brian K. Blaylock',
     author_email = "blaylockbk@gmail.com",
-    description = 'Retreive historical and recent time forecasts from the High-Resolution Rapid Refresh (HRRR) model.',
+    description = 'Retreive historical and recent forecasts from the High-Resolution Rapid Refresh (HRRR) model.',
     long_description = README,
     long_description_content_type = 'text/markdown',
     project_urls = {
