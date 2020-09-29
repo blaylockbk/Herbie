@@ -5,7 +5,7 @@ HERE = Path(__file__).parent
 README = (HERE / 'README.md').read_text(encoding="utf8")
 
 setup(
-    name = 'HRRR_archive',   # I have to use 'SynopticPy' because 'synoptic' is used
+    name = 'hrrrb',   # Unfortunatlye, "herbie" is already used.
     version = '0.0.1',
     author = 'Brian K. Blaylock',
     author_email = "blaylockbk@gmail.com",
