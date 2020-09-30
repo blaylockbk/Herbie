@@ -5,7 +5,7 @@ HERE = Path(__file__).parent
 README = (HERE / 'README.md').read_text(encoding="utf8")
 
 setup(
-    name = 'hrrrb',   # Unfortunatlye, "herbie" is already used.
+    name = 'hrrrb',   # Unfortunately, "herbie" is already used.
     version = '0.0.1',
     author = 'Brian K. Blaylock',
     author_email = "blaylockbk@gmail.com",
@@ -21,7 +21,7 @@ setup(
     package_data = {
         "": ['*.cfg'],
     },
-    install_requires = ['curl', 'numpy', 'xarray', 'cfgrib'],
+    install_requires = ['curl', 'numpy', 'pandas', 'xarray', 'cfgrib'],
     keywords = ['xarray', 'meteorology', 'weather', 'HRRR', 'numerical weather prediction', 'forecast'],
     classifiers = [
         "Development Status :: 4 - Beta",

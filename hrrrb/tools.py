@@ -19,6 +19,7 @@ import xarray as xr
 import cartopy.crs as ccrs
 
 import hrrrb.archive as ha
+import multiprocessing
 
 def to_180(lon):
     """
@@ -47,7 +48,10 @@ def get_crs(ds):
     ds : xarray.Dataset
         An xarray.Dataset from a GRIB2 file opened by the cfgrib engine.
     """
-    # Get projection from the attributes of the first variable in the Dataset
+    # Get projection from the attributes of HRRR xr.Dataset
+    # CF 1.8 map projection information for the HRRR model
+    # http://cfconventions.org/Data/cf-conventions/cf-conventions-1.8/cf-conventions.html#_lambert_conformal
+
     
     if isinstance(ds, list):
         # The case when get_hrrr returns a list of xr.Datasets

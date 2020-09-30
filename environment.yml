@@ -23,3 +23,10 @@ dependencies:
   - pylint
   - s3fs
   #- wgrib2  # Uncomment if you are on a Linux machine
+
+  - pip:
+    # Development Version from GitHub
+    - git+https://github.com/blaylockbk/HRRR_archive_download.git
+    
+    # *or* the latest release from PyPI
+    #- hrrrb    # Release Version
