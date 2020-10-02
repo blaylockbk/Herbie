@@ -1,4 +1,4 @@
-name: basic
+name: sphinx
 channels:
  - conda-forge
  - defaults
