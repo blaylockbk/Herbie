@@ -22,6 +22,8 @@ Welcome to HRRR-B's documentation!
    /utils
 
 
+.. include:: ../README.md
+
 Indices and tables
 ==================
 
