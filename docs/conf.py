@@ -65,6 +65,20 @@ html_theme = 'sphinx_rtd_theme'
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
-html_static_path = ['_static']
+html_static_path = ['_static', '../images']
+
+html_css_files = [
+    'https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css',
+]
+
+html_js_files = [
+    'https://kit.fontawesome.com/f6cc126dcc.js',
+]
 
 # Set autodoc defaults
+autodoc_default_options = {
+    'autosummary': True,        # Include a members "table of contents"
+    'members': True,            # Document all functions/members  
+}
+
+autodoc_mock_imports = ["xesmf"]
