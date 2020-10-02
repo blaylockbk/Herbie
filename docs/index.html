@@ -1,0 +1,427 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Welcome to HRRR-B’s documentation! &mdash; HRRR-B 0.0.1 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+        <script src="https://kit.fontawesome.com/f6cc126dcc.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="hrrrb" href="hrrrb.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="#" class="icon icon-home" alt="Documentation Home"> HRRR-B
+          
+
+          
+            
+            <img src="_static/herbie.jpg" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">⚙ Code</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="hrrrb.html">hrrrb</a></li>
+<li class="toctree-l1"><a class="reference internal" href="utils.html">Utilities</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="#">HRRR-B</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="#" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Welcome to HRRR-B’s documentation!</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="welcome-to-hrrr-b-s-documentation">
+<h1>Welcome to HRRR-B’s documentation!<a class="headerlink" href="#welcome-to-hrrr-b-s-documentation" title="Permalink to this headline">¶</a></h1>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This is a work in progress</p>
+</div>
+<div class="toctree-wrapper compound">
+</div>
+<div class="toctree-wrapper compound">
+<p class="caption"><span class="caption-text">⚙ Code</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="hrrrb.html">hrrrb</a></li>
+<li class="toctree-l1"><a class="reference internal" href="utils.html">Utilities</a></li>
+</ul>
+</div>
+<p><a href="#id37"><span class="problematic" id="id38">|![](https://raw.githubusercontent.com/blaylockbk/SynopticPy/master/images/Balloon_logo/balloon_bkb_sm.png)|**Brian Blaylock**&lt;br&gt;🌐 [Webpage](http://home.chpc.utah.edu/~u0553130/Brian_Blaylock/home.html)&lt;br&gt;[🔩 PyPI](https://pypi.org/user/blaylockbk/)
+|:--|</span></a>:–|</p>
+<p># Brian’s High-Resolution Rapid Refresh code: HRRR-B</p>
+<p><a href="#id39"><span class="problematic" id="id40">|HRRR Archive Website|**http://hrrr.chpc.utah.edu/**|</span></a>
+<a href="#id41"><span class="problematic" id="id42">|--:|</span></a>:–|</p>
+<p><strong>HRRR-B</strong>, or “Herbie,” is a python package for downloading recent and archived High Resolution Rapid Refresh (HRRR) model forecasts and opening HRRR data in an xarray.Dataset. I created most of this during my PhD and decided to organize what I created into a more coherent package. It will continue to evolve at my leisure.</p>
+<p>## About <cite>HRRR-B</cite>
+HRRR model output is archived by the MesoWest group at the University of Utah on the [CHPC Pando Archive System](<a class="reference external" href="http://hrrr.chpc.utah.edu/">http://hrrr.chpc.utah.edu/</a>). The GRIB2 files are copied from from NCEP every couple hours. Google also has a growing HRRR archive. Between these three data sources, there is a lot of archived HRRR data available. <strong>This Python package helps download those archived HRRR files.</strong></p>
+<ul class="simple">
+<li><p>Download full or partial HRRR GRIB2 files. Partial files are downloaded by GRIB message.</p></li>
+<li><dl class="simple">
+<dt>Three different data sources: [NCEP-NOMADS](<a class="reference external" href="https://nomads.ncep.noaa.gov/">https://nomads.ncep.noaa.gov/</a>), [Pando (University of Utah)](<a class="reference external" href="http://hrrr.chpc.utah.edu/">http://hrrr.chpc.utah.edu/</a>), and [Google Cloud](<a class="reference external" href="https://console.cloud.google.com/storage/browser/high-resolution-rapid-refresh?pli=1">https://console.cloud.google.com/storage/browser/high-resolution-rapid-refresh?pli=1</a>).</dt><dd><ul>
+<li><p>&gt; The Pando HRRR archive is in [process of moving to Amazon Web Services](<a class="reference external" href="https://github.com/blaylockbk/HRRR_archive_download/issues/2">https://github.com/blaylockbk/HRRR_archive_download/issues/2</a>) as a public [Earth](<a class="reference external" href="https://aws.amazon.com/earth/">https://aws.amazon.com/earth/</a>) dataset. It will be available in [zarr](<a class="reference external" href="https://zarr.readthedocs.io/en/stable/">https://zarr.readthedocs.io/en/stable/</a>) format that will allow for more flexibility for chunked data requests. See [Issue #2](<a class="reference external" href="https://github.com/blaylockbk/HRRR_archive_download/issues/2">https://github.com/blaylockbk/HRRR_archive_download/issues/2</a>).</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p>Open HRRR data as an xarray.Dataset.</p></li>
+<li><p>Other useful tools (in development), like indexing nearest neighbor points and getting a cartopy crs object.</p></li>
+</ul>
+<p>&lt;img src=’<a class="reference external" href="https://raw.githubusercontent.com/blaylockbk/HRRR_archive_download/master/images/Herbie3.png">https://raw.githubusercontent.com/blaylockbk/HRRR_archive_download/master/images/Herbie3.png</a>’ width=350 style=’float:right;margin:10px’ align=right&gt;</p>
+<p>## 🌹 What’s in a name?
+How do you pick the right name? For now, I settled on the name <strong>HRRR-B</strong>, pronounced “Herbie,” because this package helps you get data from the High-Resolution Rapid Refresh (HRRR) model, and the B is for Brian. Is it a little pretentious to attach your own name to a package? Maybe the B will stand for something else someday. I’m also thinking about just naming this “Herbie,” but that name is already taken on PyPI.</p>
+<p>## Contributing Guidelines (and disclaimer)
+The intent of this package is to serve as an _example_ of how you can download HRRR data from the Pando HRRR archive, but it might be useful for you. Since this package is a work in progress, it is distributed “as is.” I do not make any guarantee it will work for you out of the box. Any revisions I make are purely for my benefit. Sorry if I break something, but I usually only push updates to GitHub if the code is in a reasonably functional state (at least, in the way I use it).</p>
+<p>With that said, I am happy to share this project with you. You are welcome to open issues and submit pull requests, but know that I may or may not get around to doing anything about it. If this is helpful to you in any way, I’m glad.</p>
+<p>—</p>
+<p># 🐍 Installation and Conda Environment
+### Option 1: pip
+Install the last published version from PyPI.</p>
+<p><code class="docutils literal notranslate"><span class="pre">`bash</span>
+<span class="pre">pip</span> <span class="pre">install</span> <span class="pre">hrrrb</span>
+<span class="pre">`</span></code></p>
+<p>&gt; Requires: xarray, cfgrib, pandas, cartopy, requests, curl
+&gt; Optional: matplotlib, cartopy</p>
+<p>### Option 2: conda
+If conda environments are new to you, I suggest you become familiar with [managing conda environments](<a class="reference external" href="https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html">https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html</a>).</p>
+<p>I have provided a sample Anaconda [environment.yml](<a class="reference external" href="https://github.com/blaylockbk/HRRR_archive_download/blob/master/environment.yml">https://github.com/blaylockbk/HRRR_archive_download/blob/master/environment.yml</a>) file that lists the minimum packages required plus some extras that might be useful when working with other types of weather data. Look at the bottom lines of that yaml file…there are two ways to install <cite>hrrrb</cite> with pip. Comment out the lines you don’t want.</p>
+<p>For the latest development code:
+<a href="#id1"><span class="problematic" id="id2">``</span></a><a href="#id3"><span class="problematic" id="id4">`</span></a>yaml
+- pip:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>git+https://github.com/blaylockbk/HRRR_archive_download.git</p></li>
+</ul>
+</div></blockquote>
+<p><a href="#id5"><span class="problematic" id="id6">``</span></a>`
+For the latest published version
+<a href="#id7"><span class="problematic" id="id8">``</span></a><a href="#id9"><span class="problematic" id="id10">`</span></a>yaml
+- pip:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>hrrrb</p></li>
+</ul>
+</div></blockquote>
+<p><a href="#id11"><span class="problematic" id="id12">``</span></a><a href="#id13"><span class="problematic" id="id14">`</span></a></p>
+<p>First, create the virtual environment with</p>
+<p><code class="docutils literal notranslate"><span class="pre">`bash</span>
+<span class="pre">conda</span> <span class="pre">env</span> <span class="pre">create</span> <span class="pre">-f</span> <span class="pre">environment.yml</span>
+<span class="pre">`</span></code></p>
+<p>Then, activate the <cite>hrrrb</cite> environment. Don’t confuse this _environment_ name with the _package_ name.</p>
+<p><code class="docutils literal notranslate"><span class="pre">`bash</span>
+<span class="pre">conda</span> <span class="pre">activate</span> <span class="pre">hrrrb</span>
+<span class="pre">`</span></code></p>
+<p>Occasionally, you might want to update all the packages in the environment.</p>
+<p><code class="docutils literal notranslate"><span class="pre">`bash</span>
+<span class="pre">conda</span> <span class="pre">env</span> <span class="pre">update</span> <span class="pre">-f</span> <span class="pre">environment.yml</span>
+<span class="pre">`</span></code></p>
+<p>&gt; ### Alternative “Install” Method
+&gt; There are several other ways to “install” a python package so you can import them. One alternatively is you can <cite>git clone https://github.com/blaylockbk/HRRR_archive_download.git</cite> this repository to any directory. To import the package, you will need to update your PYTHONPATH environment variable to find the directory you put this package or add the line <cite>sys.path.append(“/path/to/hrrrb”)</cite> at the top of your python script.</p>
+<p>—</p>
+<p># 📝 Jupyter Notebooks</p>
+<p>These notebooks show practical use case of the <cite>hrrrb</cite> package:
+- [Main Package Examples](<a class="reference external" href="https://github.com/blaylockbk/HRRR_archive_download/blob/master/notebooks/examples.ipynb">https://github.com/blaylockbk/HRRR_archive_download/blob/master/notebooks/examples.ipynb</a>)</p>
+<p>These notebooks offer a deeper discussion on how the download process works. These are not intended for practical use, but should help illustrate my thought process when I created this package.
+- [Part 1: How to download a bunch of HRRR grib2 files (full file)](<a class="reference external" href="https://github.com/blaylockbk/HRRR_archive_download/blob/master/notebooks/demo_download_hrrr_archive_part1.ipynb">https://github.com/blaylockbk/HRRR_archive_download/blob/master/notebooks/demo_download_hrrr_archive_part1.ipynb</a>)
+- [Part 2: How to download a subset of variables from a HRRR file](<a class="reference external" href="https://github.com/blaylockbk/HRRR_archive_download/blob/master/notebooks/demo_download_hrrr_archive_part2.ipynb">https://github.com/blaylockbk/HRRR_archive_download/blob/master/notebooks/demo_download_hrrr_archive_part2.ipynb</a>)
+- [Part 3: A function that can download many full files, or subset of files](<a class="reference external" href="https://github.com/blaylockbk/HRRR_archive_download/blob/master/notebooks/demo_download_hrrr_archive_part3.ipynb">https://github.com/blaylockbk/HRRR_archive_download/blob/master/notebooks/demo_download_hrrr_archive_part3.ipynb</a>)
+- [Part 4: Opening GRIB2 files in Python with xarray and cfgrib](<a class="reference external" href="https://github.com/blaylockbk/HRRR_archive_download/blob/master/notebooks/demo_download_hrrr_archive_part4.ipynb">https://github.com/blaylockbk/HRRR_archive_download/blob/master/notebooks/demo_download_hrrr_archive_part4.ipynb</a>)</p>
+<p>—</p>
+<p># 👨🏻‍💻 <cite>hrrrb.archive</cite>
+If you are looking for a no-fuss method to download the HRRR data you want, use the <cite>hrrrb.archive</cite> module.</p>
+<p><code class="docutils literal notranslate"><span class="pre">`python</span>
+<span class="pre">import</span> <span class="pre">hrrrb.archive</span> <span class="pre">as</span> <span class="pre">ha</span>
+<span class="pre">`</span></code>
+or
+<code class="docutils literal notranslate"><span class="pre">`</span> <span class="pre">python</span>
+<span class="pre">from</span> <span class="pre">hrrrb.archive</span> <span class="pre">import</span> <span class="pre">get_hrrr</span>
+<span class="pre">`</span></code></p>
+<p><a href="#id43"><span class="problematic" id="id44">|Main Functions|</span></a> What it will do for you…
+<a href="#id45"><span class="problematic" id="id46">|--|</span></a>–
+<a href="#id47"><span class="problematic" id="id48">|`download_hrrr`|</span></a> Downloads full or partial HRRR GRIB2 files to local disk.
+<a href="#id15"><span class="problematic" id="id16">|</span></a><cite>get_hrrr</cite> | Downloads single HRRR file and returns as an <cite>xarray.Dataset</cite> or list of Datasets.</p>
+<p>## [👉 Click Here For Some Examples](<a class="reference external" href="https://github.com/blaylockbk/HRRR_archive_download/blob/master/notebooks/examples.ipynb">https://github.com/blaylockbk/HRRR_archive_download/blob/master/notebooks/examples.ipynb</a>)</p>
+<p>## Function arguments</p>
+<p><a href="#id17"><span class="problematic" id="id18">``</span></a><a href="#id19"><span class="problematic" id="id20">`</span></a>python
+# Download full GRIB2 files to local disk
+download_hrrr(DATES, searchString=None, fxx=range(0, 1),</p>
+<blockquote>
+<div><p>model=’hrrr’, field=’sfc’,
+download_dir=’./’, dryrun=False, verbose=True)</p>
+</div></blockquote>
+<p><a href="#id21"><span class="problematic" id="id22">``</span></a>`
+<a href="#id23"><span class="problematic" id="id24">``</span></a><a href="#id25"><span class="problematic" id="id26">`</span></a>python
+# Download file and open as xarray
+get_hrrr(DATE, searchString, fxx=0, DATE_is_valid_time=False,</p>
+<blockquote>
+<div><p>remove_grib2=True, add_crs=True, <a href="#id27"><span class="problematic" id="id28">**</span></a>download_kwargs):</p>
+</div></blockquote>
+<p><a href="#id29"><span class="problematic" id="id30">``</span></a><a href="#id31"><span class="problematic" id="id32">`</span></a></p>
+<ul class="simple">
+<li><p><cite>DATES</cite> Datetime or list of datetimes representing the model initialization time.</p></li>
+<li><p><cite>searchString</cite> <strong>See note below</strong></p></li>
+<li><dl class="simple">
+<dt><cite>fxx</cite> Range or list of forecast hours.</dt><dd><ul>
+<li><p>e.g., <cite>range(0,19)</cite> for F00-F18</p></li>
+<li><p>Default is the model analysis (F00).</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><cite>model</cite> The type of model.</dt><dd><ul>
+<li><p>Options are <cite>hrrr</cite>, <cite>alaska</cite>, <cite>hrrrX</cite></p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><cite>field</cite> The type of field file.</dt><dd><ul>
+<li><p>Options are <cite>sfc</cite> and <cite>prs</cite></p></li>
+<li><p><cite>nat</cite> and <cite>subh</cite> are only available for today and yesterday.</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><cite>download_dir</cite> The directory path the files will be saved in.</dt><dd><ul>
+<li><p>Default downloads files into the user’s home directory <cite>~/data/hrrr</cite>.</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p><cite>dryrun</cite> If <cite>True</cite>, the function will tell you what it will download but not actually download anything.</p></li>
+<li><p><cite>verbose</cite> If <cite>True</cite>, prints lots of info to the screen.</p></li>
+</ul>
+<p>Specific to <cite>get_hrrr</cite>:
+- <cite>DATE_is_valid_time</cite> For <em>get_hrrr</em>, if <cite>True</cite> the input DATE will represent the valid time. If <cite>False</cite>, DATE represents the the model run time.
+- <cite>remove_grib2</cite> For <em>get_hrrr</em>, the grib2 file downloaded will be removed after reading the data into an xarray Dataset.
+- <cite>add_crs</cite> For <em>get_hrrr</em>, will create a cartopy coordinate reference system object and append it as a Dataset attribute.</p>
+<p>## The <strong>`searchString`</strong> argument
+<cite>searchString</cite> is used to specify select variables you want to download. For example, instead of downloading the full GRIB2 file, you could download just the wind or precipitation variables. Read the docstring for the functions or look at [notebook #2](./notebooks/demo_download_hrrr_archive_part2.ipynb) for more details.</p>
+<p><cite>searchString</cite> uses regular expression to search for GRIB message lines in the files .idx file. There must be a .idx file for the GRIB2 file for the search to work.</p>
+<p>For reference, here are some useful examples to give you some ideas…</p>
+<p><a href="#id49"><span class="problematic" id="id50">|`searchString=`|</span></a> GRIB fields that will be downloaded
+<a href="#id51"><span class="problematic" id="id52">|--|</span></a>–
+<a href="#id53"><span class="problematic" id="id54">|`':TMP:2 m'`      | Temperature at 2 m
+|`':TMP:'`         | Temperature fields at all levels
+|`':500 mb:'`      | All variables on the 500 mb level
+|`':APCP:'`        | All accumulated precipitation fields
+|`':UGRD:10 m'`   | U wind component at 10 meters
+|`':(U\|V)GRD:'`    | U and V wind component at all levels
+|`':.GRD:'`        | (Same as above)
+|`'(WIND\|GUST\|UGRD\|VGRD):(surface\|10 m)`|</span></a> Surface wind, surface gusts, and 10 m u- v-components
+<a href="#id55"><span class="problematic" id="id56">|`':(TMP\|DPT):'`   | Temperature and Dew Point for all levels
+|`':(TMP\|DPT\|RH):'`|</span></a> TMP, DPT, and Relative Humidity for all levels
+<a href="#id57"><span class="problematic" id="id58">|`':REFC:'`        | Composite Reflectivity
+|`:(APCP\|REFC):`|</span></a> Precipitation and reflectivity
+<a href="#id33"><span class="problematic" id="id34">|</span></a><cite>’:surface:’</cite>     | All variables at the surface
+<a href="#id35"><span class="problematic" id="id36">|</span></a><cite>’((U|V)GRD:10 m|TMP:2 m|APCP)’</cite> | 10-m wind, 2-m temp, and accumulated precipitation.</p>
+<p>&lt;br&gt;&lt;br&gt;</p>
+<p>&gt; <strong>Are you working with precipitation fields? (e.g., APCP)</strong>
+&gt;A lot of users have asked why the precipitation accumulation fields are all zero for the model analysis (F00). That is because it is an <em>accumulation</em> variable over a period of time. At the model analysis time, there has been no precipitation because no time has passed.
+&gt;
+&gt;- <strong>F00</strong> only has a 0-0 hour accumulation (always zero)
+&gt;- <strong>F01</strong> only has a 0-1 hour accumulation
+&gt;- <strong>F02</strong> has a 0-2 hour accumulation and a 1-2 hour accumulation.
+&gt;- <strong>F03</strong> has a 0-3 hour accumulation and a 2-3 hour accumulation.
+&gt;- etc.</p>
+<p>&lt;br&gt;</p>
+<p><strong>Best of luck 🍀</strong>
+- Brian</p>
+<p>—</p>
+<p>🌐 HRRR Archive Website: <a class="reference external" href="http://hrrr.chpc.utah.edu/">http://hrrr.chpc.utah.edu/</a>
+🚑 Support: [GitHub Issues](<a class="reference external" href="https://github.com/blaylockbk/HRRR_archive_download/issues">https://github.com/blaylockbk/HRRR_archive_download/issues</a>) or <a class="reference external" href="mailto:atmos-mesowest&#37;&#52;&#48;lists&#46;utah&#46;edu">atmos-mesowest<span>&#64;</span>lists<span>&#46;</span>utah<span>&#46;</span>edu</a>
+📧 Brian Blaylock: <a class="reference external" href="mailto:blaylockbk&#37;&#52;&#48;gmail&#46;com">blaylockbk<span>&#64;</span>gmail<span>&#46;</span>com</a>
+✒ Pando HRRR Archive citation details:
+&gt; Blaylock B., J. Horel and S. Liston, 2017: Cloud Archiving and Data Mining of High Resolution Rapid Refresh Model Output. Computers and Geosciences. 109, 43-50. <a class="reference external" href="https://doi.org/10.1016/j.cageo.2017.08.005">https://doi.org/10.1016/j.cageo.2017.08.005</a></p>
+<p>Thanks for using HRRR-B
+![](<a class="reference external" href="https://raw.githubusercontent.com/blaylockbk/HRRR_archive_download/master/images/herbie.jpg">https://raw.githubusercontent.com/blaylockbk/HRRR_archive_download/master/images/herbie.jpg</a>)</p>
+</div>
+<div class="section" id="indices-and-tables">
+<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
+<ul class="simple">
+<li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
+<li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
+<li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
+</ul>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="hrrrb.html" class="btn btn-neutral float-right" title="hrrrb" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2020, Brian K. Blaylock
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
