@@ -159,7 +159,7 @@ def download_hrrr_subset(url, searchString, *,
             ':TMP:'          Temperature fields at all levels.
             ':500 mb:'       All variables on the 500 mb level.
             ':APCP:'         All accumulated precipitation fields.
-            ':UGRD:10 m'    U wind component at 10 meters.
+            ':UGRD:10 m'     U wind component at 10 meters.
             ':(U|V)GRD:'     U and V wind component at all levels.
             ':.GRD:'         (Same as above)
             ':(TMP|DPT):'    Temperature and Dew Point for all levels .
@@ -286,9 +286,9 @@ def download_hrrr(DATES, searchString=None, *, fxx=range(0, 1),
 
     Attempts to download grib2 files from three different sources in the
     following order:
-        1. NOAA Operational Model Archive and Distribution System (NOMADS).
-        2. University of Utah HRRR archive (Pando)
-        3. Google Cloud Platform (Google)
+    1. NOAA Operational Model Archive and Distribution System (NOMADS).
+    2. University of Utah HRRR archive (Pando)
+    3. Google Cloud Platform (Google)
 
     Parameters
     ----------
@@ -326,7 +326,7 @@ def download_hrrr(DATES, searchString=None, *, fxx=range(0, 1),
         ':TMP:'          Temperature fields at all levels.
         ':500 mb:'       All variables on the 500 mb level.
         ':APCP:'         All accumulated precipitation fields.
-        ':UGRD:10 m'    U wind component at 10 meters.
+        ':UGRD:10 m'     U wind component at 10 meters.
         ':(U|V)GRD:'     U and V wind component at all levels.
         ':.GRD:'         (Same as above)
         ':(TMP|DPT):'    Temperature and Dew Point for all levels .
@@ -590,7 +590,7 @@ def get_hrrr(DATE, searchString, *, fxx=0,
         True  - (default) Append the Cartopy coordinate reference system (crs)
                 projection as an attribute to the Dataset.
     **download_kwargs :
-        Any other key word argument accepted by ``download_hrrr`.
+        Any other key word argument accepted by ``download_hrrr``.
         {model, field, download_dir, dryrun, verbose}
     """
     inputs = locals()

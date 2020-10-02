@@ -37,7 +37,7 @@ extensions = [
     'sphinx.ext.napoleon',
     'recommonmark',
     'autodocsumm',
-    'sphinx_markdown_tabels'
+    'sphinx_markdown_tables'
 ]
 
 source_suffix = {
@@ -61,6 +61,7 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store', '.ipynb_checkpoints', '.
 # a list of builtin themes.
 #
 html_theme = 'sphinx_rtd_theme'
+html_logo = '_static/herbie.jpg'
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
@@ -81,4 +82,4 @@ autodoc_default_options = {
     'members': True,            # Document all functions/members  
 }
 
-autodoc_mock_imports = ["xesmf"]
+autodoc_mock_imports = ["xesmf", "numpy", "matplotlib", "pandas", "xarray", "cartopy", "cfgrib"]
