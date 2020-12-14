@@ -186,7 +186,8 @@ For reference, here are some useful examples to give you some ideas...
 >- **F02** has a 0-2 hour accumulation and a 1-2 hour accumulation.
 >- **F03** has a 0-3 hour accumulation and a 2-3 hour accumulation.
 >- etc.
-
+>
+> NOTE: When cfgrib reads a grib file with more than one accumulated precipitation fields, it will not read all the fields. I think this is an issue with cfgrib (see [issue here](https://github.com/ecmwf/cfgrib/issues/187)). The way around this is to key in on a *single* APCP field. See the `searchString` examples above for keying in on a single APCP field.
 <br>
 
 **Best of luck 🍀**  
