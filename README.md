@@ -91,6 +91,7 @@ These notebooks offer a deeper discussion on how the download process works. The
 - [Part 3: A function that can download many full files, or subset of files](https://github.com/blaylockbk/HRRR_archive_download/blob/master/notebooks/demo_download_hrrr_archive_part3.ipynb)
 - [Part 4: Opening GRIB2 files in Python with xarray and cfgrib](https://github.com/blaylockbk/HRRR_archive_download/blob/master/notebooks/demo_download_hrrr_archive_part4.ipynb)
 
+These are additional notebooks for useful tips/tricks
 - [How to make Cartopy maps with HRRR data with Brian's `common_features` helper](https://github.com/blaylockbk/HRRR_archive_download/blob/master/notebooks/demo_plot-on-map-with-common-features.ipynb)
 ---
 
