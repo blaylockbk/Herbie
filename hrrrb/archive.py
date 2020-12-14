@@ -74,22 +74,24 @@ def searchString_help(searchString):
         f"There is something wrong with [[  searchString='{searchString}'  ]]",
         "\nUse regular expression to search for lines in the .idx file",
         "Here are some examples you can use for `searchString`",
-        "    ================ ===============================================",
-        "    ``searchString`` Messages that will be downloaded",
-        "    ================ ===============================================",
-        "    ':TMP:2 m'       Temperature at 2 m.",
-        "    ':TMP:'          Temperature fields at all levels.",
-        "    ':500 mb:'       All variables on the 500 mb level.",
-        "    ':APCP:'         All accumulated precipitation fields.",
-        "    ':UGRD:10 m'     U wind component at 10 meters.",
-        "    ':(U|V)GRD:'     U and V wind component at all levels.",
-        "    ':.GRD:'         (Same as above)",
-        "    ':(TMP|DPT):'    Temperature and Dew Point for all levels .",
-        "    ':(TMP|DPT|RH):' TMP, DPT, and Relative Humidity for all levels.",
-        "    ':REFC:'         Composite Reflectivity",
-        "    ':surface:'      All variables at the surface.",
-        "    '((U|V)GRD:10 m|TMP:2 m|APCP)' 10-m wind, 2-m temp, and precip.",
-        "    ================ ===============================================",
+        "  ============================= ===============================================",
+        "  ``searchString``              Messages that will be downloaded",
+        "  ============================= ===============================================",
+        "  ':TMP:2 m'                    Temperature at 2 m.",
+        "  ':TMP:'                       Temperature fields at all levels.",
+        "  ':UGRD:.* mb'                 U Wind at all pressure levels.",
+        "  ':500 mb:'                    All variables on the 500 mb level.",
+        "  ':APCP:'                      All accumulated precipitation fields.",
+        "  ':APCP:surface:0-[1-9]*'      Accumulated precip since initialization time",
+        "  ':APCP:surface:[1-9]*-[1-9]*' Accumulated precip over last hour",
+        "  ':UGRD:10 m'                  U wind component at 10 meters.",
+        "  ':(U|V)GRD:'                  U and V wind component at all levels.",
+        "  ':.GRD:'                      (Same as above)",
+        "  ':(TMP|DPT):'                 Temperature and Dew Point for all levels .",
+        "  ':(TMP|DPT|RH):'              TMP, DPT, and Relative Humidity for all levels.",
+        "  ':REFC:'                      Composite Reflectivity",
+        "  ':surface:'                   All variables at the surface.",
+        "  ============================= ===============================================",
         "\nIf you need help with regular expression, search the web",
         "  or look at this cheatsheet: https://www.petefreitag.com/cheatsheets/regex/",
         "PLEASE FIX THE `searchString`"
@@ -152,21 +154,25 @@ def download_hrrr_subset(url, searchString, *,
         .. note::
             Here are a few examples that can help you get started
 
-            ================ ===============================================
-            ``searchString`` GRIB messages that will be downloaded
-            ================ ===============================================
-            ':TMP:2 m'       Temperature at 2 m.
-            ':TMP:'          Temperature fields at all levels.
-            ':500 mb:'       All variables on the 500 mb level.
-            ':APCP:'         All accumulated precipitation fields.
-            ':UGRD:10 m'     U wind component at 10 meters.
-            ':(U|V)GRD:'     U and V wind component at all levels.
-            ':.GRD:'         (Same as above)
-            ':(TMP|DPT):'    Temperature and Dew Point for all levels .
-            ':(TMP|DPT|RH):' TMP, DPT, and Relative Humidity for all levels.
-            ':REFC:'         Composite Reflectivity
-            ':surface:'      All variables at the surface.
-            ================ ===============================================
+            ============================= ===============================================
+            ``searchString``              Messages that will be downloaded
+            ============================= ===============================================
+            ':TMP:2 m'                    Temperature at 2 m.
+            ':TMP:'                       Temperature fields at all levels.
+            ':UGRD:.* mb'                 U Wind at all pressure levels.
+            ':500 mb:'                    All variables on the 500 mb level.
+            ':APCP:'                      All accumulated precipitation fields.
+            ':APCP:surface:0-[1-9]*'      Accumulated precip since initialization time
+            ':APCP:surface:[1-9]*-[1-9]*' Accumulated precip over last hour
+            ':UGRD:10 m'                  U wind component at 10 meters.
+            ':(U|V)GRD:'                  U and V wind component at all levels.
+            ':.GRD:'                      (Same as above)
+            ':(TMP|DPT):'                 Temperature and Dew Point for all levels .
+            ':(TMP|DPT|RH):'              TMP, DPT, and Relative Humidity for all levels.
+            ':REFC:'                      Composite Reflectivity
+            ':surface:'                   All variables at the surface.
+            ''             
+            ============================= ===============================================
 
     download_dir : string
         Directory path to save the file, default ``~/data/``.
@@ -280,6 +286,7 @@ def download_hrrr_subset(url, searchString, *,
 def download_hrrr(DATES, searchString=None, *, fxx=range(0, 1),
                   model='hrrr', field='sfc',
                   download_dir=_default_download_dir,
+                  override_source_priority=False,
                   dryrun=False, verbose=True):
     """
     Download full HRRR grib2 files for a list of dates and forecasts.
@@ -319,22 +326,25 @@ def download_hrrr(DATES, searchString=None, *, fxx=range(0, 1),
 
         Here are a few examples that can help you get started
 
-        ================ ===============================================
-        ``searchString`` Messages that will be downloaded
-        ================ ===============================================
-        ':TMP:2 m'       Temperature at 2 m.
-        ':TMP:'          Temperature fields at all levels.
-        ':500 mb:'       All variables on the 500 mb level.
-        ':APCP:'         All accumulated precipitation fields.
-        ':UGRD:10 m'     U wind component at 10 meters.
-        ':(U|V)GRD:'     U and V wind component at all levels.
-        ':.GRD:'         (Same as above)
-        ':(TMP|DPT):'    Temperature and Dew Point for all levels .
-        ':(TMP|DPT|RH):' TMP, DPT, and Relative Humidity for all levels.
-        ':REFC:'         Composite Reflectivity
-        ':surface:'      All variables at the surface.
-        ''
-        ================ ===============================================
+        ============================= ===============================================
+        ``searchString``              Messages that will be downloaded
+        ============================= ===============================================
+        ':TMP:2 m'                    Temperature at 2 m.
+        ':TMP:'                       Temperature fields at all levels.
+        ':UGRD:.* mb'                 U Wind at all pressure levels.
+        ':500 mb:'                    All variables on the 500 mb level.
+        ':APCP:'                      All accumulated precipitation fields.
+        ':APCP:surface:0-[1-9]*'      Accumulated precip since initialization time
+        ':APCP:surface:[1-9]*-[1-9]*' Accumulated precip over last hour
+        ':UGRD:10 m'                  U wind component at 10 meters.
+        ':(U|V)GRD:'                  U and V wind component at all levels.
+        ':.GRD:'                      (Same as above)
+        ':(TMP|DPT):'                 Temperature and Dew Point for all levels .
+        ':(TMP|DPT|RH):'              TMP, DPT, and Relative Humidity for all levels.
+        ':REFC:'                      Composite Reflectivity
+        ':surface:'                   All variables at the surface.
+        ''             
+        ============================= ===============================================
 
     fxx : int or list of ints
         Forecast lead time or list of forecast lead times to download.
@@ -355,6 +365,13 @@ def download_hrrr(DATES, searchString=None, *, fxx=range(0, 1),
         - 'subh' subhourly fields
     download_dir : str
         Directory path to save the downloaded HRRR files.
+    override_source_priority : False, or list
+        The default download source priority is in the order given in the
+        ``base_url`` dict keys below. You may, however, specify a different
+        priority by supplying a list of keys in the ``base_url``.
+        For example, to download from 'google' before checking 'pando',
+        you may do ``override_source_priority=['google', 'pando', 'nomads']``.
+        This also makes is possible to exlude a source.        
     dryrun : bool
         If True, instead of downloading the files, it will print out the
         files that could be downloaded. This is set to False by default.
@@ -423,7 +440,15 @@ def download_hrrr(DATES, searchString=None, *, fxx=range(0, 1),
     # Google
     #   https://storage.googleapis.com/high-resolution-rapid-refresh/hrrr.20200101/conus/hrrr.t00z.wrfnatf04.grib2
 
-    URL_list = {i: [] for i in base_url}
+    if override_source_priority:
+        assert isinstance(override_source_priority, list)
+        # Given a list
+        URL_list = {i: [] for i in override_source_priority}
+    else:
+        # Default is to download in the order defined in `base_url`
+        URL_list = {i: [] for i in base_url}
+    
+    
     for DATE in DATES:
         # Pando URL is unique
         URL_list['pando'] += [f"{base_url['pando']}/{model}/{field}/{DATE:%Y%m%d}/{model}.t{DATE:%H}z.wrf{field}f{f:02d}.grib2" for f in fxx]
@@ -544,6 +569,11 @@ def get_hrrr(DATE, searchString, *, fxx=0,
 
     Only request one `DATE` and `fxx` (forecast lead time).
 
+    .. note:: 
+        See https://github.com/ecmwf/cfgrib/issues/187 for why there is
+        a problem with reading multiple accumulated precipitation
+        fields when searchString=':APCP:'.
+
     Parameters
     ----------
     DATE : datetime
@@ -554,21 +584,25 @@ def get_hrrr(DATE, searchString, *, fxx=0,
 
         Some examples:
 
-        ================ ===============================================
-        ``searchString`` Messages that will be downloaded
-        ================ ===============================================
-        ':TMP:2 m'       Temperature at 2 m.
-        ':TMP:'          Temperature fields at all levels.
-        ':500 mb:'       All variables on the 500 mb level.
-        ':APCP:'         All accumulated precipitation fields.
-        ':UGRD:10 m'     U wind component at 10 meters.
-        ':(U|V)GRD:'     U and V wind component at all levels.
-        ':.GRD:'         (Same as above)
-        ':(TMP|DPT):'    Temperature and Dew Point for all levels .
-        ':(TMP|DPT|RH):' TMP, DPT, and Relative Humidity for all levels.
-        ':REFC:'         Composite Reflectivity
-        ':surface:'      All variables at the surface.
-        ================ ===============================================
+        ============================= ===============================================
+        ``searchString``              Messages that will be downloaded
+        ============================= ===============================================
+        ':TMP:2 m'                    Temperature at 2 m.
+        ':TMP:'                       Temperature fields at all levels.
+        ':UGRD:.* mb'                 U Wind at all pressure levels.
+        ':500 mb:'                    All variables on the 500 mb level.
+        ':APCP:'                      All accumulated precipitation fields.
+        ':APCP:surface:0-[1-9]*'      Accumulated precip since initialization time
+        ':APCP:surface:[1-9]*-[1-9]*' Accumulated precip over last hour
+        ':UGRD:10 m'                  U wind component at 10 meters.
+        ':(U|V)GRD:'                  U and V wind component at all levels.
+        ':.GRD:'                      (Same as above)
+        ':(TMP|DPT):'                 Temperature and Dew Point for all levels .
+        ':(TMP|DPT|RH):'              TMP, DPT, and Relative Humidity for all levels.
+        ':REFC:'                      Composite Reflectivity
+        ':surface:'                   All variables at the surface.
+        ''             
+        ============================= ===============================================
 
     fxx : int
         Forecast lead time. Default will get the analysis, F00.

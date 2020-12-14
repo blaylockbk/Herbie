@@ -158,8 +158,11 @@ For reference, here are some useful examples to give you some ideas...
 |--|--
 |`':TMP:2 m'`      | Temperature at 2 m
 |`':TMP:'`         | Temperature fields at all levels
+|``':UGRD:.* mb'`` | U Wind at all pressure levels.
 |`':500 mb:'`      | All variables on the 500 mb level
 |`':APCP:'`        | All accumulated precipitation fields
+|`':APCP:surface:0-[1-9]*'` | Accumulated since initialization time
+|`':APCP:surface:[1-9]*-[1-9]*'`| Accumulated over last hour
 |`':UGRD:10 m'`   | U wind component at 10 meters
 |`':(U\|V)GRD:'`    | U and V wind component at all levels
 |`':.GRD:'`        | (Same as above)
