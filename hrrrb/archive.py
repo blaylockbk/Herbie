@@ -629,6 +629,10 @@ def get_hrrr(DATE, searchString, *, fxx=0,
     """
     inputs = locals()
 
+    if isinstance(DATE, str):
+        # Attempt to convert string date to a pandas datetime
+        DATE = pd.to_datetime(DATE)
+
     assert not hasattr(DATE, '__len__'), "`DATE` must be a single datetime, not a list."
     assert not hasattr(fxx, '__len__'), "`fxx` must be a single integer, not a list."
 
