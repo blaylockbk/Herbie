@@ -4,8 +4,10 @@ __pycache__/
 *.py[cod]
 *$py.class
 *.log
-*.grib2
 env_pypi.yml
+
+*.grib2
+!sample_data/hrrr/20201214/subset_20201214_hrrr.t00z.wrfsfcf12.grib2
 
 sandbox/
 sandbox*
