@@ -190,8 +190,8 @@ For reference, here are some useful examples to give you some ideas...
 > NOTE: When cfgrib reads a grib file with more than one accumulated precipitation fields, it will not read all the fields. I think this is an issue with cfgrib (see [issue here](https://github.com/ecmwf/cfgrib/issues/187)). The way around this is to key in on a *single* APCP field. See the `searchString` examples above for keying in on a single APCP field.
 <br>
 
-#### Quick Look at GRIB files in the command line
-There are two tools for looking at grib file contents in the command line.
+### Quickly look at GRIB files in the command line
+There are two tools for looking at GRIB file contents in the command line.
 1. `wgrib2` : can be installed via conda-forge in your environment. A product from NOAA.
 2. `grib_ls` : is a dependency of cfgrib and is included when you install cfgrib in your environment. A product from ECMWF. 
 
@@ -214,7 +214,7 @@ edition      centre       date         dataType     gridType     typeOfLevel  le
 2 of 2 total messages in 1 files
 ```
 
-
+I hope some of these tips are helpful to you.
 
 **Best of luck 🍀**  
 \- Brian
