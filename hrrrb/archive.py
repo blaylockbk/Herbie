@@ -191,7 +191,7 @@ def download_hrrr_subset(url, searchString, *,
         try:
             requests.head('https://pando-rgw01.chpc.utah.edu/')
         except:
-            print('bad handshake...am I able to on?')
+            print('bad handshake...am I able to move on?')
             pass
 
     # Make a request for the .idx file for the above URL
@@ -363,7 +363,7 @@ def download_hrrr(DATES, searchString=None, *, fxx=range(0, 1),
         - 'prs' pressure fields
         - 'nat' native fields
         - 'subh' subhourly fields
-    download_dir : str
+    download_dir : pathlib.Path
         Directory path to save the downloaded HRRR files.
     override_source_priority : False, or list
         The default download source priority is in the order given in the
@@ -396,7 +396,8 @@ def download_hrrr(DATES, searchString=None, *, fxx=range(0, 1),
     # Force the `field` input string to be lower case.
     field = field.lower()
 
-    # Ping Pando first. This *might* prevent a "bad handshake" error.
+    # Ping Pando first. This *might* prevent a "bad handshake" error
+    # when a file downloaded from Pando.
     try:
         requests.head('https://pando-rgw01.chpc.utah.edu/')
     except Exception as e:
@@ -414,6 +415,9 @@ def download_hrrr(DATES, searchString=None, *, fxx=range(0, 1),
         warnings.warn("🦨 Whoops! One or more of your DATES is in the future.")
 
     # Make download_dir if path doesn't exist
+    if not hasattr(download_dir, 'exists'): 
+        download_dir = Path(download_dir).resolve()
+    print(download_dir)
     download_dir = download_dir / model
     if not download_dir.is_dir():
         download_dir.mkdir(parents=True, exist_ok=True)
@@ -444,6 +448,9 @@ def download_hrrr(DATES, searchString=None, *, fxx=range(0, 1),
         assert isinstance(override_source_priority, list)
         # Given a list
         URL_list = {i: [] for i in override_source_priority}
+        # For the case when not all sources are supplied...
+        for i in base_url:
+            if i not in URL_list: URL_list[i] = []
     else:
         # Default is to download in the order defined in `base_url`
         URL_list = {i: [] for i in base_url}
@@ -625,13 +632,20 @@ def get_hrrr(DATE, searchString, *, fxx=0,
                 projection as an attribute to the Dataset.
     **download_kwargs :
         Any other key word argument accepted by ``download_hrrr``.
-        {model, field, download_dir, dryrun, verbose}
+            - model : {'hrrr', 'hrrrak', 'hrrrX'}
+            - field : {'sfc', 'prs', 'nat', 'subh'}
+            - download_dir : a path
+            - override_source_priority : a list
+            - dryrun : bool
+            - verbose : bool
     """
-    inputs = locals()
-
     if isinstance(DATE, str):
-        # Attempt to convert string date to a pandas datetime
+        # Attempt to convert a string date to a pandas datetime
         DATE = pd.to_datetime(DATE)
+    
+    print(DATE)
+
+    inputs = locals()  
 
     assert not hasattr(DATE, '__len__'), "`DATE` must be a single datetime, not a list."
     assert not hasattr(fxx, '__len__'), "`fxx` must be a single integer, not a list."
