@@ -103,13 +103,13 @@ import hrrrb.archive as ha
 ```
 or
 ``` python
-from hrrrb.archive import get_hrrr
+from hrrrb.archive import download_hrrr, xhrrr
 ```
 
 |Main Functions| What it will do for you...
 |--|--
 |`download_hrrr`| Downloads full or partial HRRR GRIB2 files to local disk.
-|`get_hrrr` | Downloads single HRRR file and returns as an `xarray.Dataset` or list of Datasets.
+|`xhrrr` | Downloads single HRRR file and returns as an `xarray.Dataset` or list of Datasets.
 
 
 ## [👉 Click Here For Some Examples](https://github.com/blaylockbk/HRRR_archive_download/blob/master/notebooks/examples.ipynb)
@@ -120,11 +120,11 @@ from hrrrb.archive import get_hrrr
 # Download full GRIB2 files to local disk
 download_hrrr(DATES, searchString=None, fxx=range(0, 1),
               model='hrrr', field='sfc',
-              download_dir='./', dryrun=False, verbose=True)
+              save_dir='./', dryrun=False, verbose=True)
 ```
 ```python
 # Download file and open as xarray
-get_hrrr(DATE, searchString, fxx=0, DATE_is_valid_time=False, 
+xhrrr(DATE, searchString, fxx=0, DATE_is_valid_time=False, 
          remove_grib2=True, add_crs=True, **download_kwargs):
 ```
 
@@ -138,15 +138,16 @@ get_hrrr(DATE, searchString, fxx=0, DATE_is_valid_time=False,
 - `field` The type of field file. 
     - Options are `sfc` and `prs`
     - `nat` and `subh` are only available for today and yesterday.
-- `download_dir` The directory path the files will be saved in. 
+- `save_dir` The directory path the files will be saved in. 
     - Default downloads files into the user's home directory `~/data/hrrr`.
+- `download_source_priority` The default source priority is `['pando', 'google', 'nomads']`, but you might want to instead try to download a file from Google before trying to get it from Pando. In that case, set to `['google', 'pando', 'nomads']`. 
 - `dryrun` If `True`, the function will tell you what it will download but not actually download anything.
 - `verbose` If `True`, prints lots of info to the screen.
 
-Specific to `get_hrrr`:
-- `DATE_is_valid_time` For *get_hrrr*, if `True` the input DATE will represent the valid time. If `False`, DATE represents the the model run time.
-- `remove_grib2` For *get_hrrr*, the grib2 file downloaded will be removed after reading the data into an xarray Dataset.
-- `add_crs` For *get_hrrr*, will create a cartopy coordinate reference system object and append it as a Dataset attribute.
+Specific to `xhrrr`:
+- `DATE_is_valid_time` For *xhrrr*, if `True` the input DATE will represent the valid time. If `False`, DATE represents the the model run time.
+- `remove_grib2` For *xhrrr*, the grib2 file downloaded will be removed after reading the data into an xarray Dataset.
+- `add_crs` For *xhrrr*, will create a cartopy coordinate reference system object and append it as a Dataset attribute.
 
 
 ## The **`searchString`** argument

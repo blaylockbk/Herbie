@@ -226,7 +226,7 @@ def pluck_points(ds, points, names=None, dist_thresh=10_000, verbose=True):
 def _concat_hrrr(inputs):
     """Multiprocessing Helper"""
     DATE, searchString, fxx, kwargs = inputs
-    return ha.get_hrrr(DATE, searchString, fxx=fxx, **kwargs)
+    return ha.xhrrr(DATE, searchString, fxx=fxx, **kwargs)
 
 def concat_hrrr(DATES, searchString, fxxs=range(19), **get_hrrr_kwargs):
     """

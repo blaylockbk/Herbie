@@ -8,56 +8,89 @@
 Retrieve HRRR GRIB2 files from archives
 =======================================
 
-Download HRRR GRIB2 files from different archive sources.
+Download High-Resolution Rapid Refresh (HRRR) model GRIB2 files from 
+different archive sources. Support for subsetting GRIB2 files by fields
+if the `.idx`` file exist.
 
-A ``.idx`` file must also exist for subsetting the file by GRIB message.
+Default HRRR Data Source Priority
+---------------------------------
+NOAA started pushing the HRRR data to the Google Cloud Platform and 
+Amazon Web Services at the end of 2020. The archives were also 
+backfilled to previous years as far back as July 30, 2014. This module
+will download HRRR data from these sources in the following order (the
+default download source priority can be changed).
 
-HRRR Data Source Priority
--------------------------
+
 1. NOMAS: NOAA Operational Model Archive and Distribution System
     - https://nomads.ncep.noaa.gov/
     - Available for today's and yesterday's runs
     - Original data source. All available data.
     - Includes ``.idx`` for all GRIB2 files.
-2. Pando: The University of Utah HRRR archive
+2. Google: Google Cloud Platform Earth
+    - https://console.cloud.google.com/storage/browser/high-resolution-rapid-refresh
+    - Available from July 30, 2014 to Present.
+    - Does not have ``.idx`` files before September 17, 2018.
+    - Has all original data including nat, subh, prs, and sfc files 
+      for all forecast hours.
+3. Pando: The University of Utah HRRR archive
     - http://hrrr.chpc.utah.edu/
     - Available from July 15, 2016 to Present.
     - A subset of prs and sfc files.
     - Contains a ``.idx`` file for *every* GRIB2 file for subsetting.
-3. Google: Google Cloud Platform Earth
-    - https://console.cloud.google.com/storage/browser/high-resolution-rapid-refresh
+4. AWS: Amazon Web Services
+    - https://noaa-hrrr-bdp-pds.s3.amazonaws.com/
     - Available from July 30, 2014 to Present.
-    - Does not have ``.idx`` files before September 17, 2018.
+    - Does not have ``.idx`` files.
     - Has all nat, subh, prs, and sfc files for all forecast hours.
+    - Some data may be missing.
 
 Main Functions
 --------------
 download_hrrr
     Download GRIB2 files to local disk.
-get_hrrr
-    Read HRRR data as an xarray.Dataset with cfgrib engine.
+xhrrr
+    Download and read HRRR data as an xarray.Dataset with cfgrib engine.
 """
 
 import os
 import re
 from datetime import datetime, timedelta
 from pathlib import Path
+from itertools import product
 import warnings
 
-import numpy as np
-import pandas as pd    # Used to organize download URLs from each source
-import urllib.request  # Used to download the file
-import requests        # Used to check if a URL exists
+import urllib.request
+import requests
 import cfgrib
+import numpy as np
+import pandas as pd
 import xarray as xr
 
 from hrrrb.tools import to_180, get_crs
 
-_default_download_dir = Path('~').expanduser() / 'data'
+# Specify default location to save GRIB2 files
+_default_save_dir = Path('~').expanduser() / 'data'
+
+# List of HRRR download source base URLs
+base_url = dict(
+    nomads = 'https://nomads.ncep.noaa.gov/pub/data/nccf/com/hrrr/prod',
+    google = 'https://storage.googleapis.com/high-resolution-rapid-refresh',
+    pando = 'https://pando-rgw01.chpc.utah.edu',
+    aws = 'https://noaa-hrrr-bdp-pds.s3.amazonaws.com',
+    pando2 = 'https://pando-rgw02.chpc.utah.edu',  # The 2nd rados gateway might work if the 1st didn't.
+)
+
+def _ping_pando(gateway=1):
+    """Pinging the Pando server before downloading can prevent a bad handshake."""
+    try:
+        requests.head(f'https://pando-rgw0{gateway}.chpc.utah.edu/')
+    except:
+        print('bad handshake...am I able to move on?')
+        pass
 
 def _reporthook(a, b, c):
     """
-    Report download progress in megabytes (prints progress to screen).
+    Report download progress in megabytes. Prints progress to screen.
 
     Parameters
     ----------
@@ -69,7 +102,7 @@ def _reporthook(a, b, c):
     total_size_MB =  c / 1000000.
     print(f"\r🚛💨  Download Progress: {chunk_progress:.2f}% of {total_size_MB:.1f} MB\r", end='')
 
-def searchString_help(searchString):
+def _searchString_help(searchString):
     msg = [
         f"There is something wrong with [[  searchString='{searchString}'  ]]",
         "\nUse regular expression to search for lines in the .idx file",
@@ -98,7 +131,7 @@ def searchString_help(searchString):
         ]
     return '\n'.join(msg)
 
-def outFile_from_url(url, download_dir):
+def _outFile_from_url(url, save_dir):
     """
     Define the filename for a grib2 file from its URL.
 
@@ -106,15 +139,15 @@ def outFile_from_url(url, download_dir):
     ----------
     url : str
         A URL string for a grib2 file we want to download.
-    download_dir : dir
+    save_dir : dir
         The directory path to save the file.
     """
     if 'pando' in url:
         outFile = '_'.join(url.split('/')[-2:])
-    elif 'nomads' in url or 'google' in url:
+    else:
         outFile = url.split('/')[-3][5:] + '_' + url.split('/')[-1]
 
-    outFile = download_dir / outFile
+    outFile = save_dir / outFile
 
     if not outFile.parent.is_dir():
         outFile.parent.mkdir(parents=True, exist_ok=True)
@@ -122,13 +155,18 @@ def outFile_from_url(url, download_dir):
 
     return outFile
 
-def download_hrrr_subset(url, searchString, *,
-                         download_dir=_default_download_dir,
+def _download_hrrr_subset(url, searchString, *,
+                         df_row_urls=None,
+                         save_dir=_default_save_dir,
                          dryrun=False, verbose=True):
     """
     Download a subset of GRIB fields from a HRRR file located at a URL.
 
-    The must be index (.idx) file available for the file.
+    There must be an index (.idx) file available for the file.
+
+    A USER, YOU SHOULD NOT USE THIS FUNCTION DIRECTLY. Instead, use the
+    ``download_hrrr`` function and specify the search string to get a 
+    subset of a GRIB2 file.
 
     Parameters
     ----------
@@ -140,41 +178,13 @@ def download_hrrr_subset(url, searchString, *,
         must also exist.
     searchString : str
         The string you are looking for in each line of the index file.
-        Take a look at the ``.idx`` file at
-        https://pando-rgw01.chpc.utah.edu/hrrr/sfc/20200624/hrrr.t01z.wrfsfcf17.grib2.idx
-        to get familiar with what is in each line.
-        Also, look at this webpage: http://hrrr.chpc.utah.edu/HRRR_archive/hrrr_sfc_table_f00-f01.html
-        for additional details.**TIP: Focus on the variable and level type in 
-        your searches**.
-
-        You may use regular expression syntax to customize your search.
-        Check out this regular expression cheatsheet:
-        https://link.medium.com/7rxduD2e06
-
-        .. note::
-            Here are a few examples that can help you get started
-
-            ============================= ===============================================
-            ``searchString``              Messages that will be downloaded
-            ============================= ===============================================
-            ':TMP:2 m'                    Temperature at 2 m.
-            ':TMP:'                       Temperature fields at all levels.
-            ':UGRD:.* mb'                 U Wind at all pressure levels.
-            ':500 mb:'                    All variables on the 500 mb level.
-            ':APCP:'                      All accumulated precipitation fields.
-            ':APCP:surface:0-[1-9]*'      Accumulated precip since initialization time
-            ':APCP:surface:[1-9]*-[1-9]*' Accumulated precip over last hour
-            ':UGRD:10 m'                  U wind component at 10 meters.
-            ':(U|V)GRD:'                  U and V wind component at all levels.
-            ':.GRD:'                      (Same as above)
-            ':(TMP|DPT):'                 Temperature and Dew Point for all levels .
-            ':(TMP|DPT|RH):'              TMP, DPT, and Relative Humidity for all levels.
-            ':REFC:'                      Composite Reflectivity
-            ':surface:'                   All variables at the surface.
-            ''             
-            ============================= ===============================================
-
-    download_dir : string
+        Refer to the _searchString_help for examples.
+    df_row_urls : None or list
+        THIS VARIABLE IS RESERVED FOR INPUT FROM THE ``download_hrrr``
+        FUNCTION for the case when there isn't an .idx file from the 
+        requested source, the .idx might be available at a different URL.
+        This is a list of those other URLs (supplied by the download_hrrr function's loop)
+    save_dir : string
         Directory path to save the file, default ``~/data/``.
     dryrun : bool
         If True, do not perform download, but print out what the function will
@@ -187,12 +197,8 @@ def download_hrrr_subset(url, searchString, *,
     The path and name of the new file.
     """
     # Ping Pando first. This *might* prevent a "bad handshake" error.
-    if 'pando' in url:
-        try:
-            requests.head('https://pando-rgw01.chpc.utah.edu/')
-        except:
-            print('bad handshake...am I able to move on?')
-            pass
+    if 'pando-rgw01' in url: _ping_pando(1)
+    elif 'pando-rgw02' in url: _ping_pando(2)
 
     # Make a request for the .idx file for the above URL
     idx = url + '.idx'
@@ -200,10 +206,24 @@ def download_hrrr_subset(url, searchString, *,
 
     # Check that the file exists. If there isn't an index, you will get a 404 error.
     if not r.ok:
+        print(f'❌ .idx file does not exist at {idx}')
+        if df_row_urls is not None:
+            # Check the other sources provided
+            for alt_url in df_row_urls[1:]:
+                if alt_url != url:  # don't check the url twice
+                    idx = alt_url + '.idx'
+                    r = requests.get(idx)
+                    if r.ok:
+                        print(f'✔ I found a .idx file at {idx}')
+                        continue
+                    else:
+                        print(f'❌ .idx file does not exist at {idx}')
+    
+    if not r.ok:
         notice = [
             '',
             f'❌ SORRY! Status Code: {r.status_code} {r.reason}',
-            f'❌ It does not look like the index file exists: {idx}',
+            f'❌ It does not look like an index file exists: {idx}',
             f'❌ Please change your request or download the full grib2 file with `download_hrrr`.'
         ]
         raise Exception('\n'.join(notice))
@@ -216,7 +236,7 @@ def download_hrrr_subset(url, searchString, *,
         expr = re.compile(searchString)
     except Exception as e:
         print('re.compile error:', e)
-        raise Exception(searchString_help(searchString))
+        raise Exception(_searchString_help(searchString))
 
     # Store the byte ranges in a dictionary
     #     {byte-range-as-string: line}
@@ -249,14 +269,14 @@ def download_hrrr_subset(url, searchString, *,
     if len(byte_ranges) == 0:
         # Loop didn't find the searchString in the index file.
         print(f'❌ WARNING: Sorry, I did not find [{searchString}] in the index file {idx}')
-        print(searchString_help(searchString))
+        print(_searchString_help(searchString))
         return None
 
     # What should we name the file we save this data to?
     # Let's name it something like `subset_20200624_hrrr.t01z.wrfsfcf17.grib2`
     runDate = list(byte_ranges.items())[0][1].split(':')[2][2:-2]
     outFile = '_'.join(['subset', runDate, url.split('/')[-1]])
-    outFile = download_dir / outFile
+    outFile = save_dir / outFile
 
     for i, (byteRange, line) in enumerate(byte_ranges.items()):
 
@@ -283,45 +303,53 @@ def download_hrrr_subset(url, searchString, *,
 
         return outFile
 
-def download_hrrr(DATES, searchString=None, *, fxx=range(0, 1),
-                  model='hrrr', field='sfc',
-                  download_dir=_default_download_dir,
-                  override_source_priority=False,
+###############################################################################
+###############################################################################
+
+def download_hrrr(DATES, searchString=None, *, 
+                  fxx=range(0, 1),
+                  model='hrrr',
+                  field='sfc',
+                  save_dir=_default_save_dir,
+                  download_source_priority=None,
                   dryrun=False, verbose=True):
     """
-    Download full HRRR grib2 files for a list of dates and forecasts.
+    Download full or partial HRRR grib2 files for a list of dates and forecasts.
 
     Attempts to download grib2 files from three different sources in the
     following order:
-    1. NOAA Operational Model Archive and Distribution System (NOMADS).
-    2. University of Utah HRRR archive (Pando)
-    3. Google Cloud Platform (Google)
+      1. NOAA Operational Model Archive and Distribution System ('nomads').
+      2. Google Cloud Platform ('google')
+      3. University of Utah HRRR archive ('pando')
+      4. Amazon Web Services ('aws')
 
     Parameters
     ----------
     DATES : datetime or list of datetimes
         A datetime or list of datetimes that represent the model
-        initialization time for which you want to download.
+        initialization time for which you want to download. May also
+        use a date as a string if it can be parsed by Pandas.
     searchString : str
-        The string that describes the variables you want to download
-        from the file. This is used as the `searchString` in
-        ``download_hrrr_subset`` to looking for sepecific byte ranges
-        from the file to download.
+        A regular expression string that describes the variables you 
+        want to download from the file. This is used as the 
+        `searchString` in ``_download_hrrr_subset`` to looking for 
+        specific byte ranges from the file to download.
 
-        Default is None, meaning to not search for variables. Furthermore,
-        ':' is an alias for None, becuase it is equivalent to identifying
-        every line in the .idx file.
+        Default is None, meaning to not search for all variables and 
+        **downloads the full GRIB2 file**. Furthermore, ``':'`` is an 
+        alias for None because it is equivalent to identifying every 
+        line in the .idx file.
 
         Take a look at the .idx file at
         https://pando-rgw01.chpc.utah.edu/hrrr/sfc/20200624/hrrr.t01z.wrfsfcf17.grib2.idx
-        to get familiar with what an index file is.
+        for an example of what an index file looks like.
 
         Also look at this webpage: http://hrrr.chpc.utah.edu/HRRR_archive/hrrr_sfc_table_f00-f01.html
-        for additional details.**You should focus on the variable and level
-        field for your searches**.
+        for additional details. **You should focus your searches on the
+        *variable* and *level* to key in on specific fields**.
 
         You may use regular expression syntax to customize your search.
-        Check out this regulare expression cheatsheet:
+        Check out this regular expression cheatsheet:
         https://link.medium.com/7rxduD2e06
 
         Here are a few examples that can help you get started
@@ -346,35 +374,36 @@ def download_hrrr(DATES, searchString=None, *, fxx=range(0, 1),
         ''             
         ============================= ===============================================
 
-    fxx : int or list of ints
+    fxx : int or list of int
         Forecast lead time or list of forecast lead times to download.
-        Default only grabs analysis hour (f00), but you might want all
-        the forecasts hours, in that case, you could set ``fxx=range(0,19)``.
+        Default only grabs analysis hour (f00). If you want all forecasts
+        hours, you can set ``fxx=range(0,19)``.
     model : {'hrrr', 'hrrrak', 'hrrrX'}
         The model type you want to download.
         - 'hrrr' HRRR Contiguous United States (operational)
         - 'hrrrak' HRRR Alaska. You can also use 'alaska' as an alias.
         - 'hrrrX' *experimental* HRRR (experimental version run at ESRL)
+           is only available from the Pando archive.
     field : {'prs', 'sfc', 'nat', 'subh'}
         Variable fields you wish to download. Only 'sfc' and 'prs' are
-        available on Pando, but 'nat' and 'subh' might be attainable
-        from NOMADS or Google.
+        available on Pando, but 'nat' and 'subh' are attainable from
+        other sources.
         - 'sfc' surface fields
         - 'prs' pressure fields
         - 'nat' native fields
         - 'subh' subhourly fields
-    download_dir : pathlib.Path
+    save_dir : pathlib.Path
         Directory path to save the downloaded HRRR files.
-    override_source_priority : False, or list
-        The default download source priority is in the order given in the
-        ``base_url`` dict keys below. You may, however, specify a different
+    download_source_priority : None or list
+        If None, the default order is the order specified by
+        ``base_url``. You may, however, specify a different
         priority by supplying a list of keys in the ``base_url``.
         For example, to download from 'google' before checking 'pando',
-        you may do ``override_source_priority=['google', 'pando', 'nomads']``.
-        This also makes is possible to exlude a source.        
+        you may do ``download_source_priority=['google', 'pando', 'nomads']``.
+        This also makes is possible to exclude a source.
     dryrun : bool
         If True, instead of downloading the files, it will print out the
-        files that could be downloaded. This is set to False by default.
+        files that would be downloaded. This is set to False by default.
     verbose :bool
         If True, print lots of information (default).
         If False, only print some info about download progress.
@@ -383,55 +412,57 @@ def download_hrrr(DATES, searchString=None, *, fxx=range(0, 1),
     -------
     The file name for the HRRR files we downloaded and the URL it was from.
     For example:
-
         ('20170101_hrrr.t00z.wrfsfcf00.grib2', 'https://pando-rgw01...')
     """
 
-    #**************************************************************************
+    #*******************************************************************
     ## Check function input
-    #**************************************************************************
+    #*******************************************************************
+       
     # The user may set `model='alaska'` as an alias for 'hrrrak'.
     if model.lower() == 'alaska': model = 'hrrrak'
 
     # Force the `field` input string to be lower case.
     field = field.lower()
 
-    # Ping Pando first. This *might* prevent a "bad handshake" error
-    # when a file downloaded from Pando.
-    try:
-        requests.head('https://pando-rgw01.chpc.utah.edu/')
-    except Exception as e:
-        print(f'Ran into an error: {e}')
-        print('bad handshake...am I able to on?')
-        pass
-
     # `DATES` and `fxx` should be a list-like object, but if they have no
     # length, (like if the user requests a single date or forecast hour),
-    # then turn it item into a list-like object.
-    if not hasattr(DATES, '__len__'): DATES = np.array([DATES])
+    # then turn the item into a list-like object.
     if not hasattr(fxx, '__len__'): fxx = [fxx]
+    if isinstance(DATES, str): DATES = pd.to_datetime(DATES)
+    if not hasattr(DATES, '__len__'): DATES = np.array([DATES])
+    DATES = pd.to_datetime(DATES)
 
     if not all([i < datetime.utcnow() for i in DATES]):
         warnings.warn("🦨 Whoops! One or more of your DATES is in the future.")
 
-    # Make download_dir if path doesn't exist
-    if not hasattr(download_dir, 'exists'): 
-        download_dir = Path(download_dir).resolve()
-    print(download_dir)
-    download_dir = download_dir / model
-    if not download_dir.is_dir():
-        download_dir.mkdir(parents=True, exist_ok=True)
-        print(f'👨🏻‍🏭 Created directory: [{download_dir}]')
+    # Make save_dir if path doesn't exist
+    if not hasattr(save_dir, 'exists'): 
+        save_dir = Path(save_dir).resolve()
 
-    #**************************************************************************
-    # Specify Download Source URL and priority order
-    #**************************************************************************
-    # Base URLs of each downlaod source, in order of priority.
-    # Attempt to download from NOMADS first, then Pando, then Google Cloud Platform
-    base_url = {}
-    base_url['nomads'] = 'https://nomads.ncep.noaa.gov/pub/data/nccf/com/hrrr/prod'
-    base_url['pando'] = 'https://pando-rgw01.chpc.utah.edu'
-    base_url['google'] = 'https://storage.googleapis.com/high-resolution-rapid-refresh'
+    save_dir = save_dir / model
+    if not save_dir.is_dir():
+        save_dir.mkdir(parents=True, exist_ok=True)
+        print(f'👨🏻‍🏭 Created directory: [{save_dir}]')
+
+    if download_source_priority is None:
+        source_priority = base_url
+    else:
+        # If desired, reorder download_source_priority
+        source_priority = {}
+        for i in download_source_priority:
+            i = i.lower()
+            if i in base_url: 
+                source_priority[i] = base_url[i]
+            else: 
+                print(f'  ♟ Skipping `{i}` as a potential source '
+                      f'because it is not a valid source name. Must be '
+                      f'one of {list(base_url)}.')
+
+    # Ping Pando first. This *might* prevent a "bad handshake" error
+    # when a file downloaded from Pando.
+    if 'pando' in source_priority: _ping_pando(1)
+    elif 'pando2' in source_priority: _ping_pando(2)
 
     #**************************************************************************
     # Build the URL path for every file we want
@@ -443,39 +474,36 @@ def download_hrrr(DATES, searchString=None, *, fxx=range(0, 1),
     #   https://pando-rgw01.chpc.utah.edu/hrrr/sfc/20200624/hrrr.t01z.wrfsfcf17.grib2
     # Google
     #   https://storage.googleapis.com/high-resolution-rapid-refresh/hrrr.20200101/conus/hrrr.t00z.wrfnatf04.grib2
+    # Amazon AWS
+    #   https://noaa-hrrr-bdp-pds.s3.amazonaws.com/hrrr.20140917/conus/hrrr.t00z.wrfsubhf1015.grib2
 
-    if override_source_priority:
-        assert isinstance(override_source_priority, list)
-        # Given a list
-        URL_list = {i: [] for i in override_source_priority}
-        # For the case when not all sources are supplied...
-        for i in base_url:
-            if i not in URL_list: URL_list[i] = []
-    else:
-        # Default is to download in the order defined in `base_url`
-        URL_list = {i: [] for i in base_url}
-    
-    
-    for DATE in DATES:
-        # Pando URL is unique
-        URL_list['pando'] += [f"{base_url['pando']}/{model}/{field}/{DATE:%Y%m%d}/{model}.t{DATE:%H}z.wrf{field}f{f:02d}.grib2" for f in fxx]
-
-        # NOMADS and Google URL are the same after the base_url
-        for s in ['nomads', 'google']:
-            if model == 'hrrr':
-                URL_list[s] += [f"{base_url[s]}/hrrr.{DATE:%Y%m%d}/conus/hrrr.t{DATE:%H}z.wrf{field}f{f:02d}.grib2" for f in fxx]
-            elif model == 'hrrrak':
-                URL_list[s] += [f"{base_url[s]}/hrrr.{DATE:%Y%m%d}/alaska/hrrr.t{DATE:%H}z.wrf{field}f{f:02d}.ak.grib2" for f in fxx]
+    # Create a list of URLs for each files from each download source
+    URL_list = {}
+    for source, source_url in source_priority.items():
+        URL_list[source] = []
+        
+        for DATE, f in product(DATES, fxx):
+            if source == 'pando':
+                # Pando URL is unique
+                URL_list[source].append(f"{source_url}/{model}/{field}/{DATE:%Y%m%d}/{model}.t{DATE:%H}z.wrf{field}f{f:02d}.grib2")
             else:
-                URL_list[s] = f'https://pando-rgw01.chpc.utah.edu/hrrrX/nonhere_{s}' # There are no experimental HRRR (hrrrX) on NOMADS or Google
+                # NOMADS, Google, and AWS URL are the same after their base_url
+                if model == 'hrrr':
+                    URL_list[source].append(f"{source_url}/hrrr.{DATE:%Y%m%d}/conus/hrrr.t{DATE:%H}z.wrf{field}f{f:02d}.grib2")
+                elif model == 'hrrrak':
+                    URL_list[source].append(f"{source_url}/hrrr.{DATE:%Y%m%d}/alaska/hrrr.t{DATE:%H}z.wrf{field}f{f:02d}.ak.grib2")
+                else:
+                    URL_list[source].append(f'https://pando-rgw01.chpc.utah.edu/hrrrX/nonehere_placeholder_{source}') # Experimental HRRR (hrrrX) only exists on Pando. This is a placeholder.
 
     # A pandas.DataFrame to keep track of the URLs. We will iterate over each row.
     URL_df = pd.DataFrame(URL_list)
 
-    #**************************************************************************
+    #return URL_df
+
+    #*******************************************************************
     # Download Files that exist
-    #**************************************************************************
-    # Attempt download from sources in order of source priority
+    #*******************************************************************
+    # Attempt download from sources in order of source priority.
 
     n = len(URL_df)
 
@@ -510,28 +538,29 @@ def download_hrrr(DATES, searchString=None, *, fxx=range(0, 1),
             check_content = int(head.raw.info()['Content-Length']) > 1_000_000
 
             if check_exists and check_content:
-                # Yippie, a grib2 file exists
+                # Yippie! a grib2 file exists
                 one_exists = True
 
                 # Define the filename we want to save the data as
-                outFile = outFile_from_url(url, download_dir / f'{DATE:%Y%m%d}')
+                outFile = _outFile_from_url(url, save_dir / f'{DATE:%Y%m%d}')
 
                 # Download the data
                 #------------------
                 if searchString in [None, ':']:
                     if dryrun:
-                        if verbose: print(f'🌵 Dry Run! Would get from [{source}] {url} as {outFile}')
+                        if verbose: print(f'🌵 Dry Run! Would get from [{source}] {url} --> {outFile}')
                         all_files.append(None)
                     else:
                         # Download the full file.
                         urllib.request.urlretrieve(url, outFile, _reporthook)
                         all_files.append(outFile)
-                        if verbose: print(f'✅ Success! Downloaded from [{source}] {url} as {outFile}')
+                        if verbose: print(f'✅ Success! Downloaded from [{source}] {url} --> {outFile}')
                 else:
                     # Download a subset of the full file based on the searchString.
                     if verbose: print(f"Download subset from [{source}]:")
-                    thisfile = download_hrrr_subset(url, searchString,
-                                                    download_dir=outFile.parent,
+                    thisfile = _download_hrrr_subset(url, searchString,
+                                                    df_row_urls=row,
+                                                    save_dir=outFile.parent,
                                                     dryrun=dryrun,
                                                     verbose=verbose)
                     all_files.append(thisfile)
@@ -561,20 +590,22 @@ def download_hrrr(DATES, searchString=None, *, fxx=range(0, 1),
     print(f"\n🍦 Finished 🍦  Time spent on download: {loop_time}")
 
     if len(all_files) == 1:
-        return all_files[0], all_urls[0]  # return a string, not list
+        return all_files[0], all_urls[0]  # return only the one time, not list
     else:
         return np.array(all_files), np.array(all_urls)  # return the list of file names and URLs
 
 #=======================================================================
 #=======================================================================
 
-def get_hrrr(DATE, searchString, *, fxx=0, 
-             DATE_is_valid_time=False, remove_grib2=True,
-             add_crs=True, **download_kwargs):
+def xhrrr(DATE, searchString, fxx=0, *,
+          DATE_is_valid_time=False,
+          remove_grib2=True,
+          add_crs=True,
+          **download_kwargs):
     """
     Download HRRR data and return as an xarray Dataset (or Datasets)
 
-    Only request one `DATE` and `fxx` (forecast lead time).
+    You may only request one `DATE` and one `fxx` (forecast lead time).
 
     .. note:: 
         See https://github.com/ecmwf/cfgrib/issues/187 for why there is
@@ -608,7 +639,6 @@ def get_hrrr(DATE, searchString, *, fxx=0,
         ':(TMP|DPT|RH):'              TMP, DPT, and Relative Humidity for all levels.
         ':REFC:'                      Composite Reflectivity
         ':surface:'                   All variables at the surface.
-        ''             
         ============================= ===============================================
 
     fxx : int
@@ -628,22 +658,19 @@ def get_hrrr(DATE, searchString, *, fxx=0,
                 You would be responsible for removing files when you don't
                 need them.
     add_crs : bool
-        True  - (default) Append the Cartopy coordinate reference system (crs)
+        True  - (default) Add the Cartopy coordinate reference system (crs)
                 projection as an attribute to the Dataset.
     **download_kwargs :
         Any other key word argument accepted by ``download_hrrr``.
             - model : {'hrrr', 'hrrrak', 'hrrrX'}
             - field : {'sfc', 'prs', 'nat', 'subh'}
-            - download_dir : a path
-            - override_source_priority : a list
+            - save_dir : pathlib.Path
+            - download_source_priority : a list of download sources
             - dryrun : bool
             - verbose : bool
     """
-    if isinstance(DATE, str):
-        # Attempt to convert a string date to a pandas datetime
-        DATE = pd.to_datetime(DATE)
-    
-    print(DATE)
+    # Convert DATE input to a pandas datetime (Pandas can parse some strings as dates.)
+    DATE = pd.to_datetime(DATE)
 
     inputs = locals()  
 
@@ -716,7 +743,9 @@ def get_hrrr(DATE, searchString, *, fxx=0,
         # Add the cartopy map projection object as an attribute, for convenience.
         H.attrs['crs'] = crs
     else:
-        warnings.warn('⚠ ALERT! Could not load grib2 data into a single xarray Dataset. You might consider refining your `searchString` if you are getting data you do not need.')
+        warnings.warn('⚠ ALERT! Could not load grib2 data into a single '
+                      'xarray Dataset. You might consider refining your '
+                      '`searchString` if you are getting data you do not need.')
         # Add the cartopy map projection object as an attribute, for convenience.
         for i in H:
             i.attrs['crs'] = crs
