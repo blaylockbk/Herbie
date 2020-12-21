@@ -10,10 +10,10 @@
 **HRRR-B**, or "Herbie," is a python package for downloading recent and archived High Resolution Rapid Refresh (HRRR) model forecasts and opening HRRR data in an xarray.Dataset. I created most of this during my PhD and decided to organize what I created into a more coherent package. It will continue to evolve at my leisure.
 
 ## About `HRRR-B`
-HRRR model output is archived by the MesoWest group at the University of Utah on the [CHPC Pando Archive System](http://hrrr.chpc.utah.edu/). The GRIB2 files are copied from from NCEP every couple hours. Google also has a growing HRRR archive. Between these three data sources, there is a lot of archived HRRR data available. **This Python package helps download those archived HRRR files.**
+HRRR model output is archived by the MesoWest group at the University of Utah on the [CHPC Pando Archive System](http://hrrr.chpc.utah.edu/). The GRIB2 files are copied from from NCEP every couple hours. NOAA started pushing HRRR data to Google and AWS at in the later half of 2020. Between these data sources, there is a lot of archived HRRR data available. **This Python package helps download those archived HRRR files.**
 
 - Download full or partial HRRR GRIB2 files. Partial files are downloaded by GRIB message.
-- Three different data sources: [NCEP-NOMADS](https://nomads.ncep.noaa.gov/), [Pando (University of Utah)](http://hrrr.chpc.utah.edu/), and [Google Cloud](https://console.cloud.google.com/storage/browser/high-resolution-rapid-refresh?pli=1). 
+- Different data sources: [NCEP-NOMADS](https://nomads.ncep.noaa.gov/), [Pando (University of Utah)](http://hrrr.chpc.utah.edu/), [Google Cloud Platform](https://console.cloud.google.com/storage/browser/high-resolution-rapid-refresh?pli=1), and [Amazon Web Services](). 
     - > The Pando HRRR archive is in [process of moving to Amazon Web Services](https://github.com/blaylockbk/HRRR_archive_download/issues/2) as a public [Earth](https://aws.amazon.com/earth/) dataset. It will be available in [zarr](https://zarr.readthedocs.io/en/stable/) format that will allow for more flexibility for chunked data requests. See [Issue #2](https://github.com/blaylockbk/HRRR_archive_download/issues/2).
 - Open HRRR data as an xarray.Dataset.
 - Other useful tools (in development), like indexing nearest neighbor points and getting a cartopy crs object.
