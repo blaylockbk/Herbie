@@ -118,14 +118,21 @@ from hrrrb.archive import download_hrrr, xhrrr
 
 ```python
 # Download full GRIB2 files to local disk
-download_hrrr(DATES, searchString=None, fxx=range(0, 1),
-              model='hrrr', field='sfc',
-              save_dir='./', dryrun=False, verbose=True)
+download_hrrr(DATES, searchString=None, *, 
+              fxx=range(0, 1),
+              model='hrrr',
+              field='sfc',
+              save_dir=_default_save_dir,
+              download_source_priority=None,
+              dryrun=False, verbose=True)
 ```
 ```python
 # Download file and open as xarray
-xhrrr(DATE, searchString, fxx=0, DATE_is_valid_time=False, 
-         remove_grib2=True, add_crs=True, **download_kwargs):
+xhrrr(DATE, searchString, fxx=0, *,
+      DATE_is_valid_time=False,
+      remove_grib2=True,
+      add_crs=True,
+      **download_kwargs)
 ```
 
 - `DATES` Datetime or list of datetimes representing the model initialization time.
