@@ -2,7 +2,7 @@
 |:--|:--|
 
 
-# Brian's High-Resolution Rapid Refresh code: HRRR-B
+# Brian's High-Resolution Rapid Refresh tools: HRRR-B
 
 |HRRR Archive Website|**http://hrrr.chpc.utah.edu/**|
 |--:|:--|
