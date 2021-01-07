@@ -3,9 +3,9 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
   
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>hrrrb &mdash; HRRR-B 0.0.1 documentation</title>
   
@@ -17,7 +17,10 @@
 
   
   
+
   
+  
+
   
 
   
@@ -30,7 +33,6 @@
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
-        <script src="_static/language_data.js"></script>
         <script src="https://kit.fontawesome.com/f6cc126dcc.js"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
@@ -53,12 +55,12 @@
           
 
           
-            <a href="index.html" class="icon icon-home" alt="Documentation Home"> HRRR-B
+            <a href="index.html" class="icon icon-home"> HRRR-B
           
 
           
             
-            <img src="_static/herbie.jpg" class="logo" alt="Logo"/>
+            <img src="_static/HRRR-B_logo.png" class="logo" alt="Logo"/>
           
           </a>
 
@@ -91,7 +93,7 @@
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">hrrrb</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#retrieve-hrrr-grib2-files-from-archives">Retrieve HRRR GRIB2 files from archives</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#hrrr-data-source-priority">HRRR Data Source Priority</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#default-hrrr-data-source-priority">Default HRRR Data Source Priority</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#main-functions">Main Functions</a></li>
 </ul>
 </li>
@@ -140,6 +142,8 @@
 
 
 
+
+
 <div role="navigation" aria-label="breadcrumbs navigation">
 
   <ul class="wy-breadcrumbs">
@@ -151,7 +155,7 @@
     
       <li class="wy-breadcrumbs-aside">
         
-            
+          
             <a href="_sources/hrrrb.rst.txt" rel="nofollow"> View page source</a>
           
         
@@ -171,10 +175,16 @@
 </div>
 <span class="target" id="module-hrrrb.archive"></span><div class="section" id="retrieve-hrrr-grib2-files-from-archives">
 <h2>Retrieve HRRR GRIB2 files from archives<a class="headerlink" href="#retrieve-hrrr-grib2-files-from-archives" title="Permalink to this headline">¶</a></h2>
-<p>Download HRRR GRIB2 files from different archive sources.</p>
-<p>A <code class="docutils literal notranslate"><span class="pre">.idx</span></code> file must also exist for subsetting the file by GRIB message.</p>
-<div class="section" id="hrrr-data-source-priority">
-<h3>HRRR Data Source Priority<a class="headerlink" href="#hrrr-data-source-priority" title="Permalink to this headline">¶</a></h3>
+<p>Download High-Resolution Rapid Refresh (HRRR) model GRIB2 files from
+different archive sources. Support for subsetting GRIB2 files by fields
+if the <cite>.idx`</cite> file exist.</p>
+<div class="section" id="default-hrrr-data-source-priority">
+<h3>Default HRRR Data Source Priority<a class="headerlink" href="#default-hrrr-data-source-priority" title="Permalink to this headline">¶</a></h3>
+<p>NOAA started pushing the HRRR data to the Google Cloud Platform and
+Amazon Web Services at the end of 2020. The archives were also
+backfilled to previous years as far back as July 30, 2014. This module
+will download HRRR data from these sources in the following order (the
+default download source priority can be changed).</p>
 <ol class="arabic simple">
 <li><dl class="simple">
 <dt>NOMAS: NOAA Operational Model Archive and Distribution System</dt><dd><ul class="simple">
@@ -182,6 +192,17 @@
 <li><p>Available for today’s and yesterday’s runs</p></li>
 <li><p>Original data source. All available data.</p></li>
 <li><p>Includes <code class="docutils literal notranslate"><span class="pre">.idx</span></code> for all GRIB2 files.</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Google: Google Cloud Platform Earth</dt><dd><ul class="simple">
+<li><p><a class="reference external" href="https://console.cloud.google.com/storage/browser/high-resolution-rapid-refresh">https://console.cloud.google.com/storage/browser/high-resolution-rapid-refresh</a></p></li>
+<li><p>Available from July 30, 2014 to Present.</p></li>
+<li><p>Does not have <code class="docutils literal notranslate"><span class="pre">.idx</span></code> files before September 17, 2018.</p></li>
+<li><p>Has all original data including nat, subh, prs, and sfc files
+for all forecast hours.</p></li>
 </ul>
 </dd>
 </dl>
@@ -197,11 +218,12 @@
 </dl>
 </li>
 <li><dl class="simple">
-<dt>Google: Google Cloud Platform Earth</dt><dd><ul class="simple">
-<li><p><a class="reference external" href="https://console.cloud.google.com/storage/browser/high-resolution-rapid-refresh">https://console.cloud.google.com/storage/browser/high-resolution-rapid-refresh</a></p></li>
+<dt>AWS: Amazon Web Services</dt><dd><ul class="simple">
+<li><p><a class="reference external" href="https://noaa-hrrr-bdp-pds.s3.amazonaws.com/">https://noaa-hrrr-bdp-pds.s3.amazonaws.com/</a></p></li>
 <li><p>Available from July 30, 2014 to Present.</p></li>
-<li><p>Does not have <code class="docutils literal notranslate"><span class="pre">.idx</span></code> files before September 17, 2018.</p></li>
+<li><p>Does not have <code class="docutils literal notranslate"><span class="pre">.idx</span></code> files.</p></li>
 <li><p>Has all nat, subh, prs, and sfc files for all forecast hours.</p></li>
+<li><p>Some data may be missing.</p></li>
 </ul>
 </dd>
 </dl>
@@ -213,27 +235,9 @@
 <dl class="simple">
 <dt>download_hrrr</dt><dd><p>Download GRIB2 files to local disk.</p>
 </dd>
-<dt>get_hrrr</dt><dd><p>Read HRRR data as an xarray.Dataset with cfgrib engine.</p>
+<dt>xhrrr</dt><dd><p>Download and read HRRR data as an xarray.Dataset with cfgrib engine.</p>
 </dd>
 </dl>
-<p><strong>Classes:</strong></p>
-<table class="longtable docutils align-default">
-<colgroup>
-<col style="width: 10%" />
-<col style="width: 90%" />
-</colgroup>
-<tbody>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">Path</span></code>(*args, **kwargs)</p></td>
-<td><p>PurePath subclass that can make system calls.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">datetime</span></code>(year, month, day[, hour[, minute[, …)</p></td>
-<td><p>The year, month and day arguments are required.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">timedelta</span></code></p></td>
-<td><p>Difference between two datetime values.</p></td>
-</tr>
-</tbody>
-</table>
 <p><strong>Functions:</strong></p>
 <table class="longtable docutils align-default">
 <colgroup>
@@ -242,60 +246,55 @@
 </colgroup>
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#hrrrb.archive.download_hrrr" title="hrrrb.archive.download_hrrr"><code class="xref py py-obj docutils literal notranslate"><span class="pre">download_hrrr</span></code></a>(DATES[, searchString, fxx, …])</p></td>
-<td><p>Download full HRRR grib2 files for a list of dates and forecasts.</p></td>
+<td><p>Download full or partial HRRR grib2 files for a list of dates and forecasts.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#hrrrb.archive.download_hrrr_subset" title="hrrrb.archive.download_hrrr_subset"><code class="xref py py-obj docutils literal notranslate"><span class="pre">download_hrrr_subset</span></code></a>(url, searchString, *[, …])</p></td>
-<td><p>Download a subset of GRIB fields from a HRRR file located at a URL.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_crs</span></code>(ds)</p></td>
-<td><p>Get the cartopy coordinate reference system (crs) from a cfgrib xarray Dataset</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#hrrrb.archive.get_hrrr" title="hrrrb.archive.get_hrrr"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_hrrr</span></code></a>(DATE, searchString, *[, fxx, …])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#hrrrb.archive.xhrrr" title="hrrrb.archive.xhrrr"><code class="xref py py-obj docutils literal notranslate"><span class="pre">xhrrr</span></code></a>(DATE, searchString[, fxx, …])</p></td>
 <td><p>Download HRRR data and return as an xarray Dataset (or Datasets)</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#hrrrb.archive.outFile_from_url" title="hrrrb.archive.outFile_from_url"><code class="xref py py-obj docutils literal notranslate"><span class="pre">outFile_from_url</span></code></a>(url, download_dir)</p></td>
-<td><p>Define the filename for a grib2 file from its URL.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_180</span></code>(lon)</p></td>
-<td><p>Wrap longitude from degrees [0, 360] to degrees [-180, 180].</p></td>
 </tr>
 </tbody>
 </table>
 <dl class="py function">
 <dt id="hrrrb.archive.download_hrrr">
-<code class="sig-prename descclassname">hrrrb.archive.</code><code class="sig-name descname">download_hrrr</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">DATES</span></em>, <em class="sig-param"><span class="n">searchString</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">fxx</span><span class="o">=</span><span class="default_value">range(0, 1)</span></em>, <em class="sig-param"><span class="n">model</span><span class="o">=</span><span class="default_value">'hrrr'</span></em>, <em class="sig-param"><span class="n">field</span><span class="o">=</span><span class="default_value">'sfc'</span></em>, <em class="sig-param"><span class="n">download_dir</span><span class="o">=</span><span class="default_value">WindowsPath('C:/Users/blaylockbk/data')</span></em>, <em class="sig-param"><span class="n">dryrun</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">verbose</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#hrrrb.archive.download_hrrr" title="Permalink to this definition">¶</a></dt>
-<dd><p>Download full HRRR grib2 files for a list of dates and forecasts.</p>
+<code class="sig-prename descclassname">hrrrb.archive.</code><code class="sig-name descname">download_hrrr</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">DATES</span></em>, <em class="sig-param"><span class="n">searchString</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">fxx</span><span class="o">=</span><span class="default_value">range(0, 1)</span></em>, <em class="sig-param"><span class="n">model</span><span class="o">=</span><span class="default_value">'hrrr'</span></em>, <em class="sig-param"><span class="n">field</span><span class="o">=</span><span class="default_value">'sfc'</span></em>, <em class="sig-param"><span class="n">save_dir</span><span class="o">=</span><span class="default_value">PosixPath('/p/home/blaylock/data')</span></em>, <em class="sig-param"><span class="n">download_source_priority</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">dryrun</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">verbose</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#hrrrb.archive.download_hrrr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Download full or partial HRRR grib2 files for a list of dates and forecasts.</p>
 <p>Attempts to download grib2 files from three different sources in the
-following order:
-1. NOAA Operational Model Archive and Distribution System (NOMADS).
-2. University of Utah HRRR archive (Pando)
-3. Google Cloud Platform (Google)</p>
+following order:</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li><p>NOAA Operational Model Archive and Distribution System (‘nomads’).</p></li>
+<li><p>Google Cloud Platform (‘google’)</p></li>
+<li><p>University of Utah HRRR archive (‘pando’)</p></li>
+<li><p>Amazon Web Services (‘aws’)</p></li>
+</ol>
+</div></blockquote>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>DATES</strong> (<em>datetime</em><em> or </em><em>list of datetimes</em>) – A datetime or list of datetimes that represent the model
-initialization time for which you want to download.</p></li>
-<li><p><strong>searchString</strong> (<em>str</em>) – <p>The string that describes the variables you want to download
-from the file. This is used as the <cite>searchString</cite> in
-<code class="docutils literal notranslate"><span class="pre">download_hrrr_subset</span></code> to looking for sepecific byte ranges
-from the file to download.</p>
-<p>Default is None, meaning to not search for variables. Furthermore,
-‘:’ is an alias for None, becuase it is equivalent to identifying
-every line in the .idx file.</p>
+initialization time for which you want to download. May also
+use a date as a string if it can be parsed by Pandas.</p></li>
+<li><p><strong>searchString</strong> (<em>str</em>) – <p>A regular expression string that describes the variables you
+want to download from the file. This is used as the
+<cite>searchString</cite> in <code class="docutils literal notranslate"><span class="pre">_download_hrrr_subset</span></code> to looking for
+specific byte ranges from the file to download.</p>
+<p>Default is None, meaning to not search for all variables and
+<strong>downloads the full GRIB2 file</strong>. Furthermore, <code class="docutils literal notranslate"><span class="pre">':'</span></code> is an
+alias for None because it is equivalent to identifying every
+line in the .idx file.</p>
 <p>Take a look at the .idx file at
 <a class="reference external" href="https://pando-rgw01.chpc.utah.edu/hrrr/sfc/20200624/hrrr.t01z.wrfsfcf17.grib2.idx">https://pando-rgw01.chpc.utah.edu/hrrr/sfc/20200624/hrrr.t01z.wrfsfcf17.grib2.idx</a>
-to get familiar with what an index file is.</p>
+for an example of what an index file looks like.</p>
 <p>Also look at this webpage: <a class="reference external" href="http://hrrr.chpc.utah.edu/HRRR_archive/hrrr_sfc_table_f00-f01.html">http://hrrr.chpc.utah.edu/HRRR_archive/hrrr_sfc_table_f00-f01.html</a>
-for additional details.**You should focus on the variable and level
-field for your searches**.</p>
+for additional details. <strong>You should focus your searches on the
+*variable* and *level* to key in on specific fields</strong>.</p>
 <p>You may use regular expression syntax to customize your search.
-Check out this regulare expression cheatsheet:
+Check out this regular expression cheatsheet:
 <a class="reference external" href="https://link.medium.com/7rxduD2e06">https://link.medium.com/7rxduD2e06</a></p>
 <p>Here are a few examples that can help you get started</p>
 <table class="docutils align-default">
 <colgroup>
-<col style="width: 25%" />
-<col style="width: 75%" />
+<col style="width: 38%" />
+<col style="width: 62%" />
 </colgroup>
 <thead>
 <tr class="row-odd"><th class="head"><p><code class="docutils literal notranslate"><span class="pre">searchString</span></code></p></th>
@@ -309,56 +308,75 @@ Check out this regulare expression cheatsheet:
 <tr class="row-odd"><td><p>’:TMP:’</p></td>
 <td><p>Temperature fields at all levels.</p></td>
 </tr>
-<tr class="row-even"><td><p>’:500 mb:’</p></td>
+<tr class="row-even"><td><p>’:UGRD:.* mb’</p></td>
+<td><p>U Wind at all pressure levels.</p></td>
+</tr>
+<tr class="row-odd"><td><p>’:500 mb:’</p></td>
 <td><p>All variables on the 500 mb level.</p></td>
 </tr>
-<tr class="row-odd"><td><p>’:APCP:’</p></td>
+<tr class="row-even"><td><p>’:APCP:’</p></td>
 <td><p>All accumulated precipitation fields.</p></td>
 </tr>
-<tr class="row-even"><td><p>’:UGRD:10 m’</p></td>
+<tr class="row-odd"><td><p>’:APCP:surface:0-[1-9]*’</p></td>
+<td><p>Accumulated precip since initialization time</p></td>
+</tr>
+<tr class="row-even"><td><p>’:APCP:surface:[1-9]*-[1-9]*’</p></td>
+<td><p>Accumulated precip over last hour</p></td>
+</tr>
+<tr class="row-odd"><td><p>’:UGRD:10 m’</p></td>
 <td><p>U wind component at 10 meters.</p></td>
 </tr>
-<tr class="row-odd"><td><p>’:(U|V)GRD:’</p></td>
+<tr class="row-even"><td><p>’:(U|V)GRD:’</p></td>
 <td><p>U and V wind component at all levels.</p></td>
 </tr>
-<tr class="row-even"><td><p>’:.GRD:’</p></td>
+<tr class="row-odd"><td><p>’:.GRD:’</p></td>
 <td><p>(Same as above)</p></td>
 </tr>
-<tr class="row-odd"><td><p>’:(TMP|DPT):’</p></td>
+<tr class="row-even"><td><p>’:(TMP|DPT):’</p></td>
 <td><p>Temperature and Dew Point for all levels .</p></td>
 </tr>
-<tr class="row-even"><td><p>’:(TMP|DPT|RH):’</p></td>
+<tr class="row-odd"><td><p>’:(TMP|DPT|RH):’</p></td>
 <td><p>TMP, DPT, and Relative Humidity for all levels.</p></td>
 </tr>
-<tr class="row-odd"><td><p>’:REFC:’</p></td>
+<tr class="row-even"><td><p>’:REFC:’</p></td>
 <td><p>Composite Reflectivity</p></td>
 </tr>
-<tr class="row-even"><td><p>’:surface:’</p></td>
+<tr class="row-odd"><td><p>’:surface:’</p></td>
 <td><p>All variables at the surface.</p></td>
 </tr>
-<tr class="row-odd"><td><p>’’</p></td>
+<tr class="row-even"><td><p>’’</p></td>
 <td></td>
 </tr>
 </tbody>
 </table>
 </p></li>
-<li><p><strong>fxx</strong> (<em>int</em><em> or </em><em>list of ints</em>) – Forecast lead time or list of forecast lead times to download.
-Default only grabs analysis hour (f00), but you might want all
-the forecasts hours, in that case, you could set <code class="docutils literal notranslate"><span class="pre">fxx=range(0,19)</span></code>.</p></li>
-<li><p><strong>model</strong> (<em>{'hrrr'</em><em>, </em><em>'hrrrak'</em><em>, </em><em>'hrrrX'}</em>) – The model type you want to download.
+<li><p><strong>fxx</strong> (<em>int</em><em> or </em><em>list of int</em>) – Forecast lead time or list of forecast lead times to download.
+Default only grabs analysis hour (f00). If you want all forecasts
+hours, you can set <code class="docutils literal notranslate"><span class="pre">fxx=range(0,19)</span></code>.</p></li>
+<li><p><strong>model</strong> (<em>{'hrrr'</em><em>, </em><em>'hrrrak'</em><em>, </em><em>'hrrrX'}</em>) – <p>The model type you want to download.
 - ‘hrrr’ HRRR Contiguous United States (operational)
 - ‘hrrrak’ HRRR Alaska. You can also use ‘alaska’ as an alias.
-- ‘hrrrX’ <em>experimental</em> HRRR (experimental version run at ESRL)</p></li>
+- ‘hrrrX’ <em>experimental</em> HRRR (experimental version run at ESRL)</p>
+<blockquote>
+<div><p>is only available from the Pando archive.</p>
+</div></blockquote>
+</p></li>
 <li><p><strong>field</strong> (<em>{'prs'</em><em>, </em><em>'sfc'</em><em>, </em><em>'nat'</em><em>, </em><em>'subh'}</em>) – Variable fields you wish to download. Only ‘sfc’ and ‘prs’ are
-available on Pando, but ‘nat’ and ‘subh’ might be attainable
-from NOMADS or Google.
+available on Pando, but ‘nat’ and ‘subh’ are attainable from
+other sources.
 - ‘sfc’ surface fields
 - ‘prs’ pressure fields
 - ‘nat’ native fields
 - ‘subh’ subhourly fields</p></li>
-<li><p><strong>download_dir</strong> (<em>str</em>) – Directory path to save the downloaded HRRR files.</p></li>
+<li><p><strong>save_dir</strong> (<em>pathlib.Path</em>) – Directory path to save the downloaded HRRR files.</p></li>
+<li><p><strong>download_source_priority</strong> (<em>None</em><em> or </em><em>list</em>) – If None, the default order is the order specified by
+<code class="docutils literal notranslate"><span class="pre">base_url</span></code>. You may, however, specify a different
+priority by supplying a list of keys in the <code class="docutils literal notranslate"><span class="pre">base_url</span></code>.
+For example, to download from ‘google’ before checking ‘pando’,
+you may do <code class="docutils literal notranslate"><span class="pre">download_source_priority=['google',</span> <span class="pre">'pando',</span> <span class="pre">'nomads']</span></code>.
+This also makes is possible to exclude a source.</p></li>
 <li><p><strong>dryrun</strong> (<em>bool</em>) – If True, instead of downloading the files, it will print out the
-files that could be downloaded. This is set to False by default.</p></li>
+files that would be downloaded. This is set to False by default.</p></li>
 <li><p><strong>verbose</strong> (<em>bool</em>) – If True, print lots of information (default).
 If False, only print some info about download progress.</p></li>
 </ul>
@@ -374,99 +392,16 @@ If False, only print some info about download progress.</p></li>
 </dd></dl>
 
 <dl class="py function">
-<dt id="hrrrb.archive.download_hrrr_subset">
-<code class="sig-prename descclassname">hrrrb.archive.</code><code class="sig-name descname">download_hrrr_subset</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">url</span></em>, <em class="sig-param"><span class="n">searchString</span></em>, <em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">download_dir</span><span class="o">=</span><span class="default_value">WindowsPath('C:/Users/blaylockbk/data')</span></em>, <em class="sig-param"><span class="n">dryrun</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">verbose</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#hrrrb.archive.download_hrrr_subset" title="Permalink to this definition">¶</a></dt>
-<dd><p>Download a subset of GRIB fields from a HRRR file located at a URL.</p>
-<p>The must be index (.idx) file available for the file.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>url</strong> (<em>string</em>) – The URL for the HRRR file you are trying to download. There must be an
-index file for the GRIB2 file. For example, if
-<code class="docutils literal notranslate"><span class="pre">url='https://pando-rgw01.chpc.utah.edu/hrrr/sfc/20200624/hrrr.t01z.wrfsfcf17.grib2'</span></code>,
-then <code class="docutils literal notranslate"><span class="pre">https://pando-rgw01.chpc.utah.edu/hrrr/sfc/20200624/hrrr.t01z.wrfsfcf17.grib2.idx</span></code>
-must also exist.</p></li>
-<li><p><strong>searchString</strong> (<em>str</em>) – <p>The string you are looking for in each line of the index file.
-Take a look at the <code class="docutils literal notranslate"><span class="pre">.idx</span></code> file at
-<a class="reference external" href="https://pando-rgw01.chpc.utah.edu/hrrr/sfc/20200624/hrrr.t01z.wrfsfcf17.grib2.idx">https://pando-rgw01.chpc.utah.edu/hrrr/sfc/20200624/hrrr.t01z.wrfsfcf17.grib2.idx</a>
-to get familiar with what is in each line.
-Also, look at this webpage: <a class="reference external" href="http://hrrr.chpc.utah.edu/HRRR_archive/hrrr_sfc_table_f00-f01.html">http://hrrr.chpc.utah.edu/HRRR_archive/hrrr_sfc_table_f00-f01.html</a>
-for additional details.**TIP: Focus on the variable and level type in
-your searches**.</p>
-<p>You may use regular expression syntax to customize your search.
-Check out this regular expression cheatsheet:
-<a class="reference external" href="https://link.medium.com/7rxduD2e06">https://link.medium.com/7rxduD2e06</a></p>
+<dt id="hrrrb.archive.xhrrr">
+<code class="sig-prename descclassname">hrrrb.archive.</code><code class="sig-name descname">xhrrr</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">DATE</span></em>, <em class="sig-param"><span class="n">searchString</span></em>, <em class="sig-param"><span class="n">fxx</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">DATE_is_valid_time</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">remove_grib2</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">add_crs</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">download_kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#hrrrb.archive.xhrrr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Download HRRR data and return as an xarray Dataset (or Datasets)</p>
+<p>You may only request one <cite>DATE</cite> and one <cite>fxx</cite> (forecast lead time).</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>Here are a few examples that can help you get started</p>
-<table class="docutils align-default">
-<colgroup>
-<col style="width: 25%" />
-<col style="width: 75%" />
-</colgroup>
-<thead>
-<tr class="row-odd"><th class="head"><p><code class="docutils literal notranslate"><span class="pre">searchString</span></code></p></th>
-<th class="head"><p>GRIB messages that will be downloaded</p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td><p>’:TMP:2 m’</p></td>
-<td><p>Temperature at 2 m.</p></td>
-</tr>
-<tr class="row-odd"><td><p>’:TMP:’</p></td>
-<td><p>Temperature fields at all levels.</p></td>
-</tr>
-<tr class="row-even"><td><p>’:500 mb:’</p></td>
-<td><p>All variables on the 500 mb level.</p></td>
-</tr>
-<tr class="row-odd"><td><p>’:APCP:’</p></td>
-<td><p>All accumulated precipitation fields.</p></td>
-</tr>
-<tr class="row-even"><td><p>’:UGRD:10 m’</p></td>
-<td><p>U wind component at 10 meters.</p></td>
-</tr>
-<tr class="row-odd"><td><p>’:(U|V)GRD:’</p></td>
-<td><p>U and V wind component at all levels.</p></td>
-</tr>
-<tr class="row-even"><td><p>’:.GRD:’</p></td>
-<td><p>(Same as above)</p></td>
-</tr>
-<tr class="row-odd"><td><p>’:(TMP|DPT):’</p></td>
-<td><p>Temperature and Dew Point for all levels .</p></td>
-</tr>
-<tr class="row-even"><td><p>’:(TMP|DPT|RH):’</p></td>
-<td><p>TMP, DPT, and Relative Humidity for all levels.</p></td>
-</tr>
-<tr class="row-odd"><td><p>’:REFC:’</p></td>
-<td><p>Composite Reflectivity</p></td>
-</tr>
-<tr class="row-even"><td><p>’:surface:’</p></td>
-<td><p>All variables at the surface.</p></td>
-</tr>
-</tbody>
-</table>
+<p>See <a class="reference external" href="https://github.com/ecmwf/cfgrib/issues/187">https://github.com/ecmwf/cfgrib/issues/187</a> for why there is
+a problem with reading multiple accumulated precipitation
+fields when searchString=’:APCP:’.</p>
 </div>
-</p></li>
-<li><p><strong>download_dir</strong> (<em>string</em>) – Directory path to save the file, default <code class="docutils literal notranslate"><span class="pre">~/data/</span></code>.</p></li>
-<li><p><strong>dryrun</strong> (<em>bool</em>) – If True, do not perform download, but print out what the function will
-attempt to do.</p></li>
-<li><p><strong>verbose</strong> (<em>bool</em>) – If True, print lots of details (default)</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p></p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>The path and name of the new file.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt id="hrrrb.archive.get_hrrr">
-<code class="sig-prename descclassname">hrrrb.archive.</code><code class="sig-name descname">get_hrrr</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">DATE</span></em>, <em class="sig-param"><span class="n">searchString</span></em>, <em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">fxx</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">DATE_is_valid_time</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">remove_grib2</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">add_crs</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">download_kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#hrrrb.archive.get_hrrr" title="Permalink to this definition">¶</a></dt>
-<dd><p>Download HRRR data and return as an xarray Dataset (or Datasets)</p>
-<p>Only request one <cite>DATE</cite> and <cite>fxx</cite> (forecast lead time).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -476,8 +411,8 @@ See more details in <code class="docutils literal notranslate"><span class="pre"
 <p>Some examples:</p>
 <table class="docutils align-default">
 <colgroup>
-<col style="width: 25%" />
-<col style="width: 75%" />
+<col style="width: 38%" />
+<col style="width: 62%" />
 </colgroup>
 <thead>
 <tr class="row-odd"><th class="head"><p><code class="docutils literal notranslate"><span class="pre">searchString</span></code></p></th>
@@ -491,31 +426,40 @@ See more details in <code class="docutils literal notranslate"><span class="pre"
 <tr class="row-odd"><td><p>’:TMP:’</p></td>
 <td><p>Temperature fields at all levels.</p></td>
 </tr>
-<tr class="row-even"><td><p>’:500 mb:’</p></td>
+<tr class="row-even"><td><p>’:UGRD:.* mb’</p></td>
+<td><p>U Wind at all pressure levels.</p></td>
+</tr>
+<tr class="row-odd"><td><p>’:500 mb:’</p></td>
 <td><p>All variables on the 500 mb level.</p></td>
 </tr>
-<tr class="row-odd"><td><p>’:APCP:’</p></td>
+<tr class="row-even"><td><p>’:APCP:’</p></td>
 <td><p>All accumulated precipitation fields.</p></td>
 </tr>
-<tr class="row-even"><td><p>’:UGRD:10 m’</p></td>
+<tr class="row-odd"><td><p>’:APCP:surface:0-[1-9]*’</p></td>
+<td><p>Accumulated precip since initialization time</p></td>
+</tr>
+<tr class="row-even"><td><p>’:APCP:surface:[1-9]*-[1-9]*’</p></td>
+<td><p>Accumulated precip over last hour</p></td>
+</tr>
+<tr class="row-odd"><td><p>’:UGRD:10 m’</p></td>
 <td><p>U wind component at 10 meters.</p></td>
 </tr>
-<tr class="row-odd"><td><p>’:(U|V)GRD:’</p></td>
+<tr class="row-even"><td><p>’:(U|V)GRD:’</p></td>
 <td><p>U and V wind component at all levels.</p></td>
 </tr>
-<tr class="row-even"><td><p>’:.GRD:’</p></td>
+<tr class="row-odd"><td><p>’:.GRD:’</p></td>
 <td><p>(Same as above)</p></td>
 </tr>
-<tr class="row-odd"><td><p>’:(TMP|DPT):’</p></td>
+<tr class="row-even"><td><p>’:(TMP|DPT):’</p></td>
 <td><p>Temperature and Dew Point for all levels .</p></td>
 </tr>
-<tr class="row-even"><td><p>’:(TMP|DPT|RH):’</p></td>
+<tr class="row-odd"><td><p>’:(TMP|DPT|RH):’</p></td>
 <td><p>TMP, DPT, and Relative Humidity for all levels.</p></td>
 </tr>
-<tr class="row-odd"><td><p>’:REFC:’</p></td>
+<tr class="row-even"><td><p>’:REFC:’</p></td>
 <td><p>Composite Reflectivity</p></td>
 </tr>
-<tr class="row-even"><td><p>’:surface:’</p></td>
+<tr class="row-odd"><td><p>’:surface:’</p></td>
 <td><p>All variables at the surface.</p></td>
 </tr>
 </tbody>
@@ -541,26 +485,22 @@ need them.</p>
 </dl>
 </p></li>
 <li><p><strong>add_crs</strong> (<em>bool</em>) – <dl class="simple">
-<dt>True  - (default) Append the Cartopy coordinate reference system (crs)</dt><dd><p>projection as an attribute to the Dataset.</p>
+<dt>True  - (default) Add the Cartopy coordinate reference system (crs)</dt><dd><p>projection as an attribute to the Dataset.</p>
 </dd>
 </dl>
 </p></li>
-<li><p><strong>**download_kwargs</strong> – Any other key word argument accepted by <code class="docutils literal notranslate"><span class="pre">download_hrrr</span></code>.
-{model, field, download_dir, dryrun, verbose}</p></li>
+<li><p><strong>**download_kwargs</strong> – <dl class="simple">
+<dt>Any other key word argument accepted by <code class="docutils literal notranslate"><span class="pre">download_hrrr</span></code>.</dt><dd><ul>
+<li><p>model : {‘hrrr’, ‘hrrrak’, ‘hrrrX’}</p></li>
+<li><p>field : {‘sfc’, ‘prs’, ‘nat’, ‘subh’}</p></li>
+<li><p>save_dir : pathlib.Path</p></li>
+<li><p>download_source_priority : a list of download sources</p></li>
+<li><p>dryrun : bool</p></li>
+<li><p>verbose : bool</p></li>
 </ul>
 </dd>
 </dl>
-</dd></dl>
-
-<dl class="py function">
-<dt id="hrrrb.archive.outFile_from_url">
-<code class="sig-prename descclassname">hrrrb.archive.</code><code class="sig-name descname">outFile_from_url</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">url</span></em>, <em class="sig-param"><span class="n">download_dir</span></em><span class="sig-paren">)</span><a class="headerlink" href="#hrrrb.archive.outFile_from_url" title="Permalink to this definition">¶</a></dt>
-<dd><p>Define the filename for a grib2 file from its URL.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>url</strong> (<em>str</em>) – A URL string for a grib2 file we want to download.</p></li>
-<li><p><strong>download_dir</strong> (<em>dir</em>) – The directory path to save the file.</p></li>
+</p></li>
 </ul>
 </dd>
 </dl>
@@ -674,11 +614,161 @@ is disregarded.</p></li>
 <col style="width: 90%" />
 </colgroup>
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#hrrrb.plots.simple_plot" title="hrrrb.plots.simple_plot"><code class="xref py py-obj docutils literal notranslate"><span class="pre">simple_plot</span></code></a>(ds[, ax])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hrrrb.plots.check_cartopy_axes" title="hrrrb.plots.check_cartopy_axes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_cartopy_axes</span></code></a>([ax, projection, verbose])</p></td>
+<td><p>Check an axes is a cartopy axes, else create a new cartopy axes.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hrrrb.plots.common_features" title="hrrrb.plots.common_features"><code class="xref py py-obj docutils literal notranslate"><span class="pre">common_features</span></code></a>([scale, counties_scale, …])</p></td>
+<td><p>Add common features to a cartopy axis.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hrrrb.plots.domain_border" title="hrrrb.plots.domain_border"><code class="xref py py-obj docutils literal notranslate"><span class="pre">domain_border</span></code></a>(x[, y, ax, text, method, …])</p></td>
+<td><p>Add a polygon of the domain boundary to a map.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hrrrb.plots.simple_plot" title="hrrrb.plots.simple_plot"><code class="xref py py-obj docutils literal notranslate"><span class="pre">simple_plot</span></code></a>(ds[, ax])</p></td>
 <td><p>Make a simple plot for each variable.</p></td>
 </tr>
 </tbody>
 </table>
+<dl class="py function">
+<dt id="hrrrb.plots.check_cartopy_axes">
+<code class="sig-prename descclassname">hrrrb.plots.</code><code class="sig-name descname">check_cartopy_axes</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ax</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">projection</span><span class="o">=</span><span class="default_value">cartopy.crs.PlateCarree</span></em>, <em class="sig-param"><span class="n">verbose</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#hrrrb.plots.check_cartopy_axes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check an axes is a cartopy axes, else create a new cartopy axes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>ax</strong> (<em>{None</em><em>, </em><em>cartopy.mpl.geoaxes.GeoAxesSubplot}</em>) – If None, and the plt.gca() is a cartopy axes, use it, else create a
+cartopy axes.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="hrrrb.plots.common_features">
+<code class="sig-prename descclassname">hrrrb.plots.</code><code class="sig-name descname">common_features</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">scale</span><span class="o">=</span><span class="default_value">'110m'</span></em>, <em class="sig-param"><span class="n">counties_scale</span><span class="o">=</span><span class="default_value">'20m'</span></em>, <em class="sig-param"><span class="n">figsize</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">ax</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">projection</span><span class="o">=</span><span class="default_value">cartopy.crs.PlateCarree</span></em>, <em class="sig-param"><span class="n">verbose</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">dark_theme</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">COASTLINES</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">BORDERS</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">STATES</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">COUNTIES</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">OCEAN</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">LAND</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">RIVERS</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">LAKES</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">STAMEN</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">COASTLINES_kwargs</span><span class="o">=</span><span class="default_value">{}</span></em>, <em class="sig-param"><span class="n">BORDERS_kwargs</span><span class="o">=</span><span class="default_value">{}</span></em>, <em class="sig-param"><span class="n">STATES_kwargs</span><span class="o">=</span><span class="default_value">{}</span></em>, <em class="sig-param"><span class="n">COUNTIES_kwargs</span><span class="o">=</span><span class="default_value">{}</span></em>, <em class="sig-param"><span class="n">OCEAN_kwargs</span><span class="o">=</span><span class="default_value">{}</span></em>, <em class="sig-param"><span class="n">LAND_kwargs</span><span class="o">=</span><span class="default_value">{}</span></em>, <em class="sig-param"><span class="n">RIVERS_kwargs</span><span class="o">=</span><span class="default_value">{}</span></em>, <em class="sig-param"><span class="n">LAKES_kwargs</span><span class="o">=</span><span class="default_value">{}</span></em>, <em class="sig-param"><span class="n">STAMEN_kwargs</span><span class="o">=</span><span class="default_value">{}</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#hrrrb.plots.common_features" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add common features to a cartopy axis.</p>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>This is a great way to initialize a new cartopy axes.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>scale</strong> (<em>{'10m'</em><em>, </em><em>'50m' 110m'}</em>) – <p>The cartopy feature’s level of detail</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">'10m'</span></code> scale for OCEAN and LAND takes a <em>long</em> time.
+Consider using <code class="docutils literal notranslate"><span class="pre">'50m'</span></code> if you need OCEAN and LAND colored.</p>
+</div>
+</p></li>
+<li><p><strong>counties_scale</strong> (<em>{'20m'</em><em>, </em><em>'5m'</em><em>, </em><em>'500k'}</em>) – Counties are plotted via MetPy and have different resolutions
+available than other features.
+-  20m = 20,000,000 resolution (Ok if you show a large area)
+-   5m =  5,000,000 resolution (provides good detail)
+- 500k =    500,000 resolution (plots very slow)</p></li>
+<li><p><strong>ax</strong> (<em>plot axes</em>) – The axis to add the feature to.
+If None, it will create a new cartopy axes with <code class="docutils literal notranslate"><span class="pre">projection</span></code>.</p></li>
+<li><p><strong>projection</strong> (<em>cartopy.crs</em>) – Projection to create new map if no cartopy axes is given.
+Default is PlateCarree.</p></li>
+<li><p><strong>dark_theme</strong> (<em>bool</em>) – <p>If True, use alternative “dark theme” colors for land and water.</p>
+<div class="figure align-default">
+<img alt="_static/BB_maps/common_features-1.png" src="_static/BB_maps/common_features-1.png" />
+</div>
+<div class="figure align-default">
+<img alt="_static/BB_maps/common_features-2.png" src="_static/BB_maps/common_features-2.png" />
+</div>
+</p></li>
+<li><p><strong>FEATURES</strong> (<em>bool</em>) – Toggle on various features. By default, only COASTLINES is
+turned on. Each feature has a cooresponding <code class="docutils literal notranslate"><span class="pre">FEATURE_kwargs={}</span></code>
+dictionary to supply additional arguments to cartopy’s add_feature
+method (e.g., change line color or width by feature type).</p></li>
+<li><p><strong>=========================================================</strong> (<em>==========</em>) – </p></li>
+<li><p><strong>Description</strong> (<em>FEATURE</em>) – </p></li>
+<li><p><strong>=========================================================</strong> – </p></li>
+<li><p><strong>Coastlines</strong> (<em>COASTLINES</em>) – </p></li>
+<li><p><strong>between land and ocean.</strong> (<em>boundary</em>) – </p></li>
+<li><p><strong>Borders between countries. Does not includes coast.</strong> (<em>BORDERS</em>) – </p></li>
+<li><p><strong>US state borders. Includes coast.</strong> (<em>STATES</em>) – </p></li>
+<li><p><strong>US Counties. Includes coast.</strong> (<em>COUNTIES</em>) – </p></li>
+<li><p><strong>Colored ocean area</strong> (<em>OCEAN</em>) – </p></li>
+<li><p><strong>Colored land area</strong> (<em>LAND</em>) – </p></li>
+<li><p><strong>Lines where rivers exist</strong> (<em>RIVERS</em>) – </p></li>
+<li><p><strong>Colored lake area</strong> (<em>LAKES</em>) – </p></li>
+<li><p><strong>=========================================================</strong> – </p></li>
+<li><p><strong>=========================================================</strong> – </p></li>
+<li><p><strong>TILE   Description</strong> (<em>MAP</em>) – </p></li>
+<li><p><strong>=========================================================</strong> – </p></li>
+<li><p><strong>Specify type and zoom level. http</strong> (<em>Stamen</em>) – <dl class="simple">
+<dt>Style: <code class="docutils literal notranslate"><span class="pre">terrain-background</span></code>, <code class="docutils literal notranslate"><span class="pre">terrain</span></code>,</dt><dd><p><code class="docutils literal notranslate"><span class="pre">toner-background</span></code>, <code class="docutils literal notranslate"><span class="pre">toner</span></code>, <cite>watercolor`</cite></p>
+</dd>
+</dl>
+<p>Zoom: int [0-10]</p>
+</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<p><a class="reference external" href="https://inversion.nrlmry.navy.mil/confluence/display/~Blaylock/2020/08/07/Cartopy%3A+Add+Common+Features">https://inversion.nrlmry.navy.mil/confluence/display/~Blaylock/2020/08/07/Cartopy%3A+Add+Common+Features</a></p>
+<p>Each feature can be toggled on by setting the argument to <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p>
+<div class="figure align-default">
+<img alt="_static/BB_maps/individual_features.png" src="_static/BB_maps/individual_features.png" />
+</div>
+<p>By default, the COASTLINES=True</p>
+<div class="figure align-default">
+<img alt="_static/BB_maps/features_with_coastlines.png" src="_static/BB_maps/features_with_coastlines.png" />
+</div>
+<div class="figure align-default">
+<img alt="_static/BB_maps/features_with_coastlines_DARK.png" src="_static/BB_maps/features_with_coastlines_DARK.png" />
+</div>
+<p>The next two illustrate the level of detail for <code class="docutils literal notranslate"><span class="pre">'50m'</span></code> and <code class="docutils literal notranslate"><span class="pre">'10m'</span></code>.
+Note that the OCEAN and LAND features take 3+ minutes to render for the
+10m resolution the first time you plot it.</p>
+<div class="figure align-default">
+<img alt="_static/BB_maps/features_with_coastlines_10m.png" src="_static/BB_maps/features_with_coastlines_10m.png" />
+</div>
+<div class="figure align-default">
+<img alt="_static/BB_maps/features_with_coastlines_50m.png" src="_static/BB_maps/features_with_coastlines_50m.png" />
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><ul class="simple">
+<li><p><em>The cartopy axes (obviously you don’t need this if you gave an ax</em></p></li>
+<li><p><em>as an argument, but it is useful if you initialize a new map).</em></p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="hrrrb.plots.domain_border">
+<code class="sig-prename descclassname">hrrrb.plots.</code><code class="sig-name descname">domain_border</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">y</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">ax</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">text</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">method</span><span class="o">=</span><span class="default_value">'cutout'</span></em>, <em class="sig-param"><span class="n">verbose</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">facealpha</span><span class="o">=</span><span class="default_value">0.25</span></em>, <em class="sig-param"><span class="n">text_kwargs</span><span class="o">=</span><span class="default_value">{}</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#hrrrb.plots.domain_border" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a polygon of the domain boundary to a map.</p>
+<p>The border is drawn from the outside values of the latitude and
+longitude xarray coordinates or numpy array.
+Lat/lon values should be given as degrees.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>xarray.Dataset</em><em> or </em><em>numpy.ndarray</em>) – If xarray, then should contain ‘latitude’ and ‘longitude’ coordinate.
+If numpy, then 2D numpy array for longitude and <cite>y</cite> arg is required.</p></li>
+<li><p><strong>y</strong> (<em>numpy.ndarray</em>) – Only required if x is a numpy array.
+A numpy array of latitude values.</p></li>
+<li><p><strong>ax</strong> (<em>cartopy axis</em>) – The axis to add the border to.
+Default None and will get the current axis (will create one).</p></li>
+<li><p><strong>text</strong> (<em>str</em>) – If not None, puts the string in the bottom left.</p></li>
+<li><p><strong>method</strong> (<em>{'fill'</em><em>, </em><em>'cutout'</em><em>, </em><em>'border'}</em>) – Plot the domain as a filled area Polygon, a Cutout from the
+map, or as a simple border.</p></li>
+<li><p><strong>facealpha</strong> (<em>float between 0 and 1</em>) – Since there isn’t a “facealpha” attribute for plotting,
+this will be it.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Adds a boarder around domain to the axis and returns the artist.</p>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py function">
 <dt id="hrrrb.plots.simple_plot">
 <code class="sig-prename descclassname">hrrrb.plots.</code><code class="sig-name descname">simple_plot</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ds</span></em>, <em class="sig-param"><span class="n">ax</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#hrrrb.plots.simple_plot" title="Permalink to this definition">¶</a></dt>
@@ -693,37 +783,29 @@ is disregarded.</p></li>
            
           </div>
           <footer>
-  
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="utils.html" class="btn btn-neutral float-right" title="Utilities" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="index.html" class="btn btn-neutral float-left" title="Welcome to HRRR-B’s documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
+        <a href="utils.html" class="btn btn-neutral float-right" title="Utilities" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="index.html" class="btn btn-neutral float-left" title="Welcome to HRRR-B’s documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
-  
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        
-        &copy; Copyright 2020, Brian K. Blaylock
+        &#169; Copyright 2020, Brian K. Blaylock.
 
     </p>
   </div>
     
     
     
-    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     
-    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
     
     provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
-
         </div>
       </div>
 
