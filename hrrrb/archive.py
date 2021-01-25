@@ -483,7 +483,7 @@ def download_hrrr(DATES, searchString=None, *,
         URL_list[source] = []
         
         for DATE, f in product(DATES, fxx):
-            if source == 'pando':
+            if source.startswith('pando'):
                 # Pando URL is unique
                 URL_list[source].append(f"{source_url}/{model}/{field}/{DATE:%Y%m%d}/{model}.t{DATE:%H}z.wrf{field}f{f:02d}.grib2")
             else:
