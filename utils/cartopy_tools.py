@@ -3,7 +3,7 @@
 ## February 3, 2021 
 
 """
-Last copied Dec 14 2020
+Last updated Feb 4, 2021
 
 =============
 Cartopy Tools
@@ -98,26 +98,29 @@ def common_features(scale='110m', counties_scale='20m', figsize=None, *,
         dictionary to supply additional arguments to cartopy's add_feature
         method (e.g., change line color or width by feature type).
 
-    ========== =========================================================
-    FEATURE    Description
-    ========== =========================================================
-    COASTLINES Coastlines, boundary between land and ocean.
-    BORDERS    Borders between countries. *Does not includes coast*.
-    STATES     US state borders. Includes coast.
-    COUNTIES   US Counties. Includes coast.
-    OCEAN      Colored ocean area
-    LAND       Colored land area
-    RIVERS     Lines where rivers exist
-    LAKES      Colored lake area
-    ========== =========================================================
+        ========== =========================================================
+        FEATURE    Description
+        ========== =========================================================
+        COASTLINES Coastlines, boundary between land and ocean.
+        BORDERS    Borders between countries. *Does not includes coast*.
+        STATES     US state borders. Includes coast.
+        COUNTIES   US Counties. Includes coast.
+        OCEAN      Colored ocean area
+        LAND       Colored land area
+        RIVERS     Lines where rivers exist
+        LAKES      Colored lake area
+        ========== =========================================================
     
-    ========== =========================================================
-    MAP TILE   Description
-    ========== =========================================================
-    Stamen     Specify type and zoom level. http://maps.stamen.com/
-               Style: ``terrain-background``, ``terrain``, 
-                      ``toner-background``, ``toner``, `watercolor``
-               Zoom: int [0-10]
+        ========== =========================================================
+        MAP TILE   Description
+        ========== =========================================================
+        Stamen     Specify type and zoom level. http://maps.stamen.com/
+                   Style: ``terrain-background``, ``terrain``, 
+                          ``toner-background``, ``toner``, `watercolor``
+                   Zoom: int [0-10]
+                   alpha: [0-1]
+                   alpha_color: an overlay color to put on top of map
+        ========== =========================================================
 
     Examples
     --------
@@ -143,6 +146,7 @@ def common_features(scale='110m', counties_scale='20m', figsize=None, *,
     -------
     The cartopy axes (obviously you don't need this if you gave an ax
     as an argument, but it is useful if you initialize a new map).
+
     """
     ax = check_cartopy_axes(ax, projection)
     
@@ -222,7 +226,10 @@ def common_features(scale='110m', counties_scale='20m', figsize=None, *,
 
         if 'alpha' in STAMEN_kwargs:
             # Need to manually put a white layer over the STAMEN terrain
-            STAMEN_kwargs.setdefault('alpha_color', 'w')
+            if dark_theme:
+                STAMEN_kwargs.setdefault('alpha_color', 'k')
+            else:
+                STAMEN_kwargs.setdefault('alpha_color', 'w')
             poly = ax.projection.domain
             ax.add_feature(feature.ShapelyFeature([poly], ax.projection),
                            color=STAMEN_kwargs['alpha_color'], 
