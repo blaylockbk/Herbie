@@ -6,7 +6,7 @@ README = (HERE / 'README.md').read_text(encoding="utf8")
 
 setup(
     name = 'hrrrb',   # Unfortunately, "herbie" is already used.
-    version = '0.0.1',
+    version = '0.0.2',
     author = 'Brian K. Blaylock',
     author_email = "blaylockbk@gmail.com",
     description = 'Retreive historical and recent forecasts from the High-Resolution Rapid Refresh (HRRR) model.',
@@ -14,7 +14,7 @@ setup(
     long_description_content_type = 'text/markdown',
     project_urls = {
         'Source Code': 'https://github.com/blaylockbk/HRRR_archive_download',
-        'Documentation': 'https://github.com/blaylockbk/HRRR_archive_downloady/blob/master/README.md',
+        'Documentation': 'https://blaylockbk.github.io/HRRR_archive_download/_build/html/',
     },
     license = "MIT",
     packages = find_packages(),

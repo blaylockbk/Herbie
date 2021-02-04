@@ -3,9 +3,9 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
   
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Welcome to HRRR-B’s documentation! &mdash; HRRR-B 0.0.1 documentation</title>
   
@@ -17,7 +17,10 @@
 
   
   
+
   
+  
+
   
 
   
@@ -30,7 +33,6 @@
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
-        <script src="_static/language_data.js"></script>
         <script src="https://kit.fontawesome.com/f6cc126dcc.js"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
@@ -52,12 +54,12 @@
           
 
           
-            <a href="#" class="icon icon-home" alt="Documentation Home"> HRRR-B
+            <a href="#" class="icon icon-home"> HRRR-B
           
 
           
             
-            <img src="_static/herbie.jpg" class="logo" alt="Logo"/>
+            <img src="_static/HRRR-B_logo.png" class="logo" alt="Logo"/>
           
           </a>
 
@@ -130,6 +132,8 @@
 
 
 
+
+
 <div role="navigation" aria-label="breadcrumbs navigation">
 
   <ul class="wy-breadcrumbs">
@@ -141,7 +145,7 @@
     
       <li class="wy-breadcrumbs-aside">
         
-            
+          
             <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
           
         
@@ -155,7 +159,8 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="welcome-to-hrrr-b-s-documentation">
+  <a class="nav-link nav-external" href="https://blaylockbk.github.io/goes2go/_build/html/">GOES-2-go<i class="fas fa-external-link-alt" aria-hidden="true"></i></a>
+<a class="nav-link nav-external" href="https://blaylockbk.github.io/SynopticPy/_build/html/">SynopticPy<i class="fas fa-external-link-alt" aria-hidden="true"></i></a><div class="section" id="welcome-to-hrrr-b-s-documentation">
 <h1>Welcome to HRRR-B’s documentation!<a class="headerlink" href="#welcome-to-hrrr-b-s-documentation" title="Permalink to this headline">¶</a></h1>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -170,18 +175,18 @@
 <li class="toctree-l1"><a class="reference internal" href="utils.html">Utilities</a></li>
 </ul>
 </div>
-<p><a href="#id37"><span class="problematic" id="id38">|![](https://raw.githubusercontent.com/blaylockbk/SynopticPy/master/images/Balloon_logo/balloon_bkb_sm.png)|**Brian Blaylock**&lt;br&gt;🌐 [Webpage](http://home.chpc.utah.edu/~u0553130/Brian_Blaylock/home.html)&lt;br&gt;[🔩 PyPI](https://pypi.org/user/blaylockbk/)
+<p><a href="#id49"><span class="problematic" id="id50">|![](https://raw.githubusercontent.com/blaylockbk/SynopticPy/master/images/Balloon_logo/balloon_bkb_sm.png)|**Brian Blaylock**&lt;br&gt;🌐 [Webpage](http://home.chpc.utah.edu/~u0553130/Brian_Blaylock/home.html)&lt;br&gt;[🔩 PyPI](https://pypi.org/user/blaylockbk/)
 |:--|</span></a>:–|</p>
-<p># Brian’s High-Resolution Rapid Refresh code: HRRR-B</p>
-<p><a href="#id39"><span class="problematic" id="id40">|HRRR Archive Website|**http://hrrr.chpc.utah.edu/**|</span></a>
-<a href="#id41"><span class="problematic" id="id42">|--:|</span></a>:–|</p>
+<p># Brian’s High-Resolution Rapid Refresh tools: HRRR-B</p>
+<p><a href="#id51"><span class="problematic" id="id52">|HRRR Archive Website|**http://hrrr.chpc.utah.edu/**|</span></a>
+<a href="#id53"><span class="problematic" id="id54">|--:|</span></a>:–|</p>
 <p><strong>HRRR-B</strong>, or “Herbie,” is a python package for downloading recent and archived High Resolution Rapid Refresh (HRRR) model forecasts and opening HRRR data in an xarray.Dataset. I created most of this during my PhD and decided to organize what I created into a more coherent package. It will continue to evolve at my leisure.</p>
 <p>## About <cite>HRRR-B</cite>
-HRRR model output is archived by the MesoWest group at the University of Utah on the [CHPC Pando Archive System](<a class="reference external" href="http://hrrr.chpc.utah.edu/">http://hrrr.chpc.utah.edu/</a>). The GRIB2 files are copied from from NCEP every couple hours. Google also has a growing HRRR archive. Between these three data sources, there is a lot of archived HRRR data available. <strong>This Python package helps download those archived HRRR files.</strong></p>
+HRRR model output is archived by the MesoWest group at the University of Utah on the [CHPC Pando Archive System](<a class="reference external" href="http://hrrr.chpc.utah.edu/">http://hrrr.chpc.utah.edu/</a>). The GRIB2 files are copied from from NCEP every couple hours. NOAA started pushing HRRR data to Google and AWS at in the later half of 2020. Between these data sources, there is a lot of archived HRRR data available. <strong>This Python package helps download those archived HRRR files.</strong></p>
 <ul class="simple">
 <li><p>Download full or partial HRRR GRIB2 files. Partial files are downloaded by GRIB message.</p></li>
 <li><dl class="simple">
-<dt>Three different data sources: [NCEP-NOMADS](<a class="reference external" href="https://nomads.ncep.noaa.gov/">https://nomads.ncep.noaa.gov/</a>), [Pando (University of Utah)](<a class="reference external" href="http://hrrr.chpc.utah.edu/">http://hrrr.chpc.utah.edu/</a>), and [Google Cloud](<a class="reference external" href="https://console.cloud.google.com/storage/browser/high-resolution-rapid-refresh?pli=1">https://console.cloud.google.com/storage/browser/high-resolution-rapid-refresh?pli=1</a>).</dt><dd><ul>
+<dt>Different data sources: [NCEP-NOMADS](<a class="reference external" href="https://nomads.ncep.noaa.gov/">https://nomads.ncep.noaa.gov/</a>), [Pando (University of Utah)](<a class="reference external" href="http://hrrr.chpc.utah.edu/">http://hrrr.chpc.utah.edu/</a>), [Google Cloud Platform](<a class="reference external" href="https://console.cloud.google.com/storage/browser/high-resolution-rapid-refresh?pli=1">https://console.cloud.google.com/storage/browser/high-resolution-rapid-refresh?pli=1</a>), and [Amazon Web Services]().</dt><dd><ul>
 <li><p>&gt; The Pando HRRR archive is in [process of moving to Amazon Web Services](<a class="reference external" href="https://github.com/blaylockbk/HRRR_archive_download/issues/2">https://github.com/blaylockbk/HRRR_archive_download/issues/2</a>) as a public [Earth](<a class="reference external" href="https://aws.amazon.com/earth/">https://aws.amazon.com/earth/</a>) dataset. It will be available in [zarr](<a class="reference external" href="https://zarr.readthedocs.io/en/stable/">https://zarr.readthedocs.io/en/stable/</a>) format that will allow for more flexibility for chunked data requests. See [Issue #2](<a class="reference external" href="https://github.com/blaylockbk/HRRR_archive_download/issues/2">https://github.com/blaylockbk/HRRR_archive_download/issues/2</a>).</p></li>
 </ul>
 </dd>
@@ -249,7 +254,9 @@ For the latest published version
 - [Part 2: How to download a subset of variables from a HRRR file](<a class="reference external" href="https://github.com/blaylockbk/HRRR_archive_download/blob/master/notebooks/demo_download_hrrr_archive_part2.ipynb">https://github.com/blaylockbk/HRRR_archive_download/blob/master/notebooks/demo_download_hrrr_archive_part2.ipynb</a>)
 - [Part 3: A function that can download many full files, or subset of files](<a class="reference external" href="https://github.com/blaylockbk/HRRR_archive_download/blob/master/notebooks/demo_download_hrrr_archive_part3.ipynb">https://github.com/blaylockbk/HRRR_archive_download/blob/master/notebooks/demo_download_hrrr_archive_part3.ipynb</a>)
 - [Part 4: Opening GRIB2 files in Python with xarray and cfgrib](<a class="reference external" href="https://github.com/blaylockbk/HRRR_archive_download/blob/master/notebooks/demo_download_hrrr_archive_part4.ipynb">https://github.com/blaylockbk/HRRR_archive_download/blob/master/notebooks/demo_download_hrrr_archive_part4.ipynb</a>)</p>
-<p>—</p>
+<p>These are additional notebooks for useful tips/tricks
+- [How to make Cartopy maps with HRRR data with Brian’s <cite>common_features</cite> helper](<a class="reference external" href="https://github.com/blaylockbk/HRRR_archive_download/blob/master/notebooks/demo_plot-on-map-with-common-features.ipynb">https://github.com/blaylockbk/HRRR_archive_download/blob/master/notebooks/demo_plot-on-map-with-common-features.ipynb</a>)
+—</p>
 <p># 👨🏻‍💻 <cite>hrrrb.archive</cite>
 If you are looking for a no-fuss method to download the HRRR data you want, use the <cite>hrrrb.archive</cite> module.</p>
 <p><code class="docutils literal notranslate"><span class="pre">`python</span>
@@ -257,29 +264,36 @@ If you are looking for a no-fuss method to download the HRRR data you want, use 
 <span class="pre">`</span></code>
 or
 <code class="docutils literal notranslate"><span class="pre">`</span> <span class="pre">python</span>
-<span class="pre">from</span> <span class="pre">hrrrb.archive</span> <span class="pre">import</span> <span class="pre">get_hrrr</span>
+<span class="pre">from</span> <span class="pre">hrrrb.archive</span> <span class="pre">import</span> <span class="pre">download_hrrr,</span> <span class="pre">xhrrr</span>
 <span class="pre">`</span></code></p>
-<p><a href="#id43"><span class="problematic" id="id44">|Main Functions|</span></a> What it will do for you…
-<a href="#id45"><span class="problematic" id="id46">|--|</span></a>–
-<a href="#id47"><span class="problematic" id="id48">|`download_hrrr`|</span></a> Downloads full or partial HRRR GRIB2 files to local disk.
-<a href="#id15"><span class="problematic" id="id16">|</span></a><cite>get_hrrr</cite> | Downloads single HRRR file and returns as an <cite>xarray.Dataset</cite> or list of Datasets.</p>
+<p><a href="#id55"><span class="problematic" id="id56">|Main Functions|</span></a> What it will do for you…
+<a href="#id57"><span class="problematic" id="id58">|--|</span></a>–
+<a href="#id59"><span class="problematic" id="id60">|`download_hrrr`|</span></a> Downloads full or partial HRRR GRIB2 files to local disk.
+<a href="#id15"><span class="problematic" id="id16">|</span></a><cite>xhrrr</cite> | Downloads single HRRR file and returns as an <cite>xarray.Dataset</cite> or list of Datasets.</p>
 <p>## [👉 Click Here For Some Examples](<a class="reference external" href="https://github.com/blaylockbk/HRRR_archive_download/blob/master/notebooks/examples.ipynb">https://github.com/blaylockbk/HRRR_archive_download/blob/master/notebooks/examples.ipynb</a>)</p>
 <p>## Function arguments</p>
 <p><a href="#id17"><span class="problematic" id="id18">``</span></a><a href="#id19"><span class="problematic" id="id20">`</span></a>python
 # Download full GRIB2 files to local disk
-download_hrrr(DATES, searchString=None, fxx=range(0, 1),</p>
+download_hrrr(DATES, searchString=None, <a href="#id21"><span class="problematic" id="id22">*</span></a>,</p>
 <blockquote>
-<div><p>model=’hrrr’, field=’sfc’,
-download_dir=’./’, dryrun=False, verbose=True)</p>
+<div><p>fxx=range(0, 1),
+model=’hrrr’,
+field=’sfc’,
+save_dir=_default_save_dir,
+download_source_priority=None,
+dryrun=False, verbose=True)</p>
 </div></blockquote>
-<p><a href="#id21"><span class="problematic" id="id22">``</span></a>`
-<a href="#id23"><span class="problematic" id="id24">``</span></a><a href="#id25"><span class="problematic" id="id26">`</span></a>python
+<p><a href="#id23"><span class="problematic" id="id24">``</span></a>`
+<a href="#id25"><span class="problematic" id="id26">``</span></a><a href="#id27"><span class="problematic" id="id28">`</span></a>python
 # Download file and open as xarray
-get_hrrr(DATE, searchString, fxx=0, DATE_is_valid_time=False,</p>
+xhrrr(DATE, searchString, fxx=0, <a href="#id29"><span class="problematic" id="id30">*</span></a>,</p>
 <blockquote>
-<div><p>remove_grib2=True, add_crs=True, <a href="#id27"><span class="problematic" id="id28">**</span></a>download_kwargs):</p>
+<div><p>DATE_is_valid_time=False,
+remove_grib2=True,
+add_crs=True,
+<a href="#id31"><span class="problematic" id="id32">**</span></a>download_kwargs)</p>
 </div></blockquote>
-<p><a href="#id29"><span class="problematic" id="id30">``</span></a><a href="#id31"><span class="problematic" id="id32">`</span></a></p>
+<p><a href="#id33"><span class="problematic" id="id34">``</span></a><a href="#id35"><span class="problematic" id="id36">`</span></a></p>
 <ul class="simple">
 <li><p><cite>DATES</cite> Datetime or list of datetimes representing the model initialization time.</p></li>
 <li><p><cite>searchString</cite> <strong>See note below</strong></p></li>
@@ -307,39 +321,43 @@ get_hrrr(DATE, searchString, fxx=0, DATE_is_valid_time=False,</p>
 </dl>
 </li>
 <li><dl class="simple">
-<dt><cite>download_dir</cite> The directory path the files will be saved in.</dt><dd><ul>
+<dt><cite>save_dir</cite> The directory path the files will be saved in.</dt><dd><ul>
 <li><p>Default downloads files into the user’s home directory <cite>~/data/hrrr</cite>.</p></li>
 </ul>
 </dd>
 </dl>
 </li>
+<li><p><cite>download_source_priority</cite> The default source priority is <cite>[‘pando’, ‘google’, ‘nomads’]</cite>, but you might want to instead try to download a file from Google before trying to get it from Pando. In that case, set to <cite>[‘google’, ‘pando’, ‘nomads’]</cite>.</p></li>
 <li><p><cite>dryrun</cite> If <cite>True</cite>, the function will tell you what it will download but not actually download anything.</p></li>
 <li><p><cite>verbose</cite> If <cite>True</cite>, prints lots of info to the screen.</p></li>
 </ul>
-<p>Specific to <cite>get_hrrr</cite>:
-- <cite>DATE_is_valid_time</cite> For <em>get_hrrr</em>, if <cite>True</cite> the input DATE will represent the valid time. If <cite>False</cite>, DATE represents the the model run time.
-- <cite>remove_grib2</cite> For <em>get_hrrr</em>, the grib2 file downloaded will be removed after reading the data into an xarray Dataset.
-- <cite>add_crs</cite> For <em>get_hrrr</em>, will create a cartopy coordinate reference system object and append it as a Dataset attribute.</p>
+<p>Specific to <cite>xhrrr</cite>:
+- <cite>DATE_is_valid_time</cite> For <em>xhrrr</em>, if <cite>True</cite> the input DATE will represent the valid time. If <cite>False</cite>, DATE represents the the model run time.
+- <cite>remove_grib2</cite> For <em>xhrrr</em>, the grib2 file downloaded will be removed after reading the data into an xarray Dataset.
+- <cite>add_crs</cite> For <em>xhrrr</em>, will create a cartopy coordinate reference system object and append it as a Dataset attribute.</p>
 <p>## The <strong>`searchString`</strong> argument
 <cite>searchString</cite> is used to specify select variables you want to download. For example, instead of downloading the full GRIB2 file, you could download just the wind or precipitation variables. Read the docstring for the functions or look at [notebook #2](./notebooks/demo_download_hrrr_archive_part2.ipynb) for more details.</p>
 <p><cite>searchString</cite> uses regular expression to search for GRIB message lines in the files .idx file. There must be a .idx file for the GRIB2 file for the search to work.</p>
 <p>For reference, here are some useful examples to give you some ideas…</p>
-<p><a href="#id49"><span class="problematic" id="id50">|`searchString=`|</span></a> GRIB fields that will be downloaded
-<a href="#id51"><span class="problematic" id="id52">|--|</span></a>–
-<a href="#id53"><span class="problematic" id="id54">|`':TMP:2 m'`      | Temperature at 2 m
+<p><a href="#id61"><span class="problematic" id="id62">|`searchString=`|</span></a> GRIB fields that will be downloaded
+<a href="#id63"><span class="problematic" id="id64">|--|</span></a>–
+<a href="#id65"><span class="problematic" id="id66">|`':TMP:2 m'`      | Temperature at 2 m
 |`':TMP:'`         | Temperature fields at all levels
+|``':UGRD:.* mb'`` | U Wind at all pressure levels.
 |`':500 mb:'`      | All variables on the 500 mb level
 |`':APCP:'`        | All accumulated precipitation fields
-|`':UGRD:10 m'`   | U wind component at 10 meters
+|`':APCP:surface:0-[1-9]*'` | Accumulated since initialization time
+|`':APCP:surface:[1-9]*-[1-9]*'`|</span></a> Accumulated over last hour
+<a href="#id67"><span class="problematic" id="id68">|`':UGRD:10 m'`   | U wind component at 10 meters
 |`':(U\|V)GRD:'`    | U and V wind component at all levels
 |`':.GRD:'`        | (Same as above)
 |`'(WIND\|GUST\|UGRD\|VGRD):(surface\|10 m)`|</span></a> Surface wind, surface gusts, and 10 m u- v-components
-<a href="#id55"><span class="problematic" id="id56">|`':(TMP\|DPT):'`   | Temperature and Dew Point for all levels
+<a href="#id69"><span class="problematic" id="id70">|`':(TMP\|DPT):'`   | Temperature and Dew Point for all levels
 |`':(TMP\|DPT\|RH):'`|</span></a> TMP, DPT, and Relative Humidity for all levels
-<a href="#id57"><span class="problematic" id="id58">|`':REFC:'`        | Composite Reflectivity
+<a href="#id71"><span class="problematic" id="id72">|`':REFC:'`        | Composite Reflectivity
 |`:(APCP\|REFC):`|</span></a> Precipitation and reflectivity
-<a href="#id33"><span class="problematic" id="id34">|</span></a><cite>’:surface:’</cite>     | All variables at the surface
-<a href="#id35"><span class="problematic" id="id36">|</span></a><cite>’((U|V)GRD:10 m|TMP:2 m|APCP)’</cite> | 10-m wind, 2-m temp, and accumulated precipitation.</p>
+<a href="#id37"><span class="problematic" id="id38">|</span></a><cite>’:surface:’</cite>     | All variables at the surface
+<a href="#id39"><span class="problematic" id="id40">|</span></a><cite>’((U|V)GRD:10 m|TMP:2 m|APCP)’</cite> | 10-m wind, 2-m temp, and accumulated precipitation.</p>
 <p>&lt;br&gt;&lt;br&gt;</p>
 <p>&gt; <strong>Are you working with precipitation fields? (e.g., APCP)</strong>
 &gt;A lot of users have asked why the precipitation accumulation fields are all zero for the model analysis (F00). That is because it is an <em>accumulation</em> variable over a period of time. At the model analysis time, there has been no precipitation because no time has passed.
@@ -348,8 +366,30 @@ get_hrrr(DATE, searchString, fxx=0, DATE_is_valid_time=False,</p>
 &gt;- <strong>F01</strong> only has a 0-1 hour accumulation
 &gt;- <strong>F02</strong> has a 0-2 hour accumulation and a 1-2 hour accumulation.
 &gt;- <strong>F03</strong> has a 0-3 hour accumulation and a 2-3 hour accumulation.
-&gt;- etc.</p>
-<p>&lt;br&gt;</p>
+&gt;- etc.
+&gt;
+&gt; NOTE: When cfgrib reads a grib file with more than one accumulated precipitation fields, it will not read all the fields. I think this is an issue with cfgrib (see [issue here](<a class="reference external" href="https://github.com/ecmwf/cfgrib/issues/187">https://github.com/ecmwf/cfgrib/issues/187</a>)). The way around this is to key in on a <em>single</em> APCP field. See the <cite>searchString</cite> examples above for keying in on a single APCP field.
+&lt;br&gt;</p>
+<p>### Quickly look at GRIB files in the command line
+There are two tools for looking at GRIB file contents in the command line.
+1. <cite>wgrib2</cite> : can be installed via conda-forge in your environment. A product from NOAA.
+2. <cite>grib_ls</cite> : is a dependency of cfgrib and is included when you install cfgrib in your environment. A product from ECMWF.</p>
+<p>For the sample precipitation data, below is the output using both tools</p>
+<p><code class="docutils literal notranslate"><span class="pre">`bash</span>
+<span class="pre">$</span> <span class="pre">wgrib2</span> <span class="pre">subset_20201214_hrrr.t00z.wrfsfcf12.grib2</span>
+<span class="pre">1:0:d=2020121400:APCP:surface:0-12</span> <span class="pre">hour</span> <span class="pre">acc</span> <span class="pre">fcst:</span>
+<span class="pre">2:887244:d=2020121400:APCP:surface:11-12</span> <span class="pre">hour</span> <span class="pre">acc</span> <span class="pre">fcst:</span>
+<span class="pre">`</span></code></p>
+<p><a href="#id41"><span class="problematic" id="id42">``</span></a><a href="#id43"><span class="problematic" id="id44">`</span></a>bash
+$ grib_ls subset_20201214_hrrr.t00z.wrfsfcf12.grib2
+subset_20201214_hrrr.t00z.wrfsfcf12.grib2
+edition      centre       date         dataType     gridType     typeOfLevel  level        stepRange    shortName    packingType
+2            kwbc         20201214     fc           lambert      surface      0            0-12         tp           grid_complex_spatial_differencing
+2            kwbc         20201214     fc           lambert      surface      0            11-12        tp           grid_complex_spatial_differencing
+2 of 2 messages in subset_20201214_hrrr.t00z.wrfsfcf12.grib2</p>
+<p>2 of 2 total messages in 1 files
+<a href="#id45"><span class="problematic" id="id46">``</span></a><a href="#id47"><span class="problematic" id="id48">`</span></a></p>
+<p>I hope some of these tips are helpful to you.</p>
 <p><strong>Best of luck 🍀</strong>
 - Brian</p>
 <p>—</p>
@@ -375,35 +415,28 @@ get_hrrr(DATE, searchString, fxx=0, DATE_is_valid_time=False,</p>
            
           </div>
           <footer>
-  
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="hrrrb.html" class="btn btn-neutral float-right" title="hrrrb" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
+        <a href="hrrrb.html" class="btn btn-neutral float-right" title="hrrrb" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
-  
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        
-        &copy; Copyright 2020, Brian K. Blaylock
+        &#169; Copyright 2020, Brian K. Blaylock.
 
     </p>
   </div>
     
     
     
-    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     
-    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
     
     provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
-
         </div>
       </div>
 

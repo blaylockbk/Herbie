@@ -3,6 +3,11 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
+.. raw:: html
+   
+   <a class="nav-link nav-external" href="https://blaylockbk.github.io/goes2go/_build/html/">GOES-2-go<i class="fas fa-external-link-alt" aria-hidden="true"></i></a>
+   <a class="nav-link nav-external" href="https://blaylockbk.github.io/SynopticPy/_build/html/">SynopticPy<i class="fas fa-external-link-alt" aria-hidden="true"></i></a>
+
 Welcome to HRRR-B's documentation!
 ==================================
 

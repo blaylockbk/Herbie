@@ -61,7 +61,7 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store', '.ipynb_checkpoints', '.
 # a list of builtin themes.
 #
 html_theme = 'sphinx_rtd_theme'
-html_logo = '_static/herbie.jpg'
+html_logo = '_static/HRRR-B_logo.png'
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
@@ -83,3 +83,16 @@ autodoc_default_options = {
 }
 
 autodoc_mock_imports = ["xesmf", "numpy", "matplotlib", "pandas", "xarray", "cartopy", "cfgrib"]
+
+
+"""
+IMPORTANT NOTES ABOUT PUBLISHING TO GITHUB PAGES
+-----------------------------------------------
+1. Must have an empty file called .nojekell in this directory.
+
+2. Include an index.html file to redirect to the actual html build
+   Something like this in that file (yes, only one line)...
+        <meta http-equiv="Refresh" content="0;url=_build/html/"/>
+
+3. 
+"""

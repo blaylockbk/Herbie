@@ -2,7 +2,7 @@
 |:--|:--|
 
 
-# Brian's High-Resolution Rapid Refresh code: HRRR-B
+# Brian's High-Resolution Rapid Refresh tools: HRRR-B
 
 |HRRR Archive Website|**http://hrrr.chpc.utah.edu/**|
 |--:|:--|
@@ -10,10 +10,10 @@
 **HRRR-B**, or "Herbie," is a python package for downloading recent and archived High Resolution Rapid Refresh (HRRR) model forecasts and opening HRRR data in an xarray.Dataset. I created most of this during my PhD and decided to organize what I created into a more coherent package. It will continue to evolve at my leisure.
 
 ## About `HRRR-B`
-HRRR model output is archived by the MesoWest group at the University of Utah on the [CHPC Pando Archive System](http://hrrr.chpc.utah.edu/). The GRIB2 files are copied from from NCEP every couple hours. Google also has a growing HRRR archive. Between these three data sources, there is a lot of archived HRRR data available. **This Python package helps download those archived HRRR files.**
+HRRR model output is archived by the MesoWest group at the University of Utah on the [CHPC Pando Archive System](http://hrrr.chpc.utah.edu/). The GRIB2 files are copied from from NCEP every couple hours. NOAA started pushing HRRR data to Google and AWS at in the later half of 2020. Between these data sources, there is a lot of archived HRRR data available. **This Python package helps download those archived HRRR files.**
 
 - Download full or partial HRRR GRIB2 files. Partial files are downloaded by GRIB message.
-- Three different data sources: [NCEP-NOMADS](https://nomads.ncep.noaa.gov/), [Pando (University of Utah)](http://hrrr.chpc.utah.edu/), and [Google Cloud](https://console.cloud.google.com/storage/browser/high-resolution-rapid-refresh?pli=1). 
+- Different data sources: [NCEP-NOMADS](https://nomads.ncep.noaa.gov/), [Pando (University of Utah)](http://hrrr.chpc.utah.edu/), [Google Cloud Platform](https://console.cloud.google.com/storage/browser/high-resolution-rapid-refresh?pli=1), and [Amazon Web Services](). 
     - > The Pando HRRR archive is in [process of moving to Amazon Web Services](https://github.com/blaylockbk/HRRR_archive_download/issues/2) as a public [Earth](https://aws.amazon.com/earth/) dataset. It will be available in [zarr](https://zarr.readthedocs.io/en/stable/) format that will allow for more flexibility for chunked data requests. See [Issue #2](https://github.com/blaylockbk/HRRR_archive_download/issues/2).
 - Open HRRR data as an xarray.Dataset.
 - Other useful tools (in development), like indexing nearest neighbor points and getting a cartopy crs object.
@@ -31,6 +31,8 @@ With that said, I am happy to share this project with you. You are welcome to op
 ---
 
 # 🐍 Installation and Conda Environment
+This package requires at least Python 3.7 (doesn't work in 3.6 and earlier)
+
 ### Option 1: pip
 Install the last published version from PyPI.
 
@@ -91,6 +93,8 @@ These notebooks offer a deeper discussion on how the download process works. The
 - [Part 3: A function that can download many full files, or subset of files](https://github.com/blaylockbk/HRRR_archive_download/blob/master/notebooks/demo_download_hrrr_archive_part3.ipynb)
 - [Part 4: Opening GRIB2 files in Python with xarray and cfgrib](https://github.com/blaylockbk/HRRR_archive_download/blob/master/notebooks/demo_download_hrrr_archive_part4.ipynb)
 
+These are additional notebooks for useful tips/tricks
+- [How to make Cartopy maps with HRRR data with Brian's `common_features` helper](https://github.com/blaylockbk/HRRR_archive_download/blob/master/notebooks/demo_plot-on-map-with-common-features.ipynb)
 ---
 
 # 👨🏻‍💻 `hrrrb.archive`
@@ -101,13 +105,13 @@ import hrrrb.archive as ha
 ```
 or
 ``` python
-from hrrrb.archive import get_hrrr
+from hrrrb.archive import download_hrrr, xhrrr
 ```
 
 |Main Functions| What it will do for you...
 |--|--
 |`download_hrrr`| Downloads full or partial HRRR GRIB2 files to local disk.
-|`get_hrrr` | Downloads single HRRR file and returns as an `xarray.Dataset` or list of Datasets.
+|`xhrrr` | Downloads single HRRR file and returns as an `xarray.Dataset` or list of Datasets.
 
 
 ## [👉 Click Here For Some Examples](https://github.com/blaylockbk/HRRR_archive_download/blob/master/notebooks/examples.ipynb)
@@ -116,14 +120,21 @@ from hrrrb.archive import get_hrrr
 
 ```python
 # Download full GRIB2 files to local disk
-download_hrrr(DATES, searchString=None, fxx=range(0, 1),
-              model='hrrr', field='sfc',
-              download_dir='./', dryrun=False, verbose=True)
+download_hrrr(DATES, searchString=None, *, 
+              fxx=range(0, 1),
+              model='hrrr',
+              field='sfc',
+              save_dir=_default_save_dir,
+              download_source_priority=None,
+              dryrun=False, verbose=True)
 ```
 ```python
 # Download file and open as xarray
-get_hrrr(DATE, searchString, fxx=0, DATE_is_valid_time=False, 
-         remove_grib2=True, add_crs=True, **download_kwargs):
+xhrrr(DATE, searchString, fxx=0, *,
+      DATE_is_valid_time=False,
+      remove_grib2=True,
+      add_crs=True,
+      **download_kwargs)
 ```
 
 - `DATES` Datetime or list of datetimes representing the model initialization time.
@@ -136,15 +147,16 @@ get_hrrr(DATE, searchString, fxx=0, DATE_is_valid_time=False,
 - `field` The type of field file. 
     - Options are `sfc` and `prs`
     - `nat` and `subh` are only available for today and yesterday.
-- `download_dir` The directory path the files will be saved in. 
+- `save_dir` The directory path the files will be saved in. 
     - Default downloads files into the user's home directory `~/data/hrrr`.
+- `download_source_priority` The default source priority is `['pando', 'google', 'nomads']`, but you might want to instead try to download a file from Google before trying to get it from Pando. In that case, set to `['google', 'pando', 'nomads']`. 
 - `dryrun` If `True`, the function will tell you what it will download but not actually download anything.
 - `verbose` If `True`, prints lots of info to the screen.
 
-Specific to `get_hrrr`:
-- `DATE_is_valid_time` For *get_hrrr*, if `True` the input DATE will represent the valid time. If `False`, DATE represents the the model run time.
-- `remove_grib2` For *get_hrrr*, the grib2 file downloaded will be removed after reading the data into an xarray Dataset.
-- `add_crs` For *get_hrrr*, will create a cartopy coordinate reference system object and append it as a Dataset attribute.
+Specific to `xhrrr`:
+- `DATE_is_valid_time` For *xhrrr*, if `True` the input DATE will represent the valid time. If `False`, DATE represents the the model run time.
+- `remove_grib2` For *xhrrr*, the grib2 file downloaded will be removed after reading the data into an xarray Dataset.
+- `add_crs` For *xhrrr*, will create a cartopy coordinate reference system object and append it as a Dataset attribute.
 
 
 ## The **`searchString`** argument
@@ -158,8 +170,11 @@ For reference, here are some useful examples to give you some ideas...
 |--|--
 |`':TMP:2 m'`      | Temperature at 2 m
 |`':TMP:'`         | Temperature fields at all levels
+|``':UGRD:.* mb'`` | U Wind at all pressure levels.
 |`':500 mb:'`      | All variables on the 500 mb level
 |`':APCP:'`        | All accumulated precipitation fields
+|`':APCP:surface:0-[1-9]*'` | Accumulated since initialization time
+|`':APCP:surface:[1-9]*-[1-9]*'`| Accumulated over last hour
 |`':UGRD:10 m'`   | U wind component at 10 meters
 |`':(U\|V)GRD:'`    | U and V wind component at all levels
 |`':.GRD:'`        | (Same as above)
@@ -181,8 +196,35 @@ For reference, here are some useful examples to give you some ideas...
 >- **F02** has a 0-2 hour accumulation and a 1-2 hour accumulation.
 >- **F03** has a 0-3 hour accumulation and a 2-3 hour accumulation.
 >- etc.
-
+>
+> NOTE: When cfgrib reads a grib file with more than one accumulated precipitation fields, it will not read all the fields. I think this is an issue with cfgrib (see [issue here](https://github.com/ecmwf/cfgrib/issues/187)). The way around this is to key in on a *single* APCP field. See the `searchString` examples above for keying in on a single APCP field.
 <br>
+
+### Quickly look at GRIB files in the command line
+There are two tools for looking at GRIB file contents in the command line.
+1. `wgrib2` : can be installed via conda-forge in your environment. A product from NOAA.
+2. `grib_ls` : is a dependency of cfgrib and is included when you install cfgrib in your environment. A product from ECMWF. 
+
+For the sample precipitation data, below is the output using both tools
+
+```bash
+$ wgrib2 subset_20201214_hrrr.t00z.wrfsfcf12.grib2
+1:0:d=2020121400:APCP:surface:0-12 hour acc fcst:
+2:887244:d=2020121400:APCP:surface:11-12 hour acc fcst:
+```
+
+```bash
+$ grib_ls subset_20201214_hrrr.t00z.wrfsfcf12.grib2 
+subset_20201214_hrrr.t00z.wrfsfcf12.grib2
+edition      centre       date         dataType     gridType     typeOfLevel  level        stepRange    shortName    packingType  
+2            kwbc         20201214     fc           lambert      surface      0            0-12         tp           grid_complex_spatial_differencing 
+2            kwbc         20201214     fc           lambert      surface      0            11-12        tp           grid_complex_spatial_differencing 
+2 of 2 messages in subset_20201214_hrrr.t00z.wrfsfcf12.grib2
+
+2 of 2 total messages in 1 files
+```
+
+I hope some of these tips are helpful to you.
 
 **Best of luck 🍀**  
 \- Brian
