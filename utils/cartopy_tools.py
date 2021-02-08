@@ -12,12 +12,21 @@ Cartopy Tools
 General helpers for cartopy plots.
 
 """
+import warnings
 import matplotlib.pyplot as plt
 import cartopy.crs as ccrs
 import cartopy.feature as feature
 import cartopy.io.img_tiles as cimgt
 from shapely.geometry import Polygon
+import xarray as xr
+import numpy as np
 
+try:
+    from metpy.plots import USCOUNTIES
+except Exception as e:
+    print(f"WARNING! {e}")
+    print('Without metpy, you cannot draw USCOUNTIES on the map.')
+    
 pc = ccrs.PlateCarree()
 
 ########################################################################

@@ -429,6 +429,7 @@ def download_hrrr(DATES, searchString=None, *,
     # length, (like if the user requests a single date or forecast hour),
     # then turn the item into a list-like object.
     if not hasattr(fxx, '__len__'): fxx = [fxx]
+    if isinstance(download_source_priority, str): download_source_priority = [download_source_priority]
     if isinstance(DATES, str): DATES = pd.to_datetime(DATES)
     if not hasattr(DATES, '__len__'): DATES = np.array([DATES])
     DATES = pd.to_datetime(DATES)
