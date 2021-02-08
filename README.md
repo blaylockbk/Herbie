@@ -7,7 +7,7 @@
 |HRRR Archive Website|**http://hrrr.chpc.utah.edu/**|
 |--:|:--|
 
-**HRRR-B**, or "Herbie," is a python package for downloading recent and archived High Resolution Rapid Refresh (HRRR) model forecasts and opening HRRR data in an xarray.Dataset. I created most of this during my PhD and decided to organize what I created into a more coherent package. It will continue to evolve at my leisure.
+**HRRR-B**, or "Herbie," is a python package for downloading recent and archived High Resolution Rapid Refresh (HRRR) model forecasts and opening HRRR data in an xarray.Dataset. I created most of this during my PhD and decided to organize what I created into a more coherent package. It will continue to evolve at my own leisure.
 
 ## About `HRRR-B`
 HRRR model output is archived by the MesoWest group at the University of Utah on the [CHPC Pando Archive System](http://hrrr.chpc.utah.edu/). The GRIB2 files are copied from from NCEP every couple hours. NOAA started pushing HRRR data to Google and AWS at in the later half of 2020. Between these data sources, there is a lot of archived HRRR data available. **This Python package helps download those archived HRRR files.**
@@ -28,6 +28,9 @@ The intent of this package is to serve as an _example_ of how you can download H
 
 With that said, I am happy to share this project with you. You are welcome to open issues and submit pull requests, but know that I may or may not get around to doing anything about it. If this is helpful to you in any way, I'm glad.
 
+> ## What if I don't like this package?
+> As an alternative you can use [rclone](https://rclone.org/) to download HRRR files from AWS or GCP. I quite like rclone. Here is a [short rclone tutorial](https://github.com/blaylockbk/pyBKB_v3/blob/master/rclone_howto.md)
+ 
 ---
 
 # 🐍 Installation and Conda Environment
