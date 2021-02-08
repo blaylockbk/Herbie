@@ -12,7 +12,7 @@ Cartopy Tools
 General helpers for cartopy plots.
 
 """
-
+import matplotlib.pyplot as plt
 import cartopy.crs as ccrs
 import cartopy.feature as feature
 import cartopy.io.img_tiles as cimgt
@@ -20,7 +20,11 @@ from shapely.geometry import Polygon
 
 pc = ccrs.PlateCarree()
 
-def check_cartopy_axes(ax=None, projection=pc, verbose=False):
+########################################################################
+# Quick Cartopy Creation
+########################################################################
+
+def check_cartopy_axes(ax=None, crs=pc, verbose=False):
     """
     Check an axes is a cartopy axes, else create a new cartopy axes.
     
@@ -29,24 +33,28 @@ def check_cartopy_axes(ax=None, projection=pc, verbose=False):
     ax : {None, cartopy.mpl.geoaxes.GeoAxesSubplot}
         If None, and plt.gca() is a cartopy axes, use it, 
         else create a new cartopy axes.
+    crs : cartopy.crs
+        If the axes being check is not a cartopy axes, then create one
+        with this coordinate reference system (crs, aka "projection").
+        Default is ccrs.PlateCarree()
     """
     if ax is None:
         if hasattr(plt.gca(), 'coastlines'):
-            if verbose: print('Using the current cartopy axes.')
+            if verbose: print('🌎 Using the current cartopy axes.')
             return plt.gca()  
         else:
             # Create a new cartopy axes
-            if verbose: print('The current axes is not a cartopy axes. Create a new cartopy axes.')
-            return plt.axes(projection=projection)
+            if verbose: print('🌎 The current axes is not a cartopy axes. Create a new cartopy axes.')
+            return plt.axes(projection=crs)
     else:
         if hasattr(ax, 'coastlines'):
-            if verbose: print('The provided axes is a cartopy axes.')
+            if verbose: print('🌎 The provided axes is a cartopy axes.')
             return ax
         else:
-            raise TypeError('The `ax` you gave me is not a cartopy axes')
+            raise TypeError('🌎 The `ax` you gave me is not a cartopy axes')
 
 def common_features(scale='110m', counties_scale='20m', figsize=None, *,
-                    ax=None, projection=pc, verbose=False,
+                    ax=None, crs=pc, verbose=False,
                     dark_theme=False,                    
                     COASTLINES=True, BORDERS=False,
                     STATES=False, COUNTIES=False, 
@@ -82,10 +90,10 @@ def common_features(scale='110m', counties_scale='20m', figsize=None, *,
     
     ax : plot axes
         The axis to add the feature to.
-        If None, it will create a new cartopy axes with ``projection``.
-    projection : cartopy.crs
-        Projection to create new map if no cartopy axes is given.
-        Default is PlateCarree.
+        If None, it will create a new cartopy axes with ``crs``.
+    crs : cartopy.crs
+        Coordinate reference system (aka "projection") to create new map
+        if no cartopy axes is given. Default is ccrs.PlateCarree.
     dark_theme : bool
         If True, use alternative "dark theme" colors for land and water.
         
@@ -148,7 +156,7 @@ def common_features(scale='110m', counties_scale='20m', figsize=None, *,
     as an argument, but it is useful if you initialize a new map).
 
     """
-    ax = check_cartopy_axes(ax, projection)
+    ax = check_cartopy_axes(ax, crs)
     
     if (LAND or OCEAN) and scale in ['10m']:
         warnings.warn('🕖 OCEAN or LAND features at 10m will take a long time (3+ mins) to display.')
@@ -242,6 +250,148 @@ def common_features(scale='110m', counties_scale='20m', figsize=None, *,
 
     return ax
 
+########################################################################
+# Adjust Map Extent
+########################################################################
+
+def center_extent(lon, lat, *, ax=None, pad='auto', crs=pc, verbose=False):
+    """
+    Change the map extent to be centered on a point and adjust padding.
+
+    Parameters
+    ----------
+    lon, lat : float
+        Latitude and Longitude of the center point **in degrees**.
+    ax : cartopy axes
+        Default None will create a new PlateCarree cartopy.mpl.geoaxes.
+    pad : float or dict
+        Default is 'auto', which defaults to ~5 degree padding on each side.
+        If float, pad the map the same on all sides (in crs units).
+        If dict, specify pad on each side (in crs units).
+            - 'top' - padding north of center point
+            - 'bottom'- padding south of center point
+            - 'left' - padding east of center point
+            - 'right' - padding west of center point
+            - 'default' - padding when pad is unspecified (default is 5)
+        Example: ``pad=dict(top=5, default=10)`` is the same as
+                 ``pad=dict(top=5, bottom=10, left=10, right=10)``
+    crs : cartopy coordinate reference system
+        Default is ccrs.PlateCarree()
+    """
+    ax = check_cartopy_axes(ax, crs)
+
+    # Convert input lat/lon in degrees to the crs units
+    lon, lat = crs.transform_point(lon, lat, src_crs=pc)
+
+    if pad == 'auto':
+        pad = dict()
+    
+    if isinstance(pad, dict):
+        # This default gives 5 degrees padding on each side
+        # for a PlateCarree projection. Pad is similar for other 
+        # projections but not exactly 5 degrees.
+        xmin, xmax = crs.x_limits
+        default_pad = (xmax-xmin)/72
+        pad.setdefault('default', default_pad)
+        for i in ['top', 'bottom', 'left', 'right']:
+            pad.setdefault(i, pad['default'])
+    else:
+        pad = dict(top=pad, bottom=pad, left=pad, right=pad)
+        
+    ymin, ymax = crs.y_limits
+    north = np.minimum(ymax, lat + pad['top'])
+    south = np.maximum(ymin, lat - pad['bottom'])
+    east = lon + pad['right']
+    west = lon - pad['left']
+    
+    ax.set_extent([west, east, south, north], crs=crs)
+    
+    if verbose: print(f"📐 Padding from point for {crs.__class__}: {pad}")
+        
+    return ax.get_extent(crs=crs) 
+
+def adjust_extent(ax=None, pad='auto', fraction=.05, verbose=False):
+    """
+    Adjust the extent of an existing cartopy axes.
+
+    This is useful to fine-tune the extent of a map after the extent 
+    was automatically made by a cartopy plotting method.    
+    
+    Parameters
+    ----------
+    ax : cartopy axes
+    pad : float or dict
+        If float, pad the map the same on all sides. Default is half a degree.
+        If dict, specify pad on each side.
+            - 'top' - padding north of center point
+            - 'bottom'- padding south of center point
+            - 'left' - padding east of center point
+            - 'right' - padding west of center point
+            - 'default' - padding when pad is unspecified 
+        Example: ``pad=dict(top=.5, default=.2)`` is the same as
+                 ``pad=dict(top=.5, bottom=.2, left=.2, right=.2)``
+        Note: Use negative numbers to remove padding.
+    fraction : float
+        When pad is 'auto', adjust the sides by a set fraction.
+        The default 0.05 will give 5% padding on each side.
+    """
+    # Can't shrink the map extent by more than half in each direction, duh.
+    assert fraction > -.5, "Fraction must be larger than -0.5."
+    
+    ax = check_cartopy_axes(ax)
+    
+    crs = ax.projection
+    
+    west, east, south, north = ax.get_extent(crs=crs)
+
+    if pad == 'auto':
+        pad = {}
+    
+    if isinstance(pad, dict):
+        xmin, xmax = ax.get_xlim()
+        default_pad = (xmax-xmin)*fraction
+        pad.setdefault('default', default_pad)
+        for i in ['top', 'bottom', 'left', 'right']:
+            pad.setdefault(i, pad['default'])
+    else:
+        pad = dict(top=pad, bottom=pad, left=pad, right=pad)
+
+    ymin, ymax = crs.y_limits
+    north = np.minimum(ymax, north + pad['top'])
+    south = np.maximum(ymin, south - pad['bottom'])
+    east = east + pad['right']
+    west = west - pad['left']
+
+    ax.set_extent([west, east, south, north], crs=crs)
+
+    if verbose: print(f"📐 Adjust Padding for {crs.__class__}: {pad}")
+    
+    return ax.get_extent(crs=crs) 
+
+def copy_extent(src_ax, dst_ax):
+    """
+    Copy the extent from an axes. 
+    
+    .. note:: 
+        Copying extent from different projections might not result in
+        what you expect.
+
+    Parameters
+    ----------
+    src_ax, dst_ax : cartopy axes
+        A source cartopy axes to copy extent from onto the destination axes.
+    """
+    src_ax = check_cartopy_axes(src_ax)
+    dst_ax = check_cartopy_axes(dst_ax)
+
+    dst_ax.set_extent(src_ax.get_extent(crs=pc), crs=pc)
+
+    return dst_ax.get_extent(crs=pc)
+
+########################################################################
+# Other
+########################################################################
+
 def domain_border(x, y=None, *, ax=None, text=None,
                   method='cutout', verbose=False,
                   facealpha=.25,
@@ -275,7 +425,8 @@ def domain_border(x, y=None, *, ax=None, text=None,
 
     Returns
     -------
-    Adds a boarder around domain to the axis and returns the artist.
+    Adds a border around domain to the axis and returns the artist, 
+    a polygon in the crs coordinates and crs in lat/lon coordinates.
     """
     if hasattr(x, 'crs'):
         ax = check_cartopy_axes(ax, projection=x.crs)
