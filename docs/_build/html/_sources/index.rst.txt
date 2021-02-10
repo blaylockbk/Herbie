@@ -27,6 +27,9 @@ Welcome to HRRR-B's documentation!
    /utils
 
 
+
+The HRRR is the foundation for the upcoming Rapid-Refresh Forecast System. Read some of the `HRRR's achivements <https://research.noaa.gov/article/ArtMID/587/ArticleID/2702/The-amazing-research-resume-of-High-Resolution-Rapid-Refresh-Model>`_
+
 .. include:: ../README.md
 
 Indices and tables
