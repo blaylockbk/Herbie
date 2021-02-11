@@ -43,6 +43,12 @@ Install the last published version from PyPI.
 pip install hrrrb
 ```
 
+But the version on PyPI has diverged a lot from the code on GitHub, so I would recommend not getting from PyPI. To get the most recent hrrrb code, you may install the package directly from GitHub
+
+```bash
+pip install git+https://github.com/blaylockbk/HRRR_archive_download.git
+```
+
 > Requires: xarray, cfgrib, pandas, cartopy, requests, curl  
 > Optional: matplotlib, cartopy
 
