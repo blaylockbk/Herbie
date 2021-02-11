@@ -34,7 +34,7 @@ With that said, I am happy to share this project with you. You are welcome to op
 ---
 
 # 🐍 Installation and Conda Environment
-This package requires at least Python 3.7 (doesn't work in 3.6 and earlier)
+This package requires **Python 3.7+** (doesn't work in 3.6 and earlier because I use relative imports)
 
 ### Option 1: pip
 Install the last published version from PyPI.
