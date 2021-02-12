@@ -157,7 +157,7 @@ xhrrr(DATE, searchString, fxx=0, *,
     - Options are `sfc` and `prs`
     - `nat` and `subh` are only available for today and yesterday.
 - `save_dir` The directory path the files will be saved in. 
-    - Default downloads files into the user's home directory `~/data/hrrr`.
+    - By default, GRIB2 files are downloaded into the user's home directory at `~/data/{model}`. The default directory can be changed in the `~/.config/hrrrb/config.cfg` file. This file is generated the first time you import **hrrrb.archive**.
 - `download_source_priority` The default source priority is `['pando', 'google', 'nomads']`, but you might want to instead try to download a file from Google before trying to get it from Pando. In that case, set to `['google', 'pando', 'nomads']`. 
 - `dryrun` If `True`, the function will tell you what it will download but not actually download anything.
 - `verbose` If `True`, prints lots of info to the screen.

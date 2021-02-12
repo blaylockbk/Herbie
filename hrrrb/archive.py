@@ -58,6 +58,7 @@ from datetime import datetime, timedelta
 from pathlib import Path
 from itertools import product
 import warnings
+import configparser
 
 import urllib.request
 import requests
@@ -68,8 +69,36 @@ import xarray as xr
 
 from hrrrb.tools import to_180, get_crs
 
-# Specify default location to save GRIB2 files
-_default_save_dir = Path('~').expanduser() / 'data'
+# Specify default location to save HRRR GRIB2 files
+config = configparser.ConfigParser()
+_config_path = Path('~').expanduser() / '.config' / 'hrrrb' / 'config.cfg'
+
+user_home_default = str(Path('~').expanduser() / 'data')
+
+if not _config_path.exists():
+    _config_path.parent.mkdir(parents=True)
+    _config_path.touch()
+    config.read(_config_path)
+    config.add_section('download')
+    config.set('download', 'default_save_dir', user_home_default)
+    with open(_config_path, 'w') as configfile:
+        config.write(configfile)
+    print(f'⚙ Created config file [{_config_path}]',
+          f'with default download directory set as [{user_home_default}]')
+
+config.read(_config_path)
+try:
+    _default_save_dir = Path(config.get('download', 'default_save_dir'))
+except:
+    print(f'🦁🐯🐻 oh my! {_config_path} looks weird, but I will add a new section')
+    config.add_section('download')
+    config.set('download', 'default_save_dir', user_home_default)
+    with open(_config_path, 'w') as configfile:
+        config.write(configfile)
+    _default_save_dir = Path(config.get('download', 'default_save_dir'))
+
+# or set to the user's home directory
+#_default_save_dir = Path('~').expanduser() / 'data'
 
 # List of HRRR download source base URLs
 base_url = dict(
@@ -312,6 +341,7 @@ def download_hrrr(DATES, searchString=None, *,
                   field='sfc',
                   save_dir=_default_save_dir,
                   download_source_priority=None,
+                  overwrite=False, 
                   dryrun=False, verbose=True):
     """
     Download full or partial HRRR grib2 files for a list of dates and forecasts.
@@ -401,6 +431,10 @@ def download_hrrr(DATES, searchString=None, *,
         For example, to download from 'google' before checking 'pando',
         you may do ``download_source_priority=['google', 'pando', 'nomads']``.
         This also makes is possible to exclude a source.
+    overwrite : bool
+        Only applicable if ``searchString=None``. Will check if the
+        file exists, and if ``overwrite=False``, will not redownload 
+        the file.
     dryrun : bool
         If True, instead of downloading the files, it will print out the
         files that would be downloaded. This is set to False by default.
@@ -520,7 +554,8 @@ def download_hrrr(DATES, searchString=None, *,
     all_files = []
     all_urls = []
 
-    for index, row in URL_df.iterrows():
+    for (index, row), DATE in zip(URL_df.iterrows(), DATES):
+        #print(index, row, DATE)
         #---------------------------------------------------------
         # Time keeping: *crude* method to estimate remaining time.
         #---------------------------------------------------------
@@ -549,13 +584,21 @@ def download_hrrr(DATES, searchString=None, *,
                 #------------------
                 if searchString in [None, ':']:
                     if dryrun:
-                        if verbose: print(f'🌵 Dry Run! Would get from [{source}] {url} --> {outFile}')
-                        all_files.append(None)
+                        if not overwrite and outFile.exists():
+                            if verbose: print(f'🌵 Dry Run! Already have file for --> {outFile}')
+                            all_files.append(None)
+                        else:
+                            if verbose: print(f'🌵 Dry Run! Would get from [{source}] {url} --> {outFile}')
+                            all_files.append(None)
                     else:
                         # Download the full file.
-                        urllib.request.urlretrieve(url, outFile, _reporthook)
-                        all_files.append(outFile)
-                        if verbose: print(f'✅ Success! Downloaded from [{source}] {url} --> {outFile}')
+                        if not overwrite and outFile.exists():
+                            if verbose: print(f'🌉 Already have file for --> {outFile}')
+                            all_files.append(outFile)
+                        else:
+                            urllib.request.urlretrieve(url, outFile, _reporthook)
+                            all_files.append(outFile)
+                            if verbose: print(f'✅ Success! Downloaded from [{source}] {url} --> {outFile}')
                 else:
                     # Download a subset of the full file based on the searchString.
                     if verbose: print(f"Download subset from [{source}]:")
