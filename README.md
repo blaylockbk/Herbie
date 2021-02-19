@@ -4,6 +4,8 @@
 
 # Brian's High-Resolution Rapid Refresh tools: HRRR-B
 
+<a href="https://pypi.python.org/pypi/hrrrb/"><img src="https://img.shields.io/pypi/v/hrrrb.svg"></a>
+
 |HRRR Archive Website|**http://hrrr.chpc.utah.edu/**|
 |--:|:--|
 
