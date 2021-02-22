@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>User Guide &#8212; HRRR-B 0.0.1 documentation</title>
+    <title>📝 Jupyter Notebooks &#8212; HRRR-B 0.0.1 documentation</title>
     
   <link rel="stylesheet" href="../_static/css/index.f658d18f9b420779cfdf24aa0a7e2d77.css">
 
@@ -40,8 +40,8 @@
     <link rel="shortcut icon" href="../_static/wxicon.png"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="👨🏻‍🏭 Contributing Guidelines (and disclaimer)" href="contribute.html" />
-    <link rel="prev" title="HRRR-B Documentation" href="../index.html" />
+    <link rel="next" title="Reference Guide" href="../reference_guide/index.html" />
+    <link rel="prev" title="👨🏻‍💻 Practical Examples" href="examples.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="en" />
   </head>
@@ -64,7 +64,7 @@
         
         
         <li class="nav-item active">
-            <a class="nav-link" href="">User Guide</a>
+            <a class="nav-link" href="index.html">User Guide</a>
         </li>
         
         <li class="nav-item ">
@@ -141,8 +141,36 @@
             
           
             
-                <li class="">
-                    <a href="notebooks.html">📝 Jupyter Notebooks</a>
+  
+                <li class="active">
+                    <a href="">📝 Jupyter Notebooks</a>
+                    <ul>
+                    
+                        <li class="">
+                            <a href="https://github.com/blaylockbk/HRRR_archive_download/blob/master/notebooks/examples.ipynb">Main Package Examples</a>
+                        </li>
+                    
+                        <li class="">
+                            <a href="https://github.com/blaylockbk/HRRR_archive_download/blob/master/notebooks/demo_plot-on-map-with-common-features.ipynb">Make Cartopy maps with HRRR data</a>
+                        </li>
+                    
+                        <li class="">
+                            <a href="https://github.com/blaylockbk/HRRR_archive_download/blob/master/notebooks/demo_download_hrrr_archive_part1.ipynb">Part 1: How to download a bunch of HRRR grib2 files (full file)</a>
+                        </li>
+                    
+                        <li class="">
+                            <a href="https://github.com/blaylockbk/HRRR_archive_download/blob/master/notebooks/demo_download_hrrr_archive_part2.ipynb">Part 2: How to download a subset of variables from a HRRR file</a>
+                        </li>
+                    
+                        <li class="">
+                            <a href="https://github.com/blaylockbk/HRRR_archive_download/blob/master/notebooks/demo_download_hrrr_archive_part3.ipynb">Part 3: A function that can download many full files, or subset of files</a>
+                        </li>
+                    
+                        <li class="">
+                            <a href="https://github.com/blaylockbk/HRRR_archive_download/blob/master/notebooks/demo_download_hrrr_archive_part4.ipynb">Part 4: Opening GRIB2 files in Python with xarray and cfgrib</a>
+                        </li>
+                    
+                    </ul>
                 </li>
             
           
@@ -169,7 +197,7 @@
 
 
 <div class="tocsection editthispage">
-    <a href="https://github.com/blaylockbk/HRRR_archive_download/edit/master/docs/user_guide/index.rst">
+    <a href="https://github.com/blaylockbk/HRRR_archive_download/edit/master/docs/user_guide/notebooks.md">
         <i class="fas fa-pencil-alt"></i> Edit this page
     </a>
 </div>
@@ -183,38 +211,22 @@
               
               <div>
                 
-  <div class="section" id="user-guide">
-<h1>User Guide<a class="headerlink" href="#user-guide" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="jupyter-notebooks">
+<h1>📝 Jupyter Notebooks<a class="headerlink" href="#jupyter-notebooks" title="Permalink to this headline">¶</a></h1>
+<p>These notebooks show practical use case of the <code class="docutils literal notranslate"><span class="pre">hrrrb</span></code> package:</p>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="contribute.html">👨🏻‍🏭 Contributing Guidelines (and disclaimer)</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="contribute.html#what-if-i-don-t-like-this-package">What if I don’t like this package?</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/blaylockbk/HRRR_archive_download/blob/master/notebooks/examples.ipynb">Main Package Examples</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/blaylockbk/HRRR_archive_download/blob/master/notebooks/demo_plot-on-map-with-common-features.ipynb">Make Cartopy maps with HRRR data</a></li>
 </ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="install.html">🐍 Installation and Conda Environment</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="install.html#option-1-pip">Option 1: pip</a></li>
-<li class="toctree-l2"><a class="reference internal" href="install.html#option-2-conda">Option 2: conda</a></li>
-<li class="toctree-l2"><a class="reference internal" href="install.html#alternative-install-method">Alternative “Install” Method</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="examples.html">👨🏻‍💻 Practical Examples</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="examples.html#click-here-for-some-examples">👉 Click Here For Some Examples</a></li>
-<li class="toctree-l2"><a class="reference internal" href="examples.html#function-arguments">Function arguments</a></li>
-<li class="toctree-l2"><a class="reference internal" href="examples.html#the-searchstring-argument">The <strong><code class="docutils literal notranslate"><span class="pre">searchString</span></code></strong> argument</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="examples.html#quickly-look-at-grib-files-in-the-command-line">Quickly look at GRIB files in the command line</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="notebooks.html">📝 Jupyter Notebooks</a><ul>
-<li class="toctree-l2"><a class="reference external" href="https://github.com/blaylockbk/HRRR_archive_download/blob/master/notebooks/examples.ipynb">Main Package Examples</a></li>
-<li class="toctree-l2"><a class="reference external" href="https://github.com/blaylockbk/HRRR_archive_download/blob/master/notebooks/demo_plot-on-map-with-common-features.ipynb">Make Cartopy maps with HRRR data</a></li>
-<li class="toctree-l2"><a class="reference external" href="https://github.com/blaylockbk/HRRR_archive_download/blob/master/notebooks/demo_download_hrrr_archive_part1.ipynb">Part 1: How to download a bunch of HRRR grib2 files (full file)</a></li>
-<li class="toctree-l2"><a class="reference external" href="https://github.com/blaylockbk/HRRR_archive_download/blob/master/notebooks/demo_download_hrrr_archive_part2.ipynb">Part 2: How to download a subset of variables from a HRRR file</a></li>
-<li class="toctree-l2"><a class="reference external" href="https://github.com/blaylockbk/HRRR_archive_download/blob/master/notebooks/demo_download_hrrr_archive_part3.ipynb">Part 3: A function that can download many full files, or subset of files</a></li>
-<li class="toctree-l2"><a class="reference external" href="https://github.com/blaylockbk/HRRR_archive_download/blob/master/notebooks/demo_download_hrrr_archive_part4.ipynb">Part 4: Opening GRIB2 files in Python with xarray and cfgrib</a></li>
-</ul>
-</li>
+</div>
+<p>The following notebooks offer a deeper discussion on how the download process works. These are not intended for practical use, but should help illustrate my thought process when I created this package.</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/blaylockbk/HRRR_archive_download/blob/master/notebooks/demo_download_hrrr_archive_part1.ipynb">Part 1: How to download a bunch of HRRR grib2 files (full file)</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/blaylockbk/HRRR_archive_download/blob/master/notebooks/demo_download_hrrr_archive_part2.ipynb">Part 2: How to download a subset of variables from a HRRR file</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/blaylockbk/HRRR_archive_download/blob/master/notebooks/demo_download_hrrr_archive_part3.ipynb">Part 3: A function that can download many full files, or subset of files</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/blaylockbk/HRRR_archive_download/blob/master/notebooks/demo_download_hrrr_archive_part4.ipynb">Part 4: Opening GRIB2 files in Python with xarray and cfgrib</a></li>
 </ul>
 </div>
 </div>
@@ -225,8 +237,8 @@
               
               <div class='prev-next-bottom'>
                 
-    <a class='left-prev' id="prev-link" href="../index.html" title="previous page">HRRR-B Documentation</a>
-    <a class='right-next' id="next-link" href="contribute.html" title="next page">👨🏻‍🏭 Contributing Guidelines (and disclaimer)</a>
+    <a class='left-prev' id="prev-link" href="examples.html" title="previous page">👨🏻‍💻 Practical Examples</a>
+    <a class='right-next' id="next-link" href="../reference_guide/index.html" title="next page">Reference Guide</a>
 
               </div>
               

@@ -8,4 +8,5 @@ User Guide
    contribute
    install
    examples
+   notebooks
    
