@@ -52,5 +52,6 @@ Occasionally, you might want to update all the packages in the environment.
 conda env update -f environment.yml
 ```
 
-> ### Alternative "Install" Method
-> There are several other ways to "install" a python package so you can import them. One alternatively is you can `git clone https://github.com/blaylockbk/HRRR_archive_download.git` this repository to any directory. To import the package, you will need to update your PYTHONPATH environment variable to find the directory you put this package or add the line `sys.path.append("/path/to/hrrrb")` at the top of your python script.
+### Alternative "Install" Method
+There are several other ways to "install" a python package so you can import them. One alternatively is you can `git clone https://github.com/blaylockbk/HRRR_archive_download.git` this repository to any directory. To import the package, you will need to update your PYTHONPATH environment variable to find the directory you put this package or add the line `sys.path.append("/path/to/hrrrb")` at the top of your python script.
+
