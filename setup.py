@@ -6,7 +6,7 @@ README = (HERE / 'README.md').read_text(encoding="utf8")
 
 setup(
     name = 'hrrrb',   # Unfortunately, "herbie" is already used.
-    version = '0.0.2',
+    version = '0.0.3',
     author = 'Brian K. Blaylock',
     author_email = "blaylockbk@gmail.com",
     description = 'Retreive historical and recent forecasts from the High-Resolution Rapid Refresh (HRRR) model.',

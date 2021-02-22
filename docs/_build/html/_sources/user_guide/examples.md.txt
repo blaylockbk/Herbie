@@ -125,5 +125,3 @@ edition      centre       date         dataType     gridType     typeOfLevel  le
 
 2 of 2 total messages in 1 files
 ```
-
-I hope some of these tips are helpful to you.
