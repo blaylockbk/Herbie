@@ -22,6 +22,7 @@ dependencies:
   - cfgrib
   - pylint
   - s3fs
+  - zarr
   #- wgrib2  # Uncomment if you are on a Linux machine
 
   - pip:
