@@ -35,12 +35,12 @@
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
-    <script src="https://kit.fontawesome.com/f6cc126dcc.js"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="https://kit.fontawesome.com/f6cc126dcc.js"></script>
     <link rel="shortcut icon" href="_static/wxicon.png"/>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="hrrrb" href="hrrrb.html" />
+    <link rel="next" title="User Guide" href="user_guide/index.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="en" />
   </head>
@@ -63,7 +63,11 @@
         
         
         <li class="nav-item ">
-            <a class="nav-link" href="hrrrb.html">hrrrb</a>
+            <a class="nav-link" href="user_guide/index.html">User Guide</a>
+        </li>
+        
+        <li class="nav-item ">
+            <a class="nav-link" href="reference_guide/index.html">hrrrb</a>
         </li>
         
         
@@ -117,6 +121,8 @@
         
         
         
+        
+        
       </ul>
   
   </nav>
@@ -141,7 +147,31 @@
             <a href="#" class="nav-link">HRRR-B Documentation</a><ul class="nav section-nav flex-column">
                 
         <li class="nav-item toc-entry toc-h3">
+            <a href="#install" class="nav-link">Install</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h3">
+            <a href="#capabilities" class="nav-link">Capabilities</a><ul class="nav section-nav flex-column">
+                
+        <li class="nav-item toc-entry toc-h4">
+            <a href="#download-data" class="nav-link">Download Data</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h4">
+            <a href="#subset-by-grib2-field" class="nav-link">Subset by GRIB2 field</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h4">
+            <a href="#other-useful-tools" class="nav-link">Other useful tools</a><ul class="nav section-nav flex-column">
+                
+        <li class="nav-item toc-entry toc-h5">
             <a href="#indices-and-tables" class="nav-link">Indices and tables</a>
+        </li>
+    
+            </ul>
+        </li>
+    
+            </ul>
         </li>
     
             </ul>
@@ -174,15 +204,60 @@
 </div>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="hrrrb.html">hrrrb</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guide/index.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference_guide/index.html">hrrrb</a></li>
 </ul>
 </div>
 <div class="section" id="hrrr-b-documentation">
 <h1>HRRR-B Documentation<a class="headerlink" href="#hrrr-b-documentation" title="Permalink to this headline">¶</a></h1>
-<p>The HRRR is the foundation for the upcoming Rapid-Refresh Forecast System. Read some of the <a class="reference external" href="https://research.noaa.gov/article/ArtMID/587/ArticleID/2702/The-amazing-research-resume-of-High-Resolution-Rapid-Refresh-Model">HRRR’s achivements</a></p>
+<p>The <a class="reference external" href="https://rapidrefresh.noaa.gov/hrrr/">High-Resolution Rapid Refresh</a> model is NOAA’s hourly, 3-km numerical weather prediction model.</p>
+<div class="figure align-right">
+<img alt="_static/Herbie3.png" class="img-fluid" src="_static/Herbie3.png" />
+</div>
+<p>HRRR-B, or “Herbie,” is a python package for downloading recent and archived High Resolution Rapid Refresh (HRRR) model forecasts and opening HRRR data as an <code class="docutils literal notranslate"><span class="pre">xarray.Dataset</span></code> with <a class="reference external" href="https://github.com/ecmwf/cfgrib">cfgrib</a>. I created most of this during my PhD and decided to organize what I created into a more coherent package. It will continue to evolve at my own leisure.</p>
+<p>The HRRR is the foundation for the upcoming Rapid-Refresh Forecast System. Read some of the <a class="reference external" href="https://research.noaa.gov/article/ArtMID/587/ArticleID/2702/The-amazing-research-resume-of-High-Resolution-Rapid-Refresh-Model">HRRR’s achievements</a></p>
+<div class="section" id="install">
+<h2>Install<a class="headerlink" href="#install" title="Permalink to this headline">¶</a></h2>
+<p>This package requires <strong>Python 3.7+</strong> (doesn’t work in 3.6 and earlier because I use relative imports)</p>
+<p>Install <code class="docutils literal notranslate"><span class="pre">hrrrb</span></code> in a conda environment. You may use this minimum <a class="reference external" href="https://github.com/blaylockbk/HRRR_archive_download/blob/master/environment.yml">environment.yml</a> file
+and create the environment with the following…</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create the environment</span>
+conda env create -f environment.yml
+
+<span class="c1"># Update the environment</span>
+conda env update -f environment.yml
+
+<span class="c1"># Activate the environment</span>
+conda activate hrrrb
+</pre></div>
+</div>
+</div>
+<div class="section" id="capabilities">
+<h2>Capabilities<a class="headerlink" href="#capabilities" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="download-data">
+<h3>Download Data<a class="headerlink" href="#download-data" title="Permalink to this headline">¶</a></h3>
+<p>Download archived HRRR data from multiple sources:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://nomads.ncep.noaa.gov/">NOAA NOMADS Server</a></p></li>
+<li><p><a class="reference external" href="https://registry.opendata.aws/noaa-hrrr-pds/">Amazon Web Services</a></p></li>
+<li><p><a class="reference external" href="https://console.cloud.google.com/marketplace/product/noaa-public/hrrr">Google Cloud Platform</a></p></li>
+<li><p><a class="reference external" href="http://hrrr.chpc.utah.edu/">University of Utah Pando Archive</a></p></li>
+</ul>
+</div>
+<div class="section" id="subset-by-grib2-field">
+<h3>Subset by GRIB2 field<a class="headerlink" href="#subset-by-grib2-field" title="Permalink to this headline">¶</a></h3>
+<p>Instead of downloading full GRIB2 files, you may download a select GRIB2 fields or variables from a file. This is enabled by the cURL command which allows you to download a range of bytes from a file. The index <code class="docutils literal notranslate"><span class="pre">.idx</span></code> files tells you the beginning byte for each field. HRRR-B search those <code class="docutils literal notranslate"><span class="pre">.idx</span></code> files for variables you want and performs the cURL command for each field.</p>
+</div>
+<div class="section" id="other-useful-tools">
+<h3>Other useful tools<a class="headerlink" href="#other-useful-tools" title="Permalink to this headline">¶</a></h3>
+<p>Some other useful tools in development include plucking out points from the HRRR grid. Other useful tools can be found in my <a class="reference external" href="https://github.com/blaylockbk/Carpenter_Workshop">Carpenter Workshop</a></p>
 <p><a href="#id49"><span class="problematic" id="id50">|![](https://raw.githubusercontent.com/blaylockbk/SynopticPy/master/images/Balloon_logo/balloon_bkb_sm.png)|**Brian Blaylock**&lt;br&gt;🌐 [Webpage](http://home.chpc.utah.edu/~u0553130/Brian_Blaylock/home.html)&lt;br&gt;[🔩 PyPI](https://pypi.org/user/blaylockbk/)
 |:--|</span></a>:–|</p>
 <p># Brian’s High-Resolution Rapid Refresh tools: HRRR-B</p>
+<p>&lt;!– Badges –&gt;
+[![](<a class="reference external" href="https://img.shields.io/pypi/v/hrrrb)](https://pypi.python.org/pypi/hrrrb/">https://img.shields.io/pypi/v/hrrrb)](https://pypi.python.org/pypi/hrrrb/</a>)
+![](<a class="reference external" href="https://img.shields.io/github/license/blaylockbk/HRRR_archive_download">https://img.shields.io/github/license/blaylockbk/HRRR_archive_download</a>)
+![](<a class="reference external" href="https://img.shields.io/pypi/dm/hrrrb">https://img.shields.io/pypi/dm/hrrrb</a>)</p>
 <p><a href="#id51"><span class="problematic" id="id52">|HRRR Archive Website|**http://hrrr.chpc.utah.edu/**|</span></a>
 <a href="#id53"><span class="problematic" id="id54">|--:|</span></a>:–|</p>
 <p><strong>HRRR-B</strong>, or “Herbie,” is a python package for downloading recent and archived High Resolution Rapid Refresh (HRRR) model forecasts and opening HRRR data in an xarray.Dataset. I created most of this during my PhD and decided to organize what I created into a more coherent package. It will continue to evolve at my own leisure.</p>
@@ -210,11 +285,15 @@ The intent of this package is to serve as an _example_ of how you can download H
 &gt; As an alternative you can use [rclone](<a class="reference external" href="https://rclone.org/">https://rclone.org/</a>) to download HRRR files from AWS or GCP. I quite like rclone. Here is a [short rclone tutorial](<a class="reference external" href="https://github.com/blaylockbk/pyBKB_v3/blob/master/rclone_howto.md">https://github.com/blaylockbk/pyBKB_v3/blob/master/rclone_howto.md</a>)</p>
 <p>—</p>
 <p># 🐍 Installation and Conda Environment
-This package requires at least Python 3.7 (doesn’t work in 3.6 and earlier)</p>
+This package requires <strong>Python 3.7+</strong> (doesn’t work in 3.6 and earlier because I use relative imports)</p>
 <p>### Option 1: pip
 Install the last published version from PyPI.</p>
 <p><code class="docutils literal notranslate"><span class="pre">`bash</span>
 <span class="pre">pip</span> <span class="pre">install</span> <span class="pre">hrrrb</span>
+<span class="pre">`</span></code></p>
+<p>But the version on PyPI has diverged a lot from the code on GitHub, so I would recommend not getting from PyPI. To get the most recent hrrrb code, you may install the package directly from GitHub</p>
+<p><code class="docutils literal notranslate"><span class="pre">`bash</span>
+<span class="pre">pip</span> <span class="pre">install</span> <span class="pre">git+https://github.com/blaylockbk/HRRR_archive_download.git</span>
 <span class="pre">`</span></code></p>
 <p>&gt; Requires: xarray, cfgrib, pandas, cartopy, requests, curl
 &gt; Optional: matplotlib, cartopy</p>
@@ -330,7 +409,7 @@ add_crs=True,
 </li>
 <li><dl class="simple">
 <dt><cite>save_dir</cite> The directory path the files will be saved in.</dt><dd><ul>
-<li><p>Default downloads files into the user’s home directory <cite>~/data/hrrr</cite>.</p></li>
+<li><p>By default, GRIB2 files are downloaded into the user’s home directory at <cite>~/data/{model}</cite>. The default directory can be changed in the <cite>~/.config/hrrrb/config.cfg</cite> file. This file is generated the first time you import <strong>hrrrb.archive</strong>.</p></li>
 </ul>
 </dd>
 </dl>
@@ -409,12 +488,14 @@ edition      centre       date         dataType     gridType     typeOfLevel  le
 <p>Thanks for using HRRR-B
 ![](<a class="reference external" href="https://raw.githubusercontent.com/blaylockbk/HRRR_archive_download/master/images/herbie.jpg">https://raw.githubusercontent.com/blaylockbk/HRRR_archive_download/master/images/herbie.jpg</a>)</p>
 <div class="section" id="indices-and-tables">
-<h2>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h2>
+<h4>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h4>
 <ul class="simple">
 <li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
 <li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
 <li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
 </ul>
+</div>
+</div>
 </div>
 </div>
 
@@ -424,7 +505,7 @@ edition      centre       date         dataType     gridType     typeOfLevel  le
               
               <div class='prev-next-bottom'>
                 
-    <a class='right-next' id="next-link" href="hrrrb.html" title="next page">hrrrb</a>
+    <a class='right-next' id="next-link" href="user_guide/index.html" title="next page">User Guide</a>
 
               </div>
               
@@ -442,7 +523,7 @@ edition      centre       date         dataType     gridType     typeOfLevel  le
   <div class="container">
     <p>
           &copy; Copyright 2021, Brian K. Blaylock.<br/>
-        Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.4.3.<br/>
+        Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.5.1.<br/>
     </p>
   </div>
 </footer>
