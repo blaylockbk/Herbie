@@ -18,16 +18,13 @@
 HRRR-B Documentation
 ====================
 
-The `High-Resolution Rapid Refresh <https://rapidrefresh.noaa.gov/hrrr/>`_ model is NOAA's hourly, 3-km numerical weather prediction model. 
+The `High-Resolution Rapid Refresh <https://rapidrefresh.noaa.gov/hrrr/>`_ model is NOAA's hourly, 3-km numerical weather prediction model. The HRRR is the foundation for the upcoming Rapid-Refresh Forecast System. Read some of the `HRRR's achievements <https://research.noaa.gov/article/ArtMID/587/ArticleID/2702/The-amazing-research-resume-of-High-Resolution-Rapid-Refresh-Model>`_
 
 HRRR-B, or "Herbie," is a python package for downloading recent and archived High Resolution Rapid Refresh (HRRR) model forecasts and opening HRRR data as an ``xarray.Dataset`` with `cfgrib <https://github.com/ecmwf/cfgrib>`_. I created most of this during my PhD and decided to organize what I created into a more coherent package. It will continue to evolve at my own leisure.
+
 .. figure:: _static/Herbie3.png
    :class: img-fluid
-   :width: 50%
-   :align: right
-
-
-The HRRR is the foundation for the upcoming Rapid-Refresh Forecast System. Read some of the `HRRR's achievements <https://research.noaa.gov/article/ArtMID/587/ArticleID/2702/The-amazing-research-resume-of-High-Resolution-Rapid-Refresh-Model>`_
+   :width: 66%
 
 
 Install
