@@ -1,9 +1,10 @@
-hrrrb
-=====
+Reference Guide
+===============
 
 .. toctree::
    :hidden:
-   :maxdepth: 1
+   :maxdepth: 4
 
 .. automodule:: hrrrb.archive
+.. automodule:: hrrrb.tools
 .. automodule:: hrrrb.plots

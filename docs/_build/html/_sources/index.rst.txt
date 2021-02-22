@@ -22,7 +22,7 @@ The `High-Resolution Rapid Refresh <https://rapidrefresh.noaa.gov/hrrr/>`_ model
 
 .. figure:: _static/Herbie3.png
    :class: img-fluid
-   :width: 25%
+   :width: 50%
    :align: right
 
 HRRR-B, or "Herbie," is a python package for downloading recent and archived High Resolution Rapid Refresh (HRRR) model forecasts and opening HRRR data as an ``xarray.Dataset`` with `cfgrib <https://github.com/ecmwf/cfgrib>`_. I created most of this during my PhD and decided to organize what I created into a more coherent package. It will continue to evolve at my own leisure.
