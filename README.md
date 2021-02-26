@@ -9,8 +9,6 @@
 <!-- Badges -->
 [![](https://img.shields.io/pypi/v/hrrrb)](https://pypi.python.org/pypi/hrrrb/)
 ![](https://img.shields.io/github/license/blaylockbk/HRRR_archive_download)
-![](https://img.shields.io/pypi/dm/hrrrb)
-
 
 |HRRR Archive Website|**http://hrrr.chpc.utah.edu/**|
 |--:|:--|

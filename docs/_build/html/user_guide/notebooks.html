@@ -224,13 +224,14 @@
 <li class="toctree-l1"><a class="reference external" href="https://github.com/blaylockbk/HRRR_archive_download/blob/master/notebooks/demo_plot-on-map-with-common-features.ipynb">Make Cartopy maps with HRRR data</a></li>
 </ul>
 </div>
-<p>Select variables of the HRRR archive are available in Zarr format (managed by the MesoWest group at the University of Utah). I’m still trying to understand how to use it, but here is a notebook showing my exploring…</p>
+<p><strong>Zarr:</strong> Select parts of the HRRR archive are available in <a class="reference external" href="https://zarr.readthedocs.io/en/stable/">Zarr</a> format in the <code class="docutils literal notranslate"><span class="pre">s3://hrrrzarr</span></code> bucket on AWS developed by <a class="reference external" href="https://twitter.com/tayloragowan">Taylor Gowan</a> and managed by the MesoWest group at the University of Utah. I’m still trying to understand how to use Zarr and haven’t added any zarr functionality into <code class="docutils literal notranslate"><span class="pre">hrrrb</span></code>, but here is a notebook showing my zarr exploration…</p>
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference external" href="https://github.com/blaylockbk/HRRR_archive_download/blob/master/notebooks/zarr_HRRR.ipynb">HRRR in Zarr format</a></li>
 </ul>
 </div>
-<p>The following notebooks offer a deeper discussion on how the download process works. These are not intended for practical use, but should help illustrate my thought process when I created this package.</p>
+<hr class="docutils" />
+<p>The following notebooks offer a deeper discussion on how the GRIB2 download process works. These are not intended for practical use, but should help illustrate my thought process when I created the <code class="docutils literal notranslate"><span class="pre">hrrrb</span></code> package.</p>
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference external" href="https://github.com/blaylockbk/HRRR_archive_download/blob/master/notebooks/demo_download_hrrr_archive_part1.ipynb">Part 1: How to download a bunch of HRRR grib2 files (full file)</a></li>
