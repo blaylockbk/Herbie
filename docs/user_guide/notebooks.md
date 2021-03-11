@@ -7,10 +7,10 @@ These notebooks show practical use case of the `hrrrb` package:
 
 **Zarr:** Select parts of the HRRR archive are available in [Zarr](https://zarr.readthedocs.io/en/stable/) format in the `s3://hrrrzarr` bucket on AWS developed by [Taylor Gowan](https://twitter.com/tayloragowan) and managed by the MesoWest group at the University of Utah. To get started check out Taylor's notebooks...
 
-- [Taylor's HRRR-Zarr examples](https://github.com/taylorgowan/zarr)
+- [Taylors HRRR-Zarr examples](https://github.com/taylorgowan/zarr)
 
 I'm still trying to understand how to use Zarr and haven't added any zarr functionality into `hrrrb`, but here is my sandbox notebook showing my zarr exploration...
-- [Brian's HRRR-Zarr sandbox](https://github.com/blaylockbk/HRRR_archive_download/blob/master/notebooks/zarr_HRRR.ipynb)
+- [Brians HRRR-Zarr sandbox](https://github.com/blaylockbk/HRRR_archive_download/blob/master/notebooks/zarr_HRRR.ipynb)
 
 ---
 
