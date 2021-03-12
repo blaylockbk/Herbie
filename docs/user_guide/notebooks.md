@@ -5,12 +5,13 @@ These notebooks show practical use case of the `hrrrb` package:
 - [Main Package Examples](https://github.com/blaylockbk/HRRR_archive_download/blob/master/notebooks/examples.ipynb)
 - [Make Cartopy maps with HRRR data](https://github.com/blaylockbk/HRRR_archive_download/blob/master/notebooks/demo_plot-on-map-with-common-features.ipynb)
 
-**Zarr:** Select parts of the HRRR archive are available in [Zarr](https://zarr.readthedocs.io/en/stable/) format in the `s3://hrrrzarr` bucket on AWS developed by [Taylor Gowan](https://twitter.com/tayloragowan) and managed by the MesoWest group at the University of Utah. To get started check out Taylor's notebooks...
+**Zarr:** Select parts of the HRRR archive are available in [Zarr](https://zarr.readthedocs.io/en/stable/) format in the `s3://hrrrzarr` bucket on AWS developed by [Taylor Gowan](https://twitter.com/tayloragowan) and managed by the MesoWest group at the University of Utah. To get started check out these notebooks:
 
-- [Taylors HRRR-Zarr examples](https://github.com/taylorgowan/zarr)
+- [Taylor Gowan: HRRR-Zarr examples](https://github.com/taylorgowan/zarr)
+- [Kevin Tyle: HRRR-Zarr AMS Short Course](https://github.com/ktyle/python_pangeo_ams2021/blob/main/notebooks/03_Pangeo_HRRR.ipynb)
 
-I'm still trying to understand how to use Zarr and haven't added any zarr functionality into `hrrrb`, but here is my sandbox notebook showing my zarr exploration...
-- [Brians HRRR-Zarr sandbox](https://github.com/blaylockbk/HRRR_archive_download/blob/master/notebooks/zarr_HRRR.ipynb)
+I haven't added Zarr functionality into `hrrrb`, but I started to explore the capability. Here is my sandbox notebook...
+- [Brian Blaylock: HRRR-Zarr sandbox](https://github.com/blaylockbk/HRRR_archive_download/blob/master/notebooks/zarr_HRRR.ipynb)
 
 ---
 
