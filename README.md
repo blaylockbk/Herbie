@@ -159,13 +159,12 @@ xhrrr(DATE, searchString, fxx=0, *,
     - e.g., `range(0,19)` for F00-F18
     - Default is the model analysis (F00).
 - `model` The type of model. 
-    - Options are `hrrr`, `alaska`, `hrrrX`
+    - Options are `hrrr`, `alaska`, `hrrrX`, (`rap` is also an option, though limited)
 - `field` The type of field file. 
-    - Options are `sfc` and `prs`
-    - `nat` and `subh` are only available for today and yesterday.
+    - Options are `sfc`, `prs`, `nat`, and `subh`.
 - `save_dir` The directory path the files will be saved in. 
     - By default, GRIB2 files are downloaded into the user's home directory at `~/data/{model}`. The default directory can be changed in the `~/.config/hrrrb/config.cfg` file. This file is generated the first time you import **hrrrb.archive**.
-- `download_source_priority` The default source priority is `['pando', 'google', 'nomads']`, but you might want to instead try to download a file from Google before trying to get it from Pando. In that case, set to `['google', 'pando', 'nomads']`. 
+- `download_source_priority` The default source priority is `['nomads', 'aws', 'google', 'pando']`, but you might want to instead try to download a file from Google before trying to get it from AWS. In that case, set to `['google', 'aws', 'nomads', 'pando']`. 
 - `dryrun` If `True`, the function will tell you what it will download but not actually download anything.
 - `verbose` If `True`, prints lots of info to the screen.
 
