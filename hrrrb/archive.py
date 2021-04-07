@@ -32,17 +32,17 @@ default download source priority can be changed).
     - Does not have ``.idx`` files before September 17, 2018.
     - Has all original data including nat, subh, prs, and sfc files 
       for all forecast hours.
-3. Pando: The University of Utah HRRR archive
-    - http://hrrr.chpc.utah.edu/
-    - Available from July 15, 2016 to Present.
-    - A subset of prs and sfc files.
-    - Contains a ``.idx`` file for *every* GRIB2 file for subsetting.
-4. AWS: Amazon Web Services
+3. AWS: Amazon Web Services
     - https://noaa-hrrr-bdp-pds.s3.amazonaws.com/
     - Available from July 30, 2014 to Present.
     - Does not have ``.idx`` files.
     - Has all nat, subh, prs, and sfc files for all forecast hours.
     - Some data may be missing.
+3. Pando: The University of Utah HRRR archive
+    - http://hrrr.chpc.utah.edu/
+    - Available from July 15, 2016 to Present.
+    - A subset of prs and sfc files.
+    - Contains a ``.idx`` file for *every* GRIB2 file for subsetting.
 
 Main Functions
 --------------
@@ -69,7 +69,9 @@ import xarray as xr
 
 from hrrrb.tools import to_180, get_crs
 
+#=======================================================================
 # Specify default location to save HRRR GRIB2 files
+#=======================================================================
 config = configparser.ConfigParser()
 _config_path = Path('~').expanduser() / '.config' / 'hrrrb' / 'config.cfg'
 
@@ -90,22 +92,26 @@ config.read(_config_path)
 try:
     _default_save_dir = Path(config.get('download', 'default_save_dir'))
 except:
-    print(f'🦁🐯🐻 oh my! {_config_path} looks weird, but I will add a new section')
+    print(f'🦁🐯🐻 oh my! {_config_path} looks weird,',
+          f'but I will add a new section')
     config.add_section('download')
     config.set('download', 'default_save_dir', user_home_default)
     with open(_config_path, 'w') as configfile:
         config.write(configfile)
     _default_save_dir = Path(config.get('download', 'default_save_dir'))
 
-# or set to the user's home directory
+# Uncomment to just set save dir to the user's home directory
 #_default_save_dir = Path('~').expanduser() / 'data'
+#=======================================================================
+#=======================================================================
 
-# List of HRRR download source base URLs
+
+# List of HRRR download source base URLs, in order of priority
 base_url = dict(
     nomads = 'https://nomads.ncep.noaa.gov/pub/data/nccf/com/hrrr/prod',
     google = 'https://storage.googleapis.com/high-resolution-rapid-refresh',
-    pando = 'https://pando-rgw01.chpc.utah.edu',
     aws = 'https://noaa-hrrr-bdp-pds.s3.amazonaws.com',
+    pando = 'https://pando-rgw01.chpc.utah.edu',
     pando2 = 'https://pando-rgw02.chpc.utah.edu',  # The 2nd rados gateway might work if the 1st didn't.
 )
 
@@ -147,6 +153,7 @@ def _searchString_help(searchString):
         "  ':APCP:surface:0-[1-9]*'      Accumulated precip since initialization time",
         "  ':APCP:surface:[1-9]*-[1-9]*' Accumulated precip over last hour",
         "  ':UGRD:10 m'                  U wind component at 10 meters.",
+        "  ':(U|V)GRD:(10|80) m'         U and V wind component at 10 and 80 m.",
         "  ':(U|V)GRD:'                  U and V wind component at all levels.",
         "  ':.GRD:'                      (Same as above)",
         "  ':(TMP|DPT):'                 Temperature and Dew Point for all levels .",
@@ -155,8 +162,7 @@ def _searchString_help(searchString):
         "  ':surface:'                   All variables at the surface.",
         "  ============================= ===============================================",
         "\nIf you need help with regular expression, search the web",
-        "  or look at this cheatsheet: https://www.petefreitag.com/cheatsheets/regex/",
-        "PLEASE FIX THE `searchString`"
+        "  or look at this cheatsheet: https://www.petefreitag.com/cheatsheets/regex/."
         ]
     return '\n'.join(msg)
 
@@ -185,9 +191,9 @@ def _outFile_from_url(url, save_dir):
     return outFile
 
 def _download_hrrr_subset(url, searchString, *,
-                         df_row_urls=None,
-                         save_dir=_default_save_dir,
-                         dryrun=False, verbose=True):
+                          df_row_urls=None,
+                          save_dir=_default_save_dir,
+                          dryrun=False, verbose=True):
     """
     Download a subset of GRIB fields from a HRRR file located at a URL.
 
@@ -410,10 +416,13 @@ def download_hrrr(DATES, searchString=None, *,
         hours, you can set ``fxx=range(0,19)``.
     model : {'hrrr', 'hrrrak', 'hrrrX'}
         The model type you want to download.
-        - 'hrrr' HRRR Contiguous United States (operational)
-        - 'hrrrak' HRRR Alaska. You can also use 'alaska' as an alias.
-        - 'hrrrX' *experimental* HRRR (experimental version run at ESRL)
+        - `'hrrr'` HRRR Contiguous United States (operational)
+        - `'hrrrak'` HRRR Alaska. You can also use 'alaska' as an alias.
+        - `'hrrrX'` *experimental* HRRR (experimental version run at ESRL)
            is only available from the Pando archive.
+        - `'rap'` Rapid Refresh model. **This is not fully tested or implemented**,
+           but you can get the GRIB2 grids and subset the file by .idx with
+           searchString. `field` is not required as all levels are in the same file.
     field : {'prs', 'sfc', 'nat', 'subh'}
         Variable fields you wish to download. Only 'sfc' and 'prs' are
         available on Pando, but 'nat' and 'subh' are attainable from
@@ -502,7 +511,8 @@ def download_hrrr(DATES, searchString=None, *,
     #**************************************************************************
     # Build the URL path for every file we want
     #**************************************************************************
-    # Full URL Examples
+    # HRRR Full URL Examples
+    # ----------------------
     # NOMADS
     #   https://nomads.ncep.noaa.gov/pub/data/nccf/com/hrrr/prod/hrrr.20200624/conus/hrrr.t00z.wrfsfcf09.grib2
     # Pando
@@ -511,6 +521,15 @@ def download_hrrr(DATES, searchString=None, *,
     #   https://storage.googleapis.com/high-resolution-rapid-refresh/hrrr.20200101/conus/hrrr.t00z.wrfnatf04.grib2
     # Amazon AWS
     #   https://noaa-hrrr-bdp-pds.s3.amazonaws.com/hrrr.20140917/conus/hrrr.t00z.wrfsubhf1015.grib2
+    #
+    # RAP Full URL Examples
+    # ----------------------
+    # NOMADS
+    #   https://nomads.ncep.noaa.gov/pub/data/nccf/com/rap/prod/rap.20210407/rap.t00z.awip32f00.grib2
+    # Amazon AWS
+    #   https://noaa-rap-pds.s3.amazonaws.com/rap.20210407/rap.t00z.awip32f03.grib2
+    # Google
+    #   https://storage.googleapis.com/rapid-refresh/rap.20210222/rap.t00z.awip32f01.grib2
 
     # Create a list of URLs for each files from each download source
     URL_list = {}
@@ -527,6 +546,14 @@ def download_hrrr(DATES, searchString=None, *,
                     URL_list[source].append(f"{source_url}/hrrr.{DATE:%Y%m%d}/conus/hrrr.t{DATE:%H}z.wrf{field}f{f:02d}.grib2")
                 elif model == 'hrrrak':
                     URL_list[source].append(f"{source_url}/hrrr.{DATE:%Y%m%d}/alaska/hrrr.t{DATE:%H}z.wrf{field}f{f:02d}.ak.grib2")
+                elif model == 'rap':
+                    ## Rapid Refresh Model is a special case
+                    if source == 'aws':
+                        URL_list[source].append(f'https://noaa-rap-pds.s3.amazonaws.com/rap.{DATE:%Y%m%d}/rap.t{DATE:%H}z.awip32f{f:02d}.grib2')
+                    elif source == 'nomads':
+                        URL_list[source].append(f'https://nomads.ncep.noaa.gov/pub/data/nccf/com/rap/prod/rap.{DATE:%Y%m%d}/rap.t{DATE:%H}z.awip32f{f:02d}.grib2')
+                    elif source == 'google':
+                        URL_list[source].append(f'https://storage.googleapis.com/rapid-refresh/rap.{DATE:%Y%m%d}/rap.t{DATE:%H}z.awip32f{f:02d}.grib2')
                 else:
                     URL_list[source].append(f'https://pando-rgw01.chpc.utah.edu/hrrrX/nonehere_placeholder_{source}') # Experimental HRRR (hrrrX) only exists on Pando. This is a placeholder.
 
