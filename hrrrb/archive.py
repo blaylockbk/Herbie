@@ -672,6 +672,7 @@ def xhrrr(DATE, searchString, fxx=0, *,
           DATE_is_valid_time=False,
           remove_grib2=True,
           add_crs=True,
+          backend_kwargs={},
           **download_kwargs):
     """
     Download HRRR data and return as an xarray Dataset (or Datasets)
@@ -758,9 +759,9 @@ def xhrrr(DATE, searchString, fxx=0, *,
     grib2file, url = download_hrrr(DATE, searchString, fxx=fxx, **download_kwargs)
 
     # Some extra backend kwargs for cfgrib
-    backend_kwargs = {'indexpath':'',
-                      'read_keys': ['parameterName', 'parameterUnits'],
-                      'errors': 'raise'}
+    backend_kwargs.setdefault('indexpath', '')
+    backend_kwargs.setdefault('read_keys', ['parameterName', 'parameterUnits', 'stepRange'])
+    backend_kwargs.setdefault('errors', 'raise')
 
     # Use cfgrib.open_datasets, just in case there are multiple "hypercubes"
     # for what we requested.

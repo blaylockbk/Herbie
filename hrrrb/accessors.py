@@ -10,16 +10,17 @@ Extend the xarray capabilities with a custom accessor.
 http://xarray.pydata.org/en/stable/internals.html#extending-xarray
 
 """
+import warnings
 
 import numpy as np
+from paint.radar import cm_reflectivity
 import pandas as pd
 import xarray as xr
 import matplotlib.pyplot as plt
 
 from toolbox.cartopy_tools import common_features, pc
-from paint.standard2 import cm_tmp, cm_dpt, cm_rh, cm_wind
-
-
+from paint.standard2 import cm_tmp, cm_dpt, cm_rh, cm_wind, cm_pcp
+from paint.radar2 import cm_reflectivity
 
 
 @xr.register_dataset_accessor("hrrrb")
@@ -73,20 +74,24 @@ class hrrrb_accessor:
         )
 
         for var in ds.data_vars:
-            print(var)
-            print(ds[var].GRIB_cfName)
-            print(ds[var].GRIB_cfVarName)
-            print(ds[var].GRIB_units)
-            print(ds[var].GRIB_typeOfLevel)
+            print('cfgrib variable:', var)
+            print('GRIB_cfName', ds[var].GRIB_cfName)
+            print('GRIB_cfVarName', ds[var].GRIB_cfVarName)
+            print('GRIB_name', ds[var].GRIB_name)
+            print('GRIB_units', ds[var].GRIB_units)
+            print('GRIB_typeOfLevel', ds[var].GRIB_typeOfLevel)
             print()
-            ds[var].attrs['units'] = ds[var].attrs['units'].replace('**-1', '$^{-1}$')
+            ds[var].attrs['units'] = ds[var].attrs['units'].replace('**-1', '$^{-1}$').replace('**-2', '$^{-2}$')
             
             dpi = common_features_kw.pop('dpi', 150)
             figsize = common_features_kw.pop('figsize', [10,5])
             fig, ax = plt.subplots(1,1, subplot_kw=dict(projection=ds.crs), dpi=dpi, figsize=figsize)
             
-            common_features(scale='50m', ax=ax, crs=ds.crs, STATES=True, BORDERS=True)
+            default = dict(scale='50m', ax=ax, crs=ds.crs, STATES=True, BORDERS=True)
+            common_features_kw = {**default, **common_features_kw}
+            common_features(**common_features_kw)
 
+            title = ''
             kwargs = {}
             cbar_kwargs = dict(pad=0.01)
 
@@ -108,6 +113,17 @@ class hrrrb_accessor:
                     ds[var] -= 273.15
                     ds[var].attrs['GRIB_units'] = 'C'
                     ds[var].attrs['units'] = 'C'
+                
+            elif ds[var].GRIB_name == 'Total Precipitation':
+                title = '-'.join([f'F{int(i):02d}' for i in ds[var].GRIB_stepRange.split('-')])
+                ds[var] = ds[var].where(ds[var]!=0)
+                kwargs = {**cm_pcp().cmap_kwargs, **kwargs}
+                cbar_kwargs = {**cm_pcp().cbar_kwargs, **cbar_kwargs}
+
+            elif ds[var].GRIB_name == 'Maximum/Composite radar reflectivity':
+                ds[var] = ds[var].where(ds[var]>=0)
+                cbar_kwargs = {**cm_reflectivity().cbar_kwargs, **cbar_kwargs}
+                kwargs = {**cm_reflectivity().cmap_kwargs, **kwargs}
 
             elif ds[var].GRIB_cfName == 'relative_humidity':
                 cbar_kwargs = {**cm_rh().cbar_kwargs, **cbar_kwargs}
@@ -128,8 +144,11 @@ class hrrrb_accessor:
                 level_units = _level_units[level_type]
             else:
                 level_units = 'unknown'
-                
-            level = f'{ds[var][level_type].data:g} {level_units}'
+
+            if level_units.lower() in ['surface', 'atmosphere']:
+                level = f'{title} {level_units}'
+            else:
+                level = f'{ds[var][level_type].data:g} {level_units}'
 
             ax.set_title(f"Run: {RUN} {FXX}", loc='left', fontfamily='monospace', fontsize='x-small')
             ax.set_title(f'HRRR {level}', loc='center', fontweight='semibold')
@@ -141,4 +160,4 @@ class hrrrb_accessor:
             LATS = new[:,:,1]
             ax.set_extent([LONS.min(), LONS.max(), LATS.min(), LATS.max()], crs=ds.crs)
         
-        return "plotting!"
+        return ax
