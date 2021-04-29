@@ -26,18 +26,21 @@ default download source priority can be changed).
     - Available for today's and yesterday's runs
     - Original data source. All available data.
     - Includes ``.idx`` for all GRIB2 files.
+
 2. Google: Google Cloud Platform Earth
     - https://console.cloud.google.com/storage/browser/high-resolution-rapid-refresh
     - Available from July 30, 2014 to Present.
     - Does not have ``.idx`` files before September 17, 2018.
     - Has all original data including nat, subh, prs, and sfc files 
       for all forecast hours.
+
 3. AWS: Amazon Web Services
     - https://noaa-hrrr-bdp-pds.s3.amazonaws.com/
     - Available from July 30, 2014 to Present.
     - Does not have ``.idx`` files.
     - Has all nat, subh, prs, and sfc files for all forecast hours.
     - Some data may be missing.
+
 3. Pando: The University of Utah HRRR archive
     - http://hrrr.chpc.utah.edu/
     - Available from July 15, 2016 to Present.
@@ -50,6 +53,7 @@ download_hrrr
     Download GRIB2 files to local disk.
 xhrrr
     Download and read HRRR data as an xarray.Dataset with cfgrib engine.
+
 """
 
 import os
@@ -354,10 +358,11 @@ def download_hrrr(DATES, searchString=None, *,
 
     Attempts to download grib2 files from three different sources in the
     following order:
-      1. NOAA Operational Model Archive and Distribution System ('nomads').
-      2. Google Cloud Platform ('google')
-      3. University of Utah HRRR archive ('pando')
-      4. Amazon Web Services ('aws')
+
+    1. NOAA Operational Model Archive and Distribution System ('nomads').
+    2. Google Cloud Platform ('google')
+    3. University of Utah HRRR archive ('pando')
+    4. Amazon Web Services ('aws')
 
     Parameters
     ----------
@@ -454,8 +459,7 @@ def download_hrrr(DATES, searchString=None, *,
     Returns
     -------
     The file name for the HRRR files we downloaded and the URL it was from.
-    For example:
-        ('20170101_hrrr.t00z.wrfsfcf00.grib2', 'https://pando-rgw01...')
+    For example: ``('20170101_hrrr.t00z.wrfsfcf00.grib2', 'https://pando-rgw01...')``
     """
 
     #*******************************************************************

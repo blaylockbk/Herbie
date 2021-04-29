@@ -83,7 +83,7 @@ html_theme = "pydata_sphinx_theme"
 html_theme_options = {
     'github_url': 'https://github.com/blaylockbk/HRRR_archive_download',
     'twitter_url': "https://twitter.com/blaylockbk",
-    'search_bar_position': 'navbar',
+    #'search_bar_position': 'navbar',  # depreciated
     "use_edit_page_button": True,
     "show_toc_level": 1,
     "external_links": [

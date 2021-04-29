@@ -298,14 +298,12 @@ for all forecast hours.</p></li>
 <dd><p>Download full or partial HRRR grib2 files for a list of dates and forecasts.</p>
 <p>Attempts to download grib2 files from three different sources in the
 following order:</p>
-<blockquote>
-<div><ol class="arabic simple">
+<ol class="arabic simple">
 <li><p>NOAA Operational Model Archive and Distribution System (‘nomads’).</p></li>
 <li><p>Google Cloud Platform (‘google’)</p></li>
 <li><p>University of Utah HRRR archive (‘pando’)</p></li>
 <li><p>Amazon Web Services (‘aws’)</p></li>
 </ol>
-</div></blockquote>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -434,7 +432,7 @@ If False, only print some info about download progress.</p></li>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p><em>The file name for the HRRR files we downloaded and the URL it was from.</em></p></li>
-<li><p><em>For example</em> – (‘20170101_hrrr.t00z.wrfsfcf00.grib2’, ‘<a class="reference external" href="https://pando-rgw01">https://pando-rgw01</a>…’)</p></li>
+<li><p><strong>For example</strong> (<code class="docutils literal notranslate"><span class="pre">('20170101_hrrr.t00z.wrfsfcf00.grib2',</span> <span class="pre">'https://pando-rgw01...')</span></code>)</p></li>
 </ul>
 </p>
 </dd>
