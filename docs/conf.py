@@ -21,7 +21,7 @@ import pydata_sphinx_theme
 # -- Project information -----------------------------------------------------
 
 project = 'HRRR-B'
-copyright = '2021, Brian K. Blaylock'
+copyright = f'{datetime.utcnow():%Y}, Brian K. Blaylock'
 author = 'Brian K. Blaylock'
 
 # The full version, including alpha/beta/rc tags
@@ -83,7 +83,6 @@ html_theme = "pydata_sphinx_theme"
 html_theme_options = {
     'github_url': 'https://github.com/blaylockbk/HRRR_archive_download',
     'twitter_url': "https://twitter.com/blaylockbk",
-    "use_edit_page_button": True,
     "navbar_end": ["navbar-icon-links.html", "search-field.html"],
     "use_edit_page_button": True,
     "google_analytics_id": "G-PT9LX1B7B8",
