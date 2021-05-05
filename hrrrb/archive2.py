@@ -8,64 +8,65 @@
 Retrieve HRRR GRIB2 files from archives
 =======================================
 
-Updates:
-- 
+Updates from archive.py
+- drop support for hrrrx (no longer archived on Pando)
+- added rap model
+- less reliance on Pando, more on aws
+- new method for searchString index search.
 
-Download High-Resolution Rapid Refresh (HRRR) model GRIB2 files from 
-different archive sources. Support for subsetting GRIB2 files by fields
-if the `.idx`` file exist.
+Download High-Resolution Rapid Refresh (HRRR) and Rapid Refresh (RAP)
+model GRIB2 files from different archive sources. Supports subsetting
+GRIB2 files by fields if the index (.idx) file exist.
 
-Default HRRR Data Source Priority
----------------------------------
-NOAA started pushing the HRRR data to the Google Cloud Platform and 
-Amazon Web Services at the end of 2020. The archives were also 
-backfilled to previous years as far back as July 30, 2014. This module
-will download HRRR data from these sources in the following order (the
-default download source priority can be changed).
+HRRR and RAP Data Sources
+-------------------------
+Real-time HRRR and RAP data is available from NOMADS. At the end of 
+2020, NOAA started pushing the HRRR and RAP data to the Google Cloud 
+Platform and Amazon Web Services as part of the NOAA Big Data Progam.
+These archives were backfilled to previous years as far back as 
+July 30, 2014. A limited archive used for research purposes also exists 
+on the University of Utah CHPC Pando Archive System. 
+
+This module enable you to easily download HRRR and RAP data between
+these different data sources wherever the data you are interested in
+is available. The default download source priority and some attributes
+of the data sources is listed below:
 
 
 1. NOMAS: NOAA Operational Model Archive and Distribution System
     - https://nomads.ncep.noaa.gov/
     - Available for today's and yesterday's runs
-    - Original data source. All available data.
-    - Includes ``.idx`` for all GRIB2 files.
+    - Real-time data.
+    - Original data source. All available data included.
+    - Download limits.
+    - Includes GRIB2 .idx for all GRIB2 files.
 
-2. Google: Google Cloud Platform Earth
-    - https://console.cloud.google.com/storage/browser/high-resolution-rapid-refresh
-    - Available from July 30, 2014 to Present.
-    - Does not have ``.idx`` files before September 17, 2018.
-    - Has all original data including nat, subh, prs, and sfc files 
-      for all forecast hours.
-
-3. AWS: Amazon Web Services
+2. AWS: Amazon Web Services
     - https://noaa-hrrr-bdp-pds.s3.amazonaws.com/
     - Available from July 30, 2014 to Present.
-    - Does not have ``.idx`` files.
+    - Slight latency for real-time products.
+    - Not all GRIB2 files have an .idx files.
     - Has all nat, subh, prs, and sfc files for all forecast hours.
     - Some data may be missing.
 
-3. Pando: The University of Utah HRRR archive
+3. Google: Google Cloud Platform Earth
+    - https://console.cloud.google.com/storage/browser/high-resolution-rapid-refresh
+    - Available from July 30, 2014 to Present.
+    - Slight latency for real-time products.
+    - Does not have GRIB2 .idx files before September 17, 2018.
+    - Has all original data including nat, subh, prs, and sfc files 
+      for all forecast hours.
+
+4. Pando: The University of Utah HRRR archive
     - http://hrrr.chpc.utah.edu/
-    - Available from July 15, 2016 to Present.
+    - Research archive. Older files being removed.
     - A subset of prs and sfc files.
-    - Contains a ``.idx`` file for *every* GRIB2 file for subsetting.
-
-Main Functions
---------------
-download_hrrr
-    Download GRIB2 files to local disk.
-xhrrr
-    Download and read HRRR data as an xarray.Dataset with cfgrib engine.
-
+    - Contains a .idx file for every GRIB2 file.
 """
-
 import os
-import re
-from datetime import datetime, timedelta
 from pathlib import Path
-from itertools import product
 import warnings
-import configparser
+from datetime import datetime, timedelta
 
 import urllib.request
 import requests
@@ -74,46 +75,12 @@ import numpy as np
 import pandas as pd
 import xarray as xr
 
-from hrrrb.tools import to_180, get_crs
+# NOTE: The `_default_save_dir` is defined in __init__.py and set in 
+# the config file at ~/.config/hrrrb/config.cfg.
+from . import _default_save_dir
 
-#=======================================================================
-# Specify default location to save HRRR GRIB2 files
-#=======================================================================
-config = configparser.ConfigParser()
-_config_path = Path('~').expanduser() / '.config' / 'hrrrb' / 'config.cfg'
-
-user_home_default = str(Path('~').expanduser() / 'data')
-
-if not _config_path.exists():
-    _config_path.parent.mkdir(parents=True)
-    _config_path.touch()
-    config.read(_config_path)
-    config.add_section('download')
-    config.set('download', 'default_save_dir', user_home_default)
-    with open(_config_path, 'w') as configfile:
-        config.write(configfile)
-    print(f'⚙ Created config file [{_config_path}]',
-          f'with default download directory set as [{user_home_default}]')
-
-config.read(_config_path)
-try:
-    _default_save_dir = Path(config.get('download', 'default_save_dir'))
-except:
-    print(f'🦁🐯🐻 oh my! {_config_path} looks weird,',
-          f'but I will add a new section')
-    config.add_section('download')
-    config.set('download', 'default_save_dir', user_home_default)
-    with open(_config_path, 'w') as configfile:
-        config.write(configfile)
-    _default_save_dir = Path(config.get('download', 'default_save_dir'))
-
-# Uncomment to just set save dir to the user's home directory
-#_default_save_dir = Path('~').expanduser() / 'data'
-#=======================================================================
-#=======================================================================
-
-
-def _searchString_help(searchString):
+def _searchString_help(searchString=None):
+    """Help/Error Message for `searchString`"""
     msg = [
         f"There is something wrong with [[  searchString='{searchString}'  ]]",
         "\nUse regular expression to search for lines in the .idx file",
@@ -142,45 +109,113 @@ def _searchString_help(searchString):
         ]
     return '\n'.join(msg)
 
-class GET_HRRR:
-    
-    def __init__(self, date, fxx=0, model='hrrr', field='sfc',
-                 priority=['nomads', 'aws', 'google', 'pando', 'pando2']):
-        date = pd.to_datetime(date)
-        self.date = date
+class ModelOutputSource:
+    """
+    Custom class for a HRRR or RAP model output file. 
+
+    Methods
+    -------
+    get_url
+        Build the output file URL location for different data sources.
+    download 
+        Download the single GRIB2 file.
+    read_idx
+        Inspect the GRIB2 contents listed in the index (.idx) file.
+    """
+    _default_priority = ['nomads', 'aws', 'google', 'pando', 'pando2']
+
+    def __init__(self, DATE, fxx=0, *, 
+                 model='hrrr', field='sfc',
+                 priority=_default_priority,
+                 verbose=True):
+        """
+        Specify model output and find grib2 file at one of the sources.
+        
+        Parameters
+        ----------
+        DATE : pandas-parsable datetime
+            Initialization date.
+        fxx : int
+            Forecast lead time in hours. 
+            Available lead times depend on the HRRR version and
+            range from 0 to 15, 18, 36, or 48.
+        model : {'hrrr', 'hrrrak', 'rap'}
+            Model type. 
+            - ``'hrrr'`` operational HRRR contiguous United States model.
+            - ``'hrrrak'`` HRRR Alaska model (alias ``'alaska'``)
+            - ``'rap'`` RAP model
+        field : {'sfc', 'prs', 'nat', 'subh'}
+            Output variable field file type. In the HRRR model, the
+            different field files have certain variables at levels. 
+            Not required for the RAP model as all variables are in the 
+            same file.
+            - ``'sfc'`` surface fields
+            - ``'prs'`` pressure fields
+            - ``'nat'`` native fields
+            - ``'subh'`` subhourly fields
+        priority : list or str
+            List of model sources to get the data in the order of 
+            download priority. The available data sources and default
+            priority order are listed below.
+            - ``'nomads'`` NOAA's NOMADS server
+            - ``'aws'`` Amazon Web Services (Big Data Program)
+            - ``'google'`` Google Cloud Platform (Big Data Program)
+            - ``'pando'`` University of Utah Pando Archive (gateway 1)
+            - ``'pando2'`` University of Utah Pando Archive (gateway 2)
+        """
+
+        self.date = DATE
         self.fxx = fxx
-        self.model = model
-        self.field = field
+        self.model = model.lower()
+        self.field = field.lower()
         self.priority = priority
         
         self._validate()
-                
-        self.url = None
+
+        # url is the first existing source URL for the desired model output.
+        # idx is the first existing index file for the desired model output.
+        # These are initially set to None, but will look for files in the
+        # for loop.
+        self.grib = None
         self.idx = None
+        self.grib_source = None
+        self.idx_source = None
         
-        for source in priority:
-            print(f"Looking at {source}:", end=' ')
-            
+        for source in self.priority:            
             if source in ['pando', 'pando2']:
+                # Sometimes pando returns a bad handshake. Pinging
+                # pando first can help prevent that.
                 self._ping_pando()
             
+            # First get the file URL for the source and determine if the 
+            # GRIB2 file and the index file exist. If found, store the
+            # URL for the GRIB2 file and the .idx file.
             url = self.get_url(source)
             
-            if self.url is None and self._check_grib(url):
-                print(f'Found grib.', end=' ')
-                self.url = url
-                self.url_source = source
+            found_grib = False
+            found_idx = False
+            if self.grib is None and self._check_grib(url):
+                found_grib = True
+                self.grib = url
+                self.grib_source = source
             if self.idx is None and self._check_idx(url):
-                print(f'Found idx.')
+                found_idx = True
                 self.idx = url+'.idx'
                 self.idx_source = source
-            print()
-            if all([self.url is not None, self.idx is not None]):
+            
+            if verbose:
+                msg = (f"Looked in [{source:^10s}] for {self.model.upper()} "
+                    f"{self.date:%H:%M UTC %d %b %Y} F{self.fxx:02d} "
+                    f"--> ({found_grib=}) ({found_idx=}) {' ':5s}")
+                print(msg, end='\r', flush=True)
+            
+            if all([self.grib is not None, self.idx is not None]):
                 break
-    
+        
+
     def __repr__(self):
         """Representation in Notebook"""
-        return f"{self.model} model {self.field} fields run at {self.date:%H:%M UTC %d %b %Y} for F{self.fxx:02d}. "
+        return f"{self.model.upper()} model {self.field} fields run at {self.date:%H:%M UTC %d %b %Y} for F{self.fxx:02d}"
 
     def __str__(self):
         """When class object is printed"""
@@ -189,15 +224,28 @@ class GET_HRRR:
             f'{self.field=}',
             f'{self.fxx=}',
             f'{self.date=}',
+            f'{self.priority=}',
         ]
         return '\n'.join(msg)
         
     def _validate(self):
-        _models = ['hrrr', 'hrrrak', 'rap']
-        _fields = ['prs', 'sfc', 'nat', 'subh']
-        assert self.fxx in range(48), "Forecast lead time `fxx` is too large"
+        """Validate the class input arguments"""
+        _models = {'hrrr', 'hrrrak', 'rap'}
+        _fields = {'prs', 'sfc', 'nat', 'subh'}
+        
+        self.date = pd.to_datetime(self.date)
+        
+        if self.model == 'alaska':
+            self.model == 'hrrrak'
+        
+        assert self.fxx in range(49), "Forecast lead time `fxx` is too large"
         assert self.model in _models, f"`model` must be one of {_models}"
         assert self.field in _fields, f"`field must be one of {_fields}"
+        
+        if isinstance(self.priority, str):
+            self.priority = [self.priority]
+        
+        self.priority = [i.lower() for i in self.priority]
     
     def _ping_pando(self):
         """Pinging the Pando server before downloading can prevent a bad handshake."""
@@ -208,24 +256,35 @@ class GET_HRRR:
             pass
     
     def _check_grib(self, url):
-        """grib2 file must exist and be of valid length"""
+        """Check that the GRIB2 URL exist and is of useful length."""
         head = requests.head(url)
         check_exists = head.ok
         if check_exists:
             check_content = int(head.raw.info()['Content-Length']) > 1_000_000
+            return check_exists and check_content
         else:
-            cehck_content = False
-        return check_exists and check_content
+            return False
     
     def _check_idx(self, url):
-        """does the .idx file exist?"""
+        """Check if an index file exist for the GRIB2 URL."""
         if not url.endswith('.idx'):
             url += '.idx'
-        head = requests.head(url)
-        check_exists = head.ok
-        return check_exists
+        return requests.head(url).ok
     
     def get_url(self, source):
+        """
+        Build the URL for the GRIB2 file for the requested file and data source.
+        
+        Parameters
+        ----------
+        source : {'nomads', 'aws', 'google', 'pando', 'pando2'}
+            The data download source for the RAP and HRRR models. 
+            - ``'nomads'`` NOAA's NOMADS server
+            - ``'aws'`` Amazon Web Services (Big Data Program)
+            - ``'google'`` Google Cloud Platform (Big Data Program)
+            - ``'pando'`` University of Utah Pando Archive (gateway 1)
+            - ``'pando2'`` University of Utah Pando Archive (gateway 2)
+        """
         if source == 'nomads':
             if self.model == 'rap':
                 base = 'https://nomads.ncep.noaa.gov/pub/data/nccf/com/rap/prod/'
@@ -262,43 +321,71 @@ class GET_HRRR:
             else:
                 gateway = 1
             if self.model == 'rap':
-                base = None
-                path = None
+                return None  # No RAP data on Pando
             else:
                 base = f'https://pando-rgw0{gateway}.chpc.utah.edu/'
                 path = f"{self.model}/{self.field}/{self.date:%Y%m%d}/{self.model}.t{self.date:%H}z.wrf{self.field}f{self.fxx:02d}.grib2"
-        
-        url = base+path
-        
-        return url
+               
+        return base+path
     
     def read_idx(self, searchString=None):
-        """read the index file"""
-        import numpy as np
-
+        """
+        Inspect the GRIB2 file contents by reading the index file.
+        
+        Parameters
+        ----------
+        searchString : str
+            Filter dataframe by a searchString regular expression.
+            Searches for strings in the index file lines, specifically
+            the variable, level, and forecast_time columns.
+            Execute ``_searchString_help()` for examples of a good
+            searchString.
+        
+        Returns
+        -------
+        A Pandas DataFrame of the index file.
+        """
+        assert self.idx is not None, f"No index file for {self.grib}."
+        
+        # Open the idx file
         r = requests.get(self.idx)
-        if r.ok:
-            read_idx = r.text.split('\n')
-            df = pd.DataFrame([i.split(':') for i in read_idx[:-1]], 
-                              columns=['grib_message', 'start_byte', 'reference_time', 'variable', 'level', 'forecast_time', 'none'])
+        assert r.ok, f"Index file does not exist: {self.idx}"   
 
-            df['grib_message'] = df['grib_message'].astype(int)
-            df['reference_time'] = pd.to_datetime(df.reference_time, format='d=%Y%m%d%H')
-            df['valid_time'] = df['reference_time'] + pd.to_timedelta(f"{self.fxx}H")
-            df['start_byte'] = df['start_byte'].astype(int)
-            df['end_byte'] = df['start_byte'].shift(-1, fill_value='')
-            df['range'] = df.start_byte.astype(str) + '-' + df.end_byte.astype(str)
-            df = df.drop(columns='none')
-            df = df.set_index('grib_message')
-            df = df.reindex(columns=['start_byte', 'end_byte', 'range', 'reference_time', 'valid_time', 'variable', 'level', 'forecast_time'])
-            df.attrs = dict(source=self.idx_source, description='Index (.idx) file for the GRIB2 file.', model=self.model, field=self.field, lead_time=self.fxx, datetime=self.date)
-            if searchString not in [None, ':']:
-                logic = df['variable'].str.cat(df['level'], ':').str.cat(df['forecast_time'], ':').str.contains(searchString)
-                df = df.loc[logic]
-            return df
-            
-        else:
-            raise ValueError('Index File Does not Exist')
+        read_idx = r.text.split('\n')[:-1]  # last line is empty
+        df = pd.DataFrame([i.split(':') for i in read_idx], 
+                            columns=['grib_message', 'start_byte', 
+                                     'reference_time', 'variable', 
+                                     'level', 'forecast_time', 'none'])
+
+        # Format the DataFrame
+        df['grib_message'] = df['grib_message'].astype(int)
+        df['reference_time'] = pd.to_datetime(df.reference_time, format='d=%Y%m%d%H')
+        df['valid_time'] = df['reference_time'] + pd.to_timedelta(f"{self.fxx}H")
+        df['start_byte'] = df['start_byte'].astype(int)
+        df['end_byte'] = df['start_byte'].shift(-1, fill_value='')
+        df['range'] = df.start_byte.astype(str) + '-' + df.end_byte.astype(str)
+        df = df.drop(columns='none')
+        df = df.set_index('grib_message')
+        df = df.reindex(columns=['start_byte', 'end_byte', 'range', 
+                                 'reference_time', 'valid_time', 
+                                 'variable', 'level', 'forecast_time'])
+        df.attrs = dict(
+            source=self.idx_source, 
+            description='Index (.idx) file for the GRIB2 file.', 
+            model=self.model, 
+            field=self.field, 
+            lead_time=self.fxx, 
+            datetime=self.date
+        )
+
+        # Filter DataFrame by searchString
+        if searchString not in [None, ':']:
+            columns_to_search = df[['variable', 'level', 'forecast_time']].apply(lambda x: ':'.join(x), axis=1)
+            logic = columns_to_search.str.contains(searchString)
+            if logic.sum() == 0:
+                print(_searchString_help(searchString))
+            df = df.loc[logic]
+        return df
     
     def download(self, searchString=None, source=None, *,
                  save_dir=_default_save_dir, 
@@ -322,31 +409,31 @@ class GET_HRRR:
 
         def subset(searchString, outFile):
             """Download a subset via a searchString"""
+            print(f'📇 Download subset {" ":60s}')
             outFile = outFile.with_suffix('.grib2.subset')
             df = self.read_idx(searchString)
             for i, (msg, row) in enumerate(df.iterrows()):
-                print(i, msg, row.range, row.variable, row.level)
+                print(f"{i+1:>4g}: msg={msg:<3g} {row.variable}:{row.level}:{row.forecast_time}")
                 
                 if i == 0:
                     # If we are working on the first item, overwrite the existing file.
-                    curl = f'curl -s --range {row.range} {self.url} > {outFile}'
+                    curl = f'curl -s --range {row.range} {self.grib} > {outFile}'
                 else:
                     # If we are working on not the first item, append the existing file.
-                    curl = f'curl -s --range {row.range} {self.url} >> {outFile}'
+                    curl = f'curl -s --range {row.range} {self.grib} >> {outFile}'
                 os.system(curl)
-            print(outFile)
-            
+            self.local_grib_subset = outFile
         
         if source is not None:
             # Force download from a specified source and not from first in priority
-            self.url = self.get_url(source)
+            self.grib = self.get_url(source)
             
         # Make save_dir if path doesn't exist
         if not hasattr(save_dir, 'exists'): 
             save_dir = Path(save_dir).resolve()
         save_dir = save_dir / self.model
                 
-        outFile = save_dir / f"{self.date:%Y%m%d}" / f"{self.date:%Y%m%d}_{self.url.split('/')[-1]}"
+        outFile = save_dir / f"{self.date:%Y%m%d}" / f"{self.date:%Y%m%d}_{self.grib.split('/')[-1]}"
         if not outFile.parent.is_dir():
                 outFile.parent.mkdir(parents=True, exist_ok=True)
                 print(f'👨🏻‍🏭 Created directory: [{outFile.parent}]')
@@ -356,22 +443,68 @@ class GET_HRRR:
             if not overwrite and outFile.exists():
                 if verbose: print(f'🌉 Already have file for --> {outFile}')
             else:
-                urllib.request.urlretrieve(self.url, outFile, _reporthook)
-                if verbose: print(f'✅ Success! Downloaded from [{self.url_source}] {self.url} --> {outFile}')
+                urllib.request.urlretrieve(self.grib, outFile, _reporthook)
+                if verbose: print(f'✅ Success! Downloaded from [{self.grib_source}] {self.grib} --> {outFile}')
+                self.local_grib = outFile
         else:
             df = subset(searchString, outFile)
             return df
 
-
 ###############################################################################
 ###############################################################################
 
-def download_hrrr(DATES, searchString=None, fxx=range(0,1), model='hrrr', field='sfc'):
+def bulk_download(DATES, searchString=None, *, fxx=range(0,1), 
+                  model='hrrr', field='sfc', priority=None,
+                  verbose=True):
+    """
+    Bulk download GRIB2 files from file source to the local machine.
+
+    Iterates over a list of datetimes (DATES) and forecast lead times (fxx).
+
+    Parameters
+    ----------
+    DATES : list
+        List of datetimes
+    searchString : None or str
+        If None, download the full file. If string, use regex to search
+        index files for variables and levels of interest and only
+        download the matched GRIB messages.
+    fxx : int or list
+        List of forecast lead times to download.
+    model : {'hrrr', 'hrrrak', 'rap'}
+        Model to download.
+    field : {'sfc', 'prs', 'nat', 'subh'}
+        Variable fields file to download. Not needed for RAP model.
+    """   
+    if isinstance(fxx, int):
+        fxx = [fxx]
+
+    kw = dict(model=model, field=field)
+    if priority is not None:
+        kw['priority'] = priority
     
-    ## Add a timer
+    # Locate the file sources
+    grib_sources = [ModelOutputSource(d, fxx=f, **kw) \
+                    for d in DATES \
+                    for f in fxx]
     
-    print(DATES, searchString, fxx, model, field)
-    m = [GET_HRRR(d, fxx=f, model=model, field=field) for d in DATES for f in fxx]
-    [i.download(searchString=searchString) for i in m]
-    return m
+    loop_time = timedelta()
+    n = len(grib_sources)
+
+    for i, g in enumerate(grib_sources):
+        timer = datetime.now()
+        g.download(searchString=searchString)
+       
+        #---------------------------------------------------------
+        # Time keeping: *crude* method to estimate remaining time.
+        #---------------------------------------------------------
+        loop_time += datetime.now() - timer
+        mean_dt_per_loop = loop_time/(i+1)
+        remaining_loops = n-i-1
+        est_rem_time = mean_dt_per_loop * remaining_loops
+        if verbose: print(f"🚛💨 Download Progress: [{i+1}/{n} completed] >> Est. Time Remaining {str(est_rem_time):16}\n")
+        #---------------------------------------------------------
+
+    print(f"\n🍦 Finished 🍦  Time spent on download: {loop_time}")
     
+    return grib_sources
