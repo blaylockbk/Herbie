@@ -4,15 +4,16 @@
 ## May 3, 2021
 
 """
-=======================================
-Retrieve HRRR GRIB2 files from archives
-=======================================
+========================================
+Retrieve HRRR Model Output from archives
+========================================
 
 Updates from archive.py
-- drop support for hrrrx (no longer archived on Pando)
-- added rap model
-- less reliance on Pando, more on aws
-- new method for searchString index search.
+- implement new **ModelOuputSource** class
+- drop support for hrrrx (no longer archived on Pando and ESRL is developing RRFS)
+- added RAP model
+- less reliance on Pando, more on aws and google.
+- new method for searchString index file search.
 
 Download High-Resolution Rapid Refresh (HRRR) and Rapid Refresh (RAP)
 model GRIB2 files from different archive sources. Supports subsetting
@@ -61,7 +62,7 @@ of the data sources is listed below:
     - http://hrrr.chpc.utah.edu/
     - Research archive. Older files being removed.
     - A subset of prs and sfc files.
-    - Contains a .idx file for every GRIB2 file.
+    - Contains .idx file for every GRIB2 file.
 """
 import os
 from pathlib import Path
@@ -79,10 +80,9 @@ import xarray as xr
 # the config file at ~/.config/hrrrb/config.cfg.
 from . import _default_save_dir
 
-def _searchString_help(searchString=None):
+def _searchString_help():
     """Help/Error Message for `searchString`"""
     msg = [
-        f"There is something wrong with [[  searchString='{searchString}'  ]]",
         "\nUse regular expression to search for lines in the .idx file",
         "Here are some examples you can use for `searchString`",
         "  ============================= ===============================================",
@@ -207,15 +207,27 @@ class ModelOutputSource:
                 msg = (f"Looked in [{source:^10s}] for {self.model.upper()} "
                     f"{self.date:%H:%M UTC %d %b %Y} F{self.fxx:02d} "
                     f"--> ({found_grib=}) ({found_idx=}) {' ':5s}")
-                print(msg, end='\r', flush=True)
+                if verbose: print(msg, end='\r', flush=True)
             
             if all([self.grib is not None, self.idx is not None]):
                 break
-        
+        if verbose: 
+            if any([self.grib is not None, self.idx is not None]):
+                print(f'🏋🏻‍♂️ Found',
+                      f'\033[32m{self.date:%Y-%b-%d %H:%M UTC} F{self.fxx:02d}\033[m',
+                      f'{self.model.upper()}',
+                      f'GRIB2 file from \033[38;5;202m{self.grib_source}\033[m and',
+                      f'index file from \033[38;5;202m{self.idx_source}\033[m.',
+                      f'{" ":100s}')
+            else:
+                print(f'💔 Did not find a GRIB2 or Index File for',
+                      f'\033[32m{self.date:%Y-%b-%d %H:%M UTC} F{self.fxx:02d}\033[m',
+                      f'{self.model.upper()}',
+                      f'{" ":100s}')
 
     def __repr__(self):
         """Representation in Notebook"""
-        return f"{self.model.upper()} model {self.field} fields run at {self.date:%H:%M UTC %d %b %Y} for F{self.fxx:02d}"
+        return f"{self.model.upper()} model {self.field} fields run at \033[32m{self.date:%Y-%b-%d %H:%M UTC} F{self.fxx:02d}\033[m"
 
     def __str__(self):
         """When class object is printed"""
@@ -383,19 +395,41 @@ class ModelOutputSource:
             columns_to_search = df[['variable', 'level', 'forecast_time']].apply(lambda x: ':'.join(x), axis=1)
             logic = columns_to_search.str.contains(searchString)
             if logic.sum() == 0:
+                print(f"No GRIB messages found. There might be something wrong with {searchString=}")
                 print(_searchString_help(searchString))
             df = df.loc[logic]
         return df
     
     def download(self, searchString=None, source=None, *,
                  save_dir=_default_save_dir, 
-                 overwrite=False, verbose=True):
+                 overwrite=False, verbose=True,
+                 errors='warn'):
         """
         Download file from source.
+
+        Parameters
+        ----------
+        searchString : str
+            If None, download the full file. Else, use regex to subset
+            the file by specific variables and levels.
+        source : {'nomads', 'aws', 'google', 'pando', 'pando2'}
+            If None, download GRIB2 file from self.grib2 which is
+            the first place the GRIB2 file was found when this class
+            was initialized. Else, you may specify the source to force
+            downloading it from a different location.
+        save_dir : str or pathlib.Path
+            Location to save the model output files.
+        overwrite : bool
+            If True, overwrite existing files. Default will skip
+            downloading if the full file exists. Not applicable when
+            when searchString is not None because file subsets might 
+            be unique.
+        errors : {'warn', 'raise'}
+            When an error occurs, send a warning or raise a value error.
         """
         def _reporthook(a, b, c):
             """
-            Report download progress in megabytes. Prints progress to screen.
+            Print download progress in megabytes.
 
             Parameters
             ----------
@@ -408,22 +442,41 @@ class ModelOutputSource:
             print(f"\r🚛💨  Download Progress: {chunk_progress:.2f}% of {total_size_MB:.1f} MB\r", end='')
 
         def subset(searchString, outFile):
-            """Download a subset via a searchString"""
-            print(f'📇 Download subset {" ":60s}')
+            """Download a subset specified by the regex searchString"""
+            print(f'📇 Download subset: {self.__repr__()}{" ":60s}')
+            # Append the filename to distinguish it from the full file.
             outFile = outFile.with_suffix('.grib2.subset')
+            
             df = self.read_idx(searchString)
-            for i, (msg, row) in enumerate(df.iterrows()):
-                print(f"{i+1:>4g}: msg={msg:<3g} {row.variable}:{row.level}:{row.forecast_time}")
-                
+            
+            # Download subsets of the file by byte range with cURL.
+            for i, (grbmsg, row) in enumerate(df.iterrows()):
+                print(f"{i+1:>4g}: GRIB_message={grbmsg:<3g} \033[34m{row.variable}:{row.level}:{row.forecast_time}\033[m")
                 if i == 0:
-                    # If we are working on the first item, overwrite the existing file.
+                    # If we are working on the first item, overwrite the existing file...
                     curl = f'curl -s --range {row.range} {self.grib} > {outFile}'
                 else:
-                    # If we are working on not the first item, append the existing file.
+                    # ...all other messages are appended to the subset file.
                     curl = f'curl -s --range {row.range} {self.grib} >> {outFile}'
                 os.system(curl)
+
             self.local_grib_subset = outFile
         
+        # Check that data exists
+        if self.grib is None:
+            msg = f'🦨 GRIB2 file not found: {self.model=} {self.date=} {self.fxx=}'
+            if errors == 'warn':
+                warnings.warn(msg)
+                return # Can't download anything without a GRIB file URL.
+            elif errors == 'raise':
+                raise ValueError(msg)
+        if self.idx is None and searchString is not None:
+            msg = f'🦨 Index file not found: {self.model=} {self.date=} {self.fxx=}'
+            if errors == 'warn':
+                warnings.warn(msg+' I will download the full file because I cannot subset.')
+            elif errors == 'raise':
+                raise ValueError(msg)
+
         if source is not None:
             # Force download from a specified source and not from first in priority
             self.grib = self.get_url(source)
@@ -438,22 +491,22 @@ class ModelOutputSource:
                 outFile.parent.mkdir(parents=True, exist_ok=True)
                 print(f'👨🏻‍🏭 Created directory: [{outFile.parent}]')
         
-        if searchString in [None, ':']:
+        if searchString in [None, ':'] or self.idx is None:
             # Download the full file
             if not overwrite and outFile.exists():
                 if verbose: print(f'🌉 Already have file for --> {outFile}')
+                self.local_grib = outFile
             else:
                 urllib.request.urlretrieve(self.grib, outFile, _reporthook)
                 if verbose: print(f'✅ Success! Downloaded from [{self.grib_source}] {self.grib} --> {outFile}')
                 self.local_grib = outFile
         else:
-            df = subset(searchString, outFile)
-            return df
+            subset(searchString, outFile)
 
 ###############################################################################
 ###############################################################################
 
-def bulk_download(DATES, searchString=None, *, fxx=range(0,1), 
+def download(DATES, searchString=None, *, fxx=range(0,1), 
                   model='hrrr', field='sfc', priority=None,
                   verbose=True):
     """
@@ -476,6 +529,8 @@ def bulk_download(DATES, searchString=None, *, fxx=range(0,1),
     field : {'sfc', 'prs', 'nat', 'subh'}
         Variable fields file to download. Not needed for RAP model.
     """   
+    if isinstance(DATES, (str, pd.Timestamp)) or hasattr(DATES, 'strptime'):
+        DATES = [DATES]
     if isinstance(fxx, int):
         fxx = [fxx]
 
@@ -484,6 +539,7 @@ def bulk_download(DATES, searchString=None, *, fxx=range(0,1),
         kw['priority'] = priority
     
     # Locate the file sources
+    print("👨🏻‍🔬 Check which requested files exists")
     grib_sources = [ModelOutputSource(d, fxx=f, **kw) \
                     for d in DATES \
                     for f in fxx]
@@ -491,6 +547,7 @@ def bulk_download(DATES, searchString=None, *, fxx=range(0,1),
     loop_time = timedelta()
     n = len(grib_sources)
 
+    print("\n🌧 Download requested data")
     for i, g in enumerate(grib_sources):
         timer = datetime.now()
         g.download(searchString=searchString)
@@ -505,6 +562,8 @@ def bulk_download(DATES, searchString=None, *, fxx=range(0,1),
         if verbose: print(f"🚛💨 Download Progress: [{i+1}/{n} completed] >> Est. Time Remaining {str(est_rem_time):16}\n")
         #---------------------------------------------------------
 
-    print(f"\n🍦 Finished 🍦  Time spent on download: {loop_time}")
+    requested = len(grib_sources)
+    completed = sum([i.grib is None for i in grib_sources])
+    print(f"🍦 Done! Downloaded [{completed}/{requested}] files. Timer={loop_time}")
     
     return grib_sources
