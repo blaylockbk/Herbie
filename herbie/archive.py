@@ -5,7 +5,7 @@
 
 """
 =========================================================
-Herbie: Download HRRR and RAP Model Output from the cloud
+Herbie: Download HRRR and RAP model output from the cloud
 =========================================================
 
 Herbie is your model output download assistant with a mind of his own!
@@ -28,8 +28,10 @@ Azure), and the CHPC Pando archive at the University of Utah.
     - Added RAP model
     - Less reliance on Pando, more on aws and google.
     - New method for searchString index file search.
-    - Subset file name retain GRIB message numbers included
-    - TODO: check local file copy on class init
+    - Subset file name retain GRIB message numbers included.
+    - TODO: Check local file copy on class init. (Don't need to look for file if we have local copy)
+    - TODO: Read data with xarray (read from local if exists, else download, read, and <remove>).
+    - TODO: Maybe move default download source to config file?
 
 HRRR and RAP Data Sources
 -------------------------
