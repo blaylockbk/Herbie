@@ -8,7 +8,8 @@
 Herbie: Download HRRR and RAP Model Output from the cloud
 =========================================================
 
-Updates from archive.py
+Updates since hrrrb
+
 - rename package to herbie. "Herbie is your model output download assistant with a mind of its own."
 - implement new **ModelOuputSource** class
 - drop support for hrrrx (no longer archived on Pando and ESRL is developing RRFS)

@@ -719,15 +719,17 @@ is disregarded.</p></li>
 <span id="new-api"></span><h2>New API<a class="headerlink" href="#module-herbie.archive" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="herbie-download-hrrr-and-rap-model-output-from-the-cloud">
 <h3>Herbie: Download HRRR and RAP Model Output from the cloud<a class="headerlink" href="#herbie-download-hrrr-and-rap-model-output-from-the-cloud" title="Permalink to this headline">¶</a></h3>
-<p>Updates from archive.py
-- rename package to herbie. “Herbie is your model output download assistant with a mind of its own.”
-- implement new <strong>ModelOuputSource</strong> class
-- drop support for hrrrx (no longer archived on Pando and ESRL is developing RRFS)
-- added RAP model
-- less reliance on Pando, more on aws and google.
-- new method for searchString index file search.
-- subset file name retain GRIB message numbers included
-- TODO: check local file copy on class init</p>
+<p>Updates since hrrrb</p>
+<ul class="simple">
+<li><p>rename package to herbie. “Herbie is your model output download assistant with a mind of its own.”</p></li>
+<li><p>implement new <strong>ModelOuputSource</strong> class</p></li>
+<li><p>drop support for hrrrx (no longer archived on Pando and ESRL is developing RRFS)</p></li>
+<li><p>added RAP model</p></li>
+<li><p>less reliance on Pando, more on aws and google.</p></li>
+<li><p>new method for searchString index file search.</p></li>
+<li><p>subset file name retain GRIB message numbers included</p></li>
+<li><p>TODO: check local file copy on class init</p></li>
+</ul>
 <p>Download High-Resolution Rapid Refresh (HRRR) and Rapid Refresh (RAP)
 model GRIB2 files from different archive sources. Supports subsetting
 GRIB2 files by fields if the index (.idx) file exist.</p>
