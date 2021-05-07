@@ -8,6 +8,15 @@
 Herbie: Download HRRR and RAP Model Output from the cloud
 =========================================================
 
+Herbie is your model output download assistant. Herbie looks for HRRR,
+HRRR-Alaska, or RAP model output data from NOMADS, NOAA's Big Data Project
+partners (Amazon Web Services, Google Cloud Platform, and Microsoft Azure),
+and the CHPC Pando archive at the University of Utah.
+
+Herbie might look small on the outside, but he has a big heart on the 
+inside and will get you to the 
+`finish line <https://www.youtube.com/watch?v=4XWufUZ1mxQ&t=189s>`_.
+
 Updates since hrrrb
 
 - rename package to herbie. "Herbie is your model output download assistant with a mind of its own."
