@@ -4,11 +4,12 @@
 ## May 3, 2021
 
 """
-========================================
-Retrieve HRRR Model Output from archives
-========================================
+=========================================================
+Herbie: Download HRRR and RAP Model Output from the cloud
+=========================================================
 
 Updates from archive.py
+- rename package to herbie. "Herbie is your model output download assistant with a mind of its own."
 - implement new **ModelOuputSource** class
 - drop support for hrrrx (no longer archived on Pando and ESRL is developing RRFS)
 - added RAP model
@@ -36,7 +37,7 @@ is available. The default download source priority and some attributes
 of the data sources is listed below:
 
 
-1. NOMAS: NOAA Operational Model Archive and Distribution System
+1. NOMADS: NOAA Operational Model Archive and Distribution System
     - https://nomads.ncep.noaa.gov/
     - Available for today's and yesterday's runs
     - Real-time data.
@@ -83,7 +84,7 @@ import pandas as pd
 import xarray as xr
 
 # NOTE: The `_default_save_dir` is defined in __init__.py and set in 
-# the config file at ~/.config/hrrrb/config.cfg.
+# the config file at ~/.config/herbie/config.cfg.
 from . import _default_save_dir
 
 def _searchString_help():
@@ -117,7 +118,21 @@ def _searchString_help():
 
 class ModelOutputSource:
     """
-    Custom class for a HRRR or RAP model output file. 
+    Custom class to find model output file location based on source priority.
+
+    .. note:: **Default Download Priority Rational** 
+        Most often, a user will request model output from the recent
+        past or earlier. Past data is archived at one of NOAA's Big Data
+        parters. NOMADS has the most recent model output available, but
+        they also throttle the download speed and will block users who
+        violate their usage agreement and download too much data within
+        an hour. To prevent being blocked by NOMADS, the default is to 
+        first look for data on AWS. If the data requested is within the
+        last few hours and was not found on AWS, then Herbie will look
+        for the data at NOMADS. If you really want to download data 
+        from NOMADS and not a Big Data Project partner, change the
+        priority order so that NOMADS is first, (e.g.,
+        ``priority=['nomads', ...]``).
 
     Methods
     -------
@@ -127,8 +142,10 @@ class ModelOutputSource:
         Download the single GRIB2 file.
     read_idx
         Inspect the GRIB2 contents listed in the index (.idx) file.
+    to_xarray
+        TODO: Download the file and read it with xarray/cfgrib.
     """
-    _default_priority = ['nomads', 'aws', 'google', 'azure', 'pando', 'pando2']
+    _default_priority = ['aws', 'nomads', 'google', 'azure', 'pando', 'pando2']
 
     def __init__(self, DATE, fxx=0, *, 
                  model='hrrr', field='sfc',
@@ -163,8 +180,8 @@ class ModelOutputSource:
             List of model sources to get the data in the order of 
             download priority. The available data sources and default
             priority order are listed below.
-            - ``'nomads'`` NOAA's NOMADS server
             - ``'aws'`` Amazon Web Services (Big Data Program)
+            - ``'nomads'`` NOAA's NOMADS server
             - ``'google'`` Google Cloud Platform (Big Data Program)
             - ``'azure'`` Microsoft Azure (Big Data Program)
             - ``'pando'`` University of Utah Pando Archive (gateway 1)
@@ -265,6 +282,14 @@ class ModelOutputSource:
             self.priority = [self.priority]
         
         self.priority = [i.lower() for i in self.priority]
+
+        # Don't look for data from NOMADS if requested date is earlier
+        # than yesterday. NOMADS doesn't keep data that old.
+        if 'nomads' in self.priority:
+            yesterday = datetime.utcnow() - timedelta(hours=24)
+            yesterday = pd.to_datetime(f"{yesterday:%Y-%m-%d}")
+            if self.date < yesterday:
+                self.priority.remove('nomads')
     
     def _ping_pando(self):
         """Pinging the Pando server before downloading can prevent a bad handshake."""
@@ -296,10 +321,10 @@ class ModelOutputSource:
         
         Parameters
         ----------
-        source : {'nomads', 'aws', 'google', 'azure', 'pando', 'pando2'}
+        source : {'aws', 'nomads', 'google', 'azure', 'pando', 'pando2'}
             The data download source for the RAP and HRRR models. 
-            - ``'nomads'`` NOAA's NOMADS server
             - ``'aws'`` Amazon Web Services (Big Data Program)
+            - ``'nomads'`` NOAA's NOMADS server
             - ``'google'`` Google Cloud Platform (Big Data Program)
             - ``'azure'`` Microsoft Azure (Big Data Program)
             - ``'pando'`` University of Utah Pando Archive (gateway 1)
