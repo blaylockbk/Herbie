@@ -159,31 +159,62 @@
 <nav id="bd-toc-nav">
     <ul class="visible nav section-nav flex-column">
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#retrieve-hrrr-grib2-files-from-archives">
-   Retrieve HRRR GRIB2 files from archives
+  <a class="reference internal nav-link" href="#module-hrrrb.archive">
+   Old API
   </a>
   <ul class="nav section-nav flex-column">
    <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#default-hrrr-data-source-priority">
-     Default HRRR Data Source Priority
+    <a class="reference internal nav-link" href="#retrieve-hrrr-grib2-files-from-archives">
+     Retrieve HRRR GRIB2 files from archives
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#default-hrrr-data-source-priority">
+       Default HRRR Data Source Priority
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#main-functions">
+       Main Functions
+      </a>
+     </li>
+    </ul>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#tools-for-the-hrrr-archive">
+     Tools for the HRRR Archive
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#main-functions">
-     Main Functions
+    <a class="reference internal nav-link" href="#hrrr-plots">
+     HRRR Plots
     </a>
    </li>
   </ul>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#tools-for-the-hrrr-archive">
-   Tools for the HRRR Archive
+  <a class="reference internal nav-link" href="#module-herbie.archive">
+   New API
   </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#hrrr-plots">
-   HRRR Plots
-  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#herbie-download-hrrr-and-rap-model-output-from-the-cloud">
+     Herbie: Download HRRR and RAP Model Output from the cloud
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#hrrr-and-rap-data-sources">
+       HRRR and RAP Data Sources
+      </a>
+     </li>
+    </ul>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#herbie-extension-xarray-accessors">
+     Herbie Extension: xarray accessors
+    </a>
+   </li>
+  </ul>
  </li>
 </ul>
 
@@ -217,13 +248,15 @@
 <h1>Reference Guide<a class="headerlink" href="#reference-guide" title="Permalink to this headline">¶</a></h1>
 <div class="toctree-wrapper compound">
 </div>
-<span class="target" id="module-hrrrb.archive"></span><div class="section" id="retrieve-hrrr-grib2-files-from-archives">
-<h2>Retrieve HRRR GRIB2 files from archives<a class="headerlink" href="#retrieve-hrrr-grib2-files-from-archives" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-hrrrb.archive">
+<span id="old-api"></span><h2>Old API<a class="headerlink" href="#module-hrrrb.archive" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="retrieve-hrrr-grib2-files-from-archives">
+<h3>Retrieve HRRR GRIB2 files from archives<a class="headerlink" href="#retrieve-hrrr-grib2-files-from-archives" title="Permalink to this headline">¶</a></h3>
 <p>Download High-Resolution Rapid Refresh (HRRR) model GRIB2 files from
 different archive sources. Support for subsetting GRIB2 files by fields
 if the <cite>.idx`</cite> file exist.</p>
 <div class="section" id="default-hrrr-data-source-priority">
-<h3>Default HRRR Data Source Priority<a class="headerlink" href="#default-hrrr-data-source-priority" title="Permalink to this headline">¶</a></h3>
+<h4>Default HRRR Data Source Priority<a class="headerlink" href="#default-hrrr-data-source-priority" title="Permalink to this headline">¶</a></h4>
 <p>NOAA started pushing the HRRR data to the Google Cloud Platform and
 Amazon Web Services at the end of 2020. The archives were also
 backfilled to previous years as far back as July 30, 2014. This module
@@ -277,7 +310,7 @@ for all forecast hours.</p></li>
 </ol>
 </div>
 <div class="section" id="main-functions">
-<h3>Main Functions<a class="headerlink" href="#main-functions" title="Permalink to this headline">¶</a></h3>
+<h4>Main Functions<a class="headerlink" href="#main-functions" title="Permalink to this headline">¶</a></h4>
 <dl class="simple">
 <dt>download_hrrr</dt><dd><p>Download GRIB2 files to local disk.</p>
 </dd>
@@ -564,7 +597,7 @@ need them.</p>
 </div>
 </div>
 <span class="target" id="module-hrrrb.tools"></span><div class="section" id="tools-for-the-hrrr-archive">
-<h2>Tools for the HRRR Archive<a class="headerlink" href="#tools-for-the-hrrr-archive" title="Permalink to this headline">¶</a></h2>
+<h3>Tools for the HRRR Archive<a class="headerlink" href="#tools-for-the-hrrr-archive" title="Permalink to this headline">¶</a></h3>
 <dl class="simple">
 <dt>to_180</dt><dd><p>For longitude values to be from -180 W to 180 E (not 0-360 E).</p>
 </dd>
@@ -661,7 +694,7 @@ is disregarded.</p></li>
 
 </div>
 <span class="target" id="module-hrrrb.plots"></span><div class="section" id="hrrr-plots">
-<h2>HRRR Plots<a class="headerlink" href="#hrrr-plots" title="Permalink to this headline">¶</a></h2>
+<h3>HRRR Plots<a class="headerlink" href="#hrrr-plots" title="Permalink to this headline">¶</a></h3>
 <p><strong>Functions:</strong></p>
 <table class="longtable table autosummary">
 <colgroup>
@@ -680,6 +713,294 @@ is disregarded.</p></li>
 <dd><p>Make a simple plot for each variable.</p>
 </dd></dl>
 
+</div>
+</div>
+<div class="section" id="module-herbie.archive">
+<span id="new-api"></span><h2>New API<a class="headerlink" href="#module-herbie.archive" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="herbie-download-hrrr-and-rap-model-output-from-the-cloud">
+<h3>Herbie: Download HRRR and RAP Model Output from the cloud<a class="headerlink" href="#herbie-download-hrrr-and-rap-model-output-from-the-cloud" title="Permalink to this headline">¶</a></h3>
+<p>Updates from archive.py
+- rename package to herbie. “Herbie is your model output download assistant with a mind of its own.”
+- implement new <strong>ModelOuputSource</strong> class
+- drop support for hrrrx (no longer archived on Pando and ESRL is developing RRFS)
+- added RAP model
+- less reliance on Pando, more on aws and google.
+- new method for searchString index file search.
+- subset file name retain GRIB message numbers included
+- TODO: check local file copy on class init</p>
+<p>Download High-Resolution Rapid Refresh (HRRR) and Rapid Refresh (RAP)
+model GRIB2 files from different archive sources. Supports subsetting
+GRIB2 files by fields if the index (.idx) file exist.</p>
+<div class="section" id="hrrr-and-rap-data-sources">
+<h4>HRRR and RAP Data Sources<a class="headerlink" href="#hrrr-and-rap-data-sources" title="Permalink to this headline">¶</a></h4>
+<p>Real-time HRRR and RAP data is available from NOMADS. At the end of
+2020, NOAA started pushing the HRRR and RAP data to the Google Cloud
+Platform and Amazon Web Services as part of the NOAA Big Data Progam.
+These archives were backfilled to previous years as far back as
+July 30, 2014. A limited archive used for research purposes also exists
+on the University of Utah CHPC Pando Archive System.</p>
+<p>This module enable you to easily download HRRR and RAP data between
+these different data sources wherever the data you are interested in
+is available. The default download source priority and some attributes
+of the data sources is listed below:</p>
+<ol class="arabic simple">
+<li><dl class="simple">
+<dt>NOMADS: NOAA Operational Model Archive and Distribution System</dt><dd><ul class="simple">
+<li><p><a class="reference external" href="https://nomads.ncep.noaa.gov/">https://nomads.ncep.noaa.gov/</a></p></li>
+<li><p>Available for today’s and yesterday’s runs</p></li>
+<li><p>Real-time data.</p></li>
+<li><p>Original data source. All available data included.</p></li>
+<li><p>Download limits.</p></li>
+<li><p>Includes GRIB2 .idx for all GRIB2 files.</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>AWS: Amazon Web Services</dt><dd><ul class="simple">
+<li><p><a class="reference external" href="https://noaa-hrrr-bdp-pds.s3.amazonaws.com/">https://noaa-hrrr-bdp-pds.s3.amazonaws.com/</a></p></li>
+<li><p>Available from July 30, 2014 to Present.</p></li>
+<li><p>Slight latency for real-time products.</p></li>
+<li><p>Not all GRIB2 files have an .idx files.</p></li>
+<li><p>Has all nat, subh, prs, and sfc files for all forecast hours.</p></li>
+<li><p>Some data may be missing.</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Google: Google Cloud Platform Earth</dt><dd><ul class="simple">
+<li><p><a class="reference external" href="https://console.cloud.google.com/storage/browser/high-resolution-rapid-refresh">https://console.cloud.google.com/storage/browser/high-resolution-rapid-refresh</a></p></li>
+<li><p>Available from July 30, 2014 to Present.</p></li>
+<li><p>Slight latency for real-time products.</p></li>
+<li><p>Does not have GRIB2 .idx files before September 17, 2018.</p></li>
+<li><p>Has all original data including nat, subh, prs, and sfc files
+for all forecast hours.</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Pando: The University of Utah HRRR archive</dt><dd><ul class="simple">
+<li><p><a class="reference external" href="http://hrrr.chpc.utah.edu/">http://hrrr.chpc.utah.edu/</a></p></li>
+<li><p>Research archive. Older files being removed.</p></li>
+<li><p>A subset of prs and sfc files.</p></li>
+<li><p>Contains .idx file for every GRIB2 file.</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Azure: Microsoft Azure</dt><dd><ul class="simple">
+<li><p><a class="reference external" href="https://github.com/microsoft/AIforEarthDataSets/blob/main/data/noaa-hrrr.md">https://github.com/microsoft/AIforEarthDataSets/blob/main/data/noaa-hrrr.md</a></p></li>
+<li></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ol>
+<p><strong>Classes:</strong></p>
+<table class="longtable table autosummary">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#herbie.archive.ModelOutputSource" title="herbie.archive.ModelOutputSource"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ModelOutputSource</span></code></a>(DATE[, fxx, model, field, …])</p></td>
+<td><p>Custom class to find model output file location based on source priority.</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Functions:</strong></p>
+<table class="longtable table autosummary">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#herbie.archive.download" title="herbie.archive.download"><code class="xref py py-obj docutils literal notranslate"><span class="pre">download</span></code></a>(DATES[, searchString, fxx, model, …])</p></td>
+<td><p>Bulk download GRIB2 files from file source to the local machine.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#herbie.archive.xhrrr" title="herbie.archive.xhrrr"><code class="xref py py-obj docutils literal notranslate"><span class="pre">xhrrr</span></code></a>(DATE, searchString[, fxx, …])</p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py class">
+<dt id="herbie.archive.ModelOutputSource">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">herbie.archive.</span></code><code class="sig-name descname"><span class="pre">ModelOutputSource</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">DATE</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fxx</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'hrrr'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">field</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'sfc'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">priority</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">['aws',</span> <span class="pre">'nomads',</span> <span class="pre">'google',</span> <span class="pre">'azure',</span> <span class="pre">'pando',</span> <span class="pre">'pando2']</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#herbie.archive.ModelOutputSource" title="Permalink to this definition">¶</a></dt>
+<dd><p>Custom class to find model output file location based on source priority.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><strong>Default Download Priority Rational</strong>
+Most often, a user will request model output from the recent
+past or earlier. Past data is archived at one of NOAA’s Big Data
+parters. NOMADS has the most recent model output available, but
+they also throttle the download speed and will block users who
+violate their usage agreement and download too much data within
+an hour. To prevent being blocked by NOMADS, the default is to
+first look for data on AWS. If the data requested is within the
+last few hours and was not found on AWS, then Herbie will look
+for the data at NOMADS. If you really want to download data
+from NOMADS and not a Big Data Project partner, change the
+priority order so that NOMADS is first, (e.g.,
+<code class="docutils literal notranslate"><span class="pre">priority=['nomads',</span> <span class="pre">...]</span></code>).</p>
+</div>
+<dl class="py method">
+<dt id="herbie.archive.ModelOutputSource.get_url">
+<code class="sig-name descname"><span class="pre">get_url</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#herbie.archive.ModelOutputSource.get_url" title="Permalink to this definition">¶</a></dt>
+<dd><p>Build the output file URL location for different data sources.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="herbie.archive.ModelOutputSource.download">
+<code class="sig-name descname"><span class="pre">download</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#herbie.archive.ModelOutputSource.download" title="Permalink to this definition">¶</a></dt>
+<dd><p>Download the single GRIB2 file.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="herbie.archive.ModelOutputSource.read_idx">
+<code class="sig-name descname"><span class="pre">read_idx</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#herbie.archive.ModelOutputSource.read_idx" title="Permalink to this definition">¶</a></dt>
+<dd><p>Inspect the GRIB2 contents listed in the index (.idx) file.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="herbie.archive.ModelOutputSource.to_xarray">
+<code class="sig-name descname"><span class="pre">to_xarray</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#herbie.archive.ModelOutputSource.to_xarray" title="Permalink to this definition">¶</a></dt>
+<dd><p>TODO: Download the file and read it with xarray/cfgrib.</p>
+</dd></dl>
+
+<p><strong>Methods:</strong></p>
+<table class="longtable table autosummary">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#id0" title="herbie.archive.ModelOutputSource.download"><code class="xref py py-obj docutils literal notranslate"><span class="pre">download</span></code></a>([searchString, source, save_dir, …])</p></td>
+<td><p>Download file from source.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#id1" title="herbie.archive.ModelOutputSource.get_url"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_url</span></code></a>(source)</p></td>
+<td><p>Build the URL for the GRIB2 file for the requested file and data source.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#id2" title="herbie.archive.ModelOutputSource.read_idx"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_idx</span></code></a>([searchString])</p></td>
+<td><p>Inspect the GRIB2 file contents by reading the index file.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#id5" title="herbie.archive.ModelOutputSource.to_xarray"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_xarray</span></code></a>(searchString[, remove_grib])</p></td>
+<td><p>Download data and read as xarray</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt id="id0">
+<code class="sig-name descname"><span class="pre">download</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">searchString</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">PosixPath('/p/cwfs/blaylock/data')</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">errors</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'warn'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id0" title="Permalink to this definition">¶</a></dt>
+<dd><p>Download file from source.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>searchString</strong> (<em>str</em>) – If None, download the full file. Else, use regex to subset
+the file by specific variables and levels.</p></li>
+<li><p><strong>source</strong> (<em>{'nomads'</em><em>, </em><em>'aws'</em><em>, </em><em>'google'</em><em>, </em><em>'azure'</em><em>, </em><em>'pando'</em><em>, </em><em>'pando2'}</em>) – If None, download GRIB2 file from self.grib2 which is
+the first place the GRIB2 file was found when this class
+was initialized. Else, you may specify the source to force
+downloading it from a different location.</p></li>
+<li><p><strong>save_dir</strong> (<em>str</em><em> or </em><em>pathlib.Path</em>) – Location to save the model output files.</p></li>
+<li><p><strong>overwrite</strong> (<em>bool</em>) – If True, overwrite existing files. Default will skip
+downloading if the full file exists. Not applicable when
+when searchString is not None because file subsets might
+be unique.</p></li>
+<li><p><strong>errors</strong> (<em>{'warn'</em><em>, </em><em>'raise'}</em>) – When an error occurs, send a warning or raise a value error.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="id1">
+<code class="sig-name descname"><span class="pre">get_url</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">source</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id1" title="Permalink to this definition">¶</a></dt>
+<dd><p>Build the URL for the GRIB2 file for the requested file and data source.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>source</strong> (<em>{'aws'</em><em>, </em><em>'nomads'</em><em>, </em><em>'google'</em><em>, </em><em>'azure'</em><em>, </em><em>'pando'</em><em>, </em><em>'pando2'}</em>) – The data download source for the RAP and HRRR models.
+- <code class="docutils literal notranslate"><span class="pre">'aws'</span></code> Amazon Web Services (Big Data Program)
+- <code class="docutils literal notranslate"><span class="pre">'nomads'</span></code> NOAA’s NOMADS server
+- <code class="docutils literal notranslate"><span class="pre">'google'</span></code> Google Cloud Platform (Big Data Program)
+- <code class="docutils literal notranslate"><span class="pre">'azure'</span></code> Microsoft Azure (Big Data Program)
+- <code class="docutils literal notranslate"><span class="pre">'pando'</span></code> University of Utah Pando Archive (gateway 1)
+- <code class="docutils literal notranslate"><span class="pre">'pando2'</span></code> University of Utah Pando Archive (gateway 2)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="id2">
+<code class="sig-name descname"><span class="pre">read_idx</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">searchString</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id2" title="Permalink to this definition">¶</a></dt>
+<dd><p>Inspect the GRIB2 file contents by reading the index file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>searchString</strong> (<em>str</em>) – Filter dataframe by a searchString regular expression.
+Searches for strings in the index file lines, specifically
+the variable, level, and forecast_time columns.
+Execute <a href="#id3"><span class="problematic" id="id4">``</span></a>_searchString_help()` for examples of a good
+searchString.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>A Pandas DataFrame of the index file.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="id5">
+<code class="sig-name descname"><span class="pre">to_xarray</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">searchString</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">remove_grib</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id5" title="Permalink to this definition">¶</a></dt>
+<dd><p>Download data and read as xarray</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>searchString</strong> (<em>str</em>) – Variables to read into xarray Dataset</p></li>
+<li><p><strong>remove_grib</strong> (<em>bool</em>) – Remove GRIB2 file after it is read in.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt id="herbie.archive.download">
+<code class="sig-prename descclassname"><span class="pre">herbie.archive.</span></code><code class="sig-name descname"><span class="pre">download</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">DATES</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">searchString</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fxx</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">range(0,</span> <span class="pre">1)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'hrrr'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">field</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'sfc'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">priority</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#herbie.archive.download" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bulk download GRIB2 files from file source to the local machine.</p>
+<p>Iterates over a list of datetimes (DATES) and forecast lead times (fxx).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>DATES</strong> (<em>list</em>) – List of datetimes</p></li>
+<li><p><strong>searchString</strong> (<em>None</em><em> or </em><em>str</em>) – If None, download the full file. If string, use regex to search
+index files for variables and levels of interest and only
+download the matched GRIB messages.</p></li>
+<li><p><strong>fxx</strong> (<em>int</em><em> or </em><em>list</em>) – List of forecast lead times to download.</p></li>
+<li><p><strong>model</strong> (<em>{'hrrr'</em><em>, </em><em>'hrrrak'</em><em>, </em><em>'rap'}</em>) – Model to download.</p></li>
+<li><p><strong>field</strong> (<em>{'sfc'</em><em>, </em><em>'prs'</em><em>, </em><em>'nat'</em><em>, </em><em>'subh'}</em>) – Variable fields file to download. Not needed for RAP model.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="herbie.archive.xhrrr">
+<code class="sig-prename descclassname"><span class="pre">herbie.archive.</span></code><code class="sig-name descname"><span class="pre">xhrrr</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">DATE</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">searchString</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fxx</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">remove_grib2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">backend_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">download_kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#herbie.archive.xhrrr" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+</div>
+<span class="target" id="module-herbie.accessors"></span><div class="section" id="herbie-extension-xarray-accessors">
+<h3>Herbie Extension: xarray accessors<a class="headerlink" href="#herbie-extension-xarray-accessors" title="Permalink to this headline">¶</a></h3>
+<p>Extend the xarray capabilities with a custom accessor.
+<a class="reference external" href="http://xarray.pydata.org/en/stable/internals.html#extending-xarray">http://xarray.pydata.org/en/stable/internals.html#extending-xarray</a></p>
+</div>
 </div>
 </div>
 
