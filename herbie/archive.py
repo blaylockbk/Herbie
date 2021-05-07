@@ -567,6 +567,8 @@ class ModelOutputSource:
 
     def to_xarray(self, searchString, remove_grib=True):
         """
+        FUTURE WORK
+        
         Download data and read as xarray
         
         Parameters
@@ -576,6 +578,8 @@ class ModelOutputSource:
         remove_grib : bool
             Remove GRIB2 file after it is read in.
         """
+        print('nothing here yet')
+        pass
 
 ###############################################################################
 ###############################################################################
@@ -642,8 +646,23 @@ def download(DATES, searchString=None, *, fxx=range(0,1),
     
     return grib_sources
 
-def xhrrr(DATE, searchString, fxx=0, *,
-          remove_grib2=True, backend_kwargs={}, **download_kwargs):
-          """
+def xget(DATE, searchString, fxx=0, *, 
+         is_valid_time=False,
+         remove_grib=True, backend_kwargs={}, **download_kwargs):
+    r"""
+    Download subset of model output and open with xarray/cfgrib.
 
-          """
+    Parameters
+    ----------
+    DATE : datetime
+        Model initialization datetime (if is_valid_time is False).
+        Model valid datetime (if is_valid_time is True).
+    searchString : str
+    fxx : int
+    remove_grib : bool
+        remove file after downloading it
+    backend_kwargs : dict
+    **download_kwargs
+    """
+    print('nothing here yet')
+    pass
