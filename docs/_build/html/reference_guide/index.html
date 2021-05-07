@@ -723,10 +723,13 @@ is disregarded.</p></li>
 Herbie might look small on the outside, but he has a big heart on the
 inside and will get you to the
 <a class="reference external" href="https://www.youtube.com/watch?v=4XWufUZ1mxQ&amp;t=189s">finish line</a> 🏁.</p>
-<p>Herbie looks for HRRR, HRRR-Alaska, or RAP model output data from
-NOMADS, NOAA’s Big Data Project partners (Amazon Web Services, Google
-Cloud Platform, and Microsoft Azure), and the CHPC Pando archive at the
-University of Utah.</p>
+<p>With Herbie’s help you can download High-Resolution Rapid Refresh (HRRR)
+HRRR-Alaska, and Rapid Refresh (RAP) model GRIB2 files from different
+archive sources. Supports subsetting of GRIB2 files by individual GRIB
+messages (i.e. variable and level) if the index (.idx) file exist.
+Herbie looks for model output data from NOMADS, NOAA’s Big Data Project
+partners (Amazon Web Services, Google Cloud Platform, and Microsoft
+Azure), and the CHPC Pando archive at the University of Utah.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>Updates since <code class="docutils literal notranslate"><span class="pre">hrrrb</span></code>
@@ -739,9 +742,6 @@ University of Utah.</p>
 - Subset file name retain GRIB message numbers included
 - TODO: check local file copy on class init</p>
 </div>
-<p>Download High-Resolution Rapid Refresh (HRRR) and Rapid Refresh (RAP)
-model GRIB2 files from different archive sources. Supports subsetting
-GRIB2 files by fields if the index (.idx) file exist.</p>
 <div class="section" id="hrrr-and-rap-data-sources">
 <h4>HRRR and RAP Data Sources<a class="headerlink" href="#hrrr-and-rap-data-sources" title="Permalink to this headline">¶</a></h4>
 <p>Real-time HRRR and RAP data is available from NOMADS. At the end of
@@ -792,19 +792,20 @@ for all forecast hours.</p></li>
 </dl>
 </li>
 <li><dl class="simple">
-<dt>Pando: The University of Utah HRRR archive</dt><dd><ul class="simple">
-<li><p><a class="reference external" href="http://hrrr.chpc.utah.edu/">http://hrrr.chpc.utah.edu/</a></p></li>
-<li><p>Research archive. Older files being removed.</p></li>
-<li><p>A subset of prs and sfc files.</p></li>
-<li><p>Contains .idx file for every GRIB2 file.</p></li>
+<dt>Azure: Microsoft Azure</dt><dd><ul class="simple">
+<li><p><a class="reference external" href="https://github.com/microsoft/AIforEarthDataSets/blob/main/data/noaa-hrrr.md">https://github.com/microsoft/AIforEarthDataSets/blob/main/data/noaa-hrrr.md</a></p></li>
+<li><p>Only recent HRRR and RAP data?</p></li>
+<li><p>Subset of HRRR and RAP data?</p></li>
 </ul>
 </dd>
 </dl>
 </li>
 <li><dl class="simple">
-<dt>Azure: Microsoft Azure</dt><dd><ul class="simple">
-<li><p><a class="reference external" href="https://github.com/microsoft/AIforEarthDataSets/blob/main/data/noaa-hrrr.md">https://github.com/microsoft/AIforEarthDataSets/blob/main/data/noaa-hrrr.md</a></p></li>
-<li></li>
+<dt>Pando: The University of Utah HRRR archive</dt><dd><ul class="simple">
+<li><p><a class="reference external" href="http://hrrr.chpc.utah.edu/">http://hrrr.chpc.utah.edu/</a></p></li>
+<li><p>Research archive. Older files being removed.</p></li>
+<li><p>A subset of prs and sfc files.</p></li>
+<li><p>Contains .idx file for every GRIB2 file.</p></li>
 </ul>
 </dd>
 </dl>

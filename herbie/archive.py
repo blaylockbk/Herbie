@@ -13,10 +13,13 @@ Herbie might look small on the outside, but he has a big heart on the
 inside and will get you to the 
 `finish line <https://www.youtube.com/watch?v=4XWufUZ1mxQ&t=189s>`_ 🏁.
 
-Herbie looks for HRRR, HRRR-Alaska, or RAP model output data from 
-NOMADS, NOAA's Big Data Project partners (Amazon Web Services, Google 
-Cloud Platform, and Microsoft Azure), and the CHPC Pando archive at the 
-University of Utah.
+With Herbie's help you can download High-Resolution Rapid Refresh (HRRR)
+HRRR-Alaska, and Rapid Refresh (RAP) model GRIB2 files from different 
+archive sources. Supports subsetting of GRIB2 files by individual GRIB
+messages (i.e. variable and level) if the index (.idx) file exist.
+Herbie looks for model output data from NOMADS, NOAA's Big Data Project 
+partners (Amazon Web Services, Google Cloud Platform, and Microsoft 
+Azure), and the CHPC Pando archive at the University of Utah.
 
 .. note:: Updates since ``hrrrb``
     - Rename package to ``herbie``. "Herbie is your model output download assistant with a mind of its own."
@@ -27,10 +30,6 @@ University of Utah.
     - New method for searchString index file search.
     - Subset file name retain GRIB message numbers included
     - TODO: check local file copy on class init
-
-Download High-Resolution Rapid Refresh (HRRR) and Rapid Refresh (RAP)
-model GRIB2 files from different archive sources. Supports subsetting
-GRIB2 files by fields if the index (.idx) file exist.
 
 HRRR and RAP Data Sources
 -------------------------
@@ -45,7 +44,6 @@ This module enable you to easily download HRRR and RAP data between
 these different data sources wherever the data you are interested in
 is available. The default download source priority and some attributes
 of the data sources is listed below:
-
 
 1. NOMADS: NOAA Operational Model Archive and Distribution System
     - https://nomads.ncep.noaa.gov/
@@ -71,15 +69,17 @@ of the data sources is listed below:
     - Has all original data including nat, subh, prs, and sfc files 
       for all forecast hours.
 
-4. Pando: The University of Utah HRRR archive
+4. Azure: Microsoft Azure
+    - https://github.com/microsoft/AIforEarthDataSets/blob/main/data/noaa-hrrr.md
+    - Only recent HRRR and RAP data?
+    - Subset of HRRR and RAP data?
+
+5. Pando: The University of Utah HRRR archive
     - http://hrrr.chpc.utah.edu/
     - Research archive. Older files being removed.
     - A subset of prs and sfc files.
     - Contains .idx file for every GRIB2 file.
 
-5. Azure: Microsoft Azure
-    - https://github.com/microsoft/AIforEarthDataSets/blob/main/data/noaa-hrrr.md
-    - 
 """
 import os
 from pathlib import Path
