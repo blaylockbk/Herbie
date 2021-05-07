@@ -5,8 +5,8 @@ Reference Guide
    :hidden:
    :maxdepth: 4
 
-Old API
--------
+Current API
+-----------
 .. automodule:: hrrrb.archive
 .. automodule:: hrrrb.tools
 .. automodule:: hrrrb.plots
