@@ -392,7 +392,7 @@ class ModelOutputSource:
             Filter dataframe by a searchString regular expression.
             Searches for strings in the index file lines, specifically
             the variable, level, and forecast_time columns.
-            Execute ``_searchString_help()` for examples of a good
+            Execute ``_searchString_help()`` for examples of a good
             searchString.
         
         Returns
