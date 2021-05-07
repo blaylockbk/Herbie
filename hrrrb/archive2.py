@@ -14,6 +14,8 @@ Updates from archive.py
 - added RAP model
 - less reliance on Pando, more on aws and google.
 - new method for searchString index file search.
+- subset file name retain GRIB message numbers included
+- TODO: check local file copy on class init
 
 Download High-Resolution Rapid Refresh (HRRR) and Rapid Refresh (RAP)
 model GRIB2 files from different archive sources. Supports subsetting
@@ -63,6 +65,10 @@ of the data sources is listed below:
     - Research archive. Older files being removed.
     - A subset of prs and sfc files.
     - Contains .idx file for every GRIB2 file.
+
+5. Azure: Microsoft Azure
+    - https://github.com/microsoft/AIforEarthDataSets/blob/main/data/noaa-hrrr.md
+    - 
 """
 import os
 from pathlib import Path
@@ -122,7 +128,7 @@ class ModelOutputSource:
     read_idx
         Inspect the GRIB2 contents listed in the index (.idx) file.
     """
-    _default_priority = ['nomads', 'aws', 'google', 'pando', 'pando2']
+    _default_priority = ['nomads', 'aws', 'google', 'azure', 'pando', 'pando2']
 
     def __init__(self, DATE, fxx=0, *, 
                  model='hrrr', field='sfc',
@@ -160,6 +166,7 @@ class ModelOutputSource:
             - ``'nomads'`` NOAA's NOMADS server
             - ``'aws'`` Amazon Web Services (Big Data Program)
             - ``'google'`` Google Cloud Platform (Big Data Program)
+            - ``'azure'`` Microsoft Azure (Big Data Program)
             - ``'pando'`` University of Utah Pando Archive (gateway 1)
             - ``'pando2'`` University of Utah Pando Archive (gateway 2)
         """
@@ -289,11 +296,12 @@ class ModelOutputSource:
         
         Parameters
         ----------
-        source : {'nomads', 'aws', 'google', 'pando', 'pando2'}
+        source : {'nomads', 'aws', 'google', 'azure', 'pando', 'pando2'}
             The data download source for the RAP and HRRR models. 
             - ``'nomads'`` NOAA's NOMADS server
             - ``'aws'`` Amazon Web Services (Big Data Program)
             - ``'google'`` Google Cloud Platform (Big Data Program)
+            - ``'azure'`` Microsoft Azure (Big Data Program)
             - ``'pando'`` University of Utah Pando Archive (gateway 1)
             - ``'pando2'`` University of Utah Pando Archive (gateway 2)
         """
@@ -323,6 +331,16 @@ class ModelOutputSource:
                 path = f'rap.{self.date:%Y%m%d}/rap.t{self.date:%H}z.awip32f{self.fxx:02d}.grib2'
             else:
                 base = 'https://storage.googleapis.com/high-resolution-rapid-refresh/'
+                if self.model == 'hrrr':
+                    path = f"hrrr.{self.date:%Y%m%d}/conus/hrrr.t{self.date:%H}z.wrf{self.field}f{self.fxx:02d}.grib2"
+                elif self.model == 'hrrrak':
+                    path = f"hrrr.{self.date:%Y%m%d}/alaska/hrrr.t{self.date:%H}z.wrf{self.field}f{self.fxx:02d}.ak.grib2"
+        elif source == 'azure':
+            if self.model == 'rap':
+                base = 'https://noaarap.blob.core.windows.net/rap'
+                path = f'rap.{self.date:%Y%m%d}/rap.t{self.date:%H}z.awip32f{self.fxx:02d}.grib2'
+            else:
+                base = 'https://noaahrrr.blob.core.windows.net/hrrr/'
                 if self.model == 'hrrr':
                     path = f"hrrr.{self.date:%Y%m%d}/conus/hrrr.t{self.date:%H}z.wrf{self.field}f{self.fxx:02d}.grib2"
                 elif self.model == 'hrrrak':
@@ -412,7 +430,7 @@ class ModelOutputSource:
         searchString : str
             If None, download the full file. Else, use regex to subset
             the file by specific variables and levels.
-        source : {'nomads', 'aws', 'google', 'pando', 'pando2'}
+        source : {'nomads', 'aws', 'google', 'azure', 'pando', 'pando2'}
             If None, download GRIB2 file from self.grib2 which is
             the first place the GRIB2 file was found when this class
             was initialized. Else, you may specify the source to force
@@ -444,23 +462,32 @@ class ModelOutputSource:
         def subset(searchString, outFile):
             """Download a subset specified by the regex searchString"""
             print(f'📇 Download subset: {self.__repr__()}{" ":60s}')
-            # Append the filename to distinguish it from the full file.
-            outFile = outFile.with_suffix('.grib2.subset')
             
             df = self.read_idx(searchString)
             
-            # Download subsets of the file by byte range with cURL.
-            for i, (grbmsg, row) in enumerate(df.iterrows()):
-                print(f"{i+1:>4g}: GRIB_message={grbmsg:<3g} \033[34m{row.variable}:{row.level}:{row.forecast_time}\033[m")
-                if i == 0:
-                    # If we are working on the first item, overwrite the existing file...
-                    curl = f'curl -s --range {row.range} {self.grib} > {outFile}'
-                else:
-                    # ...all other messages are appended to the subset file.
-                    curl = f'curl -s --range {row.range} {self.grib} >> {outFile}'
-                os.system(curl)
+            # Get a list of all GRIB message numbers. We will use this
+            # in the output file name as a unique identifier.
+            all_grib_msg = '-'.join(df.index.astype(str))
 
-            self.local_grib_subset = outFile
+            # Append the filename to distinguish it from the full file.
+            outFile = outFile.with_suffix(F'.grib2.subset_{all_grib_msg}')
+            
+            if not overwrite and outFile.exists():
+                if verbose: print(f'🌉 Already have local copy --> {outFile}')
+                self.local_grib_subset = outFile
+            else:
+                # Download subsets of the file by byte range with cURL.
+                for i, (grbmsg, row) in enumerate(df.iterrows()):
+                    print(f"{i+1:>4g}: GRIB_message={grbmsg:<3g} \033[34m{row.variable}:{row.level}:{row.forecast_time}\033[m")
+                    if i == 0:
+                        # If we are working on the first item, overwrite the existing file...
+                        curl = f'curl -s --range {row.range} {self.grib} > {outFile}'
+                    else:
+                        # ...all other messages are appended to the subset file.
+                        curl = f'curl -s --range {row.range} {self.grib} >> {outFile}'
+                    os.system(curl)
+
+                self.local_grib_subset = outFile
         
         # Check that data exists
         if self.grib is None:
@@ -494,7 +521,7 @@ class ModelOutputSource:
         if searchString in [None, ':'] or self.idx is None:
             # Download the full file
             if not overwrite and outFile.exists():
-                if verbose: print(f'🌉 Already have file for --> {outFile}')
+                if verbose: print(f'🌉 Already have local copy --> {outFile}')
                 self.local_grib = outFile
             else:
                 urllib.request.urlretrieve(self.grib, outFile, _reporthook)
@@ -502,6 +529,18 @@ class ModelOutputSource:
                 self.local_grib = outFile
         else:
             subset(searchString, outFile)
+
+    def to_xarray(self, searchString, remove_grib=True):
+        """
+        Download data and read as xarray
+        
+        Parameters
+        ----------
+        searchString : str
+            Variables to read into xarray Dataset
+        remove_grib : bool
+            Remove GRIB2 file after it is read in.
+        """
 
 ###############################################################################
 ###############################################################################
@@ -567,3 +606,9 @@ def download(DATES, searchString=None, *, fxx=range(0,1),
     print(f"🍦 Done! Downloaded [{completed}/{requested}] files. Timer={loop_time}")
     
     return grib_sources
+
+def xhrrr(DATE, searchString, fxx=0, *,
+          remove_grib2=True, backend_kwargs={}, **download_kwargs):
+          """
+
+          """
