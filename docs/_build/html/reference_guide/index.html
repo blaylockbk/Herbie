@@ -858,30 +858,6 @@ from NOMADS and not a Big Data Project partner, change the
 priority order so that NOMADS is first, (e.g.,
 <code class="docutils literal notranslate"><span class="pre">priority=['nomads',</span> <span class="pre">...]</span></code>).</p>
 </div>
-<dl class="py method">
-<dt id="herbie.archive.ModelOutputSource.get_url">
-<code class="sig-name descname"><span class="pre">get_url</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#herbie.archive.ModelOutputSource.get_url" title="Permalink to this definition">¶</a></dt>
-<dd><p>Build the output file URL location for different data sources.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt id="herbie.archive.ModelOutputSource.download">
-<code class="sig-name descname"><span class="pre">download</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#herbie.archive.ModelOutputSource.download" title="Permalink to this definition">¶</a></dt>
-<dd><p>Download the single GRIB2 file.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt id="herbie.archive.ModelOutputSource.read_idx">
-<code class="sig-name descname"><span class="pre">read_idx</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#herbie.archive.ModelOutputSource.read_idx" title="Permalink to this definition">¶</a></dt>
-<dd><p>Inspect the GRIB2 contents listed in the index (.idx) file.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt id="herbie.archive.ModelOutputSource.to_xarray">
-<code class="sig-name descname"><span class="pre">to_xarray</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#herbie.archive.ModelOutputSource.to_xarray" title="Permalink to this definition">¶</a></dt>
-<dd><p>TODO: Download the file and read it with xarray/cfgrib.</p>
-</dd></dl>
-
 <p><strong>Methods:</strong></p>
 <table class="longtable table autosummary">
 <colgroup>
@@ -889,23 +865,23 @@ priority order so that NOMADS is first, (e.g.,
 <col style="width: 90%" />
 </colgroup>
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#id0" title="herbie.archive.ModelOutputSource.download"><code class="xref py py-obj docutils literal notranslate"><span class="pre">download</span></code></a>([searchString, source, save_dir, …])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#herbie.archive.ModelOutputSource.download" title="herbie.archive.ModelOutputSource.download"><code class="xref py py-obj docutils literal notranslate"><span class="pre">download</span></code></a>([searchString, source, save_dir, …])</p></td>
 <td><p>Download file from source.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#id1" title="herbie.archive.ModelOutputSource.get_url"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_url</span></code></a>(source)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#herbie.archive.ModelOutputSource.get_url" title="herbie.archive.ModelOutputSource.get_url"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_url</span></code></a>(source)</p></td>
 <td><p>Build the URL for the GRIB2 file for the requested file and data source.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#id2" title="herbie.archive.ModelOutputSource.read_idx"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_idx</span></code></a>([searchString])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#herbie.archive.ModelOutputSource.read_idx" title="herbie.archive.ModelOutputSource.read_idx"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_idx</span></code></a>([searchString])</p></td>
 <td><p>Inspect the GRIB2 file contents by reading the index file.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#id5" title="herbie.archive.ModelOutputSource.to_xarray"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_xarray</span></code></a>(searchString[, remove_grib])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#herbie.archive.ModelOutputSource.to_xarray" title="herbie.archive.ModelOutputSource.to_xarray"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_xarray</span></code></a>(searchString[, remove_grib])</p></td>
 <td><p>FUTURE WORK</p></td>
 </tr>
 </tbody>
 </table>
 <dl class="py method">
-<dt id="id0">
-<code class="sig-name descname"><span class="pre">download</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">searchString</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">PosixPath('/p/cwfs/blaylock/data')</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">errors</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'warn'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id0" title="Permalink to this definition">¶</a></dt>
+<dt id="herbie.archive.ModelOutputSource.download">
+<code class="sig-name descname"><span class="pre">download</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">searchString</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">PosixPath('/p/cwfs/blaylock/data')</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">errors</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'warn'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#herbie.archive.ModelOutputSource.download" title="Permalink to this definition">¶</a></dt>
 <dd><p>Download file from source.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -928,8 +904,8 @@ be unique.</p></li>
 </dd></dl>
 
 <dl class="py method">
-<dt id="id1">
-<code class="sig-name descname"><span class="pre">get_url</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">source</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id1" title="Permalink to this definition">¶</a></dt>
+<dt id="herbie.archive.ModelOutputSource.get_url">
+<code class="sig-name descname"><span class="pre">get_url</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">source</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#herbie.archive.ModelOutputSource.get_url" title="Permalink to this definition">¶</a></dt>
 <dd><p>Build the URL for the GRIB2 file for the requested file and data source.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -945,15 +921,15 @@ be unique.</p></li>
 </dd></dl>
 
 <dl class="py method">
-<dt id="id2">
-<code class="sig-name descname"><span class="pre">read_idx</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">searchString</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id2" title="Permalink to this definition">¶</a></dt>
+<dt id="herbie.archive.ModelOutputSource.read_idx">
+<code class="sig-name descname"><span class="pre">read_idx</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">searchString</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#herbie.archive.ModelOutputSource.read_idx" title="Permalink to this definition">¶</a></dt>
 <dd><p>Inspect the GRIB2 file contents by reading the index file.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>searchString</strong> (<em>str</em>) – Filter dataframe by a searchString regular expression.
 Searches for strings in the index file lines, specifically
 the variable, level, and forecast_time columns.
-Execute <a href="#id3"><span class="problematic" id="id4">``</span></a>_searchString_help()` for examples of a good
+Execute <a href="#id1"><span class="problematic" id="id2">``</span></a>_searchString_help()` for examples of a good
 searchString.</p>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -966,8 +942,8 @@ searchString.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="id5">
-<code class="sig-name descname"><span class="pre">to_xarray</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">searchString</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">remove_grib</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id5" title="Permalink to this definition">¶</a></dt>
+<dt id="herbie.archive.ModelOutputSource.to_xarray">
+<code class="sig-name descname"><span class="pre">to_xarray</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">searchString</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">remove_grib</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#herbie.archive.ModelOutputSource.to_xarray" title="Permalink to this definition">¶</a></dt>
 <dd><p>FUTURE WORK</p>
 <p>Download data and read as xarray</p>
 <dl class="field-list simple">

@@ -143,17 +143,6 @@ class ModelOutputSource:
         from NOMADS and not a Big Data Project partner, change the
         priority order so that NOMADS is first, (e.g.,
         ``priority=['nomads', ...]``).
-
-    Methods
-    -------
-    get_url
-        Build the output file URL location for different data sources.
-    download 
-        Download the single GRIB2 file.
-    read_idx
-        Inspect the GRIB2 contents listed in the index (.idx) file.
-    to_xarray
-        TODO: Download the file and read it with xarray/cfgrib.
     """
     _default_priority = ['aws', 'nomads', 'google', 'azure', 'pando', 'pando2']
 
