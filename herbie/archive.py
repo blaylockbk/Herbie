@@ -18,17 +18,15 @@ NOMADS, NOAA's Big Data Project partners (Amazon Web Services, Google
 Cloud Platform, and Microsoft Azure), and the CHPC Pando archive at the 
 University of Utah.
 
-
-Updates since hrrrb
-
-- rename package to herbie. "Herbie is your model output download assistant with a mind of its own."
-- implement new **ModelOuputSource** class
-- drop support for hrrrx (no longer archived on Pando and ESRL is developing RRFS)
-- added RAP model
-- less reliance on Pando, more on aws and google.
-- new method for searchString index file search.
-- subset file name retain GRIB message numbers included
-- TODO: check local file copy on class init
+.. note:: Updates since ``hrrrb``
+    - Rename package to ``herbie``. "Herbie is your model output download assistant with a mind of its own."
+    - Implement new **ModelOuputSource** class
+    - Drop support for hrrrx (no longer archived on Pando and ESRL is developing RRFS)
+    - Added RAP model
+    - Less reliance on Pando, more on aws and google.
+    - New method for searchString index file search.
+    - Subset file name retain GRIB message numbers included
+    - TODO: check local file copy on class init
 
 Download High-Resolution Rapid Refresh (HRRR) and Rapid Refresh (RAP)
 model GRIB2 files from different archive sources. Supports subsetting
