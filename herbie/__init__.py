@@ -44,8 +44,11 @@ try:
     _default_priority = config.get('download', 'default_priority').split(',')
 except:
     print(f'🦁🐯🐻 oh my! {_config_path} looks weird,',
-          f'but I will add a new section')
-    config.add_section('download')
+          f'but I will add new settings')
+    try:
+        config.add_section('download')
+    except:
+        pass  # section already exists
     config.set('download', 'default_save_dir', user_home_default)
     config.set('download', 'default_priority', source_priority_default)
     with open(_config_path, 'w') as configfile:

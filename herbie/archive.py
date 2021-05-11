@@ -38,6 +38,7 @@ Azure), and the CHPC Pando archive at the University of Utah.
         - ``herbie.download(...)``
         - ``H=herbie.xget(...)``
         - ``H.herbie.plot(...)``
+    - TODO: use some escape characters to move cursor up or down a line https://tforgione.fr/posts/ansi-escape-codes/
 
 HRRR and RAP Data Sources
 -------------------------
