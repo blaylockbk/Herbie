@@ -29,9 +29,15 @@ Azure), and the CHPC Pando archive at the University of Utah.
     - Less reliance on Pando, more on aws and google.
     - New method for searchString index file search.
     - Subset file name retain GRIB message numbers included.
+    - Moved default download source to config file
     - TODO: Check local file copy on class init. (Don't need to look for file if we have local copy)
     - TODO: Read data with xarray (read from local if exists, else download, read, and <remove>).
-    - TODO: Maybe move default download source to config file?
+    - TODO: Add NCEI as a source for the RAP data?? URL is complex.
+    - TODO: Maybe move all imports to __init__ so I can do  the following
+        - ``import herbie``
+        - ``herbie.download(...)``
+        - ``H=herbie.xget(...)``
+        - ``H.herbie.plot(...)``
 
 HRRR and RAP Data Sources
 -------------------------
@@ -95,9 +101,10 @@ import numpy as np
 import pandas as pd
 import xarray as xr
 
-# NOTE: The `_default_save_dir` is defined in __init__.py and set in 
-# the config file at ~/.config/herbie/config.cfg.
+# NOTE: These values are set in the config file at 
+# ~/.config/herbie/config.cfg and are read in from the __init__ file.
 from . import _default_save_dir
+from . import _default_priority
 
 def _searchString_help():
     """Help/Error Message for `searchString`"""
@@ -146,7 +153,6 @@ class ModelOutputSource:
         priority order so that NOMADS is first, (e.g.,
         ``priority=['nomads', ...]``).
     """
-    _default_priority = ['aws', 'nomads', 'google', 'azure', 'pando', 'pando2']
 
     def __init__(self, DATE, fxx=0, *, 
                  model='hrrr', field='sfc',
@@ -240,7 +246,7 @@ class ModelOutputSource:
             if any([self.grib is not None, self.idx is not None]):
                 print(f'🏋🏻‍♂️ Found',
                       f'\033[32m{self.date:%Y-%b-%d %H:%M UTC} F{self.fxx:02d}\033[m',
-                      f'{self.model.upper()}',
+                      f'{self.model.upper()} {self.field}',
                       f'GRIB2 file from \033[38;5;202m{self.grib_source}\033[m and',
                       f'index file from \033[38;5;202m{self.idx_source}\033[m.',
                       f'{" ":100s}')
@@ -274,10 +280,14 @@ class ModelOutputSource:
         
         if self.model == 'alaska':
             self.model == 'hrrrak'
-        
+
         assert self.fxx in range(49), "Forecast lead time `fxx` is too large"
         assert self.model in _models, f"`model` must be one of {_models}"
-        assert self.field in _fields, f"`field must be one of {_fields}"
+        if self.model in ['hrrr', 'hrrrak']:
+            assert self.field in _fields, f"`field must be one of {_fields}"
+        else:
+            # field is not needed for RAP model.
+            self.field = ''
         
         if isinstance(self.priority, str):
             self.priority = [self.priority]
