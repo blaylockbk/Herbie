@@ -30,15 +30,17 @@ Azure), and the CHPC Pando archive at the University of Utah.
     - New method for searchString index file search.
     - Subset file name retain GRIB message numbers included.
     - Moved default download source to config file
+    - TODO: Attach index file DataFrame to object if it exists.
     - TODO: Check local file copy on class init. (Don't need to look for file if we have local copy)
     - TODO: Read data with xarray (read from local if exists, else download, read, and <remove>).
+    - TODO: If full file exists locally, use remote idx file to subset with wgrib2 (instead of downloading).
+    - TODO: use some escape characters to move cursor up or down a line https://tforgione.fr/posts/ansi-escape-codes/
     - TODO: Add NCEI as a source for the RAP data?? URL is complex.
     - TODO: Maybe move all imports to __init__ so I can do  the following
         - ``import herbie``
         - ``herbie.download(...)``
         - ``H=herbie.xget(...)``
         - ``H.herbie.plot(...)``
-    - TODO: use some escape characters to move cursor up or down a line https://tforgione.fr/posts/ansi-escape-codes/
 
 HRRR and RAP Data Sources
 -------------------------
@@ -158,6 +160,7 @@ class ModelOutputSource:
     def __init__(self, DATE, fxx=0, *, 
                  model='hrrr', field='sfc',
                  priority=_default_priority,
+                 save_dir=_default_save_dir,
                  verbose=True):
         """
         Specify model output and find grib2 file at one of the sources.
@@ -201,6 +204,7 @@ class ModelOutputSource:
         self.model = model.lower()
         self.field = field.lower()
         self.priority = priority
+        self.save_dir = save_dir
         
         self._validate()
 
@@ -394,7 +398,25 @@ class ModelOutputSource:
                 path = f"{self.model}/{self.field}/{self.date:%Y%m%d}/{self.model}.t{self.date:%H}z.wrf{self.field}f{self.fxx:02d}.grib2"
                
         return base+path
-    
+
+    def get_local(self, searchString=None):
+        """Get path to local file"""
+        
+        outFile = self.save_dir / self.model / f"{self.date:%Y%m%d}" / f"{self.date:%Y%m%d}_{self.grib.split('/')[-1]}"
+
+        if searchString is not None:
+            # Reassign the index DataFrame with the requested searchString
+            self.idx_df = self.read_idx(searchString)
+
+            # Get a list of all GRIB message numbers. We will use this
+            # in the output file name as a unique identifier.
+            all_grib_msg = '-'.join(self.idx_df.index.astype(str))
+
+            # Append the filename to distinguish it from the full file.
+            outFile = outFile.with_suffix(f'.grib2.subset_{all_grib_msg}')
+        
+        return outFile
+
     def read_idx(self, searchString=None):
         """
         Inspect the GRIB2 file contents by reading the index file.
@@ -456,7 +478,7 @@ class ModelOutputSource:
         return df
     
     def download(self, searchString=None, source=None, *,
-                 save_dir=_default_save_dir, 
+                 save_dir=None, 
                  overwrite=False, verbose=True,
                  errors='warn'):
         """
@@ -469,11 +491,14 @@ class ModelOutputSource:
             the file by specific variables and levels.
         source : {'nomads', 'aws', 'google', 'azure', 'pando', 'pando2'}
             If None, download GRIB2 file from self.grib2 which is
-            the first place the GRIB2 file was found when this class
-            was initialized. Else, you may specify the source to force
-            downloading it from a different location.
+            the first location the GRIB2 file was found from the 
+            priority lists when this class was initialized. Else, you 
+            may specify the source to force downloading it from a 
+            different location.
         save_dir : str or pathlib.Path
             Location to save the model output files.
+            If None, uses the default or path specified in __init__.
+            Else, changes the path files are saved.
         overwrite : bool
             If True, overwrite existing files. Default will skip
             downloading if the full file exists. Not applicable when
@@ -496,25 +521,18 @@ class ModelOutputSource:
             total_size_MB =  c / 1000000.
             print(f"\r🚛💨  Download Progress: {chunk_progress:.2f}% of {total_size_MB:.1f} MB\r", end='')
 
-        def subset(searchString, outFile):
+        def subset(searchString):
             """Download a subset specified by the regex searchString"""
             print(f'📇 Download subset: {self.__repr__()}{" ":60s}')
             
-            df = self.read_idx(searchString)
-            
-            # Get a list of all GRIB message numbers. We will use this
-            # in the output file name as a unique identifier.
-            all_grib_msg = '-'.join(df.index.astype(str))
-
-            # Append the filename to distinguish it from the full file.
-            outFile = outFile.with_suffix(F'.grib2.subset_{all_grib_msg}')
+            outFile = self.get_local(searchString=searchString)
             
             if not overwrite and outFile.exists():
                 if verbose: print(f'🌉 Already have local copy --> {outFile}')
                 self.local_grib_subset = outFile
             else:
                 # Download subsets of the file by byte range with cURL.
-                for i, (grbmsg, row) in enumerate(df.iterrows()):
+                for i, (grbmsg, row) in enumerate(self.idx_df.iterrows()):
                     print(f"{i+1:>4g}: GRIB_message={grbmsg:<3g} \033[34m{row.variable}:{row.level}:{row.forecast_time}\033[m")
                     if i == 0:
                         # If we are working on the first item, overwrite the existing file...
@@ -526,6 +544,13 @@ class ModelOutputSource:
 
                 self.local_grib_subset = outFile
         
+        # Attach the index file to the object (how much overhead is this?)
+        self.idx_df = self.read_idx(searchString)
+
+        # This overwrites the save_dir specified in __init__
+        if save_dir is not None:
+            self.save_dir = save_dir
+
         # Check that data exists
         if self.grib is None:
             msg = f'🦨 GRIB2 file not found: {self.model=} {self.date=} {self.fxx=}'
@@ -546,14 +571,14 @@ class ModelOutputSource:
             self.grib = self.get_url(source)
             
         # Make save_dir if path doesn't exist
-        if not hasattr(save_dir, 'exists'): 
-            save_dir = Path(save_dir).resolve()
-        save_dir = save_dir / self.model
-                
-        outFile = save_dir / f"{self.date:%Y%m%d}" / f"{self.date:%Y%m%d}_{self.grib.split('/')[-1]}"
+        if not hasattr(self.save_dir, 'exists'): 
+            self.save_dir = Path(self.save_dir).resolve()
+        
+        outFile = self.get_local(searchString=searchString)
+
         if not outFile.parent.is_dir():
-                outFile.parent.mkdir(parents=True, exist_ok=True)
-                print(f'👨🏻‍🏭 Created directory: [{outFile.parent}]')
+            outFile.parent.mkdir(parents=True, exist_ok=True)
+            print(f'👨🏻‍🏭 Created directory: [{outFile.parent}]')
         
         if searchString in [None, ':'] or self.idx is None:
             # Download the full file
@@ -565,7 +590,8 @@ class ModelOutputSource:
                 if verbose: print(f'✅ Success! Downloaded from [{self.grib_source}] {self.grib} --> {outFile}')
                 self.local_grib = outFile
         else:
-            subset(searchString, outFile)
+            # Download a subset of the file
+            subset(searchString)
 
     def to_xarray(self, searchString, remove_grib=True):
         """
