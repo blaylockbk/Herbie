@@ -17,6 +17,7 @@ from paint.radar import cm_reflectivity
 import pandas as pd
 import xarray as xr
 import matplotlib.pyplot as plt
+import cartopy.crs as ccrs
 
 from toolbox.cartopy_tools import common_features, pc
 from paint.standard2 import cm_tmp, cm_dpt, cm_rh, cm_wind, cm_pcp
@@ -39,6 +40,43 @@ class herbie_accessor:
             lat = self._obj.longitude
             self._center = (float(lon.mean()), float(lat.mean()))
         return self._center
+
+    @property
+    def crs(self):
+        """
+        Cartopy coordinate reference system (crs) from a cfgrib Dataset.
+        
+        Projection information is from the grib2 message for each variable.
+        
+        Parameters
+        ----------
+        ds : xarray.Dataset
+            An xarray.Dataset from a GRIB2 file opened by the cfgrib engine.
+        """
+
+        ds = self._obj
+
+        # Get projection from the attributes of HRRR xarray.Dataset
+        # CF 1.8 map projection information for the HRRR model
+        # http://cfconventions.org/Data/cf-conventions/cf-conventions-1.8/cf-conventions.html#_lambert_conformal       
+        
+        # Projection info is in the variable attributes. The first variable will do.
+        attrs = ds[list(ds)[0]].attrs
+                
+        if attrs['GRIB_gridType'] == 'lambert':
+            lc_kwargs = dict(
+                globe=ccrs.Globe(ellipse='sphere'),
+                central_latitude=attrs['GRIB_LaDInDegrees'],
+                central_longitude=attrs['GRIB_LoVInDegrees'],
+                standard_parallels=(attrs['GRIB_Latin1InDegrees'],\
+                                    attrs['GRIB_Latin2InDegrees'])
+            )
+            lc = ccrs.LambertConformal(**lc_kwargs)
+            return lc
+        else:
+            warnings.warn('GRIB_gridType is not "lambert".')
+            return None
+
 
     def plot(self, ax=None, common_features_kw={}, **kwargs):
         """Plot data on a map."""

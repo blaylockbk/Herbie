@@ -649,8 +649,9 @@ def download(DATES, searchString=None, *, fxx=range(0,1),
     return grib_sources
 
 def xget(DATE, searchString, fxx=0, *, 
-         is_valid_time=False,
-         remove_grib=True, backend_kwargs={}, **download_kwargs):
+         date_is_valid_time=False,
+         remove_grib=True, backend_kwargs={},
+         **download_kwargs):
     r"""
     Download subset of model output and open with xarray/cfgrib.
 
@@ -666,5 +667,37 @@ def xget(DATE, searchString, fxx=0, *,
     backend_kwargs : dict
     **download_kwargs
     """
-    print('nothing here yet')
-    pass
+
+    # Convert DATE input to a pandas datetime (Pandas can parse some strings as dates.)
+    DATE = pd.to_datetime(DATE)
+
+    inputs = locals()
+
+    # Someday this requirement may change
+    assert not hasattr(DATE, '__len__'), "`DATE` must be a single datetime, not a list."
+    assert not hasattr(fxx, '__len__'), "`fxx` must be a single integer, not a list."
+
+    if date_is_valid_time:
+        # Change DATE to the model run initialization DATE so that when we take
+        # into account the forecast lead time offset, the the returned data
+        # be valid for the DATE the user requested.
+        DATE = DATE - timedelta(hours=fxx)
+    
+    # Local GRIB2 file
+    mod_obj = download(DATE, searchString=searchString, fxx=fxx, **download_kwargs)
+    
+    grib2file = mod_obj[0].local_grib_subset
+
+    # Some extra backend kwargs for cfgrib
+    backend_kwargs.setdefault('indexpath', '')
+    backend_kwargs.setdefault('read_keys', ['parameterName', 'parameterUnits', 'stepRange'])
+    backend_kwargs.setdefault('errors', 'raise')
+
+    # Use cfgrib.open_datasets, just in case there are multiple "hypercubes"
+    # for what we requested.
+    H = cfgrib.open_datasets(grib2file, backend_kwargs=backend_kwargs)
+
+    for ds in H:
+        ds.attrs['history'] = inputs
+
+    return H    
