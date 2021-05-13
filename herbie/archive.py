@@ -10,10 +10,10 @@ Herbie: Download HRRR and RAP model output from the cloud
 
 Herbie is your model output download assistant with a mind of his own!
 Herbie might look small on the outside, but he has a big heart on the 
-inside and will get you to the 
+inside and will get you to the
 `finish line <https://www.youtube.com/watch?v=4XWufUZ1mxQ&t=189s>`_ 🏁.
 
-With Herbie's help you can download High-Resolution Rapid Refresh (HRRR)
+With Herbie's API, you can download High-Resolution Rapid Refresh (HRRR)
 HRRR-Alaska, and Rapid Refresh (RAP) model GRIB2 files from different 
 archive sources. Supports subsetting of GRIB2 files by individual GRIB
 messages (i.e. variable and level) if the index (.idx) file exist.
@@ -23,28 +23,21 @@ Azure), and the CHPC Pando archive at the University of Utah.
 
 .. note:: Updates since ``hrrrb``
     - Rename package to ``herbie``. "Herbie is your model output download assistant with a mind of its own."
-    - Implement new **ModelOuputSource** class
-    - Drop support for hrrrx (no longer archived on Pando and ESRL is developing RRFS)
-    - Added RAP model
+    - Implement new **Herbie** class
+    - Drop support for hrrrx (experimental HRRR no longer archived on Pando and ESRL is now developing RRFS)
+    - Added ability to download and read RAP model GRIB2 files.
     - Less reliance on Pando, more on aws and google.
-    - New method for searchString index file search.
-    - Subset file name retain GRIB message numbers included.
+    - New method for searchString index file search. Uses same regex search patterns as old API.
+    - Subset file name include GRIB message numbers.
     - Moved default download source to config file
-    - TODO: Check local file copy on class init. (Don't need to look for file if we have local copy)
-        - NOTE: HALF DONE! BROKEN DOWNLOAD WHEN SEARCHSTRING IS NOT NONE
-    - TODO: Remove grib2 file when reading xarray if didn't already exist locally.
-    - TODO: Attach index file DataFrame to object if it exists.
+    - Check local file copy on class init. (Don't need to look for file if we have local copy)
+    - Option to remove grib2 file when reading xarray if didn't already exist locally.
+    - Attach index file DataFrame to object if it exists.
+    - If full file exists locally, use remote idx file to cURL local file instead of remote. (Can't create idx file locally because wgrib2 not available on windows)
+    - TODO: Rename 'searchString' to 'subset' (and rename subset function)
     - TODO: use some escape characters to move cursor up or down a line https://tforgione.fr/posts/ansi-escape-codes/
     - TODO: Add NCEI as a source for the RAP data?? URL is complex.
-    - TODO: If full file exists locally, use remote idx file to subset with wgrib2 (instead of downloading).
-        - No, because wgrib2 doesn't work on Windows
-        - However, I could download the idx files, then someone wouldn't
-        have to be connected to the internet to subset the data.
-    - TODO: Maybe move all imports to __init__ so I can do  the following
-        - ``import herbie``
-        - ``herbie.download(...)``
-        - ``H=herbie.xget(...)``
-        - ``H.herbie.plot(...)``
+    - TODO: Create .idx file if wgrib2 is installed (linux only)
 
 HRRR and RAP Data Sources
 -------------------------
@@ -104,14 +97,15 @@ from datetime import datetime, timedelta
 import urllib.request
 import requests
 import cfgrib
-import numpy as np
 import pandas as pd
-import xarray as xr
 
 # NOTE: These values are set in the config file at 
 # ~/.config/herbie/config.cfg and are read in from the __init__ file.
 from . import _default_save_dir
 from . import _default_priority
+
+def herbieColor():
+    return dict(body='#f0ead2', red='#88211b', blue='#0c3576', white='#ffffff', black='#000000')
 
 def _searchString_help():
     """Help/Error Message for `searchString`"""
@@ -216,17 +210,18 @@ class Herbie:
             the idx file).
         """
 
-        self.date = DATE
+        self.date = pd.to_datetime(DATE)
         self.fxx = fxx
         self.model = model.lower()
         self.field = field.lower()
         self.priority = priority
-        self.save_dir = save_dir
+        self.save_dir = Path(save_dir).resolve()
         
         if DATE_is_valid_time:
-            # Change DATE to the model run initialization DATE so that when we take
-            # into account the forecast lead time offset, the the returned data
-            # be valid for the DATE the user requested.
+            # Change DATE to the model run initialization DATE so that 
+            # when we take into account the forecast lead time offset, 
+            # the the returned data be valid for the DATE the user 
+            # requested.
             self.date = self.date - timedelta(hours=self.fxx)
 
         self._validate()
@@ -239,9 +234,10 @@ class Herbie:
         self.grib_source = None
         self.idx = None
         self.idx_source = None
+        
         # But first check if local GRIB2 file exists. If it does, then we 
         # know for certain the file exists at one of the sources.
-        local_copy = self.get_local()
+        local_copy = self.get_localPath()
         if local_copy.exists() and not overwrite:
             #if local_copy.exits():
             self.grib = local_copy
@@ -311,7 +307,7 @@ class Herbie:
         _models = {'hrrr', 'hrrrak', 'rap'}
         _fields = {'prs', 'sfc', 'nat', 'subh'}
         
-        self.date = pd.to_datetime(self.date)
+        assert self.date < datetime.utcnow(), "🔮Date cannot be in the future."
         
         if self.model.lower() == 'alaska':
             self.model = 'hrrrak'
@@ -376,46 +372,42 @@ class Herbie:
             - ``'pando'`` University of Utah Pando Archive (gateway 1)
             - ``'pando2'`` University of Utah Pando Archive (gateway 2)
         """
+        # Big Data Program Path Template
+        BDP_path_template = {
+            'rap': f'rap.{self.date:%Y%m%d}/rap.t{self.date:%H}z.awip32f{self.fxx:02d}.grib2',
+            'hrrr': f"hrrr.{self.date:%Y%m%d}/conus/hrrr.t{self.date:%H}z.wrf{self.field}f{self.fxx:02d}.grib2",
+            'hrrrak': f"hrrr.{self.date:%Y%m%d}/alaska/hrrr.t{self.date:%H}z.wrf{self.field}f{self.fxx:02d}.ak.grib2"
+        }
+
+        # Big Data Program Sources (and NOMADS)
         if source == 'nomads':
             if self.model == 'rap':
-                base = 'https://nomads.ncep.noaa.gov/pub/data/nccf/com/rap/prod/'
-                path = f'rap.{self.date:%Y%m%d}/rap.t{self.date:%H}z.awip32f{self.fxx:02d}.grib2'
+                base = f'https://nomads.ncep.noaa.gov/pub/data/nccf/com/rap/prod/'
+                path = BDP_path_template[self.model]
             else:
                 base = 'https://nomads.ncep.noaa.gov/pub/data/nccf/com/hrrr/prod/'
-                if self.model == 'hrrr':
-                    path = f"hrrr.{self.date:%Y%m%d}/conus/hrrr.t{self.date:%H}z.wrf{self.field}f{self.fxx:02d}.grib2"
-                elif self.model == 'hrrrak':
-                    path = f"hrrr.{self.date:%Y%m%d}/alaska/hrrr.t{self.date:%H}z.wrf{self.field}f{self.fxx:02d}.ak.grib2"
+                path = BDP_path_template[self.model]
         elif source == 'aws':
             if self.model == 'rap':
                 base = 'https://noaa-rap-pds.s3.amazonaws.com/'
-                path = f'rap.{self.date:%Y%m%d}/rap.t{self.date:%H}z.awip32f{self.fxx:02d}.grib2'
+                path = BDP_path_template[self.model]
             else:
                 base = 'https://noaa-hrrr-bdp-pds.s3.amazonaws.com/'
-                if self.model == 'hrrr':
-                    path = f"hrrr.{self.date:%Y%m%d}/conus/hrrr.t{self.date:%H}z.wrf{self.field}f{self.fxx:02d}.grib2"
-                elif self.model == 'hrrrak':
-                    path = f"hrrr.{self.date:%Y%m%d}/alaska/hrrr.t{self.date:%H}z.wrf{self.field}f{self.fxx:02d}.ak.grib2"
+                path = BDP_path_template[self.model]
         elif source == 'google':
             if self.model == 'rap':
                 base = 'https://storage.googleapis.com/rapid-refresh/'
-                path = f'rap.{self.date:%Y%m%d}/rap.t{self.date:%H}z.awip32f{self.fxx:02d}.grib2'
+                path = BDP_path_template[self.model]
             else:
                 base = 'https://storage.googleapis.com/high-resolution-rapid-refresh/'
-                if self.model == 'hrrr':
-                    path = f"hrrr.{self.date:%Y%m%d}/conus/hrrr.t{self.date:%H}z.wrf{self.field}f{self.fxx:02d}.grib2"
-                elif self.model == 'hrrrak':
-                    path = f"hrrr.{self.date:%Y%m%d}/alaska/hrrr.t{self.date:%H}z.wrf{self.field}f{self.fxx:02d}.ak.grib2"
+                path = BDP_path_template[self.model]
         elif source == 'azure':
             if self.model == 'rap':
                 base = 'https://noaarap.blob.core.windows.net/rap'
-                path = f'rap.{self.date:%Y%m%d}/rap.t{self.date:%H}z.awip32f{self.fxx:02d}.grib2'
+                path = BDP_path_template[self.model]
             else:
                 base = 'https://noaahrrr.blob.core.windows.net/hrrr/'
-                if self.model == 'hrrr':
-                    path = f"hrrr.{self.date:%Y%m%d}/conus/hrrr.t{self.date:%H}z.wrf{self.field}f{self.fxx:02d}.grib2"
-                elif self.model == 'hrrrak':
-                    path = f"hrrr.{self.date:%Y%m%d}/alaska/hrrr.t{self.date:%H}z.wrf{self.field}f{self.fxx:02d}.ak.grib2"
+                path = BDP_path_template[self.model]
         elif source.startswith('pando'):
             if source[-1] == '2':
                 gateway = 2
@@ -426,37 +418,29 @@ class Herbie:
             else:
                 base = f'https://pando-rgw0{gateway}.chpc.utah.edu/'
                 path = f"{self.model}/{self.field}/{self.date:%Y%m%d}/{self.model}.t{self.date:%H}z.wrf{self.field}f{self.fxx:02d}.grib2"
-               
+
         return base+path
 
     @property
     def get_remoteFileName(self):
         """Predict Remote File Name"""
-        if self.grib is not None:
-            return str(self.grib).split('/')[-1]   #Convert grib to string because self.grib could by a pathlib.Path
-        else:
-            return self.get_url('nomads').split('/')[-1]  # predict name based on nomads source
+        return self.get_url('nomads').split('/')[-1]  # predict name based on nomads source
 
     @property
     def get_localFileName(self):
         """Predict Local File Name"""
-        if self.grib is not None:
-            grib_name = str(self.grib).replace('\\', '/').split('/')[-1] # The replace is to accommodate WindowsPaths
-            return f"{self.date:%Y%m%d}_{grib_name}"            
-        else:
-            return f"{self.date:%Y%m%d}_{self.get_remoteFileName}"
+        return f"{self.date:%Y%m%d}_{self.get_remoteFileName}"
 
-    def get_local(self, searchString=None):
+    def get_localPath(self, searchString=None):
         """Get path to local file"""
         outFile = self.save_dir / self.model / f"{self.date:%Y%m%d}" / self.get_localFileName
-
         if searchString is not None:
             # Reassign the index DataFrame with the requested searchString
             self.idx_df = self.read_idx(searchString)
 
             # Get a list of all GRIB message numbers. We will use this
             # in the output file name as a unique identifier.
-            all_grib_msg = '-'.join(self.idx_df.index.astype(str))
+            all_grib_msg = '-'.join([f"{i:g}" for i in self.idx_df.index])
 
             # Append the filename to distinguish it from the full file.
             outFile = outFile.with_suffix(f'.grib2.subset_{all_grib_msg}')
@@ -475,6 +459,8 @@ class Herbie:
             the variable, level, and forecast_time columns.
             Execute ``_searchString_help()`` for examples of a good
             searchString.
+
+            .. include:: ~/searchString_help.rst
         
         Returns
         -------
@@ -541,6 +527,9 @@ class Herbie:
             priority lists when this class was initialized. Else, you 
             may specify the source to force downloading it from a 
             different location.
+
+            .. include:: ~/searchString_help.rst
+
         save_dir : str or pathlib.Path
             Location to save the model output files.
             If None, uses the default or path specified in __init__.
@@ -567,32 +556,38 @@ class Herbie:
             total_size_MB =  c / 1000000.
             print(f"\r🚛💨  Download Progress: {chunk_progress:.2f}% of {total_size_MB:.1f} MB\r", end='')
 
-        def subset(searchString):
+        def subset(searchString, outFile):
             """Download a subset specified by the regex searchString"""
-            print(f'📇 Download subset: {self.__repr__()}{" ":60s}')
-            
-            outFile = self.get_local(searchString=searchString)
-            
-            if not overwrite and outFile.exists():
-                if verbose: print(f'🌉 Already have local copy --> {outFile}')
-                self.local_grib_subset = outFile
-            else:
-                # Download subsets of the file by byte range with cURL.
-                for i, (grbmsg, row) in enumerate(self.idx_df.iterrows()):
-                    print(f"{i+1:>4g}: GRIB_message={grbmsg:<3g} \033[34m{row.variable}:{row.level}:{row.forecast_time}\033[m")
-                    if i == 0:
-                        # If we are working on the first item, overwrite the existing file...
-                        curl = f'curl -s --range {row.range} {self.grib} > {outFile}'
-                    else:
-                        # ...all other messages are appended to the subset file.
-                        curl = f'curl -s --range {row.range} {self.grib} >> {outFile}'
-                    os.system(curl)
+            grib_source = self.grib
+            if hasattr(grib_source, 'as_posix') and grib_source.exists():
+                # The GRIB source is local. Curl the local file
+                # See https://stackoverflow.com/a/21023161/2383070
+                grib_source = f"file://{str(self.grib)}"
+            print(f'📇 Download subset: {self.__repr__()}{" ":60s}\n cURL from {grib_source}')
 
-                self.local_grib_subset = outFile
+            # Download subsets of the file by byte range with cURL.
+            for i, (grbmsg, row) in enumerate(self.idx_df.iterrows()):
+                print(f"{i+1:>4g}: GRIB_message={grbmsg:<3g} \033[34m{row.variable}:{row.level}:{row.forecast_time}\033[m")
+                if i == 0:
+                    # If we are working on the first item, overwrite the existing file...
+                    curl = f'curl -s --range {row.range} {grib_source} > {outFile}'
+                else:
+                    # ...all other messages are appended to the subset file.
+                    curl = f'curl -s --range {row.range} {grib_source} >> {outFile}'
+                os.system(curl)
+
+            self.local_grib_subset = outFile
         
-        if self.grib_source == 'local':
-            print('Local file already exists. If you want to redownload, set `overwrite=True` in Herbie.')
-            return self
+        # If the file exists in the localPath and we don't want to 
+        # overwrite, then we don't need to download it.
+        outFile = self.get_localPath(searchString=searchString)
+        if outFile.exists() and not overwrite:
+            if verbose: print(f'🌉 Already have local copy --> {outFile}')
+            if searchString in [None, ':']:
+                self.local_grib = outFile
+            else:
+                self.local_grib_subset = outFile
+            return
 
         # Attach the index file to the object (how much overhead is this?)
         self.idx_df = self.read_idx(searchString)
@@ -600,6 +595,8 @@ class Herbie:
         # This overwrites the save_dir specified in __init__
         if save_dir is not None:
             self.save_dir = save_dir
+        if not hasattr(self.save_dir, 'exists'): 
+            self.save_dir = Path(self.save_dir).resolve()
 
         # Check that data exists
         if self.grib is None:
@@ -610,7 +607,7 @@ class Herbie:
             elif errors == 'raise':
                 raise ValueError(msg)
         if self.idx is None and searchString is not None:
-            msg = f'🦨 Index file not found: {self.model=} {self.date=} {self.fxx=}'
+            msg = f'🦨 Index file not found; cannot download subset: {self.model=} {self.date=} {self.fxx=}'
             if errors == 'warn':
                 warnings.warn(msg+' I will download the full file because I cannot subset.')
             elif errors == 'raise':
@@ -620,28 +617,19 @@ class Herbie:
             # Force download from a specified source and not from first in priority
             self.grib = self.get_url(source)
             
-        # Make save_dir if path doesn't exist
-        if not hasattr(self.save_dir, 'exists'): 
-            self.save_dir = Path(self.save_dir).resolve()
-        
-        outFile = self.get_local(searchString=searchString)
-
+        # Create directory if it doesn't exist
         if not outFile.parent.is_dir():
             outFile.parent.mkdir(parents=True, exist_ok=True)
             print(f'👨🏻‍🏭 Created directory: [{outFile.parent}]')
         
         if searchString in [None, ':'] or self.idx is None:
-            # Download the full file
-            if not overwrite and outFile.exists():
-                if verbose: print(f'🌉 Already have local copy --> {outFile}')
-                self.local_grib = outFile
-            else:
-                urllib.request.urlretrieve(self.grib, outFile, _reporthook)
-                if verbose: print(f'✅ Success! Downloaded from [{self.grib_source}] {self.grib} --> {outFile}')
-                self.local_grib = outFile
+            # Download the full file from remote source
+            urllib.request.urlretrieve(self.grib, outFile, _reporthook)
+            if verbose: print(f'✅ Success! Downloaded {self.model.upper()} from \033[38;5;202m{self.grib_source:20s}\033[m\n\tsrc: {self.grib}\n\tdst: {outFile}')
+            self.local_grib = outFile
         else:
             # Download a subset of the file
-            subset(searchString)
+            subset(searchString, outFile)
 
     def xarray(self, searchString, backend_kwargs={}, remove_grib=True, **download_kwargs):
         """
@@ -651,12 +639,21 @@ class Herbie:
         ----------
         searchString : str
             Variables to read into xarray Dataset
+        remove_grib : bool
+            If True, grib file will be removed ONLY IF it didn't exist
+            before we downloaded it.
         """
 
+        download_kwargs = {**dict(overwrite=False), **download_kwargs}
+
         # Download file if local file does not exists
-        local_file_exits = self.get_local(searchString=searchString).exists()
-        if not local_file_exits:
-            self.download(searchString=searchString)
+        local_file = self.get_localPath(searchString=searchString)
+        
+        # Only remove grib if it didn't exists before we download it
+        remove_grib = not local_file.exists() and remove_grib
+
+        if not local_file.exists() or download_kwargs['overwrite']:
+            self.download(searchString=searchString, **download_kwargs)
 
         # Backend kwargs for cfgrib
         backend_kwargs.setdefault('indexpath', '')
@@ -665,23 +662,24 @@ class Herbie:
 
         # Use cfgrib.open_datasets, just in case there are multiple "hypercubes"
         # for what we requested.
-        H = cfgrib.open_datasets(self.get_local(searchString=searchString),
+        Hxr = cfgrib.open_datasets(self.get_localPath(searchString=searchString),
                                  backend_kwargs=backend_kwargs)
 
-        for h in H:
+        for h in Hxr:
             h.attrs['model'] = self.model
-            h.attrs['grib'] = self.grib
+            h.attrs['remote_grib'] = self.grib
+            h.attrs['local_grib'] = self.get_localPath(searchString=searchString)
 
-        if not local_file_exits and remove_grib:
-            # Remove the file, because it wasn't local before
-            pass
+        if remove_grib:
+            # Load the data to memory before removing the file
+            Hxr = [ds.load() for ds in Hxr]
+            # Only remove grib if it didn't exists before
+            local_file.unlink()  # Removes file
 
-        if len(H) == 1:
-            return H[0]
+        if len(Hxr) == 1:
+            return Hxr[0]
         else:
-            return H
-        
-
+            return Hxr
         
 
 ###############################################################################
@@ -749,3 +747,5 @@ def bulk_download(DATES, searchString=None, *, fxx=range(0,1),
     
     return grib_sources
  
+## Future:
+# Concatenate multiple GRIB2 files by lead time and across runs.
