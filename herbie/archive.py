@@ -31,11 +31,15 @@ Azure), and the CHPC Pando archive at the University of Utah.
     - Subset file name retain GRIB message numbers included.
     - Moved default download source to config file
     - TODO: Check local file copy on class init. (Don't need to look for file if we have local copy)
+        - NOTE: HALF DONE! BROKEN DOWNLOAD WHEN SEARCHSTRING IS NOT NONE
     - TODO: Remove grib2 file when reading xarray if didn't already exist locally.
     - TODO: Attach index file DataFrame to object if it exists.
-    - TODO: If full file exists locally, use remote idx file to subset with wgrib2 (instead of downloading).
     - TODO: use some escape characters to move cursor up or down a line https://tforgione.fr/posts/ansi-escape-codes/
     - TODO: Add NCEI as a source for the RAP data?? URL is complex.
+    - TODO: If full file exists locally, use remote idx file to subset with wgrib2 (instead of downloading).
+        - No, because wgrib2 doesn't work on Windows
+        - However, I could download the idx files, then someone wouldn't
+        have to be connected to the internet to subset the data.
     - TODO: Maybe move all imports to __init__ so I can do  the following
         - ``import herbie``
         - ``herbie.download(...)``
@@ -162,6 +166,7 @@ class Herbie:
                  priority=_default_priority,
                  save_dir=_default_save_dir,
                  DATE_is_valid_time=False,
+                 overwrite=False,
                  verbose=True):
         """
         Specify model output and find grib2 file at one of the sources.
@@ -205,6 +210,10 @@ class Herbie:
         DATE_is_valid_time : bool
             If True, DATE represents the valid time.
             If False (default), DATE represents the initialization time.
+        Overwrite : bool
+            If True, look for GRIB2 files even if local copy exists.
+            If False (default), use the local copy (still need to find 
+            the idx file).
         """
 
         self.date = DATE
@@ -227,9 +236,16 @@ class Herbie:
         # These are initially set to None, but will look for files in the
         # for loop.
         self.grib = None
-        self.idx = None
         self.grib_source = None
+        self.idx = None
         self.idx_source = None
+        # But first check if local GRIB2 file exists. If it does, then we 
+        # know for certain the file exists at one of the sources.
+        local_copy = self.get_local()
+        if local_copy.exists() and not overwrite:
+            #if local_copy.exits():
+            self.grib = local_copy
+            self.grib_source = 'local'
         
         for source in self.priority:            
             if source in ['pando', 'pando2']:
@@ -413,10 +429,26 @@ class Herbie:
                
         return base+path
 
+    @property
+    def get_remoteFileName(self):
+        """Predict Remote File Name"""
+        if self.grib is not None:
+            return str(self.grib).split('/')[-1]   #Convert grib to string because self.grib could by a pathlib.Path
+        else:
+            return self.get_url('nomads').split('/')[-1]  # predict name based on nomads source
+
+    @property
+    def get_localFileName(self):
+        """Predict Local File Name"""
+        if self.grib is not None:
+            grib_name = str(self.grib).replace('\\', '/').split('/')[-1] # The replace is to accommodate WindowsPaths
+            return f"{self.date:%Y%m%d}_{grib_name}"            
+        else:
+            return f"{self.date:%Y%m%d}_{self.get_remoteFileName}"
+
     def get_local(self, searchString=None):
         """Get path to local file"""
-        
-        outFile = self.save_dir / self.model / f"{self.date:%Y%m%d}" / f"{self.date:%Y%m%d}_{self.grib.split('/')[-1]}"
+        outFile = self.save_dir / self.model / f"{self.date:%Y%m%d}" / self.get_localFileName
 
         if searchString is not None:
             # Reassign the index DataFrame with the requested searchString
@@ -558,6 +590,10 @@ class Herbie:
 
                 self.local_grib_subset = outFile
         
+        if self.grib_source == 'local':
+            print('Local file already exists. If you want to redownload, set `overwrite=True` in Herbie.')
+            return self
+
         # Attach the index file to the object (how much overhead is this?)
         self.idx_df = self.read_idx(searchString)
 
