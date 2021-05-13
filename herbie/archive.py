@@ -30,9 +30,9 @@ Azure), and the CHPC Pando archive at the University of Utah.
     - New method for searchString index file search.
     - Subset file name retain GRIB message numbers included.
     - Moved default download source to config file
-    - TODO: Attach index file DataFrame to object if it exists.
     - TODO: Check local file copy on class init. (Don't need to look for file if we have local copy)
-    - TODO: Read data with xarray (read from local if exists, else download, read, and <remove>).
+    - TODO: Remove grib2 file when reading xarray if didn't already exist locally.
+    - TODO: Attach index file DataFrame to object if it exists.
     - TODO: If full file exists locally, use remote idx file to subset with wgrib2 (instead of downloading).
     - TODO: use some escape characters to move cursor up or down a line https://tforgione.fr/posts/ansi-escape-codes/
     - TODO: Add NCEI as a source for the RAP data?? URL is complex.
@@ -138,7 +138,7 @@ def _searchString_help():
         ]
     return '\n'.join(msg)
 
-class ModelOutputSource:
+class Herbie:
     """
     Custom class to find model output file location based on source priority.
 
@@ -161,6 +161,7 @@ class ModelOutputSource:
                  model='hrrr', field='sfc',
                  priority=_default_priority,
                  save_dir=_default_save_dir,
+                 DATE_is_valid_time=False,
                  verbose=True):
         """
         Specify model output and find grib2 file at one of the sources.
@@ -169,10 +170,11 @@ class ModelOutputSource:
         ----------
         DATE : pandas-parsable datetime
             Initialization date.
+            If DATE_is_valid is True, then is valid_time.
         fxx : int
             Forecast lead time in hours. 
             Available lead times depend on the HRRR version and
-            range from 0 to 15, 18, 36, or 48.
+            range from 0 to 15, 18, 36, or 48 (model and run dependant).
         model : {'hrrr', 'hrrrak', 'rap'}
             Model type. 
             - ``'hrrr'`` operational HRRR contiguous United States model.
@@ -197,6 +199,12 @@ class ModelOutputSource:
             - ``'azure'`` Microsoft Azure (Big Data Program)
             - ``'pando'`` University of Utah Pando Archive (gateway 1)
             - ``'pando2'`` University of Utah Pando Archive (gateway 2)
+        save_dir : str or pathlib.Path
+            Location to save GRIB2 files locally. Default save directory
+            is stored in the ~/.config/herbie/config.cfg
+        DATE_is_valid_time : bool
+            If True, DATE represents the valid time.
+            If False (default), DATE represents the initialization time.
         """
 
         self.date = DATE
@@ -206,6 +214,12 @@ class ModelOutputSource:
         self.priority = priority
         self.save_dir = save_dir
         
+        if DATE_is_valid_time:
+            # Change DATE to the model run initialization DATE so that when we take
+            # into account the forecast lead time offset, the the returned data
+            # be valid for the DATE the user requested.
+            self.date = self.date - timedelta(hours=self.fxx)
+
         self._validate()
 
         # url is the first existing source URL for the desired model output.
@@ -283,8 +297,8 @@ class ModelOutputSource:
         
         self.date = pd.to_datetime(self.date)
         
-        if self.model == 'alaska':
-            self.model == 'hrrrak'
+        if self.model.lower() == 'alaska':
+            self.model = 'hrrrak'
 
         assert self.fxx in range(49), "Forecast lead time `fxx` is too large"
         assert self.model in _models, f"`model` must be one of {_models}"
@@ -447,7 +461,7 @@ class ModelOutputSource:
                                      'level', 'forecast_time', 'none'])
 
         # Format the DataFrame
-        df['grib_message'] = df['grib_message'].astype(int)
+        df['grib_message'] = df['grib_message'].astype(float)  # float because RAP idx files have some decimal grib message numbers
         df['reference_time'] = pd.to_datetime(df.reference_time, format='d=%Y%m%d%H')
         df['valid_time'] = df['reference_time'] + pd.to_timedelta(f"{self.fxx}H")
         df['start_byte'] = df['start_byte'].astype(int)
@@ -593,26 +607,51 @@ class ModelOutputSource:
             # Download a subset of the file
             subset(searchString)
 
-    def to_xarray(self, searchString, remove_grib=True):
+    def xarray(self, searchString, backend_kwargs={}, remove_grib=True, **download_kwargs):
         """
-        FUTURE WORK
-        
-        Download data and read as xarray
+        Open GRIB2 data as xarray DataSet
         
         Parameters
         ----------
         searchString : str
             Variables to read into xarray Dataset
-        remove_grib : bool
-            Remove GRIB2 file after it is read in.
         """
-        print('nothing here yet')
-        pass
+
+        # Download file if local file does not exists
+        local_file_exits = self.get_local(searchString=searchString).exists()
+        if not local_file_exits:
+            self.download(searchString=searchString)
+
+        # Backend kwargs for cfgrib
+        backend_kwargs.setdefault('indexpath', '')
+        backend_kwargs.setdefault('read_keys', ['parameterName', 'parameterUnits', 'stepRange'])
+        backend_kwargs.setdefault('errors', 'raise')
+
+        # Use cfgrib.open_datasets, just in case there are multiple "hypercubes"
+        # for what we requested.
+        H = cfgrib.open_datasets(self.get_local(searchString=searchString),
+                                 backend_kwargs=backend_kwargs)
+
+        for h in H:
+            h.attrs['model'] = self.model
+            h.attrs['grib'] = self.grib
+
+        if not local_file_exits and remove_grib:
+            # Remove the file, because it wasn't local before
+            pass
+
+        if len(H) == 1:
+            return H[0]
+        else:
+            return H
+        
+
+        
 
 ###############################################################################
 ###############################################################################
 
-def download(DATES, searchString=None, *, fxx=range(0,1), 
+def bulk_download(DATES, searchString=None, *, fxx=range(0,1), 
                   model='hrrr', field='sfc', priority=None,
                   verbose=True):
     """
@@ -646,7 +685,7 @@ def download(DATES, searchString=None, *, fxx=range(0,1),
     
     # Locate the file sources
     print("👨🏻‍🔬 Check which requested files exists")
-    grib_sources = [ModelOutputSource(d, fxx=f, **kw) \
+    grib_sources = [Herbie(d, fxx=f, **kw) \
                     for d in DATES \
                     for f in fxx]
     
@@ -673,57 +712,4 @@ def download(DATES, searchString=None, *, fxx=range(0,1),
     print(f"🍦 Done! Downloaded [{completed}/{requested}] files. Timer={loop_time}")
     
     return grib_sources
-
-def xget(DATE, searchString, fxx=0, *, 
-         date_is_valid_time=False,
-         remove_grib=True, backend_kwargs={},
-         **download_kwargs):
-    r"""
-    Download subset of model output and open with xarray/cfgrib.
-
-    Parameters
-    ----------
-    DATE : datetime
-        Model initialization datetime (if is_valid_time is False).
-        Model valid datetime (if is_valid_time is True).
-    searchString : str
-    fxx : int
-    remove_grib : bool
-        remove file after downloading it
-    backend_kwargs : dict
-    **download_kwargs
-    """
-
-    # Convert DATE input to a pandas datetime (Pandas can parse some strings as dates.)
-    DATE = pd.to_datetime(DATE)
-
-    inputs = locals()
-
-    # Someday this requirement may change
-    assert not hasattr(DATE, '__len__'), "`DATE` must be a single datetime, not a list."
-    assert not hasattr(fxx, '__len__'), "`fxx` must be a single integer, not a list."
-
-    if date_is_valid_time:
-        # Change DATE to the model run initialization DATE so that when we take
-        # into account the forecast lead time offset, the the returned data
-        # be valid for the DATE the user requested.
-        DATE = DATE - timedelta(hours=fxx)
-    
-    # Local GRIB2 file
-    mod_obj = download(DATE, searchString=searchString, fxx=fxx, **download_kwargs)
-    
-    grib2file = mod_obj[0].local_grib_subset
-
-    # Some extra backend kwargs for cfgrib
-    backend_kwargs.setdefault('indexpath', '')
-    backend_kwargs.setdefault('read_keys', ['parameterName', 'parameterUnits', 'stepRange'])
-    backend_kwargs.setdefault('errors', 'raise')
-
-    # Use cfgrib.open_datasets, just in case there are multiple "hypercubes"
-    # for what we requested.
-    H = cfgrib.open_datasets(grib2file, backend_kwargs=backend_kwargs)
-
-    for ds in H:
-        ds.attrs['history'] = inputs
-
-    return H    
+ 

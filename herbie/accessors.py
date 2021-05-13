@@ -19,13 +19,16 @@ import xarray as xr
 import matplotlib.pyplot as plt
 import cartopy.crs as ccrs
 
+
+# From Carpenter_Workshop: 
+# https://github.com/blaylockbk/Carpenter_Workshop
 from toolbox.cartopy_tools import common_features, pc
 from paint.standard2 import cm_tmp, cm_dpt, cm_rh, cm_wind, cm_pcp
 from paint.radar2 import cm_reflectivity
 
 
 @xr.register_dataset_accessor("herbie")
-class herbie_accessor:
+class HerbieAccessor:
     def __init__(self, xarray_obj):
         self._obj = xarray_obj
         self._center = None
@@ -73,6 +76,13 @@ class herbie_accessor:
             )
             lc = ccrs.LambertConformal(**lc_kwargs)
             return lc
+        elif attrs['GRIB_gridType'] == 'polar_stereographic':
+            npc_kwargs = {}
+            if ds.model == 'hrrrak':
+                # See https://rapidrefresh.noaa.gov/hrrr/ALASKA/static/
+                npc_kwargs['central_longitude']=-135
+            npc = ccrs.NorthPolarStereo(**npc_kwargs)
+            return npc
         else:
             warnings.warn('GRIB_gridType is not "lambert".')
             return None
@@ -119,13 +129,14 @@ class herbie_accessor:
             print('GRIB_units', ds[var].GRIB_units)
             print('GRIB_typeOfLevel', ds[var].GRIB_typeOfLevel)
             print()
+
             ds[var].attrs['units'] = ds[var].attrs['units'].replace('**-1', '$^{-1}$').replace('**-2', '$^{-2}$')
             
             dpi = common_features_kw.pop('dpi', 150)
             figsize = common_features_kw.pop('figsize', [10,5])
-            fig, ax = plt.subplots(1,1, subplot_kw=dict(projection=ds.crs), dpi=dpi, figsize=figsize)
+            fig, ax = plt.subplots(1,1, subplot_kw=dict(projection=ds.herbie.crs), dpi=dpi, figsize=figsize)
             
-            default = dict(scale='50m', ax=ax, crs=ds.crs, STATES=True, BORDERS=True)
+            default = dict(scale='50m', ax=ax, crs=ds.herbie.crs, STATES=True, BORDERS=True)
             common_features_kw = {**default, **common_features_kw}
             common_features(**common_features_kw)
 
@@ -135,6 +146,10 @@ class herbie_accessor:
 
             if ds[var].GRIB_cfVarName in ['d2m', 'dpt']:
                 ds[var].attrs['GRIB_cfName'] = 'dew_point_temperature'
+
+            ## Wind
+            wind_pair = {'u10':'v10', 'u80':'v80', 'u':'v'}
+            
 
             if ds[var].GRIB_cfName == 'air_temperature':
                 kwargs = {**cm_tmp().cmap_kwargs, **kwargs}
@@ -166,7 +181,14 @@ class herbie_accessor:
             elif ds[var].GRIB_cfName == 'relative_humidity':
                 cbar_kwargs = {**cm_rh().cbar_kwargs, **cbar_kwargs}
                 kwargs = {**cm_rh().cmap_kwargs, **kwargs}
-                
+
+            elif 'wind' in ds[var].GRIB_cfName or 'wind' in ds[var].GRIB_name:
+                cbar_kwargs = {**cm_wind().cbar_kwargs, **cbar_kwargs}
+                kwargs = {**cm_wind().cmap_kwargs, **kwargs}
+                if ds[var].GRIB_cfName == 'eastward_wind':
+                    cbar_kwargs['label'] = 'U ' + cbar_kwargs['label']
+                elif ds[var].GRIB_cfName == 'northward_wind':
+                    cbar_kwargs['label'] = 'V ' + cbar_kwargs['label']
             else:
                 cbar_kwargs = {**dict(label=f"{ds[var].GRIB_parameterName.strip().title()} ({ds[var].units})"), **cbar_kwargs}            
             
@@ -189,13 +211,13 @@ class herbie_accessor:
                 level = f'{ds[var][level_type].data:g} {level_units}'
 
             ax.set_title(f"Run: {RUN} {FXX}", loc='left', fontfamily='monospace', fontsize='x-small')
-            ax.set_title(f'HRRR {level}', loc='center', fontweight='semibold')
+            ax.set_title(f'{ds.model.upper()} {level}', loc='center', fontweight='semibold')
             ax.set_title(f"Valid: {VALID}", loc='right', fontfamily='monospace', fontsize='x-small')
 
             # Set extent (could do this more efficiently by storing the data elsewhere)
-            new = ds.crs.transform_points(pc, ds.longitude.data, ds.latitude.data)
+            new = ds.herbie.crs.transform_points(pc, ds.longitude.data, ds.latitude.data)
             LONS = new[:,:,0]
             LATS = new[:,:,1]
-            ax.set_extent([LONS.min(), LONS.max(), LATS.min(), LATS.max()], crs=ds.crs)
+            ax.set_extent([LONS.min(), LONS.max(), LATS.min(), LATS.max()], crs=ds.herbie.crs)
         
         return ax
