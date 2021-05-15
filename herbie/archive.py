@@ -28,14 +28,13 @@ Azure), and the CHPC Pando archive at the University of Utah.
     - Added ability to download and read RAP model GRIB2 files.
     - Less reliance on Pando, more on aws and google.
     - New method for searchString index file search. Uses same regex search patterns as old API.
-    - Subset file name include GRIB message numbers.
-    - Moved default download source to config file
-    - Check local file copy on class init. (Don't need to look for file if we have local copy)
-    - Option to remove grib2 file when reading xarray if didn't already exist locally.
+    - Filename for GRIB2 subset includes all GRIB message numbers.
+    - Moved default download source to config file setting.
+    - Check local file copy on __init__. (Don't need to look for file on remote if we have local copy)
+    - Option to remove grib2 file when reading xarray if didn't already exist locally (don't clutter local disk).
     - Attach index file DataFrame to object if it exists.
     - If full file exists locally, use remote idx file to cURL local file instead of remote. (Can't create idx file locally because wgrib2 not available on windows)
     - TODO: Rename 'searchString' to 'subset' (and rename subset function)
-    - TODO: use some escape characters to move cursor up or down a line https://tforgione.fr/posts/ansi-escape-codes/
     - TODO: Add NCEI as a source for the RAP data?? URL is complex.
     - TODO: Create .idx file if wgrib2 is installed (linux only)
 
@@ -45,23 +44,22 @@ Real-time HRRR and RAP data is available from NOMADS. At the end of
 2020, NOAA started pushing the HRRR and RAP data to the Google Cloud 
 Platform and Amazon Web Services as part of the NOAA Big Data Progam.
 These archives were backfilled to previous years as far back as 
-July 30, 2014. A limited archive used for research purposes also exists 
-on the University of Utah CHPC Pando Archive System. 
+July 30, 2014. A archive used for research purposes also exists 
+on the University of Utah CHPC Pando Archive System.
 
-This module enable you to easily download HRRR and RAP data between
-these different data sources wherever the data you are interested in
-is available. The default download source priority and some attributes
-of the data sources is listed below:
+.. note::
+    A paper about archiving model data in the cloud.
 
-1. NOMADS: NOAA Operational Model Archive and Distribution System
-    - https://nomads.ncep.noaa.gov/
-    - Available for today's and yesterday's runs
-    - Real-time data.
-    - Original data source. All available data included.
-    - Download limits.
-    - Includes GRIB2 .idx for all GRIB2 files.
+    Blaylock B., J. Horel and S. Liston, 2017: Cloud Archiving and Data
+    Mining of High Resolution Rapid Refresh Model Output. Computers and
+    Geosciences. 109, 43-50. https://doi.org/10.1016/j.cageo.2017.08.005
 
-2. AWS: Amazon Web Services
+The Herbie module enables you to easily download HRRR and RAP data 
+between these different data sources wherever the data you are 
+interested in is available. The different download sources and the 
+download priority order are listed below:
+
+#. AWS: Amazon Web Services
     - https://noaa-hrrr-bdp-pds.s3.amazonaws.com/
     - Available from July 30, 2014 to Present.
     - Slight latency for real-time products.
@@ -69,7 +67,15 @@ of the data sources is listed below:
     - Has all nat, subh, prs, and sfc files for all forecast hours.
     - Some data may be missing.
 
-3. Google: Google Cloud Platform Earth
+#. NOMADS: NOAA Operational Model Archive and Distribution System
+    - https://nomads.ncep.noaa.gov/
+    - Available for today's and yesterday's runs
+    - Real-time data.
+    - Original data source. All available data included.
+    - Download limits.
+    - Includes GRIB2 .idx for all GRIB2 files.
+
+#. Google: Google Cloud Platform Earth
     - https://console.cloud.google.com/storage/browser/high-resolution-rapid-refresh
     - Available from July 30, 2014 to Present.
     - Slight latency for real-time products.
@@ -77,16 +83,30 @@ of the data sources is listed below:
     - Has all original data including nat, subh, prs, and sfc files 
       for all forecast hours.
 
-4. Azure: Microsoft Azure
+#. Azure: Microsoft Azure
     - https://github.com/microsoft/AIforEarthDataSets/blob/main/data/noaa-hrrr.md
     - Only recent HRRR and RAP data?
     - Subset of HRRR and RAP data?
 
-5. Pando: The University of Utah HRRR archive
+#. Pando: The University of Utah HRRR archive
     - http://hrrr.chpc.utah.edu/
     - Research archive. Older files being removed.
     - A subset of prs and sfc files.
     - Contains .idx file for every GRIB2 file.
+
+.. note:: **Default Download Priority Rational** 
+    Most often, a user will request model output from a recent
+    past or earlier run. Past data is archived at one of NOAA's Big 
+    Data parters. NOMADS has the most recent model output available, 
+    but they also throttle the download speed and will block users who
+    violate their usage agreement and download too much data within
+    an hour. To prevent being blocked by NOMADS, the default is to 
+    first look for data on AWS. If the data requested is within the
+    last few hours and was not found on AWS, then Herbie will look
+    for the data at NOMADS. If you really want to download data 
+    from NOMADS and not a Big Data Project partner, change the
+    priority order so that NOMADS is first, (e.g.,
+    ``priority=['nomads', ...]``).
 
 """
 import os
@@ -103,9 +123,6 @@ import pandas as pd
 # ~/.config/herbie/config.cfg and are read in from the __init__ file.
 from . import _default_save_dir
 from . import _default_priority
-
-def herbieColor():
-    return dict(body='#f0ead2', red='#88211b', blue='#0c3576', white='#ffffff', black='#000000')
 
 def _searchString_help():
     """Help/Error Message for `searchString`"""
@@ -137,23 +154,7 @@ def _searchString_help():
     return '\n'.join(msg)
 
 class Herbie:
-    """
-    Custom class to find model output file location based on source priority.
-
-    .. note:: **Default Download Priority Rational** 
-        Most often, a user will request model output from the recent
-        past or earlier. Past data is archived at one of NOAA's Big Data
-        parters. NOMADS has the most recent model output available, but
-        they also throttle the download speed and will block users who
-        violate their usage agreement and download too much data within
-        an hour. To prevent being blocked by NOMADS, the default is to 
-        first look for data on AWS. If the data requested is within the
-        last few hours and was not found on AWS, then Herbie will look
-        for the data at NOMADS. If you really want to download data 
-        from NOMADS and not a Big Data Project partner, change the
-        priority order so that NOMADS is first, (e.g.,
-        ``priority=['nomads', ...]``).
-    """
+    """Find model output file location based on source priority."""
 
     def __init__(self, DATE, fxx=0, *, 
                  model='hrrr', field='sfc',
@@ -163,20 +164,21 @@ class Herbie:
                  overwrite=False,
                  verbose=True):
         """
-        Specify model output and find grib2 file at one of the sources.
+        Specify model output and find GRIB2 file at one of the sources.
         
         Parameters
         ----------
         DATE : pandas-parsable datetime
-            Initialization date.
-            If DATE_is_valid is True, then is valid_time.
+            Model initialization datetime if 
+            ``DATE_is_valid_time=False`` (default) or forecast valid 
+            datetime if ``DATE_is_valid_time=True``.
         fxx : int
-            Forecast lead time in hours. 
-            Available lead times depend on the HRRR version and
-            range from 0 to 15, 18, 36, or 48 (model and run dependant).
+            Forecast lead time in hours. Available lead times depend on
+            the model type and model version. Range from 0 to 15, 18, 
+            36, or 48 (model and run dependant).
         model : {'hrrr', 'hrrrak', 'rap'}
             Model type. 
-            - ``'hrrr'`` operational HRRR contiguous United States model.
+            - ``'hrrr'`` HRRR contiguous United States model
             - ``'hrrrak'`` HRRR Alaska model (alias ``'alaska'``)
             - ``'rap'`` RAP model
         field : {'sfc', 'prs', 'nat', 'subh'}
@@ -200,7 +202,7 @@ class Herbie:
             - ``'pando2'`` University of Utah Pando Archive (gateway 2)
         save_dir : str or pathlib.Path
             Location to save GRIB2 files locally. Default save directory
-            is stored in the ~/.config/herbie/config.cfg
+            is set in ``~/.config/herbie/config.cfg``.
         DATE_is_valid_time : bool
             If True, DATE represents the valid time.
             If False (default), DATE represents the initialization time.
@@ -218,38 +220,34 @@ class Herbie:
         self.save_dir = Path(save_dir).resolve()
         
         if DATE_is_valid_time:
-            # Change DATE to the model run initialization DATE so that 
-            # when we take into account the forecast lead time offset, 
-            # the the returned data be valid for the DATE the user 
-            # requested.
+            # The user-supplied DATE represents the forecast valid 
+            # time. Adjust self.date by forecast lead time so it 
+            # represents the model initialization datetime.
             self.date = self.date - timedelta(hours=self.fxx)
 
         self._validate()
 
-        # url is the first existing source URL for the desired model output.
-        # idx is the first existing index file for the desired model output.
-        # These are initially set to None, but will look for files in the
-        # for loop.
+        # self.grib is the first existing GRIB2 file discovered.
+        # self.idx is the first existing index file discovered.
         self.grib = None
         self.grib_source = None
         self.idx = None
         self.idx_source = None
         
-        # But first check if local GRIB2 file exists. If it does, then we 
-        # know for certain the file exists at one of the sources.
+        # But first, check if the GRIB2 file exists locally.
         local_copy = self.get_localPath()
         if local_copy.exists() and not overwrite:
-            #if local_copy.exits():
             self.grib = local_copy
             self.grib_source = 'local'
+            # NOTE: We will still get the idx files from a remote.
         
         for source in self.priority:            
-            if source in ['pando', 'pando2']:
+            if 'pando' in source:
                 # Sometimes pando returns a bad handshake. Pinging
                 # pando first can help prevent that.
                 self._ping_pando()
             
-            # First get the file URL for the source and determine if the 
+            # Get the file URL for the source and determine if the 
             # GRIB2 file and the index file exist. If found, store the
             # URL for the GRIB2 file and the .idx file.
             url = self.get_url(source)
@@ -272,7 +270,9 @@ class Herbie:
                 if verbose: print(msg, end='\r', flush=True)
             
             if all([self.grib is not None, self.idx is not None]):
+                # Exit loop early if we found both GRIB2 and idx file.
                 break
+
         if verbose: 
             if any([self.grib is not None, self.idx is not None]):
                 print(f'🏋🏻‍♂️ Found',
@@ -289,7 +289,10 @@ class Herbie:
 
     def __repr__(self):
         """Representation in Notebook"""
-        return f"{self.model.upper()} model {self.field} fields run at \033[32m{self.date:%Y-%b-%d %H:%M UTC} F{self.fxx:02d}\033[m"
+        msg = (f"{self.model.upper()} model {self.field} fields",
+               f"run at \033[32m{self.date:%Y-%b-%d %H:%M UTC}",
+               f"F{self.fxx:02d}\033[m")
+        return ' '.join(msg)
 
     def __str__(self):
         """When class object is printed"""
@@ -305,9 +308,9 @@ class Herbie:
     def _validate(self):
         """Validate the class input arguments"""
         _models = {'hrrr', 'hrrrak', 'rap'}
-        _fields = {'prs', 'sfc', 'nat', 'subh'}
+        _fields = {'prs', 'sfc', 'nat', 'subh'}  # Only for HRRR and HRRR-AK
         
-        assert self.date < datetime.utcnow(), "🔮Date cannot be in the future."
+        assert self.date < datetime.utcnow(), "🔮 Date cannot be in the future."
         
         if self.model.lower() == 'alaska':
             self.model = 'hrrrak'
@@ -681,71 +684,3 @@ class Herbie:
         else:
             return Hxr
         
-
-###############################################################################
-###############################################################################
-
-def bulk_download(DATES, searchString=None, *, fxx=range(0,1), 
-                  model='hrrr', field='sfc', priority=None,
-                  verbose=True):
-    """
-    Bulk download GRIB2 files from file source to the local machine.
-
-    Iterates over a list of datetimes (DATES) and forecast lead times (fxx).
-
-    Parameters
-    ----------
-    DATES : list
-        List of datetimes
-    searchString : None or str
-        If None, download the full file. If string, use regex to search
-        index files for variables and levels of interest and only
-        download the matched GRIB messages.
-    fxx : int or list
-        List of forecast lead times to download.
-    model : {'hrrr', 'hrrrak', 'rap'}
-        Model to download.
-    field : {'sfc', 'prs', 'nat', 'subh'}
-        Variable fields file to download. Not needed for RAP model.
-    """   
-    if isinstance(DATES, (str, pd.Timestamp)) or hasattr(DATES, 'strptime'):
-        DATES = [DATES]
-    if isinstance(fxx, int):
-        fxx = [fxx]
-
-    kw = dict(model=model, field=field)
-    if priority is not None:
-        kw['priority'] = priority
-    
-    # Locate the file sources
-    print("👨🏻‍🔬 Check which requested files exists")
-    grib_sources = [Herbie(d, fxx=f, **kw) \
-                    for d in DATES \
-                    for f in fxx]
-    
-    loop_time = timedelta()
-    n = len(grib_sources)
-
-    print("\n🌧 Download requested data")
-    for i, g in enumerate(grib_sources):
-        timer = datetime.now()
-        g.download(searchString=searchString)
-       
-        #---------------------------------------------------------
-        # Time keeping: *crude* method to estimate remaining time.
-        #---------------------------------------------------------
-        loop_time += datetime.now() - timer
-        mean_dt_per_loop = loop_time/(i+1)
-        remaining_loops = n-i-1
-        est_rem_time = mean_dt_per_loop * remaining_loops
-        if verbose: print(f"🚛💨 Download Progress: [{i+1}/{n} completed] >> Est. Time Remaining {str(est_rem_time):16}\n")
-        #---------------------------------------------------------
-
-    requested = len(grib_sources)
-    completed = sum([i.grib is None for i in grib_sources])
-    print(f"🍦 Done! Downloaded [{completed}/{requested}] files. Timer={loop_time}")
-    
-    return grib_sources
- 
-## Future:
-# Concatenate multiple GRIB2 files by lead time and across runs.
