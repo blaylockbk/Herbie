@@ -22,6 +22,7 @@ partners (Amazon Web Services, Google Cloud Platform, and Microsoft
 Azure), and the CHPC Pando archive at the University of Utah.
 
 .. note:: Updates since ``hrrrb``
+
     - Rename package to ``herbie``. "Herbie is your model output download assistant with a mind of its own."
     - Implement new **Herbie** class
     - Drop support for hrrrx (experimental HRRR no longer archived on Pando and ESRL is now developing RRFS)

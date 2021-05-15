@@ -732,22 +732,24 @@ partners (Amazon Web Services, Google Cloud Platform, and Microsoft
 Azure), and the CHPC Pando archive at the University of Utah.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>Updates since <code class="docutils literal notranslate"><span class="pre">hrrrb</span></code>
-- Rename package to <code class="docutils literal notranslate"><span class="pre">herbie</span></code>. “Herbie is your model output download assistant with a mind of its own.”
-- Implement new <strong>Herbie</strong> class
-- Drop support for hrrrx (experimental HRRR no longer archived on Pando and ESRL is now developing RRFS)
-- Added ability to download and read RAP model GRIB2 files.
-- Less reliance on Pando, more on aws and google.
-- New method for searchString index file search. Uses same regex search patterns as old API.
-- Filename for GRIB2 subset includes all GRIB message numbers.
-- Moved default download source to config file setting.
-- Check local file copy on __init__. (Don’t need to look for file on remote if we have local copy)
-- Option to remove grib2 file when reading xarray if didn’t already exist locally (don’t clutter local disk).
-- Attach index file DataFrame to object if it exists.
-- If full file exists locally, use remote idx file to cURL local file instead of remote. (Can’t create idx file locally because wgrib2 not available on windows)
-- TODO: Rename ‘searchString’ to ‘subset’ (and rename subset function)
-- TODO: Add NCEI as a source for the RAP data?? URL is complex.
-- TODO: Create .idx file if wgrib2 is installed (linux only)</p>
+<p>Updates since <code class="docutils literal notranslate"><span class="pre">hrrrb</span></code></p>
+<ul class="simple">
+<li><p>Rename package to <code class="docutils literal notranslate"><span class="pre">herbie</span></code>. “Herbie is your model output download assistant with a mind of its own.”</p></li>
+<li><p>Implement new <strong>Herbie</strong> class</p></li>
+<li><p>Drop support for hrrrx (experimental HRRR no longer archived on Pando and ESRL is now developing RRFS)</p></li>
+<li><p>Added ability to download and read RAP model GRIB2 files.</p></li>
+<li><p>Less reliance on Pando, more on aws and google.</p></li>
+<li><p>New method for searchString index file search. Uses same regex search patterns as old API.</p></li>
+<li><p>Filename for GRIB2 subset includes all GRIB message numbers.</p></li>
+<li><p>Moved default download source to config file setting.</p></li>
+<li><p>Check local file copy on __init__. (Don’t need to look for file on remote if we have local copy)</p></li>
+<li><p>Option to remove grib2 file when reading xarray if didn’t already exist locally (don’t clutter local disk).</p></li>
+<li><p>Attach index file DataFrame to object if it exists.</p></li>
+<li><p>If full file exists locally, use remote idx file to cURL local file instead of remote. (Can’t create idx file locally because wgrib2 not available on windows)</p></li>
+<li><p>TODO: Rename ‘searchString’ to ‘subset’ (and rename subset function)</p></li>
+<li><p>TODO: Add NCEI as a source for the RAP data?? URL is complex.</p></li>
+<li><p>TODO: Create .idx file if wgrib2 is installed (linux only)</p></li>
+</ul>
 </div>
 <div class="section" id="hrrr-and-rap-data-sources">
 <h4>HRRR and RAP Data Sources<a class="headerlink" href="#hrrr-and-rap-data-sources" title="Permalink to this headline">¶</a></h4>
