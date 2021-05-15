@@ -125,6 +125,7 @@ html_js_files = [
 autodoc_default_options = {
     'autosummary': True,        # Include a members "table of contents"
     'members': True,            # Document all functions/members  
+    'autoclass_content': 'both' # Document class and __init__ 
 }
 
 autodoc_mock_imports = ["xesmf", "numpy", "matplotlib",
