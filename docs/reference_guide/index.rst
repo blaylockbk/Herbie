@@ -5,14 +5,14 @@ Reference Guide
    :hidden:
    :maxdepth: 4
 
-Current API
+HRRR-B API
 -----------
 .. automodule:: hrrrb.archive
 .. automodule:: hrrrb.tools
 .. automodule:: hrrrb.plots
 
-New API
--------
+Herbie API
+-----------
 .. automodule:: herbie.archive
 .. automodule:: herbie.accessors
 .. automodule:: herbie.tools
