@@ -1,3 +1,7 @@
+===================================
+How to subset with ``searchString``
+===================================
+
 .. hint::
 
     Use regular expression to search for lines in the .idx file
