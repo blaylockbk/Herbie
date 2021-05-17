@@ -1,19 +1,22 @@
 .bg-light {
     background-color: #f0ead2!important;
 }
-
-a:hover {
-    color: #88211b!important;
-    font-weight:bold;
-    text-decoration-line: underline;
-  }
-
 a {
     color: #0c3576!important;
     text-decoration-line: underline;
 }
-
 a:visited {
     color: #0c3576!important;
     text-decoration-line: underline;
 }
+a:hover {
+    color: #88211b!important;
+    font-weight:bold;
+  }
+a:hover:visited {
+    color: #88211b!important;
+    font-weight:bold;
+}
+
+
+
