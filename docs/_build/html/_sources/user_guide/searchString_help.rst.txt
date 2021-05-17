@@ -26,4 +26,4 @@ Here are some examples you can use for ``searchString``
 ================================= ===============================================
 
 If you need help with regular expression, search the web
-or look at this cheatsheet: https://www.petefreitag.com/cheatsheets/regex/
+or look at this `cheatsheet <https://www.petefreitag.com/cheatsheets/regex/`_.
