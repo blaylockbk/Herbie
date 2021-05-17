@@ -1,18 +1,12 @@
+===============
 Reference Guide
 ===============
+
+There are currently two APIs. The old HRRR-B API still exists, but is not receiving any attention. The Herbie API is new and most likely to be developed in the future.
 
 .. toctree::
    :hidden:
    :maxdepth: 4
 
-HRRR-B API
------------
-.. automodule:: hrrrb.archive
-.. automodule:: hrrrb.tools
-.. automodule:: hrrrb.plots
-
-Herbie API
------------
-.. automodule:: herbie.archive
-.. automodule:: herbie.accessors
-.. automodule:: herbie.tools
+   herbie_api
+   hrrrb_api
