@@ -6,7 +6,7 @@ Since this package is a work in progress, it is distributed "as is." I do not ma
 
 With that said, I am happy to share this project with you. You are welcome to [open issues](https://github.com/blaylockbk/HRRR_archive_download/issues), [ask questions in the discussion](https://github.com/blaylockbk/HRRR_archive_download/discussions), submit pull requests, but know that I may or may not get around to doing anything about it. If this is helpful to you in any way, I'm glad.
 
-> ## Alternatives
+> **Alternative**  
 > As an alternative, you can use [rclone](https://rclone.org/) to download HRRR files from cloud platforms. I quite like rclone. Here is a [short rclone tutorial](https://github.com/blaylockbk/pyBKB_v3/blob/master/rclone_howto.md)
 
 ## 🌹 What's in a name? 
@@ -16,7 +16,7 @@ Since this package now download more than just HRRR data from my original archiv
 
 
 # Other Information
-🌐 University of Utah HRRR Archive: http://hrrr.chpc.utah.edu/  
+🌐 University of Utah HRRR Archive: [http://hrrr.chpc.utah.edu/](http://hrrr.chpc.utah.edu/)  
 🙋🏻‍♂️ Questions: [GitHub Discussions](https://github.com/blaylockbk/HRRR_archive_download/discussions)  
 🚑 Support: [GitHub Issues](https://github.com/blaylockbk/HRRR_archive_download/issues) or atmos-mesowest@lists.utah.edu  
 📧 Brian Blaylock: blaylockbk@gmail.com
