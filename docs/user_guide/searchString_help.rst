@@ -6,7 +6,7 @@ Use regular expression to search for lines in the ``.idx`` file
 Here are some examples you can use for ``searchString``
 
 ================================= ===============================================
-``searchString``                  GRIB messages that will be downloaded
+``searchString=``                  GRIB messages that will be downloaded
 ================================= ===============================================
 ``':TMP:2 m'``                    Temperature at 2 m.
 ``':TMP:'``                       Temperature fields at all levels.
