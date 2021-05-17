@@ -37,8 +37,8 @@
     <link rel="shortcut icon" href="../_static/wxicon.png"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Reference Guide" href="../reference_guide/index.html" />
-    <link rel="prev" title="📝 Jupyter Notebooks" href="notebooks.html" />
+    <link rel="next" title="👨🏻‍💻 Practical Examples: Old HRRR-B API" href="examples.html" />
+    <link rel="prev" title="👨🏻‍💻 Tutorial: New herbie API" href="tutorial.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="en" />
     
@@ -157,22 +157,32 @@
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="examples.html">
-   👨🏻‍💻 Practical Examples (
-   <code class="docutils literal notranslate">
-    <span class="pre">
-     HRRR-B
-    </span>
-   </code>
-   API)
-  </a>
- </li>
- <li class="toctree-l1">
   <a class="reference internal" href="tutorial.html">
    👨🏻‍💻 Tutorial: New
    <code class="docutils literal notranslate">
     <span class="pre">
      herbie
+    </span>
+   </code>
+   API
+  </a>
+ </li>
+ <li class="toctree-l1 current active">
+  <a class="current reference internal" href="#">
+   How to subset with
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     searchString
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="examples.html">
+   👨🏻‍💻 Practical Examples: Old
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     HRRR-B
     </span>
    </code>
    API
@@ -235,16 +245,6 @@
    </li>
   </ul>
  </li>
- <li class="toctree-l1 current active">
-  <a class="current reference internal" href="#">
-   How to subset with
-   <code class="docutils literal notranslate">
-    <span class="pre">
-     searchString
-    </span>
-   </code>
-  </a>
- </li>
 </ul>
 
   </div>
@@ -290,32 +290,68 @@
                 
   <div class="section" id="how-to-subset-with-searchstring">
 <h1>How to subset with <code class="docutils literal notranslate"><span class="pre">searchString</span></code><a class="headerlink" href="#how-to-subset-with-searchstring" title="Permalink to this headline">¶</a></h1>
-<div class="admonition hint">
-<p class="admonition-title">Hint</p>
-<p>Use regular expression to search for lines in the .idx file
-Here are some examples you can use for <code class="docutils literal notranslate"><span class="pre">searchString</span></code>
-================================= ===============================================
-<code class="docutils literal notranslate"><span class="pre">searchString</span></code>                  GRIB messages that will be downloaded
-================================= ===============================================
-<code class="docutils literal notranslate"><span class="pre">':TMP:2</span> <span class="pre">m'</span></code>                    Temperature at 2 m.
-<code class="docutils literal notranslate"><span class="pre">':TMP:'</span></code>                       Temperature fields at all levels.
-<code class="docutils literal notranslate"><span class="pre">':UGRD:.*</span> <span class="pre">mb'</span></code>                 U Wind at all pressure levels.
-<code class="docutils literal notranslate"><span class="pre">':500</span> <span class="pre">mb:'</span></code>                    All variables on the 500 mb level.
-<code class="docutils literal notranslate"><span class="pre">':APCP:'</span></code>                      All accumulated precipitation fields.
-<code class="docutils literal notranslate"><span class="pre">':APCP:surface:0-[1-9]*'</span></code>      Accumulated precip since initialization time
-<code class="docutils literal notranslate"><span class="pre">':APCP:surface:[1-9]*-[1-9]*'</span></code> Accumulated precip over last hour
-<code class="docutils literal notranslate"><span class="pre">':UGRD:10</span> <span class="pre">m'</span></code>                  U wind component at 10 meters.
-<code class="docutils literal notranslate"><span class="pre">':(U|V)GRD:(10|80)</span> <span class="pre">m'</span></code>         U and V wind component at 10 and 80 m.
-<code class="docutils literal notranslate"><span class="pre">':(U|V)GRD:'</span></code>                  U and V wind component at all levels.
-<code class="docutils literal notranslate"><span class="pre">':.GRD:'</span></code>                      (Same as above)
-<code class="docutils literal notranslate"><span class="pre">':(TMP|DPT):'</span></code>                 Temperature and Dew Point for all levels .
-<code class="docutils literal notranslate"><span class="pre">':(TMP|DPT|RH):'</span></code>              TMP, DPT, and Relative Humidity for all levels.
-<code class="docutils literal notranslate"><span class="pre">':REFC:'</span></code>                      Composite Reflectivity
-<code class="docutils literal notranslate"><span class="pre">':surface:'</span></code>                   All variables at the surface.
-================================= ===============================================
-If you need help with regular expression, search the web
+<p>Use regular expression to search for lines in the <code class="docutils literal notranslate"><span class="pre">.idx</span></code> file
+Here are some examples you can use for <code class="docutils literal notranslate"><span class="pre">searchString</span></code></p>
+<table class="table">
+<colgroup>
+<col style="width: 41%" />
+<col style="width: 59%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p><code class="docutils literal notranslate"><span class="pre">searchString</span></code></p></th>
+<th class="head"><p>GRIB messages that will be downloaded</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">':TMP:2</span> <span class="pre">m'</span></code></p></td>
+<td><p>Temperature at 2 m.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">':TMP:'</span></code></p></td>
+<td><p>Temperature fields at all levels.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">':UGRD:.*</span> <span class="pre">mb'</span></code></p></td>
+<td><p>U Wind at all pressure levels.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">':500</span> <span class="pre">mb:'</span></code></p></td>
+<td><p>All variables on the 500 mb level.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">':APCP:'</span></code></p></td>
+<td><p>All accumulated precipitation fields.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">':APCP:surface:0-[1-9]*'</span></code></p></td>
+<td><p>Accumulated precip since initialization time</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">':APCP:surface:[1-9]*-[1-9]*'</span></code></p></td>
+<td><p>Accumulated precip over last hour</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">':UGRD:10</span> <span class="pre">m'</span></code></p></td>
+<td><p>U wind component at 10 meters.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">':(U|V)GRD:(10|80)</span> <span class="pre">m'</span></code></p></td>
+<td><p>U and V wind component at 10 and 80 m.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">':(U|V)GRD:'</span></code></p></td>
+<td><p>U and V wind component at all levels.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">':.GRD:'</span></code></p></td>
+<td><p>(Same as above)</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">':(TMP|DPT):'</span></code></p></td>
+<td><p>Temperature and Dew Point for all levels .</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">':(TMP|DPT|RH):'</span></code></p></td>
+<td><p>TMP, DPT, and Relative Humidity for all levels.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">':REFC:'</span></code></p></td>
+<td><p>Composite Reflectivity</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">':surface:'</span></code></p></td>
+<td><p>All variables at the surface.</p></td>
+</tr>
+</tbody>
+</table>
+<p>If you need help with regular expression, search the web
 or look at this cheatsheet: <a class="reference external" href="https://www.petefreitag.com/cheatsheets/regex/">https://www.petefreitag.com/cheatsheets/regex/</a></p>
-</div>
 </div>
 
 
@@ -324,8 +360,8 @@ or look at this cheatsheet: <a class="reference external" href="https://www.pete
               
               <div class='prev-next-bottom'>
                 
-    <a class='left-prev' id="prev-link" href="notebooks.html" title="previous page">📝 Jupyter Notebooks</a>
-    <a class='right-next' id="next-link" href="../reference_guide/index.html" title="next page">Reference Guide</a>
+    <a class='left-prev' id="prev-link" href="tutorial.html" title="previous page">👨🏻‍💻 Tutorial: New <code class="docutils literal notranslate"><span class="pre">herbie</span></code> API</a>
+    <a class='right-next' id="next-link" href="examples.html" title="next page">👨🏻‍💻 Practical Examples: Old <code class="docutils literal notranslate"><span class="pre">HRRR-B</span></code> API</a>
 
               </div>
               
