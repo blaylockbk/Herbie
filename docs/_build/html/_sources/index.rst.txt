@@ -34,7 +34,7 @@ Install with pip
 
    pip install git+https://github.com/blaylockbk/HRRR_archive_download.git
 
-To install with in a conda environment file, you may use this minimum `environment.yml
+To install within a conda environment file, you may use this minimum `environment.yml
 <https://github.com/blaylockbk/HRRR_archive_download/blob/master/environment.yml>`_ file 
 and create the environment with the following...
 

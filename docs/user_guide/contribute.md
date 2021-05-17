@@ -6,10 +6,10 @@ Since this package is a work in progress, it is distributed "as is." I do not ma
 
 With that said, I am happy to share this project with you. You are welcome to [open issues](https://github.com/blaylockbk/HRRR_archive_download/issues), [ask questions in the discussion](https://github.com/blaylockbk/HRRR_archive_download/discussions), submit pull requests, but know that I may or may not get around to doing anything about it. If this is helpful to you in any way, I'm glad.
 
-> **Alternative**  
+> ## Alternative  
 > As an alternative, you can use [rclone](https://rclone.org/) to download HRRR files from cloud platforms. I quite like rclone. Here is a [short rclone tutorial](https://github.com/blaylockbk/pyBKB_v3/blob/master/rclone_howto.md)
 
-## 🌹 What's in a name? 
+# 🌹 What's in a name? 
 The original name of this package was **HRRR-B** because the primary objective was to help download data from the High-Resolution Rapid Refresh (HRRR) model, and the B is for Brian because I wrote the package. Is it a little pretentious to attach your own name to a package? The concept for this package was originally developed when I was a PhD student and created the original HRRR archive at the University of Utah in 2016.
 
 Since this package now download more than just HRRR data from my original archive, it was renamed to **Herbie** to not confuse you that it is only for the HRRR model. I am also a fan of the old Herbie movies. Sadly, Herbie is already a registered name on PyPI, so I continue to publish to hrrrb on PyPI. In the future, I may add the ability to download other types of model data (GFS?) and when the RRFS model becomes operational in 2023 I hope to add functionality to read that. Also, there is an archive of HRRR data in Zarr format, and Herbie could potentially be used to download that format.
