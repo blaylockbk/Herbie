@@ -1,8 +1,3 @@
-.. Herbie documentation master file, created by
-   sphinx-quickstart on Thu Oct  1 20:01:05 2020.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
-
 .. image:: _static/Herbie_Logo.png
 
 .. toctree::
@@ -15,10 +10,9 @@
 Herbie Documentation
 ====================
 
-Herbie is a python package that downloads recent and archived High Resolution Rapid Refresh (HRRR) model and Rapid Refresh (RAP) model output from various sources. It also enables you to download subsets of the GRIB2 by variable and open the data as an ``xarray.Dataset`` with `cfgrib <https://github.com/ecmwf/cfgrib>`_. I created most of this during my PhD and decided to organize what I created into a more coherent package. The main package was originally called HRRR-B, but the package has been expanded to read more than just the HRRR data set and will continue to evolve at my own leisure.
+**Herbie** is a python package that downloads recent and archived output from the High Resolution Rapid Refresh (HRRR) and Rapid Refresh (RAP) models from various sources. It also enables you to download subsets of the GRIB2 by variable and open the data with `xarray <http://xarray.pydata.org/en/stable/>`_ via `cfgrib <https://github.com/ecmwf/cfgrib>`_. I created most of this during my PhD and have since organized it into this more coherent package. The package was original named **HRRR-B**, but since then the package has been expanded to access more than just the HRRR data from one source and it will continue to evolve at my own leisure. It is now called Herbie, named after some favorite childhood movies.
 
-
-The `HRRR <https://rapidrefresh.noaa.gov/hrrr/>`_ model is NOAA's hourly, 3-km numerical weather prediction model nested within the `RAP <https://rapidrefresh.noaa.gov/>`_ model. Read some of the `HRRR's achievements <https://research.noaa.gov/article/ArtMID/587/ArticleID/2702/The-amazing-research-resume-of-High-Resolution-Rapid-Refresh-Model>`_. The HRRR is the foundation for the upcoming Rapid-Refresh Forecast System (`RRFS <https://gsl.noaa.gov/focus-areas/unified_forecast_system/rrfs>`_). 
+The `HRRR <https://rapidrefresh.noaa.gov/hrrr/>`_ model is NOAA's hourly, 3-km numerical weather prediction model nested within the `RAP <https://rapidrefresh.noaa.gov/>`_ model and is a `valuable numerical weather prediction resource <https://research.noaa.gov/article/ArtMID/587/ArticleID/2702/The-amazing-research-resume-of-High-Resolution-Rapid-Refresh-Model>`_. The RAP and HRRR model development are the foundation for the upcoming Rapid-Refresh Forecast System (`RRFS <https://gsl.noaa.gov/focus-areas/unified_forecast_system/rrfs>`_). 
 
 
 .. figure:: _static/Herbie3.png

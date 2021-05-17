@@ -1,3 +1,11 @@
 .bg-light {
     background-color: #f0ead2!important;
 }
+
+a:visited {
+    color: #88211b;
+  }
+
+a {
+    color: #0c3576;
+}
