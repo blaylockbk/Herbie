@@ -4,8 +4,10 @@
 
 a:visited {
     color: #88211b!important;
+    font-weight: bold;
   }
 
 a {
     color: #0c3576!important;
+    font-weight: bold;
 }
