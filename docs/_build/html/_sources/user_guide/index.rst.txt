@@ -11,4 +11,5 @@ User Guide
    examples
    tutorial.ipynb
    notebooks
+   searchString_help
    
