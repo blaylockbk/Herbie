@@ -4,6 +4,7 @@
 
 a:hover {
     color: #88211b!important;
+    font-weight:bold;
     text-decoration-line: underline;
   }
 
