@@ -3,9 +3,9 @@
 }
 
 a:visited {
-    color: #88211b;
+    color: #88211b!important;
   }
 
 a {
-    color: #0c3576;
+    color: #0c3576!important;
 }
