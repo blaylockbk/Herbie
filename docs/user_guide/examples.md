@@ -1,4 +1,4 @@
-# 👨🏻‍💻 Practical Examples
+# 👨🏻‍💻 Practical Examples (`HRRR-B` API)
 
 If you are looking for a no-fuss method to download the HRRR data you want, use the `hrrrb.archive` module.
 

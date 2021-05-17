@@ -8,7 +8,7 @@
     <title>User Guide &#8212; HRRR-B 0.0.1 documentation</title>
     
   <link href="../_static/css/theme.css" rel="stylesheet" />
-  <link href="../_static/css/index.ee6fb81b276d6fba8a971ad8e9b95dd9.css" rel="stylesheet" />
+  <link href="../_static/css/index.c5995385ac14fb8791e8eb36b4908be2.css" rel="stylesheet" />
 
     
   <link rel="stylesheet"
@@ -22,13 +22,13 @@
       
 
     
-    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="../_static/basic.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/basic.css" />
     <link rel="stylesheet" type="text/css" href="../_static/brian_style.css" />
     
-  <link rel="preload" as="script" href="../_static/js/index.c86189f1ce1b71a67eb6.js">
+  <link rel="preload" as="script" href="../_static/js/index.1c5a1a01449ed65a7b51.js">
 
-    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
     <script src="../_static/doctools.js"></script>
@@ -37,8 +37,8 @@
     <link rel="shortcut icon" href="../_static/wxicon.png"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="👨🏻‍🏭 Contributing Guidelines (and disclaimer)" href="contribute.html" />
-    <link rel="prev" title="HRRR-B Documentation" href="../index.html" />
+    <link rel="next" title="👨🏻‍🏭 Disclaimer and Contributing Guidelines" href="contribute.html" />
+    <link rel="prev" title="Herbie Documentation" href="../index.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="en" />
     
@@ -55,7 +55,7 @@
     
 
 <a class="navbar-brand" href="../index.html">
-  <img src="../_static/HRRR-B_logo.png" class="logo" alt="logo">
+  <img src="../_static/Herbie_Logo.png" class="logo" alt="logo">
 </a>
 
 
@@ -143,7 +143,7 @@
     <ul class="nav bd-sidenav">
  <li class="toctree-l1">
   <a class="reference internal" href="contribute.html">
-   👨🏻‍🏭 Contributing Guidelines (and disclaimer)
+   👨🏻‍🏭 Disclaimer and Contributing Guidelines
   </a>
  </li>
  <li class="toctree-l1">
@@ -152,8 +152,33 @@
   </a>
  </li>
  <li class="toctree-l1">
+  <a class="reference internal" href="data_sources.html">
+   ☁ Data Sources
+  </a>
+ </li>
+ <li class="toctree-l1">
   <a class="reference internal" href="examples.html">
-   👨🏻‍💻 Practical Examples
+   👨🏻‍💻 Practical Examples (
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     HRRR-B
+    </span>
+   </code>
+   API)
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="tutorial.html">
+   👨🏻‍💻 Tutorial (
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     herbie
+    </span>
+    <span class="pre">
+     API
+    </span>
+   </code>
+   )
   </a>
  </li>
  <li class="toctree-l1 has-children">
@@ -260,18 +285,23 @@
 <h1>User Guide<a class="headerlink" href="#user-guide" title="Permalink to this headline">¶</a></h1>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="contribute.html">👨🏻‍🏭 Contributing Guidelines (and disclaimer)</a><ul>
+<li class="toctree-l1"><a class="reference internal" href="contribute.html">👨🏻‍🏭 Disclaimer and Contributing Guidelines</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="contribute.html#alternatives">Alternatives</a></li>
 <li class="toctree-l2"><a class="reference internal" href="contribute.html#what-s-in-a-name">🌹 What’s in a name?</a></li>
-<li class="toctree-l2"><a class="reference internal" href="contribute.html#what-if-i-don-t-like-this-package">What if I don’t like this package?</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="contribute.html#other-information">Other Information</a></li>
 <li class="toctree-l1"><a class="reference internal" href="install.html">🐍 Installation and Conda Environment</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="install.html#option-1-pip">Option 1: pip</a></li>
 <li class="toctree-l2"><a class="reference internal" href="install.html#option-2-conda">Option 2: conda</a></li>
 <li class="toctree-l2"><a class="reference internal" href="install.html#alternative-install-method">Alternative “Install” Method</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="examples.html">👨🏻‍💻 Practical Examples</a><ul>
+<li class="toctree-l1"><a class="reference internal" href="data_sources.html">☁ Data Sources</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="data_sources.html#default-download-priority-rational">Default Download Priority Rational</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">👨🏻‍💻 Practical Examples (<code class="docutils literal notranslate"><span class="pre">HRRR-B</span></code> API)</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="examples.html#click-here-for-some-examples">👉 Click Here For Some Examples</a></li>
 <li class="toctree-l2"><a class="reference internal" href="examples.html#function-arguments">Function arguments</a></li>
 <li class="toctree-l2"><a class="reference internal" href="examples.html#the-searchstring-argument">The <strong><code class="docutils literal notranslate"><span class="pre">searchString</span></code></strong> argument</a><ul>
@@ -280,6 +310,15 @@
 </li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial.html">👨🏻‍💻 Tutorial (<code class="docutils literal notranslate"><span class="pre">herbie</span> <span class="pre">API</span></code>)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial.html#Initialize-a-Herbie-object.">Initialize a Herbie object.</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial.html#Download-a-Full-File">Download a Full File</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial.html#Download-a-Subset-File">Download a Subset File</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial.html#Subset-Search-String">Subset Search String</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial.html#Read-GRIB2-file-with-xarray">Read GRIB2 file with xarray</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial.html#Plot-with-herbie-xarray-custom-accessor">Plot with <code class="docutils literal notranslate"><span class="pre">herbie</span></code> xarray custom accessor</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial.html#Index-File-DataFrame-if-it-exists">Index File DataFrame if it exists</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial.html#Herbie-Logo">Herbie Logo</a></li>
 <li class="toctree-l1"><a class="reference internal" href="notebooks.html">📝 Jupyter Notebooks</a><ul>
 <li class="toctree-l2"><a class="reference external" href="https://github.com/blaylockbk/HRRR_archive_download/blob/master/notebooks/examples.ipynb">Main Package Examples</a></li>
 <li class="toctree-l2"><a class="reference external" href="https://github.com/blaylockbk/HRRR_archive_download/blob/master/notebooks/demo_plot-on-map-with-common-features.ipynb">Make Cartopy maps with HRRR data</a></li>
@@ -302,8 +341,8 @@
               
               <div class='prev-next-bottom'>
                 
-    <a class='left-prev' id="prev-link" href="../index.html" title="previous page">HRRR-B Documentation</a>
-    <a class='right-next' id="next-link" href="contribute.html" title="next page">👨🏻‍🏭 Contributing Guidelines (and disclaimer)</a>
+    <a class='left-prev' id="prev-link" href="../index.html" title="previous page">Herbie Documentation</a>
+    <a class='right-next' id="next-link" href="contribute.html" title="next page">👨🏻‍🏭 Disclaimer and Contributing Guidelines</a>
 
               </div>
               
@@ -312,21 +351,17 @@
 
       </div>
     </div>
-    
-  <script src="../_static/js/index.c86189f1ce1b71a67eb6.js"></script>
+  
+  <script src="../_static/js/index.1c5a1a01449ed65a7b51.js"></script>
 
-
-    
-    <!-- Google Analytics -->
-    <script>
-      window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
-      ga('create', 'G-PT9LX1B7B8', 'auto');
-      ga('set', 'anonymizeIp', true);
-      ga('send', 'pageview');
-    </script>
-    <script async src='https://www.google-analytics.com/analytics.js'></script>
-    <!-- End Google Analytics -->
-    <footer class="footer mt-5 mt-md-0">
+  
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-PT9LX1B7B8"></script>
+<script>
+                    window.dataLayer = window.dataLayer || [];
+                    function gtag(){ dataLayer.push(arguments); }
+                    gtag('config', 'G-PT9LX1B7B8');
+                </script>
+<footer class="footer mt-5 mt-md-0">
   <div class="container">
     
     <div class="footer-item">
@@ -337,7 +372,7 @@
     
     <div class="footer-item">
       <p class="sphinx-version">
-Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.5.3.<br/>
+Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.0.1.<br/>
 </p>
     </div>
     

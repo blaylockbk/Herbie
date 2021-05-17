@@ -5,10 +5,10 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>HRRR-B Documentation &#8212; HRRR-B 0.0.1 documentation</title>
+    <title>Herbie Documentation &#8212; HRRR-B 0.0.1 documentation</title>
     
   <link href="_static/css/theme.css" rel="stylesheet" />
-  <link href="_static/css/index.ee6fb81b276d6fba8a971ad8e9b95dd9.css" rel="stylesheet" />
+  <link href="_static/css/index.c5995385ac14fb8791e8eb36b4908be2.css" rel="stylesheet" />
 
     
   <link rel="stylesheet"
@@ -22,13 +22,13 @@
       
 
     
-    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="_static/basic.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/basic.css" />
     <link rel="stylesheet" type="text/css" href="_static/brian_style.css" />
     
-  <link rel="preload" as="script" href="_static/js/index.c86189f1ce1b71a67eb6.js">
+  <link rel="preload" as="script" href="_static/js/index.1c5a1a01449ed65a7b51.js">
 
-    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
@@ -54,7 +54,7 @@
     
 
 <a class="navbar-brand" href="#">
-  <img src="_static/HRRR-B_logo.png" class="logo" alt="logo">
+  <img src="_static/Herbie_Logo.png" class="logo" alt="logo">
 </a>
 
 
@@ -174,8 +174,8 @@
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#subset-by-grib2-field">
-     Subset by GRIB2 field
+    <a class="reference internal nav-link" href="#subset-by-grib2-variable">
+     Subset by GRIB2 variable
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
@@ -220,28 +220,32 @@
               
               <div>
                 
-  <img alt="_images/HRRR-B_logo.png" src="_images/HRRR-B_logo.png" />
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>This is a work in progress</p>
-</div>
+  <img alt="_images/Herbie_Logo.png" src="_images/Herbie_Logo.png" />
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="user_guide/index.html">User Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="reference_guide/index.html">Reference Guide</a></li>
 </ul>
 </div>
-<div class="section" id="hrrr-b-documentation">
-<h1>HRRR-B Documentation<a class="headerlink" href="#hrrr-b-documentation" title="Permalink to this headline">¶</a></h1>
-<p>The <a class="reference external" href="https://rapidrefresh.noaa.gov/hrrr/">High-Resolution Rapid Refresh</a> model is NOAA’s hourly, 3-km numerical weather prediction model. The HRRR is the foundation for the upcoming Rapid-Refresh Forecast System. Read some of the <a class="reference external" href="https://research.noaa.gov/article/ArtMID/587/ArticleID/2702/The-amazing-research-resume-of-High-Resolution-Rapid-Refresh-Model">HRRR’s achievements</a></p>
-<p>HRRR-B, or “Herbie,” is a python package for downloading recent and archived High Resolution Rapid Refresh (HRRR) model forecasts and opening HRRR data as an <code class="docutils literal notranslate"><span class="pre">xarray.Dataset</span></code> with <a class="reference external" href="https://github.com/ecmwf/cfgrib">cfgrib</a>. I created most of this during my PhD and decided to organize what I created into a more coherent package. It will continue to evolve at my own leisure.</p>
+<div class="section" id="herbie-documentation">
+<h1>Herbie Documentation<a class="headerlink" href="#herbie-documentation" title="Permalink to this headline">¶</a></h1>
+<p>Herbie is a python package that downloads recent and archived High Resolution Rapid Refresh (HRRR) model and Rapid Refresh (RAP) model output from various sources. It also enables you to download subsets of the GRIB2 by variable and open the data as an <code class="docutils literal notranslate"><span class="pre">xarray.Dataset</span></code> with <a class="reference external" href="https://github.com/ecmwf/cfgrib">cfgrib</a>. I created most of this during my PhD and decided to organize what I created into a more coherent package. The main package was originally called HRRR-B, but the package has been expanded to read more than just the HRRR data set and will continue to evolve at my own leisure.</p>
+<p>The <a class="reference external" href="https://rapidrefresh.noaa.gov/hrrr/">HRRR</a> model is NOAA’s hourly, 3-km numerical weather prediction model nested within the <a class="reference external" href="https://rapidrefresh.noaa.gov/">RAP</a> model. Read some of the <a class="reference external" href="https://research.noaa.gov/article/ArtMID/587/ArticleID/2702/The-amazing-research-resume-of-High-Resolution-Rapid-Refresh-Model">HRRR’s achievements</a>. The HRRR is the foundation for the upcoming Rapid-Refresh Forecast System (<a class="reference external" href="https://gsl.noaa.gov/focus-areas/unified_forecast_system/rrfs">RRFS</a>).</p>
 <div class="figure align-default">
 <a class="img-fluid reference internal image-reference" href="_static/Herbie3.png"><img alt="_static/Herbie3.png" class="img-fluid" src="_static/Herbie3.png" style="width: 66%;" /></a>
 </div>
 <div class="section" id="install">
 <h2>Install<a class="headerlink" href="#install" title="Permalink to this headline">¶</a></h2>
-<p>This package requires <strong>Python 3.7+</strong> (doesn’t work in 3.6 and earlier because I use relative imports)</p>
-<p>Install <code class="docutils literal notranslate"><span class="pre">hrrrb</span></code> in a conda environment. You may use this minimum <a class="reference external" href="https://github.com/blaylockbk/HRRR_archive_download/blob/master/environment.yml">environment.yml</a> file
+<p>This package requires <strong>Python 3.7+</strong></p>
+<p>Install with pip</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip install hrrrb
+
+<span class="c1"># or</span>
+
+pip install git+https://github.com/blaylockbk/HRRR_archive_download.git
+</pre></div>
+</div>
+<p>To install with in a conda environment file, you may use this minimum <a class="reference external" href="https://github.com/blaylockbk/HRRR_archive_download/blob/master/environment.yml">environment.yml</a> file
 and create the environment with the following…</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create the environment</span>
 conda env create -f environment.yml
@@ -258,21 +262,22 @@ conda activate hrrrb
 <h2>Capabilities<a class="headerlink" href="#capabilities" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="download-data">
 <h3>Download Data<a class="headerlink" href="#download-data" title="Permalink to this headline">¶</a></h3>
-<p>Download archived HRRR data from multiple sources:</p>
+<p>Download recent and archived HRRR and RAP data from multiple sources made possible by <a class="reference external" href="https://www.noaa.gov/information-technology/big-data">NOAA’s big data program</a>:</p>
 <ul class="simple">
 <li><p><a class="reference external" href="https://nomads.ncep.noaa.gov/">NOAA NOMADS Server</a></p></li>
 <li><p><a class="reference external" href="https://registry.opendata.aws/noaa-hrrr-pds/">Amazon Web Services</a></p></li>
 <li><p><a class="reference external" href="https://console.cloud.google.com/marketplace/product/noaa-public/hrrr">Google Cloud Platform</a></p></li>
+<li><p><a class="reference external" href="https://github.com/microsoft/AIforEarthDataSets/blob/main/data/noaa-hrrr.md">Microsoft Azure</a></p></li>
 <li><p><a class="reference external" href="http://hrrr.chpc.utah.edu/">University of Utah Pando Archive</a></p></li>
 </ul>
 </div>
-<div class="section" id="subset-by-grib2-field">
-<h3>Subset by GRIB2 field<a class="headerlink" href="#subset-by-grib2-field" title="Permalink to this headline">¶</a></h3>
-<p>Instead of downloading full GRIB2 files, you may download a select GRIB2 fields or variables from a file. This is enabled by the cURL command which allows you to download a range of bytes from a file. The index <code class="docutils literal notranslate"><span class="pre">.idx</span></code> files tells you the beginning byte for each field. HRRR-B search those <code class="docutils literal notranslate"><span class="pre">.idx</span></code> files for variables you want and performs the cURL command for each field.</p>
+<div class="section" id="subset-by-grib2-variable">
+<h3>Subset by GRIB2 variable<a class="headerlink" href="#subset-by-grib2-variable" title="Permalink to this headline">¶</a></h3>
+<p>GRIB files contain “messages” which define a grid of data for a particular variable. Data for a variable grid are stacked on top of each other. Instead of downloading full GRIB2 files, you may download a selections from a GRIB2 file based on GRIB message. This is enabled by the cURL command which allows you to download a range of bytes from a file. The index <strong>.idx</strong> files tells you the beginning byte for each GRIB field. Herbie searches an <strong>.idx</strong> file for the variables you want and performs the cURL command for each field. The returned data is a valid GRIB2 file that contains the whole grid for just the requested variable.</p>
 </div>
 <div class="section" id="other-useful-tools">
 <h3>Other useful tools<a class="headerlink" href="#other-useful-tools" title="Permalink to this headline">¶</a></h3>
-<p>Some other useful tools in development include plucking out points from the HRRR grid. Other useful tools can be found in my <a class="reference external" href="https://github.com/blaylockbk/Carpenter_Workshop">Carpenter Workshop</a></p>
+<p>These are still in development and require my <a class="reference external" href="https://github.com/blaylockbk/Carpenter_Workshop">Carpenter Workshop</a> package to plot the data on a Cartopy map or pluck points nearest specific latitudes and longitudes.</p>
 <div class="section" id="indices-and-tables">
 <h4>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h4>
 <ul class="simple">
@@ -300,21 +305,17 @@ conda activate hrrrb
 
       </div>
     </div>
-    
-  <script src="_static/js/index.c86189f1ce1b71a67eb6.js"></script>
+  
+  <script src="_static/js/index.1c5a1a01449ed65a7b51.js"></script>
 
-
-    
-    <!-- Google Analytics -->
-    <script>
-      window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
-      ga('create', 'G-PT9LX1B7B8', 'auto');
-      ga('set', 'anonymizeIp', true);
-      ga('send', 'pageview');
-    </script>
-    <script async src='https://www.google-analytics.com/analytics.js'></script>
-    <!-- End Google Analytics -->
-    <footer class="footer mt-5 mt-md-0">
+  
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-PT9LX1B7B8"></script>
+<script>
+                    window.dataLayer = window.dataLayer || [];
+                    function gtag(){ dataLayer.push(arguments); }
+                    gtag('config', 'G-PT9LX1B7B8');
+                </script>
+<footer class="footer mt-5 mt-md-0">
   <div class="container">
     
     <div class="footer-item">
@@ -325,7 +326,7 @@ conda activate hrrrb
     
     <div class="footer-item">
       <p class="sphinx-version">
-Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.5.3.<br/>
+Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.0.1.<br/>
 </p>
     </div>
     

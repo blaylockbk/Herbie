@@ -5,16 +5,17 @@ import matplotlib.pyplot as plt
 
 def HerbieLogo():
     """Logo of Herbie The Love Bug"""
-    colors = dict(body='#f0ead2', 
-                red='#88211b', 
-                blue='#0c3576', 
-                white='#ffffff', 
-                black='#000000')
+    colors = dict(
+        body='#f0ead2', 
+        red='#88211b', 
+        blue='#0c3576', 
+        white='#ffffff', 
+        black='#000000'
+    )
 
-    plt.figure(figsize=[5,5], facecolor='b')
+    plt.figure(figsize=[5,5], facecolor=colors['body'])
 
     plt.axis([-10, 10, -10, 10])
-    #plt.axis("equal")
 
     plt.axvline(2.5, lw=20, color=colors['red'])
     plt.axvline(5.5, lw=40, color=colors['blue'])
@@ -24,9 +25,8 @@ def HerbieLogo():
 
     plt.text(0,0, '53', fontsize=110, fontweight='bold', va='center_baseline', ha='center', zorder=11)
 
-    #add circle to plot (gca means "get current axis")
-
     plt.gca().set_facecolor(colors['body'])
+    plt.gca().margins(0)
 
     plt.gca().get_xaxis().set_visible(False)
     plt.gca().get_yaxis().set_visible(False)
@@ -35,3 +35,5 @@ def HerbieLogo():
     plt.gca().spines['top'].set_visible(False)
     plt.gca().spines['left'].set_visible(False)
     plt.gca().spines['right'].set_visible(False)
+
+    return plt.gca()

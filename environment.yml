@@ -1,13 +1,13 @@
-name: hrrrb
+name: herbie
 channels:
   - conda-forge
 dependencies:
   - python=3.8
   - curl
+  - requests
   - numpy
   - matplotlib
   - cartopy
-  - requests
   - jupyter
   - jupyterlab
   - netcdf4
@@ -28,7 +28,8 @@ dependencies:
   - pip:
     # Development Version from GitHub
     - git+https://github.com/blaylockbk/HRRR_archive_download.git
-    - git+https://github.com/blaylockbk/Carpenter_Workshop.git  # "Can I borrow your hammer?"
-    
     # *or* the latest release from PyPI
     #- hrrrb    # Release Version
+
+    # Do you need to borrow my hammer?
+    - git+https://github.com/blaylockbk/Carpenter_Workshop.git  

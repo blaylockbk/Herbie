@@ -7,6 +7,8 @@ User Guide
 
    contribute
    install
+   data_sources
    examples
+   tutorial.ipynb
    notebooks
    
