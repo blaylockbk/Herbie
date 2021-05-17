@@ -1071,6 +1071,12 @@ before we downloaded it.</p></li>
 <tr class="row-odd"><td><p><a class="reference internal" href="#herbie.tools.bulk_download" title="herbie.tools.bulk_download"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bulk_download</span></code></a>(DATES[, searchString, fxx, …])</p></td>
 <td><p>Bulk download GRIB2 files from file source to the local machine.</p></td>
 </tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#herbie.tools.xr_concat_sameLead" title="herbie.tools.xr_concat_sameLead"><code class="xref py py-obj docutils literal notranslate"><span class="pre">xr_concat_sameLead</span></code></a>(DATES, searchString[, …])</p></td>
+<td><p>Load and concatenate xarray objects by model initialization date for the same lead time.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#herbie.tools.xr_concat_sameRun" title="herbie.tools.xr_concat_sameRun"><code class="xref py py-obj docutils literal notranslate"><span class="pre">xr_concat_sameRun</span></code></a>(DATE, searchString[, fxx])</p></td>
+<td><p>Load and concatenate xarray objects by forecast lead time for the same run.</p></td>
+</tr>
 </tbody>
 </table>
 <dl class="py function">
@@ -1085,9 +1091,41 @@ before we downloaded it.</p></li>
 <li><p><strong>searchString</strong> (<em>None</em><em> or </em><em>str</em>) – If None, download the full file. If string, use regex to search
 index files for variables and levels of interest and only
 download the matched GRIB messages.</p></li>
-<li><p><strong>fxx</strong> (<em>int</em><em> or </em><em>list</em>) – List of forecast lead times to download.</p></li>
+<li><p><strong>fxx</strong> (<em>int</em><em> or </em><em>list</em>) – List of forecast lead times to download. Default only downloads model analysis.</p></li>
 <li><p><strong>model</strong> (<em>{'hrrr'</em><em>, </em><em>'hrrrak'</em><em>, </em><em>'rap'}</em>) – Model to download.</p></li>
 <li><p><strong>field</strong> (<em>{'sfc'</em><em>, </em><em>'prs'</em><em>, </em><em>'nat'</em><em>, </em><em>'subh'}</em>) – Variable fields file to download. Not needed for RAP model.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="herbie.tools.xr_concat_sameLead">
+<span class="sig-prename descclassname"><span class="pre">herbie.tools.</span></span><span class="sig-name descname"><span class="pre">xr_concat_sameLead</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">DATES</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">searchString</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fxx</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">DATE_is_valid_time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#herbie.tools.xr_concat_sameLead" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load and concatenate xarray objects by model initialization date for the same lead time.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>DATES</strong> (<em>list of pandas-parsable datetime</em>) – Datetime that represents the model valid time.</p></li>
+<li><p><strong>searchString</strong> (<em>str</em>) – Variable fields to load. This really only works if the search
+string returns data on the same hyper cube.</p></li>
+<li><p><strong>fxx</strong> (<em>int</em>) – The forecast lead time, in hours.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="herbie.tools.xr_concat_sameRun">
+<span class="sig-prename descclassname"><span class="pre">herbie.tools.</span></span><span class="sig-name descname"><span class="pre">xr_concat_sameRun</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">DATE</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">searchString</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fxx</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">range(0,</span> <span class="pre">18)</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#herbie.tools.xr_concat_sameRun" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load and concatenate xarray objects by forecast lead time for the same run.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>DATE</strong> (<em>pandas-parsable datetime</em>) – A datetime that represents the model initialization time.</p></li>
+<li><p><strong>searchString</strong> (<em>str</em>) – Variable fields to load. This really only works if the search
+string returns data on the same hyper cube.</p></li>
+<li><p><strong>fxx</strong> (<em>list of int</em>) – List of forecast lead times, in hours, to concat together.</p></li>
 </ul>
 </dd>
 </dl>
