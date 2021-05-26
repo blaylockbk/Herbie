@@ -41,7 +41,7 @@ With that said, I am happy to share this project with you. You are welcome to op
 ---
 
 # 🐍 Installation and Conda Environment
-This package requires **Python 3.7+** (doesn't work in 3.6 and earlier because I use relative imports)
+This package requires **Python 3.7+** (doesn't work in 3.6 and earlier because I use relative imports). If you use the file subsetting function, it also requires `cURL` which must be available in your PATH.
 
 ### Option 1: pip
 Install the last published version from PyPI.
