@@ -41,7 +41,7 @@ With that said, I am happy to share this project with you. You are welcome to op
 ---
 
 # 🐍 Installation and Conda Environment
-This package requires **Python 3.7+** (doesn't work in 3.6 and earlier because I use relative imports). If you use the file subsetting function, it also requires `cURL` which must be available in your PATH.
+This package requires **Python 3.8+** (doesn't work in 3.6 and earlier because I use relative imports, and 3.8 is required because I started using the new f-string format). If you use the file subsetting function, it also requires `cURL` which must be available in your PATH.
 
 ### Option 1: pip
 Install the last published version from PyPI.
@@ -59,7 +59,7 @@ pip install git+https://github.com/blaylockbk/HRRR_archive_download.git
 > Requires: xarray, cfgrib, pandas, cartopy, requests, curl  
 > Optional: matplotlib, cartopy
 
-### Option 2: conda
+### Option 2: conda *recommended*
 If conda environments are new to you, I suggest you become familiar with [managing conda environments](https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html).
 
 I have provided a sample Anaconda [environment.yml](https://github.com/blaylockbk/HRRR_archive_download/blob/master/environment.yml) file that lists the minimum packages required plus some extras that might be useful when working with other types of weather data. Look at the bottom lines of that yaml file...there are two ways to install `hrrrb` with pip. Comment out the lines you don't want.
