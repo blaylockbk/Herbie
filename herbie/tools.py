@@ -12,9 +12,6 @@ import xarray as xr
 
 from herbie.archive import Herbie
 
-def HerbieColors():
-    return dict(body='#f0ead2', red='#88211b', blue='#0c3576', white='#ffffff', black='#000000')
-
 def bulk_download(DATES, searchString=None, *, fxx=range(0,1), 
                   model='hrrr', field='sfc', priority=None,
                   verbose=True):

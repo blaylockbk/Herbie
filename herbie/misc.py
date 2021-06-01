@@ -3,6 +3,9 @@
 
 import matplotlib.pyplot as plt
 
+def HerbieColors():
+    return dict(body='#f0ead2', red='#88211b', blue='#0c3576', white='#ffffff', black='#000000')
+
 def HerbieLogo():
     """Logo of Herbie The Love Bug"""
     colors = dict(

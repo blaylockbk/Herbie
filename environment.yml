@@ -3,6 +3,7 @@ channels:
   - conda-forge
 dependencies:
   - python=3.8
+  - pip
   - curl
   - requests
   - numpy
@@ -12,6 +13,7 @@ dependencies:
   - jupyterlab
   - netcdf4
   - pandas
+  - geopandas
   - scipy
   - metpy
   - siphon
