@@ -2,6 +2,7 @@
 ## May 13, 2021
 
 import matplotlib.pyplot as plt
+import matplotlib.patheffects as path_effects
 
 def HerbieColors():
     return dict(body='#f0ead2', red='#88211b', blue='#0c3576', white='#ffffff', black='#000000')
@@ -38,7 +39,7 @@ def HerbieLogo(white_line=False):
 
     return plt.gca()
 
-def HerbieLogo2(white_line=False):
+def HerbieLogo2(white_line=False, text_color='body', text_stroke='black'):
     """Logo of Herbie The Love Bug"""
     colors = HerbieColors()
 
@@ -52,8 +53,21 @@ def HerbieLogo2(white_line=False):
     plt.axvline(5.5, lw=40, color=colors['blue'])
 
     
+    if text_color in colors:
+        text_color = colors[text_color]
+    if text_stroke in colors:
+        text_stroke = colors[text_stroke]
 
-    plt.text(8,0, 'Herbie', fontsize=110, fontweight='bold', va='center_baseline', ha='left', zorder=11)
+    text = plt.text(8, 0, 'Herbie',
+                    fontsize=110, fontweight='bold', 
+                    color=text_color,
+                    va='center_baseline', ha='left',
+                    zorder=11)
+    
+    if text_stroke is not None:
+        text.set_path_effects([path_effects.Stroke(linewidth=3,
+                                                foreground=text_stroke),
+                            path_effects.Normal()])
 
     plt.gca().set_facecolor(colors['body'])
     plt.gca().margins(0)

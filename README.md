@@ -1,4 +1,4 @@
-![](docs/_static/HerbieLogo2_transparent.png)
+![](docs/_static/HerbieLogo2_tan_transparent.png)
 
 # 📔 [Documentation Page](https://blaylockbk.github.io/HRRR_archive_download/_build/html/)
 
