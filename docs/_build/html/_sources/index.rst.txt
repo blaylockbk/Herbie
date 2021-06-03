@@ -75,7 +75,7 @@ These are still in development and require my `Carpenter Workshop <https://githu
 There are two command-line tools for looking at GRIB file contents.
 
 1. *wgrib2* is a product of NOAA and can be installed via conda-forge in your environment (linux only).
-2. *grib_ls* ia a product of ECMWF and is a dependency of cfgrib. This utility is included when you install cfgrib in your environment.
+2. *grib_ls* is a product of ECMWF and is a dependency of cfgrib. This utility is included when you install cfgrib in your environment.
 
 For a sample GRIB2 file with precipitation data, below is the output using both tools
 
