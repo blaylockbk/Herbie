@@ -1,6 +1,6 @@
 # 🐍 Installation and Conda Environment
 
-This package requires **Python 3.7+**
+This package requires **Python 3.8+**
 
 ### Option 1: pip
 

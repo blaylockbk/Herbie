@@ -22,7 +22,7 @@ The `HRRR <https://rapidrefresh.noaa.gov/hrrr/>`_ model is NOAA's hourly, 3-km n
 
 Install
 -------
-This package requires **Python 3.7+**
+This package requires **Python 3.8+**
 
 Install with pip
 
