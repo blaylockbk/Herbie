@@ -6,8 +6,11 @@ Since this package is a work in progress, it is distributed "as is." I do not ma
 
 With that said, I am happy to share this project with you. You are welcome to [open issues](https://github.com/blaylockbk/HRRR_archive_download/issues), [ask questions in the discussion](https://github.com/blaylockbk/HRRR_archive_download/discussions), submit pull requests, but know that I may or may not get around to doing anything about it. If this is helpful to you in any way, I'm glad.
 
+**Best of luck 🍀**  
+\- Brian
+
 > ## Alternative  
-> As an alternative, you can use [rclone](https://rclone.org/) to download HRRR files from cloud platforms. I quite like rclone. Here is a [short rclone tutorial](https://github.com/blaylockbk/pyBKB_v3/blob/master/rclone_howto.md)
+> As an alternative, you can use [rclone](https://rclone.org/) to download files from cloud platforms. I quite like rclone. Here is a [short rclone tutorial](https://github.com/blaylockbk/pyBKB_v3/blob/master/rclone_howto.md)
 
 # 🌹 What's in a name? 
 The original name of this package was **HRRR-B** because the primary objective was to help download data from the High-Resolution Rapid Refresh (HRRR) model, and the B is for Brian because I wrote the package. Is it a little pretentious to attach your own name to a package? The concept for this package was originally developed when I was a PhD student and created the original HRRR archive at the University of Utah in 2016.

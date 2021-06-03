@@ -277,7 +277,28 @@ conda activate hrrrb
 </div>
 <div class="section" id="other-useful-tools">
 <h3>Other useful tools<a class="headerlink" href="#other-useful-tools" title="Permalink to this headline">¶</a></h3>
-<p>These are still in development and require my <a class="reference external" href="https://github.com/blaylockbk/Carpenter_Workshop">Carpenter Workshop</a> package to plot the data on a Cartopy map or pluck points nearest specific latitudes and longitudes.</p>
+<p><strong>Brian’s Python Add-ons</strong>
+These are still in development and require my <a class="reference external" href="https://github.com/blaylockbk/Carpenter_Workshop">Carpenter Workshop</a> package to plot the data on a Cartopy map or pluck points nearest specific latitudes and longitudes.</p>
+<p><strong>GRIB2 Tools</strong>
+There are two command-line tools for looking at GRIB file contents.
+1. <cite>wgrib2</cite> : can be installed via conda-forge in your environment. A product from NOAA.
+2. <cite>grib_ls</cite> : is a dependency of cfgrib and is included when you install cfgrib in your environment. A product from ECMWF.</p>
+<p>For the sample precipitation data, below is the output using both tools</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ wgrib2 subset_20201214_hrrr.t00z.wrfsfcf12.grib2
+<span class="m">1</span>:0:d<span class="o">=</span><span class="m">2020121400</span>:APCP:surface:0-12 hour acc fcst:
+<span class="m">2</span>:887244:d<span class="o">=</span><span class="m">2020121400</span>:APCP:surface:11-12 hour acc fcst:
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ grib_ls subset_20201214_hrrr.t00z.wrfsfcf12.grib2
+subset_20201214_hrrr.t00z.wrfsfcf12.grib2
+edition      centre       date         dataType     gridType     typeOfLevel  level        stepRange    shortName    packingType
+<span class="m">2</span>            kwbc         <span class="m">20201214</span>     <span class="nb">fc</span>           lambert      surface      <span class="m">0</span>            <span class="m">0</span>-12         tp           grid_complex_spatial_differencing
+<span class="m">2</span>            kwbc         <span class="m">20201214</span>     <span class="nb">fc</span>           lambert      surface      <span class="m">0</span>            <span class="m">11</span>-12        tp           grid_complex_spatial_differencing
+<span class="m">2</span> of <span class="m">2</span> messages <span class="k">in</span> subset_20201214_hrrr.t00z.wrfsfcf12.grib2
+
+<span class="m">2</span> of <span class="m">2</span> total messages <span class="k">in</span> <span class="m">1</span> files
+</pre></div>
+</div>
 <div class="section" id="indices-and-tables">
 <h4>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h4>
 <ul class="simple">

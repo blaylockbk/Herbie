@@ -68,9 +68,33 @@ GRIB files contain "messages" which define a grid of data for a particular varia
 
 Other useful tools
 ^^^^^^^^^^^^^^^^^^
+**Brian's Python Add-ons**
 These are still in development and require my `Carpenter Workshop <https://github.com/blaylockbk/Carpenter_Workshop>`_ package to plot the data on a Cartopy map or pluck points nearest specific latitudes and longitudes.
 
+**GRIB2 Tools**
+There are two command-line tools for looking at GRIB file contents.
+1. `wgrib2` : can be installed via conda-forge in your environment. A product from NOAA.
+2. `grib_ls` : is a dependency of cfgrib and is included when you install cfgrib in your environment. A product from ECMWF. 
 
+For the sample precipitation data, below is the output using both tools
+
+.. code-block:: bash
+
+   $ wgrib2 subset_20201214_hrrr.t00z.wrfsfcf12.grib2
+   1:0:d=2020121400:APCP:surface:0-12 hour acc fcst:
+   2:887244:d=2020121400:APCP:surface:11-12 hour acc fcst:
+
+.. code-block:: bash
+
+
+   $ grib_ls subset_20201214_hrrr.t00z.wrfsfcf12.grib2 
+   subset_20201214_hrrr.t00z.wrfsfcf12.grib2
+   edition      centre       date         dataType     gridType     typeOfLevel  level        stepRange    shortName    packingType  
+   2            kwbc         20201214     fc           lambert      surface      0            0-12         tp           grid_complex_spatial_differencing 
+   2            kwbc         20201214     fc           lambert      surface      0            11-12        tp           grid_complex_spatial_differencing 
+   2 of 2 messages in subset_20201214_hrrr.t00z.wrfsfcf12.grib2
+
+   2 of 2 total messages in 1 files
 
 Indices and tables
 ==================
