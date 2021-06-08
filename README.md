@@ -1,22 +1,54 @@
-![](docs/_static/HerbieLogo2_tan_transparent.png)
+![](https://github.com/blaylockbk/HRRR_archive_download/blob/master/docs/_static/HerbieLogo2_tan_transparent.png?raw=true)
 
-# 📔 [Documentation Page](https://blaylockbk.github.io/HRRR_archive_download/_build/html/)
-
-|![](https://raw.githubusercontent.com/blaylockbk/SynopticPy/master/images/Balloon_logo/balloon_bkb_sm.png)|**Brian Blaylock**<br>🌐 [Webpage](http://home.chpc.utah.edu/~u0553130/Brian_Blaylock/home.html)<br>[🔩 PyPI](https://pypi.org/user/blaylockbk/)
-|:--|:--|
-
-
-# Brian's High-Resolution Rapid Refresh tools: HRRR-B
+# Download HRRR and RAP model grids
 
 <!-- Badges -->
 [![](https://img.shields.io/pypi/v/hrrrb)](https://pypi.python.org/pypi/hrrrb/)
 ![](https://img.shields.io/github/license/blaylockbk/HRRR_archive_download)
 [![DOI](https://zenodo.org/badge/275214142.svg)](https://zenodo.org/badge/latestdoi/275214142)
+<!-- (Badges) -->
 
-|HRRR Archive Website|**http://hrrr.chpc.utah.edu/**|
-|--:|:--|
+**Brian Blaylock**  
+[🌐 Personal Webpage](http://home.chpc.utah.edu/~u0553130/Brian_Blaylock/home.html)  
+[🌐 University of Utah HRRR archive page](http://hrrr.chpc.utah.edu/)
 
-**HRRR-B**, or "Herbie," is a python package for downloading recent and archived High Resolution Rapid Refresh (HRRR) model forecasts and opening HRRR data in an xarray.Dataset. I created most of this during my PhD and decided to organize what I created into a more coherent package. It will continue to evolve at my own leisure.
+
+---
+
+<br>
+
+## 📔 [Herbie Documentation](https://blaylockbk.github.io/HRRR_archive_download/_build/html/)
+
+<br>
+
+---
+
+**Herbie**, is a python package that helps download recent and archived High Resolution Rapid Refresh (HRRR) model and Rapid Refresh (RAP) model output from different cloud archive sources in GRIB2 format. The GRIB2 data can be read as an xarray Dataset with cfgrib.
+
+## History
+During my PhD at the University of Utah, I created, at the time, the only publicly-accessible archive of HRRR data. In the later half of 2020, this data was made available through the [NOAA Big Data Program](https://www.noaa.gov/information-technology/big-data). This package organizes and expands my original download scripts into a more coherent package with the ability to download HRRR and RAP model data from different data sources. It will continue to evolve at my own leisure.
+
+I originally released this package under the name "HRRR-B" because it only dealt with the HRRR data set, but I have addeed ability to download RAP data. Thus, it was rebranded with the name "Herbie" as a model download assistant. For now, it is still called "hrrrb" on PyPI because "herbie" is already taken. Maybe someday, with some time and an enticing reason, I'll add additional download capabilities. The GOES ABI and GLM data can be downloaded with my [goes-2-go](https://github.com/blaylockbk/goes2go/tree/master/goes2go) package.
+
+## Capabilities
+- Download full GRIB2 files.
+- Download subset GRIB2 files by grib field.
+- Read data with xarray.
+- Plot data with Cartopy (very early development)
+
+## Data Sources
+Herbie downloads model data from the following three sources:
+- NOMADS
+- Big Data Program Partners (AWS, Google, Azure)
+- University of Utah CHPC Pando archive
+
+## Alternative Download Tools
+As an alternative you can use [rclone](https://rclone.org/) to download HRRR files from AWS or GCP. I quite like rclone. Here is a [short rclone tutorial](https://github.com/blaylockbk/pyBKB_v3/blob/master/rclone_howto.md)
+
+---
+---
+---
+---
 
 ## About `HRRR-B`
 HRRR model output is archived by the MesoWest group at the University of Utah on the [CHPC Pando Archive System](http://hrrr.chpc.utah.edu/). The GRIB2 files are copied from from NCEP every couple hours. NOAA started pushing HRRR data to Google and AWS at in the later half of 2020. Between these data sources, there is a lot of archived HRRR data available. **This Python package helps download those archived HRRR files.**
@@ -37,8 +69,7 @@ The intent of this package is to serve as an _example_ of how you can download H
 
 With that said, I am happy to share this project with you. You are welcome to open issues and submit pull requests, but know that I may or may not get around to doing anything about it. If this is helpful to you in any way, I'm glad.
 
-> ## What if I don't like this package?
-> As an alternative you can use [rclone](https://rclone.org/) to download HRRR files from AWS or GCP. I quite like rclone. Here is a [short rclone tutorial](https://github.com/blaylockbk/pyBKB_v3/blob/master/rclone_howto.md)
+
  
 ---
 
