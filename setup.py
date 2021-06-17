@@ -9,7 +9,7 @@ setup(
     version = '0.0.4',
     author = 'Brian K. Blaylock',
     author_email = "blaylockbk@gmail.com",
-    description = 'Retreive historical and recent forecasts from the High-Resolution Rapid Refresh (HRRR) model.',
+    description = 'Retreive historical and recent forecasts from the High-Resolution Rapid Refresh (HRRR) and Rapid Refresh (RAP) models.',
     long_description = README,
     long_description_content_type = 'text/markdown',
     project_urls = {
@@ -21,6 +21,7 @@ setup(
     package_data = {
         "": ['*.cfg'],
     },
+    python_requires=">=3.8",
     install_requires = ['numpy', 'pandas', 'xarray', 'cfgrib'],
     keywords = ['xarray', 'meteorology', 'weather', 'HRRR', 'numerical weather prediction', 'forecast'],
     classifiers = [
