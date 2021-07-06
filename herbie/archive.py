@@ -472,10 +472,29 @@ class Herbie:
         """
         assert self.idx is not None, f"No index file for {self.grib}."
         
+
+        ################################################################
+        ## TODO: Replace reading idx file this with pd.read_cvs()
+        #        Any reason why I shouldn't do it this way?
+        #        Sometimes idx lines end in ':', other times it doesn't (in some Pando files).
+        # https://pando-rgw01.chpc.utah.edu/hrrr/sfc/20180101/hrrr.t00z.wrfsfcf00.grib2.idx
+        # https://noaa-hrrr-bdp-pds.s3.amazonaws.com/hrrr.20210101/conus/hrrr.t00z.wrfsfcf00.grib2.idx
+        '''
+        r = requests.get(self.idx)
+        assert r.ok, f"Index file does not exist: {self.idx}"   
+        read_idx = pd.read_csv(self.idx,
+                               sep=':', 
+                               names=['grib_message', 'start_byte', 
+                                      'reference_time', 'variable', 
+                                      'level', 'forecast_time', 'none']
+                               )
+        '''
+        ################################################################
+
         # Open the idx file
         r = requests.get(self.idx)
         assert r.ok, f"Index file does not exist: {self.idx}"   
-
+        
         read_idx = r.text.split('\n')[:-1]  # last line is empty
         df = pd.DataFrame([i.split(':') for i in read_idx], 
                             columns=['grib_message', 'start_byte', 
