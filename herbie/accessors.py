@@ -83,8 +83,14 @@ class HerbieAccessor:
                 npc_kwargs['central_longitude']=-135
             npc = ccrs.NorthPolarStereo(**npc_kwargs)
             return npc
+        elif attrs['GRIB_gridType'] == 'regular_ll':
+            pc_kwargs = {}
+            if attrs['GRIB_longitudeOfFirstGridPointInDegrees'] == 0:
+                pc_kwargs['central_longitude']=180
+            pc = ccrs.PlateCarree(**pc_kwargs)
+            return pc
         else:
-            warnings.warn('GRIB_gridType is not "lambert".')
+            warnings.warn(f'GRIB_gridType [{attrs["GRIB_gridType"]}] is not recognized.')
             return None
 
 
