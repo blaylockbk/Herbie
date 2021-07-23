@@ -111,7 +111,8 @@ download priority order are listed below:
 
 """
 import os
-from pathlib import Path
+#from pathlib import Path  # Import from __init__ instead
+from . import Path  # <-- import from __init__ because it has my custom `expand()` method
 import warnings
 from datetime import datetime, timedelta
 
@@ -218,8 +219,8 @@ class Herbie:
         self.model = model.lower()
         self.field = field.lower()
         self.priority = priority
-        self.save_dir = Path(save_dir).resolve()
-        
+        self.save_dir = Path(save_dir).expand()  # yes, the expand is my custom method from __init__
+
         if DATE_is_valid_time:
             # The user-supplied DATE represents the forecast valid 
             # time. Adjust self.date by forecast lead time so it 
@@ -323,7 +324,7 @@ class Herbie:
 
             'awip32',      # High Resolution North American Master Grid 32-km resolution
 
-            'wrfprs.'  # Full domain Pressure Levels, 13-km
+            'wrfprs.',  # Full domain Pressure Levels, 13-km
             'wrfnat.'  # Full domain Native Levels, 13-km
         }
 
@@ -486,7 +487,7 @@ class Herbie:
 
     def get_localPath(self, searchString=None):
         """Get path to local file"""
-        outFile = self.save_dir / self.model / f"{self.date:%Y%m%d}" / self.get_localFileName
+        outFile = self.save_dir.expand() / self.model / f"{self.date:%Y%m%d}" / self.get_localFileName
         if searchString is not None:
             # Reassign the index DataFrame with the requested searchString
             self.idx_df = self.read_idx(searchString)
@@ -669,9 +670,9 @@ class Herbie:
 
         # This overwrites the save_dir specified in __init__
         if save_dir is not None:
-            self.save_dir = save_dir
-        if not hasattr(self.save_dir, 'exists'): 
-            self.save_dir = Path(self.save_dir).resolve()
+            self.save_dir = Path(save_dir).expand()
+        if not hasattr(Path(self.save_dir).expand(), 'exists'): 
+            self.save_dir = Path(self.save_dir).expand()
 
         # Check that data exists
         if self.grib is None:
