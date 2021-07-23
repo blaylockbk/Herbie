@@ -35,9 +35,13 @@ Azure), and the CHPC Pando archive at the University of Utah.
     - Option to remove grib2 file when reading xarray if didn't already exist locally (don't clutter local disk).
     - Attach index file DataFrame to object if it exists.
     - If full file exists locally, use remote idx file to cURL local file instead of remote. (Can't create idx file locally because wgrib2 not available on windows)
+    - Added GFS data, though it isn't implemented as cleanly as HRRR or RAP
     - TODO: Rename 'searchString' to 'subset' (and rename subset function)
+    - TODO: Rename 'field' to 'product'
     - TODO: Add NCEI as a source for the RAP data?? URL is complex.
     - TODO: Create .idx file if wgrib2 is installed (linux only)
+    - TODO: Make configurable generic model downloader
+    - TODO: Download RRFS data (https://registry.opendata.aws/noaa-rrfs/)
 
 HRRR and RAP Data Sources
 -------------------------
