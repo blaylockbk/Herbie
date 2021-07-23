@@ -312,8 +312,44 @@ class Herbie:
         
     def _validate(self):
         """Validate the class input arguments"""
-        _models = {'hrrr', 'hrrrak', 'rap'}
-        _fields = {'prs', 'sfc', 'nat', 'subh'}  # Only for HRRR and HRRR-AK
+        _models = {'hrrr', 'hrrrak', 'rap', 'gfs'}
+        
+        # RAP product product fields
+        # https://www.nco.ncep.noaa.gov/pmb/products/rap/
+        # Could expand this...
+        _fields_rap = {
+            'awp130pgrb',  # CONUS Pressure Levels, 13-km Resolution
+            'awp252pgrb',  # CONUS Pressure Levels, 20-km Resolution
+            'awp236pgrb',  # CONUS Pressure Levels, 40-km Resolution
+
+            'awp130bgrb',  # CONUS Native Levels, 13-km
+            'awp252bgrb',  # CONUS Native Levels, 20-km
+
+            'awip32',      # High Resolution North American Master Grid 32-km resolution
+
+            'wrfprs.'  # Full domain Pressure Levels, 13-km
+            'wrfnat.'  # Full domain Native Levels, 13-km
+        }
+
+        # HRRR and HRRR-AK product field names
+        # https://www.nco.ncep.noaa.gov/pmb/products/hrrr/
+        _fields_hrrr = {
+            'prs',   # 3D pressure level fields 3-km resolution
+            'sfc',   # 2D surface fields 3-km resolution
+            'nat',   # native level fields 3-km resolution
+            'subh'}  # subhourly fields 3-km resolution
+        
+        # GFS product names (not everything)
+        # https://www.nco.ncep.noaa.gov/pmb/products/gfs/
+        _fields_gfs = {
+            'pgrb2.0p25',  # common fields, 0.25 degree resolution
+            'pgrb2.0p50',  # common fields, 0.50 degree resolution
+            'pgrb2.1p00',  # common fields, 1.00 degree resolution
+            'pgrb2b.0p25', # uncommon fields, 0.25 degree resolution
+            'pgrb2b.0p50', # uncommon fields, 0.50 degree resolution
+            'pgrb2b.1p00', # uncommon fields, 1.00 degree resolution
+            'pgrb2full.0p50' # combined grids of 0.50 resolution
+        }
         
         assert self.date < datetime.utcnow(), "🔮 Date cannot be in the future."
         
@@ -323,10 +359,16 @@ class Herbie:
         assert self.fxx in range(49), "Forecast lead time `fxx` is too large"
         assert self.model in _models, f"`model` must be one of {_models}"
         if self.model in ['hrrr', 'hrrrak']:
-            assert self.field in _fields, f"`field must be one of {_fields}"
-        else:
+            assert self.field in _fields_hrrr, f"`field must be one of {_fields_hrrr}"
+        elif self.model in ['gfs']:
+            assert self.field in _fields_gfs, f"`field must be one of {_fields_gfs}"
+        elif self.model in ['rap']:
             # field is not needed for RAP model.
-            self.field = ''
+            if self.field in ['prs', 'sfc']:
+                self.field = 'wrfprs.'
+            elif self.field in ['nat']:
+                self.field = 'wfrnat.'
+            assert self.field in _fields_rap, f"`field must be one of {_fields_rap}"
         
         if isinstance(self.priority, str):
             self.priority = [self.priority]
@@ -382,7 +424,8 @@ class Herbie:
         """
         # Big Data Program Path Template
         BDP_path_template = {
-            'rap': f'rap.{self.date:%Y%m%d}/rap.t{self.date:%H}z.awip32f{self.fxx:02d}.grib2',
+            'gfs': f'gfs.{self.date:%Y%m%d/%H}/atmos/gfs.t{self.date:%H}z.{self.field}.f{self.fxx:03d}',            # GFS files are complex: https://www.nco.ncep.noaa.gov/pmb/products/gfs/
+            'rap': f'rap.{self.date:%Y%m%d}/rap.t{self.date:%H}z.{self.field}f{self.fxx:02d}.grib2',
             'hrrr': f"hrrr.{self.date:%Y%m%d}/conus/hrrr.t{self.date:%H}z.wrf{self.field}f{self.fxx:02d}.grib2",
             'hrrrak': f"hrrr.{self.date:%Y%m%d}/alaska/hrrr.t{self.date:%H}z.wrf{self.field}f{self.fxx:02d}.ak.grib2"
         }
@@ -399,12 +442,18 @@ class Herbie:
             if self.model == 'rap':
                 base = 'https://noaa-rap-pds.s3.amazonaws.com/'
                 path = BDP_path_template[self.model]
+            if self.model == 'gfs':
+                base = 'https://noaa-gfs-bdp-pds.s3.amazonaws.com/'
+                path = BDP_path_template[self.model]
             else:
                 base = 'https://noaa-hrrr-bdp-pds.s3.amazonaws.com/'
                 path = BDP_path_template[self.model]
         elif source == 'google':
             if self.model == 'rap':
                 base = 'https://storage.googleapis.com/rapid-refresh/'
+                path = BDP_path_template[self.model]
+            if self.model == 'gfs':
+                base = 'https://storage.googleapis.com/global-forecast-system/'
                 path = BDP_path_template[self.model]
             else:
                 base = 'https://storage.googleapis.com/high-resolution-rapid-refresh/'
@@ -542,6 +591,9 @@ class Herbie:
                  errors='warn'):
         """
         Download file from source.
+
+        Subsetting by variable follows the same principles described here:
+        https://www.cpc.ncep.noaa.gov/products/wesley/fast_downloading_grib.html
 
         Parameters
         ----------
