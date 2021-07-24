@@ -36,11 +36,11 @@ Azure), and the CHPC Pando archive at the University of Utah.
     - Attach index file DataFrame to object if it exists.
     - If full file exists locally, use remote idx file to cURL local file instead of remote. (Can't create idx file locally because wgrib2 not available on windows)
     - Added GFS data, though it isn't implemented as cleanly as HRRR or RAP
+    - Rename 'field' to 'product'
+    - ✨ Moved the source URL templates to their own classes in the **models** folder
     - TODO: Rename 'searchString' to 'subset' (and rename subset function)
-    - TODO: Rename 'field' to 'product'
     - TODO: Add NCEI as a source for the RAP data?? URL is complex.
     - TODO: Create .idx file if wgrib2 is installed (linux only)
-    - TODO: Make configurable generic model downloader
     - TODO: Download RRFS data (https://registry.opendata.aws/noaa-rrfs/)
 
 HRRR and RAP Data Sources
@@ -130,6 +130,8 @@ import pandas as pd
 from . import _default_save_dir
 from . import _default_priority
 
+import herbie.models as models
+
 def _searchString_help():
     """Help/Error Message for `searchString`"""
     msg = [
@@ -163,7 +165,7 @@ class Herbie:
     """Find model output file location based on source priority."""
 
     def __init__(self, DATE, fxx=0, *, 
-                 model='hrrr', field='sfc',
+                 model='hrrr', product=None, member=None,
                  priority=_default_priority,
                  save_dir=_default_save_dir,
                  DATE_is_valid_time=False,
@@ -187,15 +189,19 @@ class Herbie:
             - ``'hrrr'`` HRRR contiguous United States model
             - ``'hrrrak'`` HRRR Alaska model (alias ``'alaska'``)
             - ``'rap'`` RAP model
-        field : {'sfc', 'prs', 'nat', 'subh'}
-            Output variable field file type. In the HRRR model, the
-            different field files have certain variables at levels. 
+        product : {'sfc', 'prs', 'nat', 'subh'}
+            If not specified, will use first product in template.
+            Output variable product file type. In the HRRR model, the
+            different product files have certain variables at levels. 
             Not required for the RAP model as all variables are in the 
             same file.
             - ``'sfc'`` surface fields
             - ``'prs'`` pressure fields
             - ``'nat'`` native fields
             - ``'subh'`` subhourly fields
+        member : None or int
+            Some ensemble models (e.g. the future RRFS) will need to 
+            specify an ensemble member
         priority : list or str
             List of model sources to get the data in the order of 
             download priority. The available data sources and default
@@ -221,7 +227,8 @@ class Herbie:
         self.date = pd.to_datetime(DATE)
         self.fxx = fxx
         self.model = model.lower()
-        self.field = field.lower()
+        self.member = member
+        self.product = product
         self.priority = priority
         self.save_dir = Path(save_dir).expand()  # yes, the expand is my custom method from __init__
 
@@ -231,6 +238,23 @@ class Herbie:
             # represents the model initialization datetime.
             self.date = self.date - timedelta(hours=self.fxx)
 
+        # Get model details from the models template for the model specified.
+        # This attaches the details from the models.<model>.template
+        # to the object.
+        # Remember: 'models' is the template file, 'model' is the user
+        # input string of the model name (e.g., 'hrrr' or 'gfs').
+        getattr(models, model).template(self)
+        
+        if product is None:
+            p = list(self.PRODUCTS)[0]
+            warnings.warn(f'`product` not specified. Will use ["{p}"].')
+            self.product = p
+            # We need to rerun this to repopulate the None product value
+            getattr(models, model).template(self)
+        else:
+            self.product = product.lower()
+
+        # Check the user input
         self._validate()
 
         # self.grib is the first existing GRIB2 file discovered.
@@ -256,7 +280,8 @@ class Herbie:
             # Get the file URL for the source and determine if the 
             # GRIB2 file and the index file exist. If found, store the
             # URL for the GRIB2 file and the .idx file.
-            url = self.get_url(source)
+            # https://stackoverflow.com/questions/7936572/python-call-a-function-from-string-name
+            url = self.SOURCES[source]
             
             found_grib = False
             found_idx = False
@@ -283,7 +308,7 @@ class Herbie:
             if any([self.grib is not None, self.idx is not None]):
                 print(f'🏋🏻‍♂️ Found',
                       f'\033[32m{self.date:%Y-%b-%d %H:%M UTC} F{self.fxx:02d}\033[m',
-                      f'{self.model.upper()} {self.field}',
+                      f'{self.model.upper()} {self.product}',
                       f'GRIB2 file from \033[38;5;202m{self.grib_source}\033[m and',
                       f'index file from \033[38;5;202m{self.idx_source}\033[m.',
                       f'{" ":100s}')
@@ -295,7 +320,7 @@ class Herbie:
 
     def __repr__(self):
         """Representation in Notebook"""
-        msg = (f"{self.model.upper()} model {self.field} fields",
+        msg = (f"{self.model.upper()} model {self.product} products",
                f"run at \033[32m{self.date:%Y-%b-%d %H:%M UTC}",
                f"F{self.fxx:02d}\033[m")
         return ' '.join(msg)
@@ -304,7 +329,7 @@ class Herbie:
         """When class object is printed"""
         msg = [
             f'{self.model=}',
-            f'{self.field=}',
+            f'{self.product=}',
             f'{self.fxx=}',
             f'{self.date=}',
             f'{self.priority=}',
@@ -313,63 +338,17 @@ class Herbie:
         
     def _validate(self):
         """Validate the class input arguments"""
-        _models = {'hrrr', 'hrrrak', 'rap', 'gfs'}
-        
-        # RAP product product fields
-        # https://www.nco.ncep.noaa.gov/pmb/products/rap/
-        # Could expand this...
-        _fields_rap = {
-            'awp130pgrb',  # CONUS Pressure Levels, 13-km Resolution
-            'awp252pgrb',  # CONUS Pressure Levels, 20-km Resolution
-            'awp236pgrb',  # CONUS Pressure Levels, 40-km Resolution
-
-            'awp130bgrb',  # CONUS Native Levels, 13-km
-            'awp252bgrb',  # CONUS Native Levels, 20-km
-
-            'awip32',      # High Resolution North American Master Grid 32-km resolution
-
-            'wrfprs.',  # Full domain Pressure Levels, 13-km
-            'wrfnat.'  # Full domain Native Levels, 13-km
-        }
-
-        # HRRR and HRRR-AK product field names
-        # https://www.nco.ncep.noaa.gov/pmb/products/hrrr/
-        _fields_hrrr = {
-            'prs',   # 3D pressure level fields 3-km resolution
-            'sfc',   # 2D surface fields 3-km resolution
-            'nat',   # native level fields 3-km resolution
-            'subh'}  # subhourly fields 3-km resolution
-        
-        # GFS product names (not everything)
-        # https://www.nco.ncep.noaa.gov/pmb/products/gfs/
-        _fields_gfs = {
-            'pgrb2.0p25',  # common fields, 0.25 degree resolution
-            'pgrb2.0p50',  # common fields, 0.50 degree resolution
-            'pgrb2.1p00',  # common fields, 1.00 degree resolution
-            'pgrb2b.0p25', # uncommon fields, 0.25 degree resolution
-            'pgrb2b.0p50', # uncommon fields, 0.50 degree resolution
-            'pgrb2b.1p00', # uncommon fields, 1.00 degree resolution
-            'pgrb2full.0p50' # combined grids of 0.50 resolution
-        }
+        _models = { m for m in dir(models) if not m.startswith('__')}
+        _products = set(self.PRODUCTS)
         
         assert self.date < datetime.utcnow(), "🔮 Date cannot be in the future."
         
         if self.model.lower() == 'alaska':
             self.model = 'hrrrak'
 
-        assert self.fxx in range(49), "Forecast lead time `fxx` is too large"
+        #assert self.fxx in range(49), "Forecast lead time `fxx` is too large"
         assert self.model in _models, f"`model` must be one of {_models}"
-        if self.model in ['hrrr', 'hrrrak']:
-            assert self.field in _fields_hrrr, f"`field must be one of {_fields_hrrr}"
-        elif self.model in ['gfs']:
-            assert self.field in _fields_gfs, f"`field must be one of {_fields_gfs}"
-        elif self.model in ['rap']:
-            # field is not needed for RAP model.
-            if self.field in ['prs', 'sfc']:
-                self.field = 'wrfprs.'
-            elif self.field in ['nat']:
-                self.field = 'wfrnat.'
-            assert self.field in _fields_rap, f"`field must be one of {_fields_rap}"
+        assert self.product in _products, f"`product` must be one of {_products}"
         
         if isinstance(self.priority, str):
             self.priority = [self.priority]
@@ -408,81 +387,12 @@ class Herbie:
             url += '.idx'
         return requests.head(url).ok
     
-    def get_url(self, source):
-        """
-        Build the URL for the GRIB2 file for the requested file and data source.
-        
-        Parameters
-        ----------
-        source : {'aws', 'nomads', 'google', 'azure', 'pando', 'pando2'}
-            The data download source for the RAP and HRRR models. 
-            - ``'aws'`` Amazon Web Services (Big Data Program)
-            - ``'nomads'`` NOAA's NOMADS server
-            - ``'google'`` Google Cloud Platform (Big Data Program)
-            - ``'azure'`` Microsoft Azure (Big Data Program)
-            - ``'pando'`` University of Utah Pando Archive (gateway 1)
-            - ``'pando2'`` University of Utah Pando Archive (gateway 2)
-        """
-        # Big Data Program Path Template
-        BDP_path_template = {
-            'gfs': f'gfs.{self.date:%Y%m%d/%H}/atmos/gfs.t{self.date:%H}z.{self.field}.f{self.fxx:03d}',            # GFS files are complex: https://www.nco.ncep.noaa.gov/pmb/products/gfs/
-            'rap': f'rap.{self.date:%Y%m%d}/rap.t{self.date:%H}z.{self.field}f{self.fxx:02d}.grib2',
-            'hrrr': f"hrrr.{self.date:%Y%m%d}/conus/hrrr.t{self.date:%H}z.wrf{self.field}f{self.fxx:02d}.grib2",
-            'hrrrak': f"hrrr.{self.date:%Y%m%d}/alaska/hrrr.t{self.date:%H}z.wrf{self.field}f{self.fxx:02d}.ak.grib2"
-        }
-
-        # Big Data Program Sources (and NOMADS)
-        if source == 'nomads':
-            if self.model == 'rap':
-                base = f'https://nomads.ncep.noaa.gov/pub/data/nccf/com/rap/prod/'
-                path = BDP_path_template[self.model]
-            else:
-                base = 'https://nomads.ncep.noaa.gov/pub/data/nccf/com/hrrr/prod/'
-                path = BDP_path_template[self.model]
-        elif source == 'aws':
-            if self.model == 'rap':
-                base = 'https://noaa-rap-pds.s3.amazonaws.com/'
-                path = BDP_path_template[self.model]
-            if self.model == 'gfs':
-                base = 'https://noaa-gfs-bdp-pds.s3.amazonaws.com/'
-                path = BDP_path_template[self.model]
-            else:
-                base = 'https://noaa-hrrr-bdp-pds.s3.amazonaws.com/'
-                path = BDP_path_template[self.model]
-        elif source == 'google':
-            if self.model == 'rap':
-                base = 'https://storage.googleapis.com/rapid-refresh/'
-                path = BDP_path_template[self.model]
-            if self.model == 'gfs':
-                base = 'https://storage.googleapis.com/global-forecast-system/'
-                path = BDP_path_template[self.model]
-            else:
-                base = 'https://storage.googleapis.com/high-resolution-rapid-refresh/'
-                path = BDP_path_template[self.model]
-        elif source == 'azure':
-            if self.model == 'rap':
-                base = 'https://noaarap.blob.core.windows.net/rap'
-                path = BDP_path_template[self.model]
-            else:
-                base = 'https://noaahrrr.blob.core.windows.net/hrrr/'
-                path = BDP_path_template[self.model]
-        elif source.startswith('pando'):
-            if source[-1] == '2':
-                gateway = 2
-            else:
-                gateway = 1
-            if self.model == 'rap':
-                return None  # No RAP data on Pando
-            else:
-                base = f'https://pando-rgw0{gateway}.chpc.utah.edu/'
-                path = f"{self.model}/{self.field}/{self.date:%Y%m%d}/{self.model}.t{self.date:%H}z.wrf{self.field}f{self.fxx:02d}.grib2"
-
-        return base+path
-
     @property
-    def get_remoteFileName(self):
+    def get_remoteFileName(self, source=None):
         """Predict Remote File Name"""
-        return self.get_url('nomads').split('/')[-1]  # predict name based on nomads source
+        if source is None:
+            source = list(self.SOURCES)[0]
+        return self.SOURCES[source].split('/')[-1]  # predict name based on nomads source
 
     @property
     def get_localFileName(self):
@@ -571,7 +481,7 @@ class Herbie:
             source=self.idx_source, 
             description='Index (.idx) file for the GRIB2 file.', 
             model=self.model, 
-            field=self.field, 
+            product=self.product, 
             lead_time=self.fxx, 
             datetime=self.date
         )
@@ -695,7 +605,7 @@ class Herbie:
 
         if source is not None:
             # Force download from a specified source and not from first in priority
-            self.grib = self.get_url(source)
+            self.grib = self.SOURCES[source]
             
         # Create directory if it doesn't exist
         if not outFile.parent.is_dir():
