@@ -12,6 +12,7 @@ Herbie is your model output download assistant with a mind of his own!
 Herbie might look small on the outside, but he has a big heart on the 
 inside and will get you to the
 `finish line <https://www.youtube.com/watch?v=4XWufUZ1mxQ&t=189s>`_ 🏁.
+Happy racing! 🏎
 
 With Herbie's API, you can download High-Resolution Rapid Refresh (HRRR)
 HRRR-Alaska, and Rapid Refresh (RAP) model GRIB2 files from different 
