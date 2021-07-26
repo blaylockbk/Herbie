@@ -26,8 +26,7 @@ copyright = f'{datetime.utcnow():%Y}, Brian K. Blaylock'
 author = 'Brian K. Blaylock'
 
 # The full version, including alpha/beta/rc tags
-release = '0.0.1'
-
+release = '0.0.4'
 
 # -- General configuration ---------------------------------------------------
 
@@ -97,7 +96,7 @@ html_theme_options = {
 html_sidebars = {
 }
 
-html_logo = '_static/HerbieLogo2_tan_transparent.png'
+html_logo = '_static/HerbieLogo2_white_transparent.png'
 html_favicon = "_static/wxicon.png"
 
 html_context = {
