@@ -1,4 +1,4 @@
-.. image:: _static/HerbieLogo2_white_transparent.png
+.. image:: _static/HerbieLogo2_tan_transparent.png
 
 .. toctree::
    :maxdepth: 1
