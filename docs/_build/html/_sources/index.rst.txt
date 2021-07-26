@@ -15,7 +15,7 @@ Herbie Documentation
 The `HRRR <https://rapidrefresh.noaa.gov/hrrr/>`_ model is NOAA's hourly, 3-km numerical weather prediction model nested within the `RAP <https://rapidrefresh.noaa.gov/>`_ model and is a `valuable numerical weather prediction resource <https://research.noaa.gov/article/ArtMID/587/ArticleID/2702/The-amazing-research-resume-of-High-Resolution-Rapid-Refresh-Model>`_. The RAP and HRRR model development are the foundation for the upcoming Rapid-Refresh Forecast System (`RRFS <https://gsl.noaa.gov/focus-areas/unified_forecast_system/rrfs>`_). 
 
 
-.. figure:: _static/Herbie3.png
+.. figure:: _static/HerbieLogo2_tan_transparent.png
    :class: img-fluid
    :width: 66%
 

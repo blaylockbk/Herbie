@@ -57,7 +57,7 @@
     
 
 <a class="navbar-brand" href="../index.html">
-  <img src="../_static/Herbie_Logo.png" class="logo" alt="logo">
+  <img src="../_static/HerbieLogo2_tan_transparent.png" class="logo" alt="logo">
 </a>
 
 
@@ -177,17 +177,6 @@
      searchString
     </span>
    </code>
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="examples.html">
-   👨🏻‍💻 Practical Examples: Old
-   <code class="docutils literal notranslate">
-    <span class="pre">
-     HRRR-B
-    </span>
-   </code>
-   API
   </a>
  </li>
  <li class="toctree-l1 has-children">
@@ -607,7 +596,7 @@ div.rendered_html tbody tr:hover {
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">herbie.archive</span> <span class="kn">import</span> <span class="n">Herbie</span>
+<span></span>from herbie.archive import Herbie
 </pre></div>
 </div>
 </div>
@@ -616,7 +605,7 @@ div.rendered_html tbody tr:hover {
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">help</span><span class="p">(</span><span class="n">Herbie</span><span class="o">.</span><span class="fm">__init__</span><span class="p">)</span>
+<span></span>help(Herbie.__init__)
 </pre></div>
 </div>
 </div>
@@ -685,7 +674,7 @@ __init__(self, DATE, fxx=0, *, model=&#39;hrrr&#39;, field=&#39;sfc&#39;, priori
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">H</span> <span class="o">=</span> <span class="n">Herbie</span><span class="p">(</span><span class="s1">&#39;2021-5-5&#39;</span><span class="p">)</span>
+<span></span>H = Herbie(&#39;2021-5-5&#39;)
 </pre></div>
 </div>
 </div>
@@ -703,8 +692,8 @@ __init__(self, DATE, fxx=0, *, model=&#39;hrrr&#39;, field=&#39;sfc&#39;, priori
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="nb">print</span><span class="p">(</span><span class="n">H</span><span class="o">.</span><span class="n">grib</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">H</span><span class="o">.</span><span class="n">idx</span><span class="p">)</span>
+<span></span>print(H.grib)
+print(H.idx)
 </pre></div>
 </div>
 </div>
@@ -723,8 +712,8 @@ https://noaa-hrrr-bdp-pds.s3.amazonaws.com/hrrr.20210505/conus/hrrr.t00z.wrfsfcf
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="c1"># Specify the source priority to only look on Pando</span>
-<span class="n">H</span> <span class="o">=</span> <span class="n">Herbie</span><span class="p">(</span><span class="s1">&#39;2021-5-5&#39;</span><span class="p">,</span> <span class="n">priority</span><span class="o">=</span><span class="s1">&#39;pando&#39;</span><span class="p">)</span>
+<span></span># Specify the source priority to only look on Pando
+H = Herbie(&#39;2021-5-5&#39;, priority=&#39;pando&#39;)
 </pre></div>
 </div>
 </div>
@@ -741,8 +730,8 @@ https://noaa-hrrr-bdp-pds.s3.amazonaws.com/hrrr.20210505/conus/hrrr.t00z.wrfsfcf
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="c1"># Specify the source priority to only look on NOMADS</span>
-<span class="n">H</span> <span class="o">=</span> <span class="n">Herbie</span><span class="p">(</span><span class="s1">&#39;2021-5-5&#39;</span><span class="p">,</span> <span class="n">priority</span><span class="o">=</span><span class="s1">&#39;nomads&#39;</span><span class="p">)</span>
+<span></span># Specify the source priority to only look on NOMADS
+H = Herbie(&#39;2021-5-5&#39;, priority=&#39;nomads&#39;)
 </pre></div>
 </div>
 </div>
@@ -760,8 +749,8 @@ https://noaa-hrrr-bdp-pds.s3.amazonaws.com/hrrr.20210505/conus/hrrr.t00z.wrfsfcf
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="c1"># Specify the source priority.</span>
-<span class="n">H</span> <span class="o">=</span> <span class="n">Herbie</span><span class="p">(</span><span class="s1">&#39;2021-5-5&#39;</span><span class="p">,</span> <span class="n">priority</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;nomads&#39;</span><span class="p">,</span> <span class="s1">&#39;aws&#39;</span><span class="p">])</span>
+<span></span># Specify the source priority.
+H = Herbie(&#39;2021-5-5&#39;, priority=[&#39;nomads&#39;, &#39;aws&#39;])
 </pre></div>
 </div>
 </div>
@@ -779,7 +768,7 @@ https://noaa-hrrr-bdp-pds.s3.amazonaws.com/hrrr.20210505/conus/hrrr.t00z.wrfsfcf
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">H</span> <span class="o">=</span> <span class="n">Herbie</span><span class="p">(</span><span class="s1">&#39;2021-5-5&#39;</span><span class="p">,</span> <span class="n">fxx</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span>
+<span></span>H = Herbie(&#39;2021-5-5&#39;, fxx=15)
 </pre></div>
 </div>
 </div>
@@ -797,7 +786,7 @@ https://noaa-hrrr-bdp-pds.s3.amazonaws.com/hrrr.20210505/conus/hrrr.t00z.wrfsfcf
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">H</span> <span class="o">=</span> <span class="n">Herbie</span><span class="p">(</span><span class="s1">&#39;2021-5-5&#39;</span><span class="p">,</span> <span class="n">fxx</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span> <span class="n">DATE_is_valid_time</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span></span>H = Herbie(&#39;2021-5-5&#39;, fxx=15, DATE_is_valid_time=True)
 </pre></div>
 </div>
 </div>
@@ -818,8 +807,8 @@ https://noaa-hrrr-bdp-pds.s3.amazonaws.com/hrrr.20210505/conus/hrrr.t00z.wrfsfcf
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">H</span> <span class="o">=</span> <span class="n">Herbie</span><span class="p">(</span><span class="s1">&#39;2021-5-5&#39;</span><span class="p">,</span> <span class="n">fxx</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span> <span class="n">DATE_is_valid_time</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">H</span><span class="o">.</span><span class="n">download</span><span class="p">()</span>
+<span></span>H = Herbie(&#39;2021-5-5&#39;, fxx=15, DATE_is_valid_time=True)
+H.download()
 </pre></div>
 </div>
 </div>
@@ -841,7 +830,7 @@ https://noaa-hrrr-bdp-pds.s3.amazonaws.com/hrrr.20210505/conus/hrrr.t00z.wrfsfcf
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">H</span> <span class="o">=</span> <span class="n">Herbie</span><span class="p">(</span><span class="s1">&#39;2021-5-5&#39;</span><span class="p">,</span> <span class="n">fxx</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span> <span class="n">DATE_is_valid_time</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span></span>H = Herbie(&#39;2021-5-5&#39;, fxx=15, DATE_is_valid_time=True)
 </pre></div>
 </div>
 </div>
@@ -863,9 +852,9 @@ https://noaa-hrrr-bdp-pds.s3.amazonaws.com/hrrr.20210505/conus/hrrr.t00z.wrfsfcf
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="c1"># The full file already exists on Local Disk</span>
-<span class="n">H</span> <span class="o">=</span> <span class="n">Herbie</span><span class="p">(</span><span class="s1">&#39;2021-5-5&#39;</span><span class="p">,</span> <span class="n">fxx</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">DATE_is_valid_time</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">H</span><span class="o">.</span><span class="n">download</span><span class="p">(</span><span class="s1">&#39;:2 m&#39;</span><span class="p">)</span>
+<span></span># The full file already exists on Local Disk
+H = Herbie(&#39;2021-5-5&#39;, fxx=1, DATE_is_valid_time=True)
+H.download(&#39;:2 m&#39;)
 </pre></div>
 </div>
 </div>
@@ -891,9 +880,9 @@ https://noaa-hrrr-bdp-pds.s3.amazonaws.com/hrrr.20210505/conus/hrrr.t00z.wrfsfcf
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="c1"># The Subset File Already Exists</span>
-<span class="n">H</span> <span class="o">=</span> <span class="n">Herbie</span><span class="p">(</span><span class="s1">&#39;2021-5-5&#39;</span><span class="p">,</span> <span class="n">fxx</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">DATE_is_valid_time</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">H</span><span class="o">.</span><span class="n">download</span><span class="p">(</span><span class="s1">&#39;:2 m&#39;</span><span class="p">)</span>
+<span></span># The Subset File Already Exists
+H = Herbie(&#39;2021-5-5&#39;, fxx=1, DATE_is_valid_time=True)
+H.download(&#39;:2 m&#39;)
 </pre></div>
 </div>
 </div>
@@ -911,9 +900,9 @@ https://noaa-hrrr-bdp-pds.s3.amazonaws.com/hrrr.20210505/conus/hrrr.t00z.wrfsfcf
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="c1"># Now download the full file</span>
-<span class="n">H</span> <span class="o">=</span> <span class="n">Herbie</span><span class="p">(</span><span class="s1">&#39;2021-5-5&#39;</span><span class="p">,</span> <span class="n">fxx</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">DATE_is_valid_time</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">H</span><span class="o">.</span><span class="n">download</span><span class="p">()</span>
+<span></span># Now download the full file
+H = Herbie(&#39;2021-5-5&#39;, fxx=1, DATE_is_valid_time=True, overwrite=True)
+H.download()
 </pre></div>
 </div>
 </div>
@@ -997,7 +986,7 @@ https://noaa-hrrr-bdp-pds.s3.amazonaws.com/hrrr.20210505/conus/hrrr.t00z.wrfsfcf
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">H</span><span class="o">.</span><span class="n">read_idx</span><span class="p">()</span>
+<span></span>H.read_idx()
 </pre></div>
 </div>
 </div>
@@ -1177,8 +1166,8 @@ https://noaa-hrrr-bdp-pds.s3.amazonaws.com/hrrr.20210505/conus/hrrr.t00z.wrfsfcf
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="c1"># See what messages will be downloaded by a search string.</span>
-<span class="n">H</span><span class="o">.</span><span class="n">read_idx</span><span class="p">(</span><span class="s1">&#39;(U|V)GRD&#39;</span><span class="p">)</span>
+<span></span># See what messages will be downloaded by a search string.
+H.read_idx(&#39;(U|V)GRD&#39;)
 </pre></div>
 </div>
 </div>
@@ -1443,8 +1432,8 @@ https://noaa-hrrr-bdp-pds.s3.amazonaws.com/hrrr.20210505/conus/hrrr.t00z.wrfsfcf
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="c1"># See what messages will be downloaded by a search string.</span>
-<span class="n">H</span><span class="o">.</span><span class="n">read_idx</span><span class="p">(</span><span class="s1">&#39;(U|V)GRD:[8|5][0|5]0 mb&#39;</span><span class="p">)</span>
+<span></span># See what messages will be downloaded by a search string.
+H.read_idx(&#39;(U|V)GRD:[8|5][0|5]0 mb&#39;)
 </pre></div>
 </div>
 </div>
@@ -1556,9 +1545,9 @@ https://noaa-hrrr-bdp-pds.s3.amazonaws.com/hrrr.20210505/conus/hrrr.t00z.wrfsfcf
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="c1"># Download a different Subset of File the local file</span>
-<span class="n">H</span> <span class="o">=</span> <span class="n">Herbie</span><span class="p">(</span><span class="s1">&#39;2021-5-5&#39;</span><span class="p">,</span> <span class="n">fxx</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">DATE_is_valid_time</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">H</span><span class="o">.</span><span class="n">download</span><span class="p">(</span><span class="s1">&#39;:500 mb:&#39;</span><span class="p">)</span>
+<span></span># Download a different Subset of File the local file
+H = Herbie(&#39;2021-5-5&#39;, fxx=0, DATE_is_valid_time=True)
+H.download(&#39;:500 mb:&#39;)
 </pre></div>
 </div>
 </div>
@@ -1583,8 +1572,8 @@ https://noaa-hrrr-bdp-pds.s3.amazonaws.com/hrrr.20210505/conus/hrrr.t00z.wrfsfcf
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="c1"># Show path to subset file. You should check if this path exists or not.</span>
-<span class="n">H</span><span class="o">.</span><span class="n">get_localPath</span><span class="p">(</span><span class="s1">&#39;:500 mb&#39;</span><span class="p">)</span>
+<span></span># Show path to subset file. You should check if this path exists or not.
+H.get_localPath(&#39;:500 mb&#39;)
 </pre></div>
 </div>
 </div>
@@ -1606,10 +1595,10 @@ PosixPath(&#39;/p/cwfs/blaylock/data/hrrr/20210505/20210505_hrrr.t00z.wrfsfcf00.
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="c1"># Read file with xarray that does not exists on disk</span>
-<span class="n">H</span> <span class="o">=</span> <span class="n">Herbie</span><span class="p">(</span><span class="s1">&#39;2021-5-6&#39;</span><span class="p">,</span> <span class="n">fxx</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">DATE_is_valid_time</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">Hx</span> <span class="o">=</span> <span class="n">H</span><span class="o">.</span><span class="n">xarray</span><span class="p">(</span><span class="s1">&#39;:500 mb&#39;</span><span class="p">)</span>
-<span class="n">Hx</span>
+<span></span># Read file with xarray that does not exists on disk
+H = Herbie(&#39;2021-5-6&#39;, fxx=0, DATE_is_valid_time=True)
+Hx = H.xarray(&#39;:500 mb&#39;)
+Hx
 </pre></div>
 </div>
 </div>
@@ -2101,8 +2090,8 @@ Attributes:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="c1"># The local grib does not exists because it was removed</span>
-<span class="n">Hx</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;local_grib&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">exists</span><span class="p">()</span>
+<span></span># The local grib does not exists because it was removed
+Hx.attrs[&#39;local_grib&#39;].exists()
 </pre></div>
 </div>
 </div>
@@ -2120,10 +2109,10 @@ False
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="c1"># You can tell xarray not to delete the grib2 file</span>
-<span class="n">H</span> <span class="o">=</span> <span class="n">Herbie</span><span class="p">(</span><span class="s1">&#39;2021-5-6&#39;</span><span class="p">,</span> <span class="n">fxx</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">DATE_is_valid_time</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">Hx</span> <span class="o">=</span> <span class="n">H</span><span class="o">.</span><span class="n">xarray</span><span class="p">(</span><span class="s1">&#39;:500 mb&#39;</span><span class="p">,</span> <span class="n">remove_grib</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="n">Hx</span>
+<span></span># You can tell xarray not to delete the grib2 file
+H = Herbie(&#39;2021-5-6&#39;, fxx=0, DATE_is_valid_time=True)
+Hx = H.xarray(&#39;:500 mb&#39;, remove_grib=False)
+Hx
 </pre></div>
 </div>
 </div>
@@ -2554,8 +2543,8 @@ Attributes:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="c1"># The local grib does exists</span>
-<span class="n">Hx</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;local_grib&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">exists</span><span class="p">()</span>
+<span></span># The local grib does exists
+Hx.attrs[&#39;local_grib&#39;].exists()
 </pre></div>
 </div>
 </div>
@@ -2577,7 +2566,7 @@ True
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">Hx</span><span class="o">.</span><span class="n">herbie</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+<span></span>Hx.herbie.plot()
 </pre></div>
 </div>
 </div>
@@ -2691,8 +2680,8 @@ GRIB_typeOfLevel isobaricInhPa
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="c1"># Last used dataframe (for subsetting)</span>
-<span class="n">H</span><span class="o">.</span><span class="n">idx_df</span>
+<span></span># Last used dataframe (for subsetting)
+H.idx_df
 </pre></div>
 </div>
 </div>
@@ -2805,8 +2794,8 @@ GRIB_typeOfLevel isobaricInhPa
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="c1"># Full DataFrame</span>
-<span class="n">H</span><span class="o">.</span><span class="n">read_idx</span><span class="p">()</span>
+<span></span># Full DataFrame
+H.read_idx()
 </pre></div>
 </div>
 </div>
@@ -2989,8 +2978,8 @@ GRIB_typeOfLevel isobaricInhPa
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
-<span class="kn">from</span> <span class="nn">herbie.misc</span> <span class="kn">import</span> <span class="n">HerbieLogo</span>
+<span></span>import matplotlib.pyplot as plt
+from herbie.misc import HerbieLogo
 </pre></div>
 </div>
 </div>
@@ -2999,7 +2988,7 @@ GRIB_typeOfLevel isobaricInhPa
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">HerbieLogo</span><span class="p">()</span>
+<span></span>HerbieLogo()
 </pre></div>
 </div>
 </div>
@@ -3028,8 +3017,8 @@ GRIB_typeOfLevel isobaricInhPa
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">herbie.tools</span> <span class="kn">import</span> <span class="n">bulk_download</span>
-<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span></span>from herbie.tools import bulk_download
+import pandas as pd
 </pre></div>
 </div>
 </div>
@@ -3038,7 +3027,7 @@ GRIB_typeOfLevel isobaricInhPa
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">help</span><span class="p">(</span><span class="n">bulk_download</span><span class="p">)</span>
+<span></span>help(bulk_download)
 </pre></div>
 </div>
 </div>
@@ -3076,9 +3065,9 @@ bulk_download(DATES, searchString=None, *, fxx=range(0, 1), model=&#39;hrrr&#39;
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="c1"># Use pandas to create a list of Datetimes</span>
-<span class="n">DATES</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">date_range</span><span class="p">(</span><span class="s1">&#39;2020-1-1&#39;</span><span class="p">,</span> <span class="s1">&#39;2020-1-2&#39;</span><span class="p">,</span> <span class="n">freq</span><span class="o">=</span><span class="s1">&#39;3H&#39;</span><span class="p">)</span>
-<span class="n">DATES</span>
+<span></span># Use pandas to create a list of Datetimes
+DATES = pd.date_range(&#39;2020-1-1&#39;, &#39;2020-1-2&#39;, freq=&#39;3H&#39;)
+DATES
 </pre></div>
 </div>
 </div>
@@ -3101,7 +3090,7 @@ DatetimeIndex([&#39;2020-01-01 00:00:00&#39;, &#39;2020-01-01 03:00:00&#39;,
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">H_list</span> <span class="o">=</span> <span class="n">bulk_download</span><span class="p">(</span><span class="n">DATES</span><span class="p">,</span> <span class="n">fxx</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span></span>H_list = bulk_download(DATES, fxx=[0])
 </pre></div>
 </div>
 </div>
@@ -3178,7 +3167,7 @@ DatetimeIndex([&#39;2020-01-01 00:00:00&#39;, &#39;2020-01-01 03:00:00&#39;,
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">H_list</span> <span class="o">=</span> <span class="n">bulk_download</span><span class="p">(</span><span class="n">DATES</span><span class="p">)</span>
+<span></span>H_list = bulk_download(DATES)
 </pre></div>
 </div>
 </div>
@@ -3237,8 +3226,8 @@ DatetimeIndex([&#39;2020-01-01 00:00:00&#39;, &#39;2020-01-01 03:00:00&#39;,
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">herbie.tools</span> <span class="kn">import</span> <span class="n">xr_concat_sameRun</span><span class="p">,</span> <span class="n">xr_concat_sameLead</span>
-<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span></span>from herbie.tools import xr_concat_sameRun, xr_concat_sameLead
+import pandas as pd
 </pre></div>
 </div>
 </div>
@@ -3247,8 +3236,8 @@ DatetimeIndex([&#39;2020-01-01 00:00:00&#39;, &#39;2020-01-01 03:00:00&#39;,
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">Hxcat</span> <span class="o">=</span> <span class="n">xr_concat_sameRun</span><span class="p">(</span><span class="s1">&#39;2018-5-1&#39;</span><span class="p">,</span> <span class="s1">&#39;TMP:2 m&#39;</span><span class="p">,</span> <span class="n">fxx</span><span class="o">=</span><span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span>
-<span class="n">Hxcat</span>
+<span></span>Hxcat = xr_concat_sameRun(&#39;2018-5-1&#39;, &#39;TMP:2 m&#39;, fxx=range(3))
+Hxcat
 </pre></div>
 </div>
 </div>
@@ -3722,10 +3711,10 @@ Attributes:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="c1"># Get concatenated Dataset for 10-m wind for the 6-h forecast for three consecutive hours</span>
-<span class="n">DATES</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">date_range</span><span class="p">(</span><span class="s1">&#39;2019-7-4&#39;</span><span class="p">,</span> <span class="n">periods</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">freq</span><span class="o">=</span><span class="s1">&#39;1H&#39;</span><span class="p">)</span>
-<span class="n">Hxcat2</span> <span class="o">=</span> <span class="n">xr_concat_sameLead</span><span class="p">(</span><span class="n">DATES</span><span class="p">,</span> <span class="s1">&#39;(U|V)GRD:10 m&#39;</span><span class="p">,</span> <span class="n">fxx</span><span class="o">=</span><span class="mi">6</span><span class="p">)</span>
-<span class="n">Hxcat2</span>
+<span></span># Get concatenated Dataset for 10-m wind for the 6-h forecast for three consecutive hours
+DATES = pd.date_range(&#39;2019-7-4&#39;, periods=3, freq=&#39;1H&#39;)
+Hxcat2 = xr_concat_sameLead(DATES, &#39;(U|V)GRD:10 m&#39;, fxx=6)
+Hxcat2
 </pre></div>
 </div>
 </div>
@@ -4344,7 +4333,7 @@ Attributes:
     
     <div class="footer-item">
       <p class="sphinx-version">
-Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.0.2.<br/>
+Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.0.3.<br/>
 </p>
     </div>
     

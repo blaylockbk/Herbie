@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>👨🏻‍💻 Practical Examples: Old HRRR-B API &#8212; HRRR-B 0.0.1 documentation</title>
+    <title>&lt;no title&gt; &#8212; HRRR-B 0.0.1 documentation</title>
     
   <link href="../_static/css/theme.css" rel="stylesheet" />
   <link href="../_static/css/index.c5995385ac14fb8791e8eb36b4908be2.css" rel="stylesheet" />
@@ -55,7 +55,7 @@
     
 
 <a class="navbar-brand" href="../index.html">
-  <img src="../_static/Herbie_Logo.png" class="logo" alt="logo">
+  <img src="../_static/HerbieLogo2_tan_transparent.png" class="logo" alt="logo">
 </a>
 
 
@@ -72,7 +72,7 @@
       
       <div class="navbar-center-item">
         <ul id="navbar-main-elements" class="navbar-nav">
-    <li class="toctree-l1 current active nav-item">
+    <li class="toctree-l1 nav-item">
  <a class="reference internal nav-link" href="index.html">
   User Guide
  </a>
@@ -140,7 +140,7 @@
   <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
 </form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
   <div class="bd-toc-item active">
-    <ul class="current nav bd-sidenav">
+    <ul class="nav bd-sidenav">
  <li class="toctree-l1">
   <a class="reference internal" href="contribute.html">
    👨🏻‍🏭 Disclaimer and Contributing Guidelines
@@ -175,17 +175,6 @@
      searchString
     </span>
    </code>
-  </a>
- </li>
- <li class="toctree-l1 current active">
-  <a class="current reference internal" href="#">
-   👨🏻‍💻 Practical Examples: Old
-   <code class="docutils literal notranslate">
-    <span class="pre">
-     HRRR-B
-    </span>
-   </code>
-   API
   </a>
  </li>
  <li class="toctree-l1 has-children">
@@ -264,37 +253,7 @@
 </div>
 
 <nav id="bd-toc-nav">
-    <ul class="visible nav section-nav flex-column">
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#click-here-for-some-examples">
-   👉 Click Here For Some Examples
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#function-arguments">
-   Function arguments
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#the-searchstring-argument">
-   The
-   <strong>
-    <code class="docutils literal notranslate">
-     <span class="pre">
-      searchString
-     </span>
-    </code>
-   </strong>
-   argument
-  </a>
-  <ul class="nav section-nav flex-column">
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#quickly-look-at-grib-files-in-the-command-line">
-     Quickly look at GRIB files in the command line
-    </a>
-   </li>
-  </ul>
- </li>
+    <ul class="simple visible nav section-nav flex-column">
 </ul>
 
 </nav>
@@ -304,7 +263,7 @@
                 
 
 <div class="tocsection editthispage">
-    <a href="https://github.com/blaylockbk/HRRR_archive_download/edit/master/docs/user_guide/examples.md">
+    <a href="https://github.com/blaylockbk/HRRR_archive_download/edit/master/docs/user_guide/examples.rst">
         <i class="fas fa-pencil-alt"></i> Edit this page
     </a>
 </div>
@@ -323,212 +282,211 @@
               
               <div>
                 
-  <div class="section" id="practical-examples-old-hrrr-b-api">
-<h1>👨🏻‍💻 Practical Examples: Old <code class="docutils literal notranslate"><span class="pre">HRRR-B</span></code> API<a class="headerlink" href="#practical-examples-old-hrrr-b-api" title="Permalink to this headline">¶</a></h1>
-<p>If you are looking for a no-fuss method to download the HRRR data you want, use the <code class="docutils literal notranslate"><span class="pre">hrrrb.archive</span></code> module.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">hrrrb.archive</span> <span class="k">as</span> <span class="nn">ha</span>
-</pre></div>
-</div>
-<p>or</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">hrrrb.archive</span> <span class="kn">import</span> <span class="n">download_hrrr</span><span class="p">,</span> <span class="n">xhrrr</span>
-</pre></div>
-</div>
-<table border="1" class="docutils">
-<thead>
-<tr>
-<th>Main Functions</th>
-<th>What it will do for you...</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>download_hrrr</code></td>
-<td>Downloads full or partial HRRR GRIB2 files to local disk.</td>
-</tr>
-<tr>
-<td><code>xhrrr</code></td>
-<td>Downloads single HRRR file and returns as an <code>xarray.Dataset</code> or list of Datasets.</td>
-</tr>
-</tbody>
-</table><div class="section" id="click-here-for-some-examples">
-<h2><a class="reference external" href="https://github.com/blaylockbk/HRRR_archive_download/blob/master/notebooks/examples.ipynb">👉 Click Here For Some Examples</a><a class="headerlink" href="#click-here-for-some-examples" title="Permalink to this headline">¶</a></h2>
-</div>
-<div class="section" id="function-arguments">
-<h2>Function arguments<a class="headerlink" href="#function-arguments" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Download full GRIB2 files to local disk</span>
-<span class="n">download_hrrr</span><span class="p">(</span><span class="n">DATES</span><span class="p">,</span> <span class="n">searchString</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> 
-              <span class="n">fxx</span><span class="o">=</span><span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
-              <span class="n">model</span><span class="o">=</span><span class="s1">&#39;hrrr&#39;</span><span class="p">,</span>
-              <span class="n">field</span><span class="o">=</span><span class="s1">&#39;sfc&#39;</span><span class="p">,</span>
-              <span class="n">save_dir</span><span class="o">=</span><span class="n">_default_save_dir</span><span class="p">,</span>
-              <span class="n">download_source_priority</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-              <span class="n">dryrun</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-</pre></div>
-</div>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Download file and open as xarray</span>
-<span class="n">xhrrr</span><span class="p">(</span><span class="n">DATE</span><span class="p">,</span> <span class="n">searchString</span><span class="p">,</span> <span class="n">fxx</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span>
-      <span class="n">DATE_is_valid_time</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-      <span class="n">remove_grib2</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-      <span class="n">add_crs</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-      <span class="o">**</span><span class="n">download_kwargs</span><span class="p">)</span>
-</pre></div>
-</div>
+  <p># 👨🏻‍💻 Practical Examples: Old <cite>HRRR-B</cite> API</p>
+<p>If you are looking for a no-fuss method to download the HRRR data you want, use the <cite>hrrrb.archive</cite> module.</p>
+<p><code class="docutils literal notranslate"><span class="pre">`python</span>
+<span class="pre">import</span> <span class="pre">hrrrb.archive</span> <span class="pre">as</span> <span class="pre">ha</span>
+<span class="pre">`</span></code>
+or
+<code class="docutils literal notranslate"><span class="pre">`</span> <span class="pre">python</span>
+<span class="pre">from</span> <span class="pre">hrrrb.archive</span> <span class="pre">import</span> <span class="pre">download_hrrr,</span> <span class="pre">xhrrr</span>
+<span class="pre">`</span></code></p>
+<p>&lt;table border=”1” class=”docutils”&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Main Functions&lt;/th&gt;
+&lt;th&gt;What it will do for you…&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;download_hrrr&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;Downloads full or partial HRRR GRIB2 files to local disk.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;xhrrr&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;Downloads single HRRR file and returns as an &lt;code&gt;xarray.Dataset&lt;/code&gt; or list of Datasets.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;</p>
+<p>## [👉 Click Here For Some Examples](<a class="reference external" href="https://github.com/blaylockbk/HRRR_archive_download/blob/master/notebooks/examples.ipynb">https://github.com/blaylockbk/HRRR_archive_download/blob/master/notebooks/examples.ipynb</a>)</p>
+<p>## Function arguments</p>
+<p><a href="#id1"><span class="problematic" id="id2">``</span></a><a href="#id3"><span class="problematic" id="id4">`</span></a>python
+# Download full GRIB2 files to local disk
+download_hrrr(DATES, searchString=None, <a href="#id5"><span class="problematic" id="id6">*</span></a>,</p>
+<blockquote>
+<div><p>fxx=range(0, 1),
+model=’hrrr’,
+field=’sfc’,
+save_dir=_default_save_dir,
+download_source_priority=None,
+dryrun=False, verbose=True)</p>
+</div></blockquote>
+<p><a href="#id7"><span class="problematic" id="id8">``</span></a>`
+<a href="#id9"><span class="problematic" id="id10">``</span></a><a href="#id11"><span class="problematic" id="id12">`</span></a>python
+# Download file and open as xarray
+xhrrr(DATE, searchString, fxx=0, <a href="#id13"><span class="problematic" id="id14">*</span></a>,</p>
+<blockquote>
+<div><p>DATE_is_valid_time=False,
+remove_grib2=True,
+add_crs=True,
+<a href="#id15"><span class="problematic" id="id16">**</span></a>download_kwargs)</p>
+</div></blockquote>
+<p><a href="#id17"><span class="problematic" id="id18">``</span></a><a href="#id19"><span class="problematic" id="id20">`</span></a></p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">DATES</span></code> Datetime or list of datetimes representing the model initialization time.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">searchString</span></code> <strong>See note below</strong></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">fxx</span></code> Range or list of forecast hours.</p>
-<ul>
-<li><p>e.g., <code class="docutils literal notranslate"><span class="pre">range(0,19)</span></code> for F00-F18</p></li>
+<li><p><cite>DATES</cite> Datetime or list of datetimes representing the model initialization time.</p></li>
+<li><p><cite>searchString</cite> <strong>See note below</strong></p></li>
+<li><dl class="simple">
+<dt><cite>fxx</cite> Range or list of forecast hours.</dt><dd><ul>
+<li><p>e.g., <cite>range(0,19)</cite> for F00-F18</p></li>
 <li><p>Default is the model analysis (F00).</p></li>
 </ul>
+</dd>
+</dl>
 </li>
-<li><p><code class="docutils literal notranslate"><span class="pre">model</span></code> The type of model.</p>
-<ul>
-<li><p>Options are <code class="docutils literal notranslate"><span class="pre">hrrr</span></code>, <code class="docutils literal notranslate"><span class="pre">alaska</span></code>, <code class="docutils literal notranslate"><span class="pre">hrrrX</span></code></p></li>
+<li><dl class="simple">
+<dt><cite>model</cite> The type of model.</dt><dd><ul>
+<li><p>Options are <cite>hrrr</cite>, <cite>alaska</cite>, <cite>hrrrX</cite></p></li>
 </ul>
+</dd>
+</dl>
 </li>
-<li><p><code class="docutils literal notranslate"><span class="pre">field</span></code> The type of field file.</p>
-<ul>
-<li><p>Options are <code class="docutils literal notranslate"><span class="pre">sfc</span></code> and <code class="docutils literal notranslate"><span class="pre">prs</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">nat</span></code> and <code class="docutils literal notranslate"><span class="pre">subh</span></code> are only available for today and yesterday.</p></li>
+<li><dl class="simple">
+<dt><cite>field</cite> The type of field file.</dt><dd><ul>
+<li><p>Options are <cite>sfc</cite> and <cite>prs</cite></p></li>
+<li><p><cite>nat</cite> and <cite>subh</cite> are only available for today and yesterday.</p></li>
 </ul>
+</dd>
+</dl>
 </li>
-<li><p><code class="docutils literal notranslate"><span class="pre">save_dir</span></code> The directory path the files will be saved in.</p>
-<ul>
-<li><p>By default, GRIB2 files are downloaded into the user’s home directory at <code class="docutils literal notranslate"><span class="pre">~/data/{model}</span></code>. The default directory can be changed in the <code class="docutils literal notranslate"><span class="pre">~/.config/hrrrb/config.cfg</span></code> file. This file is generated the first time you import <strong>hrrrb.archive</strong>.</p></li>
+<li><dl class="simple">
+<dt><cite>save_dir</cite> The directory path the files will be saved in.</dt><dd><ul>
+<li><p>By default, GRIB2 files are downloaded into the user’s home directory at <cite>~/data/{model}</cite>. The default directory can be changed in the <cite>~/.config/hrrrb/config.cfg</cite> file. This file is generated the first time you import <strong>hrrrb.archive</strong>.</p></li>
 </ul>
+</dd>
+</dl>
 </li>
-<li><p><code class="docutils literal notranslate"><span class="pre">download_source_priority</span></code> The default source priority is <code class="docutils literal notranslate"><span class="pre">['pando',</span> <span class="pre">'google',</span> <span class="pre">'nomads']</span></code>, but you might want to instead try to download a file from Google before trying to get it from Pando. In that case, set to <code class="docutils literal notranslate"><span class="pre">['google',</span> <span class="pre">'pando',</span> <span class="pre">'nomads']</span></code>.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">dryrun</span></code> If <code class="docutils literal notranslate"><span class="pre">True</span></code>, the function will tell you what it will download but not actually download anything.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">verbose</span></code> If <code class="docutils literal notranslate"><span class="pre">True</span></code>, prints lots of info to the screen.</p></li>
+<li><p><cite>download_source_priority</cite> The default source priority is <cite>[‘pando’, ‘google’, ‘nomads’]</cite>, but you might want to instead try to download a file from Google before trying to get it from Pando. In that case, set to <cite>[‘google’, ‘pando’, ‘nomads’]</cite>.</p></li>
+<li><p><cite>dryrun</cite> If <cite>True</cite>, the function will tell you what it will download but not actually download anything.</p></li>
+<li><p><cite>verbose</cite> If <cite>True</cite>, prints lots of info to the screen.</p></li>
 </ul>
-<p>Specific to <code class="docutils literal notranslate"><span class="pre">xhrrr</span></code>:</p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">DATE_is_valid_time</span></code> For <em>xhrrr</em>, if <code class="docutils literal notranslate"><span class="pre">True</span></code> the input DATE will represent the valid time. If <code class="docutils literal notranslate"><span class="pre">False</span></code>, DATE represents the the model run time.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">remove_grib2</span></code> For <em>xhrrr</em>, the grib2 file downloaded will be removed after reading the data into an xarray Dataset.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">add_crs</span></code> For <em>xhrrr</em>, will create a cartopy coordinate reference system object and append it as a Dataset attribute.</p></li>
-</ul>
-</div>
-<div class="section" id="the-searchstring-argument">
-<h2>The <strong><code class="docutils literal notranslate"><span class="pre">searchString</span></code></strong> argument<a class="headerlink" href="#the-searchstring-argument" title="Permalink to this headline">¶</a></h2>
-<p><code class="docutils literal notranslate"><span class="pre">searchString</span></code> is used to specify select variables you want to download. For example, instead of downloading the full GRIB2 file, you could download just the wind or precipitation variables. Read the docstring for the functions or look at <a class="reference external" href="https://github.com/blaylockbk/HRRR_archive_download/blob/master/notebooks/demo_download_hrrr_archive_part2.ipynb">notebook #2</a> for more details.</p>
-<p><code class="docutils literal notranslate"><span class="pre">searchString</span></code> uses regular expression to search for GRIB message lines in the files .idx file. There must be a .idx file for the GRIB2 file for the search to work.</p>
+<p>Specific to <cite>xhrrr</cite>:
+- <cite>DATE_is_valid_time</cite> For <em>xhrrr</em>, if <cite>True</cite> the input DATE will represent the valid time. If <cite>False</cite>, DATE represents the the model run time.
+- <cite>remove_grib2</cite> For <em>xhrrr</em>, the grib2 file downloaded will be removed after reading the data into an xarray Dataset.
+- <cite>add_crs</cite> For <em>xhrrr</em>, will create a cartopy coordinate reference system object and append it as a Dataset attribute.</p>
+<p>## The <strong>`searchString`</strong> argument
+<cite>searchString</cite> is used to specify select variables you want to download. For example, instead of downloading the full GRIB2 file, you could download just the wind or precipitation variables. Read the docstring for the functions or look at [notebook #2](<a class="reference external" href="https://github.com/blaylockbk/HRRR_archive_download/blob/master/notebooks/demo_download_hrrr_archive_part2.ipynb">https://github.com/blaylockbk/HRRR_archive_download/blob/master/notebooks/demo_download_hrrr_archive_part2.ipynb</a>) for more details.</p>
+<p><cite>searchString</cite> uses regular expression to search for GRIB message lines in the files .idx file. There must be a .idx file for the GRIB2 file for the search to work.</p>
 <p>For reference, here are some useful examples to give you some ideas…</p>
-<table border="1" class="docutils">
-<thead>
-<tr>
-<th><code>searchString=</code></th>
-<th>GRIB fields that will be downloaded</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>':TMP:2 m'</code></td>
-<td>Temperature at 2 m</td>
-</tr>
-<tr>
-<td><code>':TMP:'</code></td>
-<td>Temperature fields at all levels</td>
-</tr>
-<tr>
-<td><code>':UGRD:.* mb'</code></td>
-<td>U Wind at all pressure levels.</td>
-</tr>
-<tr>
-<td><code>':500 mb:'</code></td>
-<td>All variables on the 500 mb level</td>
-</tr>
-<tr>
-<td><code>':APCP:'</code></td>
-<td>All accumulated precipitation fields</td>
-</tr>
-<tr>
-<td><code>':APCP:surface:0-[1-9]*'</code></td>
-<td>Accumulated since initialization time</td>
-</tr>
-<tr>
-<td><code>':APCP:surface:[1-9]*-[1-9]*'</code></td>
-<td>Accumulated over last hour</td>
-</tr>
-<tr>
-<td><code>':UGRD:10 m'</code></td>
-<td>U wind component at 10 meters</td>
-</tr>
-<tr>
-<td><code>':(U\|V)GRD:'</code></td>
-<td>U and V wind component at all levels</td>
-</tr>
-<tr>
-<td><code>':.GRD:'</code></td>
-<td>(Same as above)</td>
-</tr>
-<tr>
-<td><code>'(WIND\|GUST\|UGRD\|VGRD):(surface\|10 m)</code></td>
-<td>Surface wind, surface gusts, and 10 m u- v-components</td>
-</tr>
-<tr>
-<td><code>':(TMP\|DPT):'</code></td>
-<td>Temperature and Dew Point for all levels</td>
-</tr>
-<tr>
-<td><code>':(TMP\|DPT\|RH):'</code></td>
-<td>TMP, DPT, and Relative Humidity for all levels</td>
-</tr>
-<tr>
-<td><code>':REFC:'</code></td>
-<td>Composite Reflectivity</td>
-</tr>
-<tr>
-<td><code>:(APCP\|REFC):</code></td>
-<td>Precipitation and reflectivity</td>
-</tr>
-<tr>
-<td><code>':surface:'</code></td>
-<td>All variables at the surface</td>
-</tr>
-<tr>
-<td><code>'((U\|V)GRD:10 m\|TMP:2 m\|APCP)'</code></td>
-<td>10-m wind, 2-m temp, and accumulated precipitation.</td>
-</tr>
-</tbody>
-</table><p><br><br></p>
-<blockquote>
-<div><p><strong>Are you working with precipitation fields? (e.g., APCP)</strong><br />A lot of users have asked why the precipitation accumulation fields are all zero for the model analysis (F00). That is because it is an <em>accumulation</em> variable over a period of time. At the model analysis time, there has been no precipitation because no time has passed.</p>
-<ul class="simple">
-<li><p><strong>F00</strong> only has a 0-0 hour accumulation (always zero)</p></li>
-<li><p><strong>F01</strong> only has a 0-1 hour accumulation</p></li>
-<li><p><strong>F02</strong> has a 0-2 hour accumulation and a 1-2 hour accumulation.</p></li>
-<li><p><strong>F03</strong> has a 0-3 hour accumulation and a 2-3 hour accumulation.</p></li>
-<li><p>etc.</p></li>
-</ul>
-<p>NOTE: When cfgrib reads a grib file with more than one accumulated precipitation fields, it will not read all the fields. I think this is an issue with cfgrib (see <a class="reference external" href="https://github.com/ecmwf/cfgrib/issues/187">issue here</a>). The way around this is to key in on a <em>single</em> APCP field. See the <code class="docutils literal notranslate"><span class="pre">searchString</span></code> examples above for keying in on a single APCP field.</p>
-</div></blockquote>
-<br><div class="section" id="quickly-look-at-grib-files-in-the-command-line">
-<h3>Quickly look at GRIB files in the command line<a class="headerlink" href="#quickly-look-at-grib-files-in-the-command-line" title="Permalink to this headline">¶</a></h3>
-<p>There are two tools for looking at GRIB file contents in the command line.</p>
-<ol class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">wgrib2</span></code> : can be installed via conda-forge in your environment. A product from NOAA.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">grib_ls</span></code> : is a dependency of cfgrib and is included when you install cfgrib in your environment. A product from ECMWF.</p></li>
-</ol>
+<p>&lt;table border=”1” class=”docutils”&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;&lt;code&gt;searchString=&lt;/code&gt;&lt;/th&gt;
+&lt;th&gt;GRIB fields that will be downloaded&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;’:TMP:2 m’&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;Temperature at 2 m&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;’:TMP:’&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;Temperature fields at all levels&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;’:UGRD:.* mb’&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;U Wind at all pressure levels.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;’:500 mb:’&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;All variables on the 500 mb level&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;’:APCP:’&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;All accumulated precipitation fields&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;’:APCP:surface:0-[1-9]*’&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;Accumulated since initialization time&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;’:APCP:surface:[1-9]*-[1-9]*’&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;Accumulated over last hour&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;’:UGRD:10 m’&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;U wind component at 10 meters&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;’:(U|V)GRD:’&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;U and V wind component at all levels&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;’:.GRD:’&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;(Same as above)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;’(WIND|GUST|UGRD|VGRD):(surface|10 m)&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;Surface wind, surface gusts, and 10 m u- v-components&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;’:(TMP|DPT):’&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;Temperature and Dew Point for all levels&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;’:(TMP|DPT|RH):’&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;TMP, DPT, and Relative Humidity for all levels&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;’:REFC:’&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;Composite Reflectivity&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;:(APCP|REFC):&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;Precipitation and reflectivity&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;’:surface:’&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;All variables at the surface&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;’((U|V)GRD:10 m|TMP:2 m|APCP)’&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;10-m wind, 2-m temp, and accumulated precipitation.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;</p>
+<p>&lt;br&gt;&lt;br&gt;</p>
+<p>&gt; <strong>Are you working with precipitation fields? (e.g., APCP)</strong>
+&gt;A lot of users have asked why the precipitation accumulation fields are all zero for the model analysis (F00). That is because it is an <em>accumulation</em> variable over a period of time. At the model analysis time, there has been no precipitation because no time has passed.
+&gt;
+&gt;- <strong>F00</strong> only has a 0-0 hour accumulation (always zero)
+&gt;- <strong>F01</strong> only has a 0-1 hour accumulation
+&gt;- <strong>F02</strong> has a 0-2 hour accumulation and a 1-2 hour accumulation.
+&gt;- <strong>F03</strong> has a 0-3 hour accumulation and a 2-3 hour accumulation.
+&gt;- etc.
+&gt;
+&gt; NOTE: When cfgrib reads a grib file with more than one accumulated precipitation fields, it will not read all the fields. I think this is an issue with cfgrib (see [issue here](<a class="reference external" href="https://github.com/ecmwf/cfgrib/issues/187">https://github.com/ecmwf/cfgrib/issues/187</a>)). The way around this is to key in on a <em>single</em> APCP field. See the <cite>searchString</cite> examples above for keying in on a single APCP field.
+&lt;br&gt;</p>
+<p>### Quickly look at GRIB files in the command line
+There are two tools for looking at GRIB file contents in the command line.
+1. <cite>wgrib2</cite> : can be installed via conda-forge in your environment. A product from NOAA.
+2. <cite>grib_ls</cite> : is a dependency of cfgrib and is included when you install cfgrib in your environment. A product from ECMWF.</p>
 <p>For the sample precipitation data, below is the output using both tools</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ wgrib2 subset_20201214_hrrr.t00z.wrfsfcf12.grib2
-<span class="m">1</span>:0:d<span class="o">=</span><span class="m">2020121400</span>:APCP:surface:0-12 hour acc fcst:
-<span class="m">2</span>:887244:d<span class="o">=</span><span class="m">2020121400</span>:APCP:surface:11-12 hour acc fcst:
-</pre></div>
-</div>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ grib_ls subset_20201214_hrrr.t00z.wrfsfcf12.grib2 
+<p><code class="docutils literal notranslate"><span class="pre">`bash</span>
+<span class="pre">$</span> <span class="pre">wgrib2</span> <span class="pre">subset_20201214_hrrr.t00z.wrfsfcf12.grib2</span>
+<span class="pre">1:0:d=2020121400:APCP:surface:0-12</span> <span class="pre">hour</span> <span class="pre">acc</span> <span class="pre">fcst:</span>
+<span class="pre">2:887244:d=2020121400:APCP:surface:11-12</span> <span class="pre">hour</span> <span class="pre">acc</span> <span class="pre">fcst:</span>
+<span class="pre">`</span></code></p>
+<p><a href="#id21"><span class="problematic" id="id22">``</span></a><a href="#id23"><span class="problematic" id="id24">`</span></a>bash
+$ grib_ls subset_20201214_hrrr.t00z.wrfsfcf12.grib2
 subset_20201214_hrrr.t00z.wrfsfcf12.grib2
-edition      centre       date         dataType     gridType     typeOfLevel  level        stepRange    shortName    packingType  
-<span class="m">2</span>            kwbc         <span class="m">20201214</span>     <span class="nb">fc</span>           lambert      surface      <span class="m">0</span>            <span class="m">0</span>-12         tp           grid_complex_spatial_differencing 
-<span class="m">2</span>            kwbc         <span class="m">20201214</span>     <span class="nb">fc</span>           lambert      surface      <span class="m">0</span>            <span class="m">11</span>-12        tp           grid_complex_spatial_differencing 
-<span class="m">2</span> of <span class="m">2</span> messages <span class="k">in</span> subset_20201214_hrrr.t00z.wrfsfcf12.grib2
-
-<span class="m">2</span> of <span class="m">2</span> total messages <span class="k">in</span> <span class="m">1</span> files
-</pre></div>
-</div>
-</div>
-</div>
-</div>
+edition      centre       date         dataType     gridType     typeOfLevel  level        stepRange    shortName    packingType
+2            kwbc         20201214     fc           lambert      surface      0            0-12         tp           grid_complex_spatial_differencing
+2            kwbc         20201214     fc           lambert      surface      0            11-12        tp           grid_complex_spatial_differencing
+2 of 2 messages in subset_20201214_hrrr.t00z.wrfsfcf12.grib2</p>
+<p>2 of 2 total messages in 1 files
+<a href="#id25"><span class="problematic" id="id26">``</span></a><a href="#id27"><span class="problematic" id="id28">`</span></a></p>
 
 
               </div>
@@ -567,7 +525,7 @@ edition      centre       date         dataType     gridType     typeOfLevel  le
     
     <div class="footer-item">
       <p class="sphinx-version">
-Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.0.2.<br/>
+Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.0.3.<br/>
 </p>
     </div>
     
