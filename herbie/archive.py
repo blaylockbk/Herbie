@@ -11,22 +11,26 @@ Herbie: Download grib2 model output from the cloud
 Herbie is your model output download assistant with a mind of his own!
 Herbie might look small on the outside, but he has a big heart on the 
 inside and will get you to the
-`finish line <https://www.youtube.com/watch?v=4XWufUZ1mxQ&t=189s>`_ 🏁.
-Happy racing! 🏎
+`finish line <https://www.youtube.com/watch?v=4XWufUZ1mxQ&t=189s>`_.
+Happy racing! 🏎🏁
 
-With Herbie's API, you can download GRIB2 model output files from
-different archive sources for the High-Resolution Rapid Refresh (HRRR)
-HRRR-Alaska, Rapid Refresh (RAP), Global Forecast System (GFS), and others.
+With Herbie's API, you can search and download GRIB2 model output files
+from different archive sources for the High-Resolution Rapid Refresh 
+(HRRR) HRRR-Alaska, Rapid Refresh (RAP), Global Forecast System (GFS), 
+and others.
+
+Herbie looks for GRIB2 model output data from NOMADS, NOAA's Big Data 
+Project partners (Amazon Web Services, Google Cloud Platform, and 
+Microsoft Azure), and the CHPC Pando archive at the University of Utah.
 
 Herbie supports subsetting of GRIB2 files by individual GRIB
-messages (i.e. variable and level) when the index (.idx) file exist.
+messages (i.e. variable and level) when the index (.idx) file exist and
+help you open them with xarray/cfgrib.
 
-Herbie looks for model output data from NOMADS, NOAA's Big Data Project 
-partners (Amazon Web Services, Google Cloud Platform, and Microsoft 
-Azure), and the CHPC Pando archive at the University of Utah.
+Herbie is extendable to support other models. Simply create a template
+file in the ``herbie/models`` directory and make a pull-request.
 
-Models supported are extensable and defined by a template file in the
-models directory.
+For more details, see https://blaylockbk.github.io/HRRR_archive_download/_build/html/user_guide/data_sources.html
 
 .. note:: Updates since ``hrrrb``
 
@@ -50,76 +54,6 @@ models directory.
     - TODO: Create .idx file if wgrib2 is installed (linux only)
     - TODO: Download RRFS data (https://registry.opendata.aws/noaa-rrfs/)
 
-HRRR and RAP Data Sources
--------------------------
-Real-time HRRR and RAP data is available from NOMADS. At the end of 
-2020, NOAA started pushing the HRRR and RAP data to the Google Cloud 
-Platform and Amazon Web Services as part of the NOAA Big Data Progam.
-These archives were backfilled to previous years as far back as 
-July 30, 2014. A archive used for research purposes also exists 
-on the University of Utah CHPC Pando Archive System.
-
-.. note::
-    A paper about archiving model data in the cloud.
-
-    Blaylock B., J. Horel and S. Liston, 2017: Cloud Archiving and Data
-    Mining of High Resolution Rapid Refresh Model Output. Computers and
-    Geosciences. 109, 43-50. https://doi.org/10.1016/j.cageo.2017.08.005
-
-The Herbie module enables you to easily download HRRR and RAP data 
-between these different data sources wherever the data you are 
-interested in is available. The different download sources and the 
-download priority order are listed below:
-
-#. AWS: Amazon Web Services
-    - https://noaa-hrrr-bdp-pds.s3.amazonaws.com/
-    - Available from July 30, 2014 to Present.
-    - Slight latency for real-time products.
-    - Not all GRIB2 files have an .idx files.
-    - Has all nat, subh, prs, and sfc files for all forecast hours.
-    - Some data may be missing.
-
-#. NOMADS: NOAA Operational Model Archive and Distribution System
-    - https://nomads.ncep.noaa.gov/
-    - Available for today's and yesterday's runs
-    - Real-time data.
-    - Original data source. All available data included.
-    - Download limits.
-    - Includes GRIB2 .idx for all GRIB2 files.
-
-#. Google: Google Cloud Platform Earth
-    - https://console.cloud.google.com/storage/browser/high-resolution-rapid-refresh
-    - Available from July 30, 2014 to Present.
-    - Slight latency for real-time products.
-    - Does not have GRIB2 .idx files before September 17, 2018.
-    - Has all original data including nat, subh, prs, and sfc files 
-      for all forecast hours.
-
-#. Azure: Microsoft Azure
-    - https://github.com/microsoft/AIforEarthDataSets/blob/main/data/noaa-hrrr.md
-    - Only recent HRRR and RAP data?
-    - Subset of HRRR and RAP data?
-
-#. Pando: The University of Utah HRRR archive
-    - http://hrrr.chpc.utah.edu/
-    - Research archive. Older files being removed.
-    - A subset of prs and sfc files.
-    - Contains .idx file for every GRIB2 file.
-
-.. note:: **Default Download Priority Rational** 
-    Most often, a user will request model output from a recent
-    past or earlier run. Past data is archived at one of NOAA's Big 
-    Data parters. NOMADS has the most recent model output available, 
-    but they also throttle the download speed and will block users who
-    violate their usage agreement and download too much data within
-    an hour. To prevent being blocked by NOMADS, the default is to 
-    first look for data on AWS. If the data requested is within the
-    last few hours and was not found on AWS, then Herbie will look
-    for the data at NOMADS. If you really want to download data 
-    from NOMADS and not a Big Data Project partner, change the
-    priority order so that NOMADS is first, (e.g.,
-    ``priority=['nomads', ...]``).
-
 """
 import os
 import warnings
@@ -129,7 +63,7 @@ import requests
 import cfgrib
 import pandas as pd
 
-# Import Path from __init__ because it has my custom `expand()` method
+# Path imported from __init__ because it has my custom `expand()` method
 from . import Path
 
 # NOTE: These values are set in the config file at 

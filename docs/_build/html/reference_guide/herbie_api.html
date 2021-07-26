@@ -175,13 +175,6 @@
   <a class="reference internal nav-link" href="#herbie-download-grib2-model-output-from-the-cloud">
    Herbie: Download grib2 model output from the cloud
   </a>
-  <ul class="nav section-nav flex-column">
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#hrrr-and-rap-data-sources">
-     HRRR and RAP Data Sources
-    </a>
-   </li>
-  </ul>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#herbie-extension-xarray-accessors">
@@ -228,18 +221,21 @@
 <p>Herbie is your model output download assistant with a mind of his own!
 Herbie might look small on the outside, but he has a big heart on the
 inside and will get you to the
-<a class="reference external" href="https://www.youtube.com/watch?v=4XWufUZ1mxQ&amp;t=189s">finish line</a> 🏁.
-Happy racing! 🏎</p>
-<p>With Herbie’s API, you can download GRIB2 model output files from
-different archive sources for the High-Resolution Rapid Refresh (HRRR)
-HRRR-Alaska, Rapid Refresh (RAP), Global Forecast System (GFS), and others.</p>
+<a class="reference external" href="https://www.youtube.com/watch?v=4XWufUZ1mxQ&amp;t=189s">finish line</a>.
+Happy racing! 🏎🏁</p>
+<p>With Herbie’s API, you can search and download GRIB2 model output files
+from different archive sources for the High-Resolution Rapid Refresh
+(HRRR) HRRR-Alaska, Rapid Refresh (RAP), Global Forecast System (GFS),
+and others.</p>
+<p>Herbie looks for GRIB2 model output data from NOMADS, NOAA’s Big Data
+Project partners (Amazon Web Services, Google Cloud Platform, and
+Microsoft Azure), and the CHPC Pando archive at the University of Utah.</p>
 <p>Herbie supports subsetting of GRIB2 files by individual GRIB
-messages (i.e. variable and level) when the index (.idx) file exist.</p>
-<p>Herbie looks for model output data from NOMADS, NOAA’s Big Data Project
-partners (Amazon Web Services, Google Cloud Platform, and Microsoft
-Azure), and the CHPC Pando archive at the University of Utah.</p>
-<p>Models supported are extensable and defined by a template file in the
-models directory.</p>
+messages (i.e. variable and level) when the index (.idx) file exist and
+help you open them with xarray/cfgrib.</p>
+<p>Herbie is extendable to support other models. Simply create a template
+file in the <code class="docutils literal notranslate"><span class="pre">herbie/models</span></code> directory and make a pull-request.</p>
+<p>For more details, see <a class="reference external" href="https://blaylockbk.github.io/HRRR_archive_download/_build/html/user_guide/data_sources.html">https://blaylockbk.github.io/HRRR_archive_download/_build/html/user_guide/data_sources.html</a></p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>Updates since <code class="docutils literal notranslate"><span class="pre">hrrrb</span></code></p>
@@ -264,98 +260,6 @@ models directory.</p>
 <li><p>TODO: Create .idx file if wgrib2 is installed (linux only)</p></li>
 <li><p>TODO: Download RRFS data (<a class="reference external" href="https://registry.opendata.aws/noaa-rrfs/">https://registry.opendata.aws/noaa-rrfs/</a>)</p></li>
 </ul>
-</div>
-<div class="section" id="hrrr-and-rap-data-sources">
-<h3>HRRR and RAP Data Sources<a class="headerlink" href="#hrrr-and-rap-data-sources" title="Permalink to this headline">¶</a></h3>
-<p>Real-time HRRR and RAP data is available from NOMADS. At the end of
-2020, NOAA started pushing the HRRR and RAP data to the Google Cloud
-Platform and Amazon Web Services as part of the NOAA Big Data Progam.
-These archives were backfilled to previous years as far back as
-July 30, 2014. A archive used for research purposes also exists
-on the University of Utah CHPC Pando Archive System.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>A paper about archiving model data in the cloud.</p>
-<p>Blaylock B., J. Horel and S. Liston, 2017: Cloud Archiving and Data
-Mining of High Resolution Rapid Refresh Model Output. Computers and
-Geosciences. 109, 43-50. <a class="reference external" href="https://doi.org/10.1016/j.cageo.2017.08.005">https://doi.org/10.1016/j.cageo.2017.08.005</a></p>
-</div>
-<p>The Herbie module enables you to easily download HRRR and RAP data
-between these different data sources wherever the data you are
-interested in is available. The different download sources and the
-download priority order are listed below:</p>
-<ol class="arabic simple">
-<li><dl class="simple">
-<dt>AWS: Amazon Web Services</dt><dd><ul class="simple">
-<li><p><a class="reference external" href="https://noaa-hrrr-bdp-pds.s3.amazonaws.com/">https://noaa-hrrr-bdp-pds.s3.amazonaws.com/</a></p></li>
-<li><p>Available from July 30, 2014 to Present.</p></li>
-<li><p>Slight latency for real-time products.</p></li>
-<li><p>Not all GRIB2 files have an .idx files.</p></li>
-<li><p>Has all nat, subh, prs, and sfc files for all forecast hours.</p></li>
-<li><p>Some data may be missing.</p></li>
-</ul>
-</dd>
-</dl>
-</li>
-<li><dl class="simple">
-<dt>NOMADS: NOAA Operational Model Archive and Distribution System</dt><dd><ul class="simple">
-<li><p><a class="reference external" href="https://nomads.ncep.noaa.gov/">https://nomads.ncep.noaa.gov/</a></p></li>
-<li><p>Available for today’s and yesterday’s runs</p></li>
-<li><p>Real-time data.</p></li>
-<li><p>Original data source. All available data included.</p></li>
-<li><p>Download limits.</p></li>
-<li><p>Includes GRIB2 .idx for all GRIB2 files.</p></li>
-</ul>
-</dd>
-</dl>
-</li>
-<li><dl class="simple">
-<dt>Google: Google Cloud Platform Earth</dt><dd><ul class="simple">
-<li><p><a class="reference external" href="https://console.cloud.google.com/storage/browser/high-resolution-rapid-refresh">https://console.cloud.google.com/storage/browser/high-resolution-rapid-refresh</a></p></li>
-<li><p>Available from July 30, 2014 to Present.</p></li>
-<li><p>Slight latency for real-time products.</p></li>
-<li><p>Does not have GRIB2 .idx files before September 17, 2018.</p></li>
-<li><p>Has all original data including nat, subh, prs, and sfc files
-for all forecast hours.</p></li>
-</ul>
-</dd>
-</dl>
-</li>
-<li><dl class="simple">
-<dt>Azure: Microsoft Azure</dt><dd><ul class="simple">
-<li><p><a class="reference external" href="https://github.com/microsoft/AIforEarthDataSets/blob/main/data/noaa-hrrr.md">https://github.com/microsoft/AIforEarthDataSets/blob/main/data/noaa-hrrr.md</a></p></li>
-<li><p>Only recent HRRR and RAP data?</p></li>
-<li><p>Subset of HRRR and RAP data?</p></li>
-</ul>
-</dd>
-</dl>
-</li>
-<li><dl class="simple">
-<dt>Pando: The University of Utah HRRR archive</dt><dd><ul class="simple">
-<li><p><a class="reference external" href="http://hrrr.chpc.utah.edu/">http://hrrr.chpc.utah.edu/</a></p></li>
-<li><p>Research archive. Older files being removed.</p></li>
-<li><p>A subset of prs and sfc files.</p></li>
-<li><p>Contains .idx file for every GRIB2 file.</p></li>
-</ul>
-</dd>
-</dl>
-</li>
-</ol>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p><strong>Default Download Priority Rational</strong>
-Most often, a user will request model output from a recent
-past or earlier run. Past data is archived at one of NOAA’s Big
-Data parters. NOMADS has the most recent model output available,
-but they also throttle the download speed and will block users who
-violate their usage agreement and download too much data within
-an hour. To prevent being blocked by NOMADS, the default is to
-first look for data on AWS. If the data requested is within the
-last few hours and was not found on AWS, then Herbie will look
-for the data at NOMADS. If you really want to download data
-from NOMADS and not a Big Data Project partner, change the
-priority order so that NOMADS is first, (e.g.,
-<code class="docutils literal notranslate"><span class="pre">priority=['nomads',</span> <span class="pre">...]</span></code>).</p>
 </div>
 <p><strong>Classes:</strong></p>
 <table class="longtable table autosummary">
@@ -543,7 +447,6 @@ before we downloaded it.</p></li>
 
 </dd></dl>
 
-</div>
 </div>
 <span class="target" id="module-herbie.accessors"></span><div class="section" id="herbie-extension-xarray-accessors">
 <h2>Herbie Extension: xarray accessors<a class="headerlink" href="#herbie-extension-xarray-accessors" title="Permalink to this headline">¶</a></h2>

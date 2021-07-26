@@ -177,6 +177,17 @@
    </code>
   </a>
  </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="examples.html">
+   👨🏻‍💻 Practical Examples: Old
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     HRRR-B
+    </span>
+   </code>
+   API
+  </a>
+ </li>
  <li class="toctree-l1 has-children">
   <a class="reference internal" href="notebooks.html">
    📝 Jupyter Notebooks
@@ -259,6 +270,11 @@
    Default Download Priority Rational
   </a>
  </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#hrrr-and-rap-data-sources">
+   HRRR and RAP Data Sources
+  </a>
+ </li>
 </ul>
 
 </nav>
@@ -290,6 +306,26 @@
   <div class="section" id="data-sources">
 <h1>☁ Data Sources<a class="headerlink" href="#data-sources" title="Permalink to this headline">¶</a></h1>
 <p>Herbie enables you to easily download HRRR and RAP data between these different data sources wherever the data you are interested in is available. The different download sources are listed below in the order of the default download priority.</p>
+<div class="section" id="default-download-priority-rational">
+<h2>Default Download Priority Rational<a class="headerlink" href="#default-download-priority-rational" title="Permalink to this headline">¶</a></h2>
+<p>I anticipate that most often, a user will request model output from the recent past or earlier run rather than relying on this or operational, real-time needs.</p>
+<p>Past data and near real-time data is archived at one of NOAA’s Big Data partners. NOMADS is the official operational source of model output data and has the most recent model output available. However, they throttle the download speed and will block users who violate their usage agreement and download too much data within an hour.</p>
+<p>To prevent being blocked by NOMADS, the default is to first look for data on AWS. If the data requested is within the last few hours and was not found on AWS, then Herbie will look for the data at NOMADS. If the requested data is older than yester, Herbie will not look for the data at NOMADS. If you really want to download in real-time from NOMADS first and not a Big Data Project partner, change the priority order so that NOMADS is first, (e.g., <code class="docutils literal notranslate"><span class="pre">priority=['nomads',</span> <span class="pre">...]</span></code>).</p>
+</div>
+<div class="section" id="hrrr-and-rap-data-sources">
+<h2>HRRR and RAP Data Sources<a class="headerlink" href="#hrrr-and-rap-data-sources" title="Permalink to this headline">¶</a></h2>
+<p>Real-time HRRR and RAP data is available from NOMADS. At the end of
+2020, NOAA started pushing the HRRR and RAP data to the Google Cloud
+Platform and Amazon Web Services as part of the NOAA Big Data Progam.
+These archives were backfilled to previous years as far back as
+July 30, 2014. A archive used for research purposes also exists
+on the University of Utah CHPC Pando Archive System.</p>
+<blockquote>
+<div><p>A paper about archiving model data in the cloud.</p>
+<p>Blaylock B., J. Horel and S. Liston, 2017: Cloud Archiving and Data
+Mining of High Resolution Rapid Refresh Model Output. Computers and
+Geosciences. 109, 43-50. https://doi.org/10.1016/j.cageo.2017.08.005</p>
+</div></blockquote>
 <ol class="simple">
 <li><p><a class="reference external" href="https://noaa-hrrr-bdp-pds.s3.amazonaws.com/">AWS: Amazon Web Services</a></p>
 <ul class="simple">
@@ -340,11 +376,6 @@ for all forecast hours.</p></li>
 </ul>
 </li>
 </ol>
-<div class="section" id="default-download-priority-rational">
-<h2>Default Download Priority Rational<a class="headerlink" href="#default-download-priority-rational" title="Permalink to this headline">¶</a></h2>
-<p>I anticipate that most often, a user will request model output from the recent past or earlier run rather than relying on this or operational, real-time needs.
-Past data and near real-time data is archived at one of NOAA’s Big Data partners. NOMADS is the official operational source of model output data and has the most recent model output available. However, they throttle the download speed and will block users who violate their usage agreement and download too much data within an hour.
-To prevent being blocked by NOMADS, the default is to first look for data on AWS. If the data requested is within the last few hours and was not found on AWS, then Herbie will look for the data at NOMADS. If the requested data is older than yester, Herbie will not look for the data at NOMADS. If you really want to download data from NOMADS first and not a Big Data Project partner, change the priority order so that NOMADS is first, (e.g., <code class="docutils literal notranslate"><span class="pre">priority=['nomads',</span> <span class="pre">...]</span></code>).</p>
 </div>
 </div>
 
