@@ -97,7 +97,7 @@ html_theme_options = {
 html_sidebars = {
 }
 
-html_logo = '_static/Herbie_Logo.png'
+html_logo = '_static/HerbieLogo2_tan_transparent.png'
 html_favicon = "_static/wxicon.png"
 
 html_context = {

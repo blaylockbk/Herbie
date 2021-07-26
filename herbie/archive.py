@@ -4,9 +4,9 @@
 ## May 3, 2021
 
 """
-=========================================================
-Herbie: Download HRRR and RAP model output from the cloud
-=========================================================
+==================================================
+Herbie: Download grib2 model output from the cloud
+==================================================
 
 Herbie is your model output download assistant with a mind of his own!
 Herbie might look small on the outside, but he has a big heart on the 
@@ -14,13 +14,19 @@ inside and will get you to the
 `finish line <https://www.youtube.com/watch?v=4XWufUZ1mxQ&t=189s>`_ 🏁.
 Happy racing! 🏎
 
-With Herbie's API, you can download High-Resolution Rapid Refresh (HRRR)
-HRRR-Alaska, and Rapid Refresh (RAP) model GRIB2 files from different 
-archive sources. Supports subsetting of GRIB2 files by individual GRIB
-messages (i.e. variable and level) if the index (.idx) file exist.
+With Herbie's API, you can download GRIB2 model output files from
+different archive sources for the High-Resolution Rapid Refresh (HRRR)
+HRRR-Alaska, Rapid Refresh (RAP), Global Forecast System (GFS), and others.
+
+Herbie supports subsetting of GRIB2 files by individual GRIB
+messages (i.e. variable and level) when the index (.idx) file exist.
+
 Herbie looks for model output data from NOMADS, NOAA's Big Data Project 
 partners (Amazon Web Services, Google Cloud Platform, and Microsoft 
 Azure), and the CHPC Pando archive at the University of Utah.
+
+Models supported are extensable and defined by a template file in the
+models directory.
 
 .. note:: Updates since ``hrrrb``
 
@@ -37,7 +43,7 @@ Azure), and the CHPC Pando archive at the University of Utah.
     - Attach index file DataFrame to object if it exists.
     - If full file exists locally, use remote idx file to cURL local file instead of remote. (Can't create idx file locally because wgrib2 not available on windows)
     - Added GFS data, though it isn't implemented as cleanly as HRRR or RAP
-    - Rename 'field' to 'product'
+    - Renamed 'field' to 'product'
     - ✨ Moved the source URL templates to their own classes in the **models** folder
     - TODO: Rename 'searchString' to 'subset' (and rename subset function)
     - TODO: Add NCEI as a source for the RAP data?? URL is complex.
@@ -116,22 +122,22 @@ download priority order are listed below:
 
 """
 import os
-#from pathlib import Path  # Import from __init__ instead
-from . import Path  # <-- import from __init__ because it has my custom `expand()` method
 import warnings
 from datetime import datetime, timedelta
-
 import urllib.request
 import requests
 import cfgrib
 import pandas as pd
+
+# Import Path from __init__ because it has my custom `expand()` method
+from . import Path
 
 # NOTE: These values are set in the config file at 
 # ~/.config/herbie/config.cfg and are read in from the __init__ file.
 from . import _default_save_dir
 from . import _default_priority
 
-import herbie.models as models
+import herbie.models as models_template
 
 def _searchString_help():
     """Help/Error Message for `searchString`"""
@@ -165,11 +171,10 @@ def _searchString_help():
 class Herbie:
     """Find model output file location based on source priority."""
 
-    def __init__(self, DATE, fxx=0, *, 
-                 model='hrrr', product=None, member=None,
+    def __init__(self, date=None, *, valid_date=None,
+                 model='hrrr', fxx=0, product=None, member=1,
                  priority=_default_priority,
                  save_dir=_default_save_dir,
-                 DATE_is_valid_time=False,
                  overwrite=False,
                  verbose=True):
         """
@@ -177,36 +182,36 @@ class Herbie:
         
         Parameters
         ----------
-        DATE : pandas-parsable datetime
-            Model initialization datetime if 
-            ``DATE_is_valid_time=False`` (default) or forecast valid 
-            datetime if ``DATE_is_valid_time=True``.
+        date : pandas-parsable datetime
+            *Model initialization datetime*. 
+            If None, then must set ``valid_date``.
+        valid_date : pandas-parsable datetime
+            Model valid datetime. Must set when ``date`` is None.
         fxx : int
             Forecast lead time in hours. Available lead times depend on
-            the model type and model version. Range from 0 to 15, 18, 
-            36, or 48 (model and run dependant).
-        model : {'hrrr', 'hrrrak', 'rap'}
-            Model type. 
+            the model type and model version. Range is model and run 
+            dependant.
+        model : {'hrrr', 'hrrrak', 'rap', 'gfs', 'gfs-wave', 'rrfs', etc.}
+            Model name as defined in the models template folder. CASE INSENSITIVE 
+            Some examples:
             - ``'hrrr'`` HRRR contiguous United States model
             - ``'hrrrak'`` HRRR Alaska model (alias ``'alaska'``)
             - ``'rap'`` RAP model
         product : {'sfc', 'prs', 'nat', 'subh'}
-            If not specified, will use first product in template.
-            Output variable product file type. In the HRRR model, the
-            different product files have certain variables at levels. 
-            Not required for the RAP model as all variables are in the 
-            same file.
+            Output variable product file type. If not specified, will 
+            use first product in model template file. CASE SENSITIVE.
+            For example, the HRRR model has these products:
             - ``'sfc'`` surface fields
             - ``'prs'`` pressure fields
             - ``'nat'`` native fields
             - ``'subh'`` subhourly fields
         member : None or int
             Some ensemble models (e.g. the future RRFS) will need to 
-            specify an ensemble member
+            specify an ensemble member.
         priority : list or str
             List of model sources to get the data in the order of 
-            download priority. The available data sources and default
-            priority order are listed below.
+            download priority. CASE INSENSITIVE. Some example data 
+            sources and the default priority order are listed below.
             - ``'aws'`` Amazon Web Services (Big Data Program)
             - ``'nomads'`` NOAA's NOMADS server
             - ``'google'`` Google Cloud Platform (Big Data Program)
@@ -216,48 +221,50 @@ class Herbie:
         save_dir : str or pathlib.Path
             Location to save GRIB2 files locally. Default save directory
             is set in ``~/.config/herbie/config.cfg``.
-        DATE_is_valid_time : bool
-            If True, DATE represents the valid time.
-            If False (default), DATE represents the initialization time.
         Overwrite : bool
             If True, look for GRIB2 files even if local copy exists.
             If False (default), use the local copy (still need to find 
             the idx file).
         """
-
-        self.date = pd.to_datetime(DATE)
         self.fxx = fxx
+
+        if date is not None:
+            # User supplied `date`, which is the model initialization datetime.
+            self.date = pd.to_datetime(date)
+            self.valid_date = self.date + timedelta(hours=self.fxx)
+        else:
+            assert valid_date is not None, "`date` or `valid_date` is required."
+            # User supplied `valid_date`, which is the model valid datetime.
+            self.valid_date = pd.to_datetime(valid_date)
+            self.date = self.valid_date - timedelta(hours=self.fxx)
+
         self.model = model.lower()
         self.member = member
         self.product = product
+        
         self.priority = priority
         self.save_dir = Path(save_dir).expand()  # yes, the expand is my custom method from __init__
 
-        if DATE_is_valid_time:
-            # The user-supplied DATE represents the forecast valid 
-            # time. Adjust self.date by forecast lead time so it 
-            # represents the model initialization datetime.
-            self.date = self.date - timedelta(hours=self.fxx)
-
-        # Get model details from the models template for the model specified.
-        # This attaches the details from the models.<model>.template
-        # to the object.
-        # Remember: 'models' is the template file, 'model' is the user
-        # input string of the model name (e.g., 'hrrr' or 'gfs').
-        getattr(models, model).template(self)
+        # Get details from the template of the specified model.
+        # This attaches the details from the `models.<model>.template`
+        # class to this Herbie object.
+        # This line is equivelent to `models_template.gfs.template(self)`.
+        # We do it this way because the model name is a variable.
+        # (see https://stackoverflow.com/a/7936588/2383070 for what I'm doing here)
+        getattr(models_template, self.model).template(self)
         
         if product is None:
-            p = list(self.PRODUCTS)[0]
-            warnings.warn(f'`product` not specified. Will use ["{p}"].')
-            self.product = p
-            # We need to rerun this to repopulate the None product value
-            getattr(models, model).template(self)
-        else:
-            self.product = product.lower()
-
+            # The user didn't specify a product, so lets use the first
+            # product in the model template.
+            self.product = list(self.PRODUCTS)[0]
+            warnings.warn(f'`product` not specified. Will use ["{self.product}"].')
+            # We need to rerun this so the sources have the new product value.
+            getattr(models_template, self.model).template(self)
+        
         # Check the user input
         self._validate()
 
+        # Ok, now we are ready to look for the GRIB2 file at each of the remote sources.
         # self.grib is the first existing GRIB2 file discovered.
         # self.idx is the first existing index file discovered.
         self.grib = None
@@ -266,13 +273,23 @@ class Herbie:
         self.idx_source = None
         
         # But first, check if the GRIB2 file exists locally.
-        local_copy = self.get_localPath()
+        local_copy = self.get_localFilePath()
         if local_copy.exists() and not overwrite:
             self.grib = local_copy
             self.grib_source = 'local'
-            # NOTE: We will still get the idx files from a remote.
+            # NOTE: We will still get the idx files from a remote 
+            #       because they aren't stored locally.
         
-        for source in self.priority:            
+        # If priority list is set, we want to search SOURCES in that 
+        # priority order. If priority is None, then search all SOURCES
+        # in the order given by the model template file.
+        # NOTE: A source from the template will not be used if it is not
+        # included in the priority list.
+        if self.priority is not None:
+            self.SOURCES = {key:self.SOURCES[key] for key in self.priority if key in self.SOURCES}
+
+        # Ok, NOW we are ready to search for the remote GRIB2 files...
+        for source in self.SOURCES:            
             if 'pando' in source:
                 # Sometimes pando returns a bad handshake. Pinging
                 # pando first can help prevent that.
@@ -281,7 +298,6 @@ class Herbie:
             # Get the file URL for the source and determine if the 
             # GRIB2 file and the index file exist. If found, store the
             # URL for the GRIB2 file and the .idx file.
-            # https://stackoverflow.com/questions/7936572/python-call-a-function-from-string-name
             url = self.SOURCES[source]
             
             found_grib = False
@@ -305,14 +321,15 @@ class Herbie:
                 # Exit loop early if we found both GRIB2 and idx file.
                 break
 
+        # After searching each source, print some info about what we found...
         if verbose: 
             if any([self.grib is not None, self.idx is not None]):
                 print(f'🏋🏻‍♂️ Found',
                       f'\033[32m{self.date:%Y-%b-%d %H:%M UTC} F{self.fxx:02d}\033[m',
-                      f'{self.model.upper()} {self.product}',
+                      f'[{self.model.upper()}] [product={self.product}]',
                       f'GRIB2 file from \033[38;5;202m{self.grib_source}\033[m and',
                       f'index file from \033[38;5;202m{self.idx_source}\033[m.',
-                      f'{" ":100s}')
+                      f'{" ":150s}')
             else:
                 print(f'💔 Did not find a GRIB2 or Index File for',
                       f'\033[32m{self.date:%Y-%b-%d %H:%M UTC} F{self.fxx:02d}\033[m',
@@ -321,7 +338,7 @@ class Herbie:
 
     def __repr__(self):
         """Representation in Notebook"""
-        msg = (f"{self.model.upper()} model {self.product} products",
+        msg = (f"[{self.model.upper()}] model [{self.product}] product",
                f"run at \033[32m{self.date:%Y-%b-%d %H:%M UTC}",
                f"F{self.fxx:02d}\033[m")
         return ' '.join(msg)
@@ -330,24 +347,28 @@ class Herbie:
         """When class object is printed"""
         msg = [
             f'{self.model=}',
+            f'{self.DETAILS=}',
+            f'{self.DESCRIPTION=}',
             f'{self.product=}',
             f'{self.fxx=}',
             f'{self.date=}',
             f'{self.priority=}',
+            f'{self.DETAILS=}',
+            f'{self.SOURCES=}'
         ]
         return '\n'.join(msg)
         
     def _validate(self):
-        """Validate the class input arguments"""
-        _models = { m for m in dir(models) if not m.startswith('__')}
-        _products = set(self.PRODUCTS)
+        """Validate the Herbie class input arguments"""
         
-        assert self.date < datetime.utcnow(), "🔮 Date cannot be in the future."
-        
+        # Accept model alias
         if self.model.lower() == 'alaska':
             self.model = 'hrrrak'
 
-        #assert self.fxx in range(49), "Forecast lead time `fxx` is too large"
+        _models = {m for m in dir(models_template) if not m.startswith('__')}
+        _products = set(self.PRODUCTS)
+        
+        assert self.date < datetime.utcnow(), "🔮 `date` cannot be in the future."
         assert self.model in _models, f"`model` must be one of {_models}"
         assert self.product in _products, f"`product` must be one of {_products}"
         
@@ -355,13 +376,14 @@ class Herbie:
             self.priority = [self.priority]
         
         self.priority = [i.lower() for i in self.priority]
-
+        
         # Don't look for data from NOMADS if requested date is earlier
-        # than yesterday. NOMADS doesn't keep data that old.
+        # than 14 days ago. NOMADS doesn't keep data that old,
+        # (I think this is true of all models).
         if 'nomads' in self.priority:
-            yesterday = datetime.utcnow() - timedelta(hours=24)
-            yesterday = pd.to_datetime(f"{yesterday:%Y-%m-%d}")
-            if self.date < yesterday:
+            expired = datetime.utcnow() - timedelta(days=14)
+            expired = pd.to_datetime(f"{expired:%Y-%m-%d}")
+            if self.date < expired:
                 self.priority.remove('nomads')
     
     def _ping_pando(self):
@@ -398,9 +420,10 @@ class Herbie:
     @property
     def get_localFileName(self):
         """Predict Local File Name"""
-        return f"{self.date:%Y%m%d}_{self.get_remoteFileName}"
+        #return f"{self.date:%Y%m%d}_{self.get_remoteFileName}"
+        return self.LOCALFILE
 
-    def get_localPath(self, searchString=None):
+    def get_localFilePath(self, searchString=None):
         """Get path to local file"""
         outFile = self.save_dir.expand() / self.model / f"{self.date:%Y%m%d}" / self.get_localFileName
         if searchString is not None:
@@ -435,7 +458,7 @@ class Herbie:
         -------
         A Pandas DataFrame of the index file.
         """
-        assert self.idx is not None, f"No index file for {self.grib}."
+        assert self.idx is not None, f"No index file found for {self.grib}."
         
 
         ################################################################
@@ -571,7 +594,7 @@ class Herbie:
         
         # If the file exists in the localPath and we don't want to 
         # overwrite, then we don't need to download it.
-        outFile = self.get_localPath(searchString=searchString)
+        outFile = self.get_localFilePath(searchString=searchString)
         if outFile.exists() and not overwrite:
             if verbose: print(f'🌉 Already have local copy --> {outFile}')
             if searchString in [None, ':']:
@@ -581,7 +604,8 @@ class Herbie:
             return
 
         # Attach the index file to the object (how much overhead is this?)
-        self.idx_df = self.read_idx(searchString)
+        if self.idx is not None:
+            self.idx_df = self.read_idx(searchString)
 
         # This overwrites the save_dir specified in __init__
         if save_dir is not None:
@@ -638,7 +662,7 @@ class Herbie:
         download_kwargs = {**dict(overwrite=False), **download_kwargs}
 
         # Download file if local file does not exists
-        local_file = self.get_localPath(searchString=searchString)
+        local_file = self.get_localFilePath(searchString=searchString)
         
         # Only remove grib if it didn't exists before we download it
         remove_grib = not local_file.exists() and remove_grib
@@ -653,13 +677,13 @@ class Herbie:
 
         # Use cfgrib.open_datasets, just in case there are multiple "hypercubes"
         # for what we requested.
-        Hxr = cfgrib.open_datasets(self.get_localPath(searchString=searchString),
+        Hxr = cfgrib.open_datasets(self.get_localFilePath(searchString=searchString),
                                  backend_kwargs=backend_kwargs)
 
         for h in Hxr:
             h.attrs['model'] = self.model
             h.attrs['remote_grib'] = self.grib
-            h.attrs['local_grib'] = self.get_localPath(searchString=searchString)
+            h.attrs['local_grib'] = self.get_localFilePath(searchString=searchString)
 
         if remove_grib:
             # Load the data to memory before removing the file

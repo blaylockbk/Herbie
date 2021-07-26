@@ -1,7 +1,12 @@
+## Added by Brian Blaylock
+## July 26, 2021
+
 class gfs:
     def template(self):
         self.DESCRIPTION = 'Global Forecast System - Wave Products'
-        self.DETAILS = 'https://www.nco.ncep.noaa.gov/pmb/products/gfs/#GFSwave'
+        self.DETAILS = {
+            'nomads product description': 'https://www.nco.ncep.noaa.gov/pmb/products/gfs/#GFSwave',
+        }
         self.PRODUCTS = {
             'arctic.9km': 'Arctic; 9-km resolution',
             'atlocn.0p16': 'North Atlantic 0.16 deg resolution',
@@ -18,3 +23,4 @@ class gfs:
             'google': f'https://storage.googleapis.com/global-forecast-system/gfs.{self.date:%Y%m%d/%H}/wave/gridded/gfswave.t{self.date:%H}z.{self.product}.f{self.fxx:03d}.grib2',
             'azure': f'https://noaahrrr.blob.core.windows.net/gfs/gfs.{self.date:%Y%m%d/%H}/wave/gridded/gfswave.t{self.date:%H}z.{self.product}.f{self.fxx:03d}.grib2',
         }
+        self.LOCALFILE = f"{self.get_remoteFileName}"

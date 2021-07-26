@@ -1,7 +1,12 @@
+## Added by Brian Blaylock
+## July 26, 2021
+
 class hrrrak:
     def template(self):
         self.DESCRIPTION = 'High-Resolution Rapid Refresh - Alaska'
-        self.DETAILS = 'https://www.nco.ncep.noaa.gov/pmb/products/hrrr/'
+        self.DETAILS = {
+            'nomads product description': 'https://www.nco.ncep.noaa.gov/pmb/products/hrrr',
+        }
         self.PRODUCTS = {
             'prs': "3D pressure level fields; 3-km resolution",
             'sfc': "2D surface level fields; 3-km resolution",
@@ -16,3 +21,4 @@ class hrrrak:
             'pando': f'https://pando-rgw01.chpc.utah.edu/{self.model}/{self.product}/{self.date:%Y%m%d}/{self.model}.t{self.date:%H}z.wrf{self.product}f{self.fxx:02d}.grib2',
             'pando2': f'https://pando-rgw02.chpc.utah.edu/{self.model}/{self.product}/{self.date:%Y%m%d}/{self.model}.t{self.date:%H}z.wrf{self.product}f{self.fxx:02d}.grib2',
         }
+        self.LOCALFILE = f"{self.get_remoteFileName}"

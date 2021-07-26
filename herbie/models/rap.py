@@ -1,7 +1,12 @@
+## Added by Brian Blaylock
+## July 26, 2021
+
 class rap:
     def template(self):
         self.DESCRIPTION = 'Rapid Refresh'
-        self.DETAILS = 'https://www.nco.ncep.noaa.gov/pmb/products/rap/'
+        self.DETAILS = {
+            'nomads product description': 'https://www.nco.ncep.noaa.gov/pmb/products/rap',
+        }
         self.PRODUCTS = {
             'wrfprs.': 'Full domain Pressure Levels; 13-km',
             'wrfnat.': 'Full domain Native Levels; 13-km',
@@ -22,3 +27,4 @@ class rap:
             'google': f'https://storage.googleapis.com/rapid-refresh/rap.{self.date:%Y%m%d}/rap.t{self.date:%H}z.{self.product}f{self.fxx:02d}.grib2',
             'azure': f'https://noaarap.blob.core.windows.net/rap/rap.{self.date:%Y%m%d}/rap.t{self.date:%H}z.{self.product}f{self.fxx:02d}.grib2',
         }
+        self.LOCALFILE = f"{self.get_remoteFileName}"

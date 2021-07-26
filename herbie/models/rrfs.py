@@ -1,10 +1,16 @@
+## Added by Brian Blaylock
+## July 26, 2021
+
 class rrfs:
     def template(self):
         self.DESCRIPTION = 'Rapid Refresh Forecast System (RRFS) Ensemble'
-        self.DETAILS = 'https://registry.opendata.aws/noaa-rrfs/'
+        self.DETAILS = {
+            'aws product description': 'https://registry.opendata.aws/noaa-rrfs/',
+        }
         self.PRODUCTS = {
-            'temp': '',
+            'none': '',
         }
         self.SOURCES = {
             'aws' : f'https://noaa-rrfs-pds.s3.amazonaws.com/rrfs.{self.date:%Y%m%d/%H}/mem{self.member:02d}/rrfs.t{self.date:%H}z.conusf{self.fxx:03d}.grib2',
         }
+        self.LOCALFILE = f"mem{self.member:02d}/{self.get_remoteFileName}"
