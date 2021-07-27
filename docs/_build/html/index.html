@@ -204,11 +204,6 @@
     <a class="reference internal nav-link" href="#brian-s-python-add-ons">
      Brian’s Python Add-ons
     </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#grib2-tools">
-     GRIB2 Tools
-    </a>
     <ul class="nav section-nav flex-column">
      <li class="toc-h4 nav-item toc-entry">
       <a class="reference internal nav-link" href="#indices-and-tables">
@@ -317,9 +312,9 @@ conda activate hrrrb
 </div>
 <div class="section" id="history">
 <h2>History<a class="headerlink" href="#history" title="Permalink to this headline">¶</a></h2>
-<p>During my PhD at the University of Utah, I created, at the time, the only publicly-accessible archive of HRRR data. In the later half of 2020, this data was made available through the <a class="reference external" href="https://www.noaa.gov/information-technology/big-data">NOAA Big Data Program</a>. The Herbie package organizes and expands my original download scripts into a more coherent package with the extended ability to download more than just the HRRR and RAP model data and from different data sources. It will continue to evolve at my own leisure.</p>
-<p>I originally released this package under the name “HRRR-B” because it only dealt with the HRRR data set and the “B” is for my initial. Since then, I have added the ability to download RAP, GFS, NBM, RRFS, and potentially more models in the future. Thus, it was re-branded with the name “Herbie” named after some favorite childhood movies. For now, it is still called “hrrrb” on PyPI because “herbie” is already taken. Maybe someday, with some time and an enticing reason, I’ll add additional download capabilities.</p>
-<p>While Herbie can download numerical weather prediction model output, my <a class="reference external" href="https://github.com/blaylockbk/goes2go/tree/master/goes2go">goes-2-go</a> package can help you download GOES ABI and GLM data.</p>
+<p><strong>👨🏻‍🎓 During my PhD at the University of Utah</strong>, I created, at the time, the only publicly-accessible archive of HRRR data. In the later half of 2020, this data was made available through the <a class="reference external" href="https://www.noaa.gov/information-technology/big-data">NOAA Big Data Program</a>. The Herbie package organizes and expands my original download scripts into a more coherent package with the extended ability to download more than just the HRRR and RAP model data and from different data sources. It will continue to evolve at my own leisure.</p>
+<p><strong>🌹 What’s in a name?</strong> I originally released this package under the name “HRRR-B” because it only dealt with the HRRR data set and the “B” is for my initial. Since then, I have added the ability to download RAP, GFS, NBM, RRFS, and potentially more models in the future. Thus, it was re-branded with the name “Herbie” named after some favorite childhood movies. For now, it is still called “hrrrb” on PyPI because “herbie” is already taken.</p>
+<p><strong>🛰 GOES ABI and GLM data</strong> can be downloaded with my <a class="reference external" href="https://github.com/blaylockbk/goes2go/tree/master/goes2go">goes-2-go</a> package. This was also developed during grad school and updated into a more friendly package.</p>
 <div class="figure align-default">
 <a class="img-fluid reference internal image-reference" href="_static/Herbie3.png"><img alt="_static/Herbie3.png" class="img-fluid" src="_static/Herbie3.png" style="width: 66%;" /></a>
 </div>
@@ -329,31 +324,6 @@ conda activate hrrrb
 <div class="section" id="brian-s-python-add-ons">
 <h3>Brian’s Python Add-ons<a class="headerlink" href="#brian-s-python-add-ons" title="Permalink to this headline">¶</a></h3>
 <p>These are still in development and require my <a class="reference external" href="https://github.com/blaylockbk/Carpenter_Workshop">Carpenter Workshop</a> package to plot the data on a Cartopy map or pluck points nearest specific latitudes and longitudes.</p>
-</div>
-<div class="section" id="grib2-tools">
-<h3>GRIB2 Tools<a class="headerlink" href="#grib2-tools" title="Permalink to this headline">¶</a></h3>
-<p>Yes, GRIB is notoriously difficult to work with, and has a steep learning curve for those unfamiliar with the format or meteorological data.</p>
-<p>There are two command-line tools for looking at GRIB file contents.</p>
-<ol class="arabic simple">
-<li><p><em>wgrib2</em> is a product of NOAA and can be installed via conda-forge in your environment (linux only).</p></li>
-<li><p><em>grib_ls</em> is a product of ECMWF and is a dependency of cfgrib. This utility is included when you install cfgrib in your environment.</p></li>
-</ol>
-<p>For a sample GRIB2 file with precipitation data, below is the output using both tools</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ wgrib2 subset_20201214_hrrr.t00z.wrfsfcf12.grib2
-<span class="m">1</span>:0:d<span class="o">=</span><span class="m">2020121400</span>:APCP:surface:0-12 hour acc fcst:
-<span class="m">2</span>:887244:d<span class="o">=</span><span class="m">2020121400</span>:APCP:surface:11-12 hour acc fcst:
-</pre></div>
-</div>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ grib_ls subset_20201214_hrrr.t00z.wrfsfcf12.grib2
-subset_20201214_hrrr.t00z.wrfsfcf12.grib2
-edition      centre       date         dataType     gridType     typeOfLevel  level        stepRange    shortName    packingType
-<span class="m">2</span>            kwbc         <span class="m">20201214</span>     <span class="nb">fc</span>           lambert      surface      <span class="m">0</span>            <span class="m">0</span>-12         tp           grid_complex_spatial_differencing
-<span class="m">2</span>            kwbc         <span class="m">20201214</span>     <span class="nb">fc</span>           lambert      surface      <span class="m">0</span>            <span class="m">11</span>-12        tp           grid_complex_spatial_differencing
-<span class="m">2</span> of <span class="m">2</span> messages <span class="k">in</span> subset_20201214_hrrr.t00z.wrfsfcf12.grib2
-
-<span class="m">2</span> of <span class="m">2</span> total messages <span class="k">in</span> <span class="m">1</span> files
-</pre></div>
-</div>
 <div class="section" id="indices-and-tables">
 <h4>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h4>
 <ul class="simple">
