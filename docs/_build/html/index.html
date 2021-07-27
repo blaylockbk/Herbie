@@ -167,6 +167,13 @@
     <a class="reference internal nav-link" href="#download-model-data">
      Download Model Data
     </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#data-sources">
+       Data Sources
+      </a>
+     </li>
+    </ul>
    </li>
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#read-grib2-data">
@@ -179,11 +186,6 @@
     </a>
    </li>
   </ul>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#data-sources">
-   Data Sources
-  </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#install">
@@ -248,6 +250,17 @@
 <li><p>National Blend of Models (NMB)</p></li>
 </ul>
 <p><strong>Subsetting these files by GRIB message</strong> is also supported, provided that an index (.idx) file exists. For more information about subsetting, read <a class="reference internal" href="user_guide/grib2.html#grib2-faq"><span class="std std-ref">What is GRIB2?</span></a></p>
+<div class="section" id="data-sources">
+<h4>Data Sources<a class="headerlink" href="#data-sources" title="Permalink to this headline">¶</a></h4>
+<p>Thanks to the <a class="reference external" href="https://www.noaa.gov/information-technology/big-data">NOAA Big Data Program</a> weather data is more easily accessible than ever before. Common data sources include</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://nomads.ncep.noaa.gov/">NOAA NOMADS Server</a> (most recent data, but not archived)</p></li>
+<li><p><a class="reference external" href="https://registry.opendata.aws/noaa-hrrr-pds/">Amazon Web Services</a></p></li>
+<li><p><a class="reference external" href="https://console.cloud.google.com/marketplace/product/noaa-public/hrrr">Google Cloud Platform</a></p></li>
+<li><p><a class="reference external" href="https://github.com/microsoft/AIforEarthDataSets/blob/main/data/noaa-hrrr.md">Microsoft Azure</a></p></li>
+<li><p><a class="reference external" href="http://hrrr.chpc.utah.edu/">University of Utah Pando Archive</a></p></li>
+</ul>
+</div>
 </div>
 <div class="section" id="read-grib2-data">
 <h3>Read GRIB2 Data<a class="headerlink" href="#read-grib2-data" title="Permalink to this headline">¶</a></h3>
@@ -257,17 +270,6 @@
 <h3>Plot Fields<a class="headerlink" href="#plot-fields" title="Permalink to this headline">¶</a></h3>
 <p>🏗 Under construction. I want to make some useful xarray accessors for plotting the GRIB2 fields. This will use tools I am developing in my <a class="reference external" href="https://github.com/blaylockbk/Carpenter_Workshop">Carpenter Workshop</a> package to plot the data on a Cartopy map or pluck points nearest specific latitudes and longitudes.</p>
 </div>
-</div>
-<div class="section" id="data-sources">
-<h2>Data Sources<a class="headerlink" href="#data-sources" title="Permalink to this headline">¶</a></h2>
-<p>Thanks to the <a class="reference external" href="https://www.noaa.gov/information-technology/big-data">NOAA Big Data Program</a> weather data is more easily accessible than ever before. Common data sources include</p>
-<ul class="simple">
-<li><p><a class="reference external" href="https://nomads.ncep.noaa.gov/">NOAA NOMADS Server</a> (most recent data, but not archived)</p></li>
-<li><p><a class="reference external" href="https://registry.opendata.aws/noaa-hrrr-pds/">Amazon Web Services</a></p></li>
-<li><p><a class="reference external" href="https://console.cloud.google.com/marketplace/product/noaa-public/hrrr">Google Cloud Platform</a></p></li>
-<li><p><a class="reference external" href="https://github.com/microsoft/AIforEarthDataSets/blob/main/data/noaa-hrrr.md">Microsoft Azure</a></p></li>
-<li><p><a class="reference external" href="http://hrrr.chpc.utah.edu/">University of Utah Pando Archive</a></p></li>
-</ul>
 </div>
 <div class="section" id="install">
 <h2>Install<a class="headerlink" href="#install" title="Permalink to this headline">¶</a></h2>

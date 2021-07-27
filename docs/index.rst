@@ -30,6 +30,17 @@ Herbie can download full or partial GRIB2 files from different models, including
 
 **Subsetting these files by GRIB message** is also supported, provided that an index (.idx) file exists. For more information about subsetting, read :ref:`What is GRIB2? <GRIB2_FAQ>`
 
+Data Sources 
+""""""""""""
+Thanks to the `NOAA Big Data Program <https://www.noaa.gov/information-technology/big-data>`_ weather data is more easily accessible than ever before. Common data sources include
+
+- `NOAA NOMADS Server <https://nomads.ncep.noaa.gov/>`_ (most recent data, but not archived)
+- `Amazon Web Services <https://registry.opendata.aws/noaa-hrrr-pds/>`_
+- `Google Cloud Platform <https://console.cloud.google.com/marketplace/product/noaa-public/hrrr>`_
+- `Microsoft Azure <https://github.com/microsoft/AIforEarthDataSets/blob/main/data/noaa-hrrr.md>`_
+- `University of Utah Pando Archive <http://hrrr.chpc.utah.edu/>`_
+
+
 Read GRIB2 Data
 ^^^^^^^^^^^^^^^
 Herbie can help you read these files with `xarray <http://xarray.pydata.org/en/stable/>`_ via `cfgrib <https://github.com/ecmwf/cfgrib>`_.
@@ -38,15 +49,6 @@ Plot Fields
 ^^^^^^^^^^^
 🏗 Under construction. I want to make some useful xarray accessors for plotting the GRIB2 fields. This will use tools I am developing in my `Carpenter Workshop <https://github.com/blaylockbk/Carpenter_Workshop>`_ package to plot the data on a Cartopy map or pluck points nearest specific latitudes and longitudes.
 
-Data Sources 
-------------
-Thanks to the `NOAA Big Data Program <https://www.noaa.gov/information-technology/big-data>`_ weather data is more easily accessible than ever before. Common data sources include
-
-- `NOAA NOMADS Server <https://nomads.ncep.noaa.gov/>`_ (most recent data, but not archived)
-- `Amazon Web Services <https://registry.opendata.aws/noaa-hrrr-pds/>`_
-- `Google Cloud Platform <https://console.cloud.google.com/marketplace/product/noaa-public/hrrr>`_
-- `Microsoft Azure <https://github.com/microsoft/AIforEarthDataSets/blob/main/data/noaa-hrrr.md>`_
-- `University of Utah Pando Archive <http://hrrr.chpc.utah.edu/>`_
 
 Install
 -------
