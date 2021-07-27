@@ -13,7 +13,7 @@ Command Line Tools
 ^^^^^^^^^^^^^^^^^^
 There are two command-line tools for looking at GRIB file contents.
 
-1. *wgrib2* is a product of NOAA and can be installed via conda-forge in your environment (linux only). | `Documentation <https://www.cpc.ncep.noaa.gov/products/wesley/wgrib2/>`_ |
+1. *wgrib2* is a product of NOAA and can be installed via conda-forge in your environment (linux only). | `wrgib2 documentation <https://www.cpc.ncep.noaa.gov/products/wesley/wgrib2/>`_ |
 2. *grib_ls* is a product of ECMWF and is a dependency of cfgrib. This utility is included when you install cfgrib in your conda environment.
 
 For a sample GRIB2 file with precipitation data, below is the output using both tools
@@ -39,8 +39,8 @@ Python Tools
 ^^^^^^^^^^^^
 There are two key python packages for reading GRIB2 files. Both can be installed via conda-forge.
 
-- **pygrib** is what I started to learn and still use sometimes. | `Video Demo <https://youtu.be/yLoudFv3hAY>`_ |  `GitHub <https://github.com/jswhit/pygrib>`_ |
-- **cfgrib** works well reading GRIB2 data as xarray datasets. Make sure you have the latest version (>0.9.8) |  `Documentation <https://github.com/ecmwf/cfgrib>`_
+- **pygrib** is what I started to learn and still use sometimes. | `Video Demo <https://youtu.be/yLoudFv3hAY>`_ |  `pygrib GitHub <https://github.com/jswhit/pygrib>`_ |
+- **cfgrib** works well reading GRIB2 data as xarray datasets. Make sure you have the latest version (>0.9.8) |  `cfgrib GitHub <https://github.com/ecmwf/cfgrib>`_
 
 How GRIB subsetting works
 -------------------------
