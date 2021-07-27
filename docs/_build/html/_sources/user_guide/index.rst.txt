@@ -10,8 +10,8 @@ User Guide
    data_sources
    grib2
    tutorial.ipynb
-   searchString_help
+   searchString
+   model_template
    examples
    notebooks
-   model_template
    

@@ -1,9 +1,9 @@
-===================================
-How to subset with ``searchString``
-===================================
+================================
+🪂 Subset with ``searchString``
+================================
 
-Use regular expression to search for lines in the ``.idx`` file
-Here are some examples you can use for ``searchString``
+Use regular expression to search for lines in the index ``.idx`` file
+Here are some examples you can use for the ``searchString`` argument
 
 ================================= ===============================================
 ``searchString=``                  GRIB messages that will be downloaded
