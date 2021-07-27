@@ -62,10 +62,10 @@ Install with pip
 
    # or
 
-   pip install git+https://github.com/blaylockbk/HRRR_archive_download.git
+   pip install git+https://github.com/blaylockbk/Herbie.git
 
 To install within a conda environment file, you may use this minimum `environment.yml
-<https://github.com/blaylockbk/HRRR_archive_download/blob/master/environment.yml>`_ file 
+<https://github.com/blaylockbk/Herbie/blob/master/environment.yml>`_ file 
 and create the environment with the following...
 
 .. code:: bash
@@ -77,7 +77,7 @@ and create the environment with the following...
    conda env update -f environment.yml
 
    # Activate the environment
-   conda activate hrrrb
+   conda activate herbie
 
 History
 -------

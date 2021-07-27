@@ -30,7 +30,7 @@ help you open them with xarray/cfgrib.
 Herbie is extendable to support other models. Simply create a template
 file in the ``herbie/models`` directory and make a pull-request.
 
-For more details, see https://blaylockbk.github.io/HRRR_archive_download/_build/html/user_guide/data_sources.html
+For more details, see https://blaylockbk.github.io/Herbie/_build/html/user_guide/data_sources.html
 
 .. note:: Updates since ``hrrrb``
 
@@ -49,6 +49,7 @@ For more details, see https://blaylockbk.github.io/HRRR_archive_download/_build/
     - Added GFS data, though it isn't implemented as cleanly as HRRR or RAP
     - Renamed 'field' to 'product'
     - ✨ Moved the source URL templates to their own classes in the **models** folder
+    - Renamed GitHub repository to Herbie (from HRRR_archive_download)
     - TODO: Rename 'searchString' to 'subset' (and rename subset function)
     - TODO: Add NCEI as a source for the RAP data?? URL is complex.
     - TODO: Create .idx file if wgrib2 is installed (linux only)
