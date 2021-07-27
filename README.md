@@ -18,13 +18,12 @@
 
 ---
 
-**Herbie**, is a python package that helps download recent and archived numerical weather prediction (NWP) model output  from different cloud archive sources in GRIB2 format. The GRIB2 data can be read as an xarray Dataset with cfgrib.
-Model data Herbie can retrieve includes the High Resolution Rapid Refresh (HRRR), Rapid Refresh (RAP), Global Forecast System (GFS), National Blend of Models (NBM), Rapid Refresh Forecast System - Prototype (RRFS).
+**Herbie** is a python package that helps you download recent and archived numerical weather prediction (NWP) model output from different cloud archive sources. This data is usually in GRIB2 format and can be read with xarray/cfgrib. Model data Herbie can retrieve includes the High Resolution Rapid Refresh (HRRR), Rapid Refresh (RAP), Global Forecast System (GFS), National Blend of Models (NBM), and Rapid Refresh Forecast System - Prototype (RRFS).
 
 ## Capabilities
-- Download full GRIB2 files.
-- Download subset GRIB2 files by grib field.
-- Read data with xarray.
+- Download full GRIB2 files
+- Download subset GRIB2 files (by grib field)
+- Read data with xarray
 - Plot data with Cartopy (very early development)
 
 ## Data Sources
@@ -41,18 +40,18 @@ I originally released this package under the name "HRRR-B" because it only dealt
 ## Alternative Download Tools
 As an alternative you can use [rclone](https://rclone.org/) to download HRRR files from AWS or GCP. I quite like rclone. Here is a [short rclone tutorial](https://github.com/blaylockbk/pyBKB_v3/blob/master/rclone_howto.md)
 
+---
+
 I hope some of these tips are helpful to you.
 
-**Best of luck 🍀**  
-\- Brian
-
+Best of luck 🍀  
+\- Brian  
 [🌐 Personal Webpage](http://home.chpc.utah.edu/~u0553130/Brian_Blaylock/home.html)  
 [🌐 University of Utah HRRR archive page](http://hrrr.chpc.utah.edu/)
 
 
 <br><br><br>
 
----
 ---
 ---
 ---
