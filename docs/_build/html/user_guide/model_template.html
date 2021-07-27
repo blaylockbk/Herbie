@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Extending Herbie &#8212; HRRR-B 0.0.4 documentation</title>
+    <title>👷🏻‍♂️ Extending Herbie &#8212; HRRR-B 0.0.4 documentation</title>
     
   <link href="../_static/css/theme.css" rel="stylesheet" />
   <link href="../_static/css/index.c5995385ac14fb8791e8eb36b4908be2.css" rel="stylesheet" />
@@ -37,8 +37,8 @@
     <link rel="shortcut icon" href="../_static/wxicon.png"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Reference Guide" href="../reference_guide/index.html" />
-    <link rel="prev" title="📝 Jupyter Notebooks" href="notebooks.html" />
+    <link rel="next" title="👨🏻‍💻 Examples: Old HRRR-B API" href="examples.html" />
+    <link rel="prev" title="🪂 Subset with searchString" href="searchString.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="en" />
     
@@ -158,7 +158,7 @@
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="grib2.html">
-   What is GRIB2?
+   🔢 What is GRIB2?
   </a>
  </li>
  <li class="toctree-l1">
@@ -173,13 +173,18 @@
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="searchString_help.html">
-   How to subset with
+  <a class="reference internal" href="searchString.html">
+   🪂 Subset with
    <code class="docutils literal notranslate">
     <span class="pre">
      searchString
     </span>
    </code>
+  </a>
+ </li>
+ <li class="toctree-l1 current active">
+  <a class="current reference internal" href="#">
+   👷🏻‍♂️ Extending Herbie
   </a>
  </li>
  <li class="toctree-l1">
@@ -250,11 +255,6 @@
    </li>
   </ul>
  </li>
- <li class="toctree-l1 current active">
-  <a class="current reference internal" href="#">
-   Extending Herbie
-  </a>
- </li>
 </ul>
 
   </div>
@@ -299,15 +299,15 @@
               <div>
                 
   <div class="section" id="extending-herbie">
-<h1>Extending Herbie<a class="headerlink" href="#extending-herbie" title="Permalink to this headline">¶</a></h1>
-<p>Additional models can be added to extend Herbie’s download ability. The requirements are:</p>
+<h1>👷🏻‍♂️ Extending Herbie<a class="headerlink" href="#extending-herbie" title="Permalink to this headline">¶</a></h1>
+<p>Herbie download capability can be extended to include additional models. The requirements are:</p>
 <ul class="simple">
-<li><p>Model data must exists on an http server.</p></li>
-<li><p>File names must be predictable (consistent naming with date, model name, forecast lead time, product, etc.).</p></li>
-<li><p>Subetting of a GRIB2 file requires an index file.</p></li>
-<li><p>A model template class must be created and added to <code class="docutils literal notranslate"><span class="pre">herbie/models</span></code>.</p></li>
+<li><p>The model data must exists on an http server</p></li>
+<li><p>File names must be predictable (consistent naming with date, model name, forecast lead time, product, etc.)</p></li>
+<li><p>Subetting of a GRIB2 file requires an index or inventory file</p></li>
+<li><p>A model template class must be created and added to <code class="docutils literal notranslate"><span class="pre">herbie/models</span></code></p></li>
 </ul>
-<p>As an example, look at the heavily commented <a class="reference external" href="https://github.com/blaylockbk/Herbie/blob/master/herbie/models/hrrr.py">hrrr.py template</a></p>
+<p>As an example, look at the heavily commented <a class="reference external" href="https://github.com/blaylockbk/Herbie/blob/master/herbie/models/hrrr.py">hrrr.py template</a>.</p>
 <p>The model class template function must include the properties</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">DESCRIPTION</span></code></p></li>
@@ -324,8 +324,8 @@
               
               <div class='prev-next-bottom'>
                 
-    <a class='left-prev' id="prev-link" href="notebooks.html" title="previous page">📝 Jupyter Notebooks</a>
-    <a class='right-next' id="next-link" href="../reference_guide/index.html" title="next page">Reference Guide</a>
+    <a class='left-prev' id="prev-link" href="searchString.html" title="previous page">🪂 Subset with <code class="docutils literal notranslate"><span class="pre">searchString</span></code></a>
+    <a class='right-next' id="next-link" href="examples.html" title="next page">👨🏻‍💻 Examples: Old <code class="docutils literal notranslate"><span class="pre">HRRR-B</span></code> API</a>
 
               </div>
               
