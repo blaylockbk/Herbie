@@ -45,7 +45,8 @@ class hrrr:
     def template(self):
         self.DESCRIPTION = 'High-Resolution Rapid Refresh - CONUS'
         self.DETAILS = {
-            'nomads product description': 'https://www.nco.ncep.noaa.gov/pmb/products/hrrr/',
+            'NOMADS product description': 'https://www.nco.ncep.noaa.gov/pmb/products/hrrr/',
+            'University of Utah HRRR archive': 'http://hrrr.chpc.utah.edu/',
             }
         self.PRODUCTS = {
             'sfc': "2D surface level fields; 3-km resolution",

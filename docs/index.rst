@@ -1,28 +1,54 @@
 .. image:: _static/HerbieLogo2_tan_transparent.png
 
+
+====================
+Herbie Documentation
+====================
+
 .. toctree::
    :maxdepth: 1
 
    /user_guide/index
    /reference_guide/index
 
-====================
-Herbie Documentation
-====================
+**Herbie** is a python package that downloads recent and archived GRIB2 files from numerical weather prediction output. 
 
-**Herbie** is a python package that downloads recent and archived output from the High Resolution Rapid Refresh (HRRR) and Rapid Refresh (RAP) models from various sources. It also enables you to download subsets of the GRIB2 by variable and open the data with `xarray <http://xarray.pydata.org/en/stable/>`_ via `cfgrib <https://github.com/ecmwf/cfgrib>`_. I created most of this during my PhD and have since organized it into this more coherent package. The package was original named **HRRR-B**, but since then the package has been expanded to access more than just the HRRR data from one source and it will continue to evolve at my own leisure. It is now called Herbie, named after some favorite childhood movies.
+Capabilities
+------------
 
-The `HRRR <https://rapidrefresh.noaa.gov/hrrr/>`_ model is NOAA's hourly, 3-km numerical weather prediction model nested within the `RAP <https://rapidrefresh.noaa.gov/>`_ model and is a `valuable numerical weather prediction resource <https://research.noaa.gov/article/ArtMID/587/ArticleID/2702/The-amazing-research-resume-of-High-Resolution-Rapid-Refresh-Model>`_. The RAP and HRRR model development are the foundation for the upcoming Rapid-Refresh Forecast System (`RRFS <https://gsl.noaa.gov/focus-areas/unified_forecast_system/rrfs>`_). 
+Download Model Data
+^^^^^^^^^^^^^^^^^^^
+Herbie downloads full or partial GRIB2 files from different models. Supported models include:
+- High Resolution Rapid Refresh (HRRR)
+- High Resolution Rapid Refresh - Alaska (HRRRAK)
+- Rapid Refresh (RAP)
+- Global Forecast System (GFS)
+- Global Forecast System - Wave (GFS-Wave)
+- Rapid Refresh Forecast System - Prototype (RRFS)
+- National Blend of Models (NMB)
 
+**Subsetting by GRIB message** is also supported, provided that an index (.idx) file exists. GRIB files contain "messages" which define a grid of data for a particular variable. Data for a variable grid are stacked on top of each other. Instead of downloading full GRIB2 files, you may download a selections from a GRIB2 file based on GRIB message. This is enabled by the cURL command which allows you to download a range of bytes from a file. GRIB index files list the beginning byte for each GRIB field. Herbie searches these index file for the variables you want and performs the cURL command for each field. The returned data is a valid GRIB2 file that contains the whole grid for just the requested variable.
 
-.. figure:: _static/Herbie3.png
-   :class: img-fluid
-   :width: 66%
+Read GRIB2 Data
+^^^^^^^^^^^^^^^
+Herbie can help you read these files with `xarray <http://xarray.pydata.org/en/stable/>`_ via `cfgrib <https://github.com/ecmwf/cfgrib>`_.
 
+Plot Fields
+^^^^^^^^^^^
+🏗 Under construction. I want to make some useful xarray accessors for plotting the GRIB2 fields.
+
+Data Sources 
+------------
+Thanks to the `NOAA Big Data Program <https://www.noaa.gov/information-technology/big-data>`_ weather data is more easily accessible than ever before. Common data sources include
+- `NOAA NOMADS Server <https://nomads.ncep.noaa.gov/>`_ (most recent data, but not archived)
+- `Amazon Web Services <https://registry.opendata.aws/noaa-hrrr-pds/>`_
+- `Google Cloud Platform <https://console.cloud.google.com/marketplace/product/noaa-public/hrrr>`_
+- `Microsoft Azure <https://github.com/microsoft/AIforEarthDataSets/blob/main/data/noaa-hrrr.md>`_
+- `University of Utah Pando Archive <http://hrrr.chpc.utah.edu/>`_
 
 Install
 -------
-This package requires **Python 3.8+**
+Herbie requires **Python 3.8+**
 
 Install with pip
 
@@ -49,29 +75,30 @@ and create the environment with the following...
    # Activate the environment
    conda activate hrrrb
 
-Capabilities
-------------
+History
+-------
+During my PhD at the University of Utah, I created, at the time, the only publicly-accessible archive of HRRR data. In the later half of 2020, this data was made available through the `NOAA Big Data Program <https://www.noaa.gov/information-technology/big-data>`_. The Herbie package organizes and expands my original download scripts into a more coherent package with the extended ability to download more than just the HRRR and RAP model data and from different data sources. It will continue to evolve at my own leisure.
 
-Download Data
-^^^^^^^^^^^^^
-Download recent and archived HRRR and RAP data from multiple sources made possible by `NOAA's big data program <https://www.noaa.gov/information-technology/big-data>`_:
+I originally released this package under the name "HRRR-B" because it only dealt with the HRRR data set and the "B" is for my initial. Since then, I have added the ability to download RAP, GFS, NBM, RRFS, and potentially more models in the future. Thus, it was re-branded with the name "Herbie" named after some favorite childhood movies. For now, it is still called "hrrrb" on PyPI because "herbie" is already taken. Maybe someday, with some time and an enticing reason, I'll add additional download capabilities. 
 
-- `NOAA NOMADS Server <https://nomads.ncep.noaa.gov/>`_
-- `Amazon Web Services <https://registry.opendata.aws/noaa-hrrr-pds/>`_
-- `Google Cloud Platform <https://console.cloud.google.com/marketplace/product/noaa-public/hrrr>`_
-- `Microsoft Azure <https://github.com/microsoft/AIforEarthDataSets/blob/main/data/noaa-hrrr.md>`_
-- `University of Utah Pando Archive <http://hrrr.chpc.utah.edu/>`_
+While Herbie can download numerical weather prediction model output, my `goes-2-go <https://github.com/blaylockbk/goes2go/tree/master/goes2go>`_ package can help you download GOES ABI and GLM data.
 
-Subset by GRIB2 variable
-^^^^^^^^^^^^^^^^^^^^^^^^
-GRIB files contain "messages" which define a grid of data for a particular variable. Data for a variable grid are stacked on top of each other. Instead of downloading full GRIB2 files, you may download a selections from a GRIB2 file based on GRIB message. This is enabled by the cURL command which allows you to download a range of bytes from a file. The index **.idx** files tells you the beginning byte for each GRIB field. Herbie searches an **.idx** file for the variables you want and performs the cURL command for each field. The returned data is a valid GRIB2 file that contains the whole grid for just the requested variable.
+
+.. figure:: _static/Herbie3.png
+   :class: img-fluid
+   :width: 66%
+
 
 Other useful tools
-^^^^^^^^^^^^^^^^^^
-**Brian's Python Add-ons**
+------------------
+Brian's Python Add-ons
+^^^^^^^^^^^^^^^^^^^^^^
 These are still in development and require my `Carpenter Workshop <https://github.com/blaylockbk/Carpenter_Workshop>`_ package to plot the data on a Cartopy map or pluck points nearest specific latitudes and longitudes.
 
-**GRIB2 Tools**
+GRIB2 Tools
+^^^^^^^^^^^
+Yes, GRIB is notoriously difficult to work with, and has a steep learning curve for those unfamiliar with the format or meteorological data. 
+
 There are two command-line tools for looking at GRIB file contents.
 
 1. *wgrib2* is a product of NOAA and can be installed via conda-forge in your environment (linux only).

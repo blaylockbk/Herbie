@@ -4,6 +4,8 @@
 ## July 8, 2020
 
 """
+👴🏻 The HRRR-B API is deprecated. Use the new Herbie API.
+
 =======================================
 Retrieve HRRR GRIB2 files from archives
 =======================================
@@ -72,6 +74,10 @@ import pandas as pd
 import xarray as xr
 
 from hrrrb.tools import to_180, get_crs
+
+warnings.warn(
+      "The hrrrb API is deprecated. Use the new Herbie API instead."
+   )
 
 #=======================================================================
 # Specify default location to save HRRR GRIB2 files

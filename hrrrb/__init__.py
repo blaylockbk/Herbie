@@ -5,6 +5,11 @@ import warnings
 import configparser
 from pathlib import Path
 
+warnings.warn(
+      "The hrrrb API is deprecated. Use the new Herbie API instead.",
+      DeprecationWarning
+   )
+
 ########################################################################
 # Load custom xarray accessors
 try:
