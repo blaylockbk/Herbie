@@ -46,7 +46,7 @@ If you _really_ want to download the real-time data from NOMADS first and not a 
 
 .. note::
 
-    I wrote a paper about archiving HRRR model data in the cloud.
+    ✒ I wrote a paper about archiving HRRR model data in the cloud.
     
     Blaylock B., J. Horel and S. Liston, 2017: Cloud Archiving and Data
     Mining of High Resolution Rapid Refresh Model Output. Computers and
