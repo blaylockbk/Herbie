@@ -18,7 +18,8 @@ Capabilities
 
 Download Model Data
 ^^^^^^^^^^^^^^^^^^^
-Herbie downloads full or partial GRIB2 files from different models. Supported models include:
+Herbie can download full or partial GRIB2 files from different models, including the following:
+
 - High Resolution Rapid Refresh (HRRR)
 - High Resolution Rapid Refresh - Alaska (HRRRAK)
 - Rapid Refresh (RAP)
