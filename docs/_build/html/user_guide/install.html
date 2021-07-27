@@ -320,7 +320,7 @@
                 
   <div class="section" id="installation-and-conda-environment">
 <h1>🐍 Installation and Conda Environment<a class="headerlink" href="#installation-and-conda-environment" title="Permalink to this headline">¶</a></h1>
-<p>Herbie requires <strong>Python 3.8+</strong></p>
+<p>Herbie requires <code class="docutils literal notranslate"><span class="pre">curl</span></code> and <strong>Python 3.8+</strong> with the following packages: <code class="docutils literal notranslate"><span class="pre">requests</span></code>, <code class="docutils literal notranslate"><span class="pre">pandas</span></code>, <code class="docutils literal notranslate"><span class="pre">xarray</span></code>, and <code class="docutils literal notranslate"><span class="pre">cfgrib</span></code>. Optional packages are <code class="docutils literal notranslate"><span class="pre">matplotlib</span></code>, <code class="docutils literal notranslate"><span class="pre">cartopy</span></code>, and<a class="reference external" href="https://github.com/blaylockbk/Carpenter_Workshop"><code class="docutils literal notranslate"><span class="pre">Carpenter_Workshop</span></code></a>.</p>
 <div class="section" id="option-1-pip">
 <h2>Option 1: pip<a class="headerlink" href="#option-1-pip" title="Permalink to this headline">¶</a></h2>
 <blockquote>
@@ -330,19 +330,15 @@
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip install hrrrb
 </pre></div>
 </div>
-<p>The version on PyPI has likely diverged a lot from the code on GitHub, so I would recommend not getting from PyPI. To get the most recent Herbie code, you may install the package directly from GitHub.</p>
+<p>The version on PyPI has likely diverged from the code on GitHub, so to get the most recent Herbie code, install the package directly from GitHub.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip install git+https://github.com/blaylockbk/Herbie.git
 </pre></div>
 </div>
-<blockquote>
-<div><p>Requires: curl, requests, pandas, xarray, cfgrib
-Optional: matplotlib, cartopy, <a class="reference external" href="https://github.com/blaylockbk/Carpenter_Workshop">Carpenter_Workshop</a></p>
-</div></blockquote>
 </div>
 <div class="section" id="option-2-conda">
 <h2>Option 2: conda<a class="headerlink" href="#option-2-conda" title="Permalink to this headline">¶</a></h2>
 <p>If conda environments are new to you, I suggest you become familiar with <a class="reference external" href="https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html">managing conda environments</a>.</p>
-<p>I have provided a sample Anaconda <a class="reference external" href="https://github.com/blaylockbk/Herbie/blob/master/environment.yml">environment.yml</a> file that lists the minimum packages required plus some extras that might be useful when working with other types of weather data. Look at the bottom lines of that yaml file…there are two ways to install <code class="docutils literal notranslate"><span class="pre">hrrrb</span></code> with pip within the environment file. Comment out the line you don’t want.</p>
+<p>I have provided a sample Anaconda <a class="reference external" href="https://github.com/blaylockbk/Herbie/blob/master/environment.yml">environment.yml</a> file that lists the minimum packages required plus some extras that I find useful. Look at the bottom lines of that yaml file…there are two ways to install <code class="docutils literal notranslate"><span class="pre">hrrrb</span></code> with pip within the environment file. Comment out the line you don’t want.</p>
 <p>For the latest development code:</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">-</span> <span class="nt">pip</span><span class="p">:</span>
     <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">git+https://github.com/blaylockbk/Herbie.git</span>
@@ -368,7 +364,7 @@ Optional: matplotlib, cartopy, <a class="reference external" href="https://githu
 </div>
 <div class="section" id="alternative-install-method">
 <h2>Alternative “Install” Method<a class="headerlink" href="#alternative-install-method" title="Permalink to this headline">¶</a></h2>
-<p>There are several other ways to “install” a python package so you can import them. One alternatively is you can clone the repository.</p>
+<p>There are several other ways to “install” a python package so you can import them. One alternatively is you can clone the repository and put it in your PATH or PYTHONPATH.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git clone https://github.com/blaylockbk/Herbie.git
 </pre></div>
 </div>

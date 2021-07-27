@@ -1,6 +1,6 @@
 # 🐍 Installation and Conda Environment
 
-Herbie requires **Python 3.8+**
+Herbie requires `curl` and **Python 3.8+** with the following packages: `requests`, `pandas`, `xarray`, and `cfgrib`. Optional packages are `matplotlib`, `cartopy`, and[`Carpenter_Workshop`](https://github.com/blaylockbk/Carpenter_Workshop).
 
 ### Option 1: pip
 
@@ -12,19 +12,16 @@ Install the last published version from PyPI.
 pip install hrrrb
 ```
 
-The version on PyPI has likely diverged a lot from the code on GitHub, so I would recommend not getting from PyPI. To get the most recent Herbie code, you may install the package directly from GitHub.
+The version on PyPI has likely diverged from the code on GitHub, so to get the most recent Herbie code, install the package directly from GitHub.
 
 ```bash
 pip install git+https://github.com/blaylockbk/Herbie.git
 ```
 
-> Requires: curl, requests, pandas, xarray, cfgrib 
-> Optional: matplotlib, cartopy, [Carpenter_Workshop](https://github.com/blaylockbk/Carpenter_Workshop)
-
 ### Option 2: conda
 If conda environments are new to you, I suggest you become familiar with [managing conda environments](https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html).
 
-I have provided a sample Anaconda [environment.yml](https://github.com/blaylockbk/Herbie/blob/master/environment.yml) file that lists the minimum packages required plus some extras that might be useful when working with other types of weather data. Look at the bottom lines of that yaml file...there are two ways to install `hrrrb` with pip within the environment file. Comment out the line you don't want.
+I have provided a sample Anaconda [environment.yml](https://github.com/blaylockbk/Herbie/blob/master/environment.yml) file that lists the minimum packages required plus some extras that I find useful. Look at the bottom lines of that yaml file...there are two ways to install `hrrrb` with pip within the environment file. Comment out the line you don't want.
 
 For the latest development code:
 ```yaml
@@ -56,7 +53,7 @@ conda env update -f environment.yml
 ```
 
 ### Alternative "Install" Method
-There are several other ways to "install" a python package so you can import them. One alternatively is you can clone the repository.
+There are several other ways to "install" a python package so you can import them. One alternatively is you can clone the repository and put it in your PATH or PYTHONPATH.
 
 ```bash
 git clone https://github.com/blaylockbk/Herbie.git
