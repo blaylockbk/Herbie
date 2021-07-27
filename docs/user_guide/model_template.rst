@@ -1,4 +1,7 @@
-# Extending Herbie
+================
+Extending Herbie
+================
+
 Additional models can be added to extend Herbie's download ability. The requirements are:
 
 - Model data must exists on an http server.

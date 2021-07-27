@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>&lt;no title&gt; &#8212; HRRR-B 0.0.4 documentation</title>
+    <title>Extending Herbie &#8212; HRRR-B 0.0.4 documentation</title>
     
   <link href="../_static/css/theme.css" rel="stylesheet" />
   <link href="../_static/css/index.c5995385ac14fb8791e8eb36b4908be2.css" rel="stylesheet" />
@@ -72,7 +72,7 @@
       
       <div class="navbar-center-item">
         <ul id="navbar-main-elements" class="navbar-nav">
-    <li class="toctree-l1 nav-item">
+    <li class="toctree-l1 current active nav-item">
  <a class="reference internal nav-link" href="index.html">
   User Guide
  </a>
@@ -140,7 +140,7 @@
   <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
 </form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
   <div class="bd-toc-item active">
-    <ul class="nav bd-sidenav">
+    <ul class="current nav bd-sidenav">
  <li class="toctree-l1">
   <a class="reference internal" href="contribute.html">
    👨🏻‍🏭 Disclaimer and Contributing Guidelines
@@ -250,6 +250,11 @@
    </li>
   </ul>
  </li>
+ <li class="toctree-l1 current active">
+  <a class="current reference internal" href="#">
+   Extending Herbie
+  </a>
+ </li>
 </ul>
 
   </div>
@@ -264,14 +269,9 @@
               
               <div class="toc-item">
                 
-<div class="tocsection onthispage pt-5 pb-3">
-    <i class="fas fa-list"></i> On this page
-</div>
 
 <nav id="bd-toc-nav">
-    <ul class="simple visible nav section-nav flex-column">
-</ul>
-
+    
 </nav>
               </div>
               
@@ -298,8 +298,9 @@
               
               <div>
                 
-  <p># Extending Herbie
-Additional models can be added to extend Herbie’s download ability. The requirements are:</p>
+  <div class="section" id="extending-herbie">
+<h1>Extending Herbie<a class="headerlink" href="#extending-herbie" title="Permalink to this headline">¶</a></h1>
+<p>Additional models can be added to extend Herbie’s download ability. The requirements are:</p>
 <ul class="simple">
 <li><p>Model data must exists on an http server.</p></li>
 <li><p>File names must be predictable (consistent naming with date, model name, forecast lead time, product, etc.).</p></li>
@@ -315,6 +316,7 @@ Additional models can be added to extend Herbie’s download ability. The requir
 <li><p><code class="docutils literal notranslate"><span class="pre">SOURCES</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">LOCALFILE</span></code></p></li>
 </ul>
+</div>
 
 
               </div>
