@@ -26,7 +26,7 @@ Here are some examples you can use for the ``searchString`` argument
 ================================= ===============================================
 
 If you need help with regular expression, search the web
-or look at this `cheatsheet <https://www.petefreitag.com/cheatsheets/regex/`_.
+or look at this `cheatsheet <https://www.petefreitag.com/cheatsheets/regex/>`_.
 
 
 The searchString method to subset a GRIB dataset by variable field is
