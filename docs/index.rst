@@ -36,11 +36,12 @@ Herbie can help you read these files with `xarray <http://xarray.pydata.org/en/s
 
 Plot Fields
 ^^^^^^^^^^^
-🏗 Under construction. I want to make some useful xarray accessors for plotting the GRIB2 fields.
+🏗 Under construction. I want to make some useful xarray accessors for plotting the GRIB2 fields. This will use tools I am developing in my `Carpenter Workshop <https://github.com/blaylockbk/Carpenter_Workshop>`_ package to plot the data on a Cartopy map or pluck points nearest specific latitudes and longitudes.
 
 Data Sources 
 ------------
 Thanks to the `NOAA Big Data Program <https://www.noaa.gov/information-technology/big-data>`_ weather data is more easily accessible than ever before. Common data sources include
+
 - `NOAA NOMADS Server <https://nomads.ncep.noaa.gov/>`_ (most recent data, but not archived)
 - `Amazon Web Services <https://registry.opendata.aws/noaa-hrrr-pds/>`_
 - `Google Cloud Platform <https://console.cloud.google.com/marketplace/product/noaa-public/hrrr>`_
@@ -80,21 +81,13 @@ History
 -------
 **👨🏻‍🎓 During my PhD at the University of Utah**, I created, at the time, the only publicly-accessible archive of HRRR data. In the later half of 2020, this data was made available through the `NOAA Big Data Program <https://www.noaa.gov/information-technology/big-data>`_. The Herbie package organizes and expands my original download scripts into a more coherent package with the extended ability to download more than just the HRRR and RAP model data and from different data sources. It will continue to evolve at my own leisure.
 
-**🌹 What's in a name?** I originally released this package under the name "HRRR-B" because it only dealt with the HRRR data set and the "B" is for my initial. Since then, I have added the ability to download RAP, GFS, NBM, RRFS, and potentially more models in the future. Thus, it was re-branded with the name "Herbie" named after some favorite childhood movies. For now, it is still called "hrrrb" on PyPI because "herbie" is already taken.
-
-**🛰 GOES ABI and GLM data** can be downloaded with my `goes-2-go <https://github.com/blaylockbk/goes2go/tree/master/goes2go>`_ package. This was also developed during grad school and updated into a more friendly package.
-
+**🌹 What's in a name?** I originally released this package under the name "HRRR-B" because it only dealt with the HRRR data set and the "B" is for my initial. Since then, I have added the ability to download RAP, GFS, NBM, RRFS, and potentially more models in the future. Also, there is an archive of HRRR data in Zarr format, and Herbie could potentially be used to download that format. Thus, it was re-branded with the name "Herbie," named after a favorite childhood movie. For now, it is still called "hrrrb" on PyPI because "herbie" is already taken.
 
 .. figure:: _static/Herbie3.png
    :class: img-fluid
    :width: 66%
 
-
-Other useful tools
-------------------
-Brian's Python Add-ons
-^^^^^^^^^^^^^^^^^^^^^^
-These are still in development and require my `Carpenter Workshop <https://github.com/blaylockbk/Carpenter_Workshop>`_ package to plot the data on a Cartopy map or pluck points nearest specific latitudes and longitudes.
+**🛰 GOES ABI and GLM data** can be downloaded from AWS with my `goes-2-go <https://github.com/blaylockbk/goes2go/tree/master/goes2go>`_ package. This package was also originally developed during grad school and has been updated.
 
 
 Indices and tables

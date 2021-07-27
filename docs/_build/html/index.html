@@ -195,25 +195,6 @@
    History
   </a>
  </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#other-useful-tools">
-   Other useful tools
-  </a>
-  <ul class="nav section-nav flex-column">
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#brian-s-python-add-ons">
-     Brian’s Python Add-ons
-    </a>
-    <ul class="nav section-nav flex-column">
-     <li class="toc-h4 nav-item toc-entry">
-      <a class="reference internal nav-link" href="#indices-and-tables">
-       Indices and tables
-      </a>
-     </li>
-    </ul>
-   </li>
-  </ul>
- </li>
 </ul>
 
 </nav>
@@ -274,17 +255,19 @@
 </div>
 <div class="section" id="plot-fields">
 <h3>Plot Fields<a class="headerlink" href="#plot-fields" title="Permalink to this headline">¶</a></h3>
-<p>🏗 Under construction. I want to make some useful xarray accessors for plotting the GRIB2 fields.</p>
+<p>🏗 Under construction. I want to make some useful xarray accessors for plotting the GRIB2 fields. This will use tools I am developing in my <a class="reference external" href="https://github.com/blaylockbk/Carpenter_Workshop">Carpenter Workshop</a> package to plot the data on a Cartopy map or pluck points nearest specific latitudes and longitudes.</p>
 </div>
 </div>
 <div class="section" id="data-sources">
 <h2>Data Sources<a class="headerlink" href="#data-sources" title="Permalink to this headline">¶</a></h2>
-<p>Thanks to the <a class="reference external" href="https://www.noaa.gov/information-technology/big-data">NOAA Big Data Program</a> weather data is more easily accessible than ever before. Common data sources include
-- <a class="reference external" href="https://nomads.ncep.noaa.gov/">NOAA NOMADS Server</a> (most recent data, but not archived)
-- <a class="reference external" href="https://registry.opendata.aws/noaa-hrrr-pds/">Amazon Web Services</a>
-- <a class="reference external" href="https://console.cloud.google.com/marketplace/product/noaa-public/hrrr">Google Cloud Platform</a>
-- <a class="reference external" href="https://github.com/microsoft/AIforEarthDataSets/blob/main/data/noaa-hrrr.md">Microsoft Azure</a>
-- <a class="reference external" href="http://hrrr.chpc.utah.edu/">University of Utah Pando Archive</a></p>
+<p>Thanks to the <a class="reference external" href="https://www.noaa.gov/information-technology/big-data">NOAA Big Data Program</a> weather data is more easily accessible than ever before. Common data sources include</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://nomads.ncep.noaa.gov/">NOAA NOMADS Server</a> (most recent data, but not archived)</p></li>
+<li><p><a class="reference external" href="https://registry.opendata.aws/noaa-hrrr-pds/">Amazon Web Services</a></p></li>
+<li><p><a class="reference external" href="https://console.cloud.google.com/marketplace/product/noaa-public/hrrr">Google Cloud Platform</a></p></li>
+<li><p><a class="reference external" href="https://github.com/microsoft/AIforEarthDataSets/blob/main/data/noaa-hrrr.md">Microsoft Azure</a></p></li>
+<li><p><a class="reference external" href="http://hrrr.chpc.utah.edu/">University of Utah Pando Archive</a></p></li>
+</ul>
 </div>
 <div class="section" id="install">
 <h2>Install<a class="headerlink" href="#install" title="Permalink to this headline">¶</a></h2>
@@ -313,26 +296,16 @@ conda activate hrrrb
 <div class="section" id="history">
 <h2>History<a class="headerlink" href="#history" title="Permalink to this headline">¶</a></h2>
 <p><strong>👨🏻‍🎓 During my PhD at the University of Utah</strong>, I created, at the time, the only publicly-accessible archive of HRRR data. In the later half of 2020, this data was made available through the <a class="reference external" href="https://www.noaa.gov/information-technology/big-data">NOAA Big Data Program</a>. The Herbie package organizes and expands my original download scripts into a more coherent package with the extended ability to download more than just the HRRR and RAP model data and from different data sources. It will continue to evolve at my own leisure.</p>
-<p><strong>🌹 What’s in a name?</strong> I originally released this package under the name “HRRR-B” because it only dealt with the HRRR data set and the “B” is for my initial. Since then, I have added the ability to download RAP, GFS, NBM, RRFS, and potentially more models in the future. Thus, it was re-branded with the name “Herbie” named after some favorite childhood movies. For now, it is still called “hrrrb” on PyPI because “herbie” is already taken.</p>
-<p><strong>🛰 GOES ABI and GLM data</strong> can be downloaded with my <a class="reference external" href="https://github.com/blaylockbk/goes2go/tree/master/goes2go">goes-2-go</a> package. This was also developed during grad school and updated into a more friendly package.</p>
+<p><strong>🌹 What’s in a name?</strong> I originally released this package under the name “HRRR-B” because it only dealt with the HRRR data set and the “B” is for my initial. Since then, I have added the ability to download RAP, GFS, NBM, RRFS, and potentially more models in the future. Also, there is an archive of HRRR data in Zarr format, and Herbie could potentially be used to download that format. Thus, it was re-branded with the name “Herbie,” named after a favorite childhood movie. For now, it is still called “hrrrb” on PyPI because “herbie” is already taken.</p>
 <div class="figure align-default">
 <a class="img-fluid reference internal image-reference" href="_static/Herbie3.png"><img alt="_static/Herbie3.png" class="img-fluid" src="_static/Herbie3.png" style="width: 66%;" /></a>
 </div>
-</div>
-<div class="section" id="other-useful-tools">
-<h2>Other useful tools<a class="headerlink" href="#other-useful-tools" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="brian-s-python-add-ons">
-<h3>Brian’s Python Add-ons<a class="headerlink" href="#brian-s-python-add-ons" title="Permalink to this headline">¶</a></h3>
-<p>These are still in development and require my <a class="reference external" href="https://github.com/blaylockbk/Carpenter_Workshop">Carpenter Workshop</a> package to plot the data on a Cartopy map or pluck points nearest specific latitudes and longitudes.</p>
-<div class="section" id="indices-and-tables">
-<h4>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h4>
+<p><strong>🛰 GOES ABI and GLM data</strong> can be downloaded from AWS with my <a class="reference external" href="https://github.com/blaylockbk/goes2go/tree/master/goes2go">goes-2-go</a> package. This package was also originally developed during grad school and has been updated.</p>
 <ul class="simple">
 <li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
 <li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
 <li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
 </ul>
-</div>
-</div>
 </div>
 </div>
 

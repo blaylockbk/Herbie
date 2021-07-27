@@ -2,7 +2,8 @@
 
 What is GRIB2?
 --------------
-GRIB stands for "gridded binary". 
+GRIB stands for "gridded binary" and is an international standard for meteorological data. 
+
 - `Wikipedia: GRIB <https://en.wikipedia.org/wiki/GRIB>`_
 
 GRIB2 Tools

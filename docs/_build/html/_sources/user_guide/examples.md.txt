@@ -1,4 +1,4 @@
-# 👨🏻‍💻 Practical Examples: Old `HRRR-B` API
+# 👨🏻‍💻 Examples: Old `HRRR-B` API
 
 If you are looking for a no-fuss method to download the HRRR data you want, use the `hrrrb.archive` module.
 
@@ -101,27 +101,3 @@ For reference, here are some useful examples to give you some ideas...
 >
 > NOTE: When cfgrib reads a grib file with more than one accumulated precipitation fields, it will not read all the fields. I think this is an issue with cfgrib (see [issue here](https://github.com/ecmwf/cfgrib/issues/187)). The way around this is to key in on a *single* APCP field. See the `searchString` examples above for keying in on a single APCP field.
 <br>
-
-### Quickly look at GRIB files in the command line
-There are two tools for looking at GRIB file contents in the command line.
-1. `wgrib2` : can be installed via conda-forge in your environment. A product from NOAA.
-2. `grib_ls` : is a dependency of cfgrib and is included when you install cfgrib in your environment. A product from ECMWF. 
-
-For the sample precipitation data, below is the output using both tools
-
-```bash
-$ wgrib2 subset_20201214_hrrr.t00z.wrfsfcf12.grib2
-1:0:d=2020121400:APCP:surface:0-12 hour acc fcst:
-2:887244:d=2020121400:APCP:surface:11-12 hour acc fcst:
-```
-
-```bash
-$ grib_ls subset_20201214_hrrr.t00z.wrfsfcf12.grib2 
-subset_20201214_hrrr.t00z.wrfsfcf12.grib2
-edition      centre       date         dataType     gridType     typeOfLevel  level        stepRange    shortName    packingType  
-2            kwbc         20201214     fc           lambert      surface      0            0-12         tp           grid_complex_spatial_differencing 
-2            kwbc         20201214     fc           lambert      surface      0            11-12        tp           grid_complex_spatial_differencing 
-2 of 2 messages in subset_20201214_hrrr.t00z.wrfsfcf12.grib2
-
-2 of 2 total messages in 1 files
-```

@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>👨🏻‍💻 Practical Examples: Old HRRR-B API &#8212; HRRR-B 0.0.4 documentation</title>
+    <title>👨🏻‍💻 Examples: Old HRRR-B API &#8212; HRRR-B 0.0.4 documentation</title>
     
   <link href="../_static/css/theme.css" rel="stylesheet" />
   <link href="../_static/css/index.c5995385ac14fb8791e8eb36b4908be2.css" rel="stylesheet" />
@@ -157,6 +157,11 @@
   </a>
  </li>
  <li class="toctree-l1">
+  <a class="reference internal" href="grib2.html">
+   What is GRIB2?
+  </a>
+ </li>
+ <li class="toctree-l1">
   <a class="reference internal" href="tutorial.html">
    👨🏻‍💻 Tutorial: New
    <code class="docutils literal notranslate">
@@ -179,7 +184,7 @@
  </li>
  <li class="toctree-l1 current active">
   <a class="current reference internal" href="#">
-   👨🏻‍💻 Practical Examples: Old
+   👨🏻‍💻 Examples: Old
    <code class="docutils literal notranslate">
     <span class="pre">
      HRRR-B
@@ -287,13 +292,6 @@
    </strong>
    argument
   </a>
-  <ul class="nav section-nav flex-column">
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#quickly-look-at-grib-files-in-the-command-line">
-     Quickly look at GRIB files in the command line
-    </a>
-   </li>
-  </ul>
  </li>
 </ul>
 
@@ -323,8 +321,8 @@
               
               <div>
                 
-  <div class="section" id="practical-examples-old-hrrr-b-api">
-<h1>👨🏻‍💻 Practical Examples: Old <code class="docutils literal notranslate"><span class="pre">HRRR-B</span></code> API<a class="headerlink" href="#practical-examples-old-hrrr-b-api" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="examples-old-hrrr-b-api">
+<h1>👨🏻‍💻 Examples: Old <code class="docutils literal notranslate"><span class="pre">HRRR-B</span></code> API<a class="headerlink" href="#examples-old-hrrr-b-api" title="Permalink to this headline">¶</a></h1>
 <p>If you are looking for a no-fuss method to download the HRRR data you want, use the <code class="docutils literal notranslate"><span class="pre">hrrrb.archive</span></code> module.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">hrrrb.archive</span> <span class="k">as</span> <span class="nn">ha</span>
 </pre></div>
@@ -503,31 +501,7 @@
 </ul>
 <p>NOTE: When cfgrib reads a grib file with more than one accumulated precipitation fields, it will not read all the fields. I think this is an issue with cfgrib (see <a class="reference external" href="https://github.com/ecmwf/cfgrib/issues/187">issue here</a>). The way around this is to key in on a <em>single</em> APCP field. See the <code class="docutils literal notranslate"><span class="pre">searchString</span></code> examples above for keying in on a single APCP field.</p>
 </div></blockquote>
-<br><div class="section" id="quickly-look-at-grib-files-in-the-command-line">
-<h3>Quickly look at GRIB files in the command line<a class="headerlink" href="#quickly-look-at-grib-files-in-the-command-line" title="Permalink to this headline">¶</a></h3>
-<p>There are two tools for looking at GRIB file contents in the command line.</p>
-<ol class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">wgrib2</span></code> : can be installed via conda-forge in your environment. A product from NOAA.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">grib_ls</span></code> : is a dependency of cfgrib and is included when you install cfgrib in your environment. A product from ECMWF.</p></li>
-</ol>
-<p>For the sample precipitation data, below is the output using both tools</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ wgrib2 subset_20201214_hrrr.t00z.wrfsfcf12.grib2
-<span class="m">1</span>:0:d<span class="o">=</span><span class="m">2020121400</span>:APCP:surface:0-12 hour acc fcst:
-<span class="m">2</span>:887244:d<span class="o">=</span><span class="m">2020121400</span>:APCP:surface:11-12 hour acc fcst:
-</pre></div>
-</div>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ grib_ls subset_20201214_hrrr.t00z.wrfsfcf12.grib2 
-subset_20201214_hrrr.t00z.wrfsfcf12.grib2
-edition      centre       date         dataType     gridType     typeOfLevel  level        stepRange    shortName    packingType  
-<span class="m">2</span>            kwbc         <span class="m">20201214</span>     <span class="nb">fc</span>           lambert      surface      <span class="m">0</span>            <span class="m">0</span>-12         tp           grid_complex_spatial_differencing 
-<span class="m">2</span>            kwbc         <span class="m">20201214</span>     <span class="nb">fc</span>           lambert      surface      <span class="m">0</span>            <span class="m">11</span>-12        tp           grid_complex_spatial_differencing 
-<span class="m">2</span> of <span class="m">2</span> messages <span class="k">in</span> subset_20201214_hrrr.t00z.wrfsfcf12.grib2
-
-<span class="m">2</span> of <span class="m">2</span> total messages <span class="k">in</span> <span class="m">1</span> files
-</pre></div>
-</div>
-</div>
-</div>
+<br></div>
 </div>
 
 
