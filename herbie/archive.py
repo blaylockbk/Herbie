@@ -4,15 +4,17 @@
 ## May 3, 2021
 
 """
-==================================================
-Herbie: Download grib2 model output from the cloud
-==================================================
+===============================
+Herbie: Retrieve NWP Model Data
+===============================
 
 Herbie is your model output download assistant with a mind of his own!
 Herbie might look small on the outside, but he has a big heart on the 
 inside and will get you to the
 `finish line <https://www.youtube.com/watch?v=4XWufUZ1mxQ&t=189s>`_.
 Happy racing! 🏎🏁
+
+`📔 Documentation <https://blaylockbk.github.io/Herbie/_build/html/>`_
 
 With Herbie's API, you can search and download GRIB2 model output files
 from different archive sources for the High-Resolution Rapid Refresh 
@@ -50,10 +52,11 @@ For more details, see https://blaylockbk.github.io/Herbie/_build/html/user_guide
     - Renamed 'field' to 'product'
     - ✨ Moved the source URL templates to their own classes in the **models** folder
     - Renamed GitHub repository to Herbie (from HRRR_archive_download)
+    - Added RRFS, NBM, GFS, RAP as models Herbie can download
     - TODO: Rename 'searchString' to 'subset' (and rename subset function)
     - TODO: Add NCEI as a source for the RAP data?? URL is complex.
     - TODO: Create .idx file if wgrib2 is installed (linux only)
-    - TODO: Download RRFS data (https://registry.opendata.aws/noaa-rrfs/)
+    - TODO: Need to support NBM index files
 
 """
 import os

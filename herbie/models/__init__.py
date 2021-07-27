@@ -4,3 +4,4 @@ from .hrrr import *
 from .hrrrak import *
 from .rap import *
 from .rrfs import *
+from .nbm import *

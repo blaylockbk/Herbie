@@ -13,7 +13,7 @@ import xarray as xr
 from herbie.archive import Herbie
 
 def bulk_download(DATES, searchString=None, *, fxx=range(0,1), 
-                  model='hrrr', field='sfc', priority=None,
+                  model='hrrr', product='sfc', priority=None,
                   verbose=True):
     """
     Bulk download GRIB2 files from file source to the local machine.
@@ -32,15 +32,15 @@ def bulk_download(DATES, searchString=None, *, fxx=range(0,1),
         List of forecast lead times to download. Default only downloads model analysis.
     model : {'hrrr', 'hrrrak', 'rap'}
         Model to download.
-    field : {'sfc', 'prs', 'nat', 'subh'}
-        Variable fields file to download. Not needed for RAP model.
+    product : {'sfc', 'prs', 'nat', 'subh'}
+        Variable products file to download. Not needed for RAP model.
     """   
     if isinstance(DATES, (str, pd.Timestamp)) or hasattr(DATES, 'strptime'):
         DATES = [DATES]
     if isinstance(fxx, int):
         fxx = [fxx]
 
-    kw = dict(model=model, field=field)
+    kw = dict(model=model, product=product)
     if priority is not None:
         kw['priority'] = priority
     

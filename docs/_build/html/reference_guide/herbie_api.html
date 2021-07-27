@@ -172,8 +172,8 @@
 <nav id="bd-toc-nav">
     <ul class="visible nav section-nav flex-column">
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#herbie-download-grib2-model-output-from-the-cloud">
-   Herbie: Download grib2 model output from the cloud
+  <a class="reference internal nav-link" href="#herbie-retrieve-nwp-model-data">
+   Herbie: Retrieve NWP Model Data
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
@@ -216,13 +216,14 @@
                 
   <div class="section" id="module-herbie.archive">
 <span id="herbie-api"></span><h1>Herbie API<a class="headerlink" href="#module-herbie.archive" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="herbie-download-grib2-model-output-from-the-cloud">
-<h2>Herbie: Download grib2 model output from the cloud<a class="headerlink" href="#herbie-download-grib2-model-output-from-the-cloud" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="herbie-retrieve-nwp-model-data">
+<h2>Herbie: Retrieve NWP Model Data<a class="headerlink" href="#herbie-retrieve-nwp-model-data" title="Permalink to this headline">¶</a></h2>
 <p>Herbie is your model output download assistant with a mind of his own!
 Herbie might look small on the outside, but he has a big heart on the
 inside and will get you to the
 <a class="reference external" href="https://www.youtube.com/watch?v=4XWufUZ1mxQ&amp;t=189s">finish line</a>.
 Happy racing! 🏎🏁</p>
+<p><a class="reference external" href="https://blaylockbk.github.io/Herbie/_build/html/">📔 Documentation</a></p>
 <p>With Herbie’s API, you can search and download GRIB2 model output files
 from different archive sources for the High-Resolution Rapid Refresh
 (HRRR) HRRR-Alaska, Rapid Refresh (RAP), Global Forecast System (GFS),
@@ -256,10 +257,11 @@ file in the <code class="docutils literal notranslate"><span class="pre">herbie/
 <li><p>Renamed ‘field’ to ‘product’</p></li>
 <li><p>✨ Moved the source URL templates to their own classes in the <strong>models</strong> folder</p></li>
 <li><p>Renamed GitHub repository to Herbie (from HRRR_archive_download)</p></li>
+<li><p>Added RRFS, NBM, GFS, RAP as models Herbie can download</p></li>
 <li><p>TODO: Rename ‘searchString’ to ‘subset’ (and rename subset function)</p></li>
 <li><p>TODO: Add NCEI as a source for the RAP data?? URL is complex.</p></li>
 <li><p>TODO: Create .idx file if wgrib2 is installed (linux only)</p></li>
-<li><p>TODO: Download RRFS data (<a class="reference external" href="https://registry.opendata.aws/noaa-rrfs/">https://registry.opendata.aws/noaa-rrfs/</a>)</p></li>
+<li><p>TODO: Need to support NBM index files</p></li>
 </ul>
 </div>
 <p><strong>Classes:</strong></p>
@@ -476,7 +478,7 @@ before we downloaded it.</p></li>
 </table>
 <dl class="py function">
 <dt class="sig sig-object py" id="herbie.tools.bulk_download">
-<span class="sig-prename descclassname"><span class="pre">herbie.tools.</span></span><span class="sig-name descname"><span class="pre">bulk_download</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">DATES</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">searchString</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fxx</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">range(0,</span> <span class="pre">1)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'hrrr'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">field</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'sfc'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">priority</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#herbie.tools.bulk_download" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">herbie.tools.</span></span><span class="sig-name descname"><span class="pre">bulk_download</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">DATES</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">searchString</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fxx</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">range(0,</span> <span class="pre">1)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'hrrr'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">product</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'sfc'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">priority</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#herbie.tools.bulk_download" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bulk download GRIB2 files from file source to the local machine.</p>
 <p>Iterates over a list of datetimes (DATES) and forecast lead times (fxx).</p>
 <dl class="field-list simple">
@@ -488,7 +490,7 @@ index files for variables and levels of interest and only
 download the matched GRIB messages.</p></li>
 <li><p><strong>fxx</strong> (<em>int</em><em> or </em><em>list</em>) – List of forecast lead times to download. Default only downloads model analysis.</p></li>
 <li><p><strong>model</strong> (<em>{'hrrr'</em><em>, </em><em>'hrrrak'</em><em>, </em><em>'rap'}</em>) – Model to download.</p></li>
-<li><p><strong>field</strong> (<em>{'sfc'</em><em>, </em><em>'prs'</em><em>, </em><em>'nat'</em><em>, </em><em>'subh'}</em>) – Variable fields file to download. Not needed for RAP model.</p></li>
+<li><p><strong>product</strong> (<em>{'sfc'</em><em>, </em><em>'prs'</em><em>, </em><em>'nat'</em><em>, </em><em>'subh'}</em>) – Variable products file to download. Not needed for RAP model.</p></li>
 </ul>
 </dd>
 </dl>
