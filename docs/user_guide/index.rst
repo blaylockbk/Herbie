@@ -13,4 +13,5 @@ User Guide
    searchString_help
    examples
    notebooks
+   model_template
    
