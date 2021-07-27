@@ -28,7 +28,7 @@ Herbie can download full or partial GRIB2 files from different models, including
 - Rapid Refresh Forecast System - Prototype (RRFS)
 - National Blend of Models (NMB)
 
-**Subsetting by GRIB message** is also supported, provided that an index (.idx) file exists. GRIB files contain "messages" which define a grid of data for a particular variable. Data for a variable grid are stacked on top of each other. Instead of downloading full GRIB2 files, you may download a selections from a GRIB2 file based on GRIB message. This is enabled by the cURL command which allows you to download a range of bytes from a file. GRIB index files list the beginning byte for each GRIB field. Herbie searches these index file for the variables you want and performs the cURL command for each field. The returned data is a valid GRIB2 file that contains the whole grid for just the requested variable.
+**Subsetting these files by GRIB message** is also supported, provided that an index (.idx) file exists. For more information about subsetting, read :ref:`What is GRIB2?`. 
 
 Read GRIB2 Data
 ^^^^^^^^^^^^^^^
