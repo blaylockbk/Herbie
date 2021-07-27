@@ -68,7 +68,7 @@ If an inventory file does not exists, one can be created using wgrib2.
 
 If you know the byte range of the variable you want (found from the .idx file), you can retrieve that single variable. The .idx> files share the same URL as the grib2, except with .idx> appended to the end. For example, from the .idx file for F00 valid at 0000 UTC 1 January 2018, we see that the byte range for TMP:2 m starts at 34884036 and ends at 36136433.
 
-.. code_block:: bash
+.. code-block:: bash
    
    curl -o 20180101_00zf00_2mTemp.grib2 --range 34884036-36136433 https://pando-rgw01.chpc.utah.edu/hrrr/sfc/20180101/hrrr.t00z.wrfsfcf00.grib2
 
