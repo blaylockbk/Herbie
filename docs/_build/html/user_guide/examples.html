@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>👨🏻‍💻 Examples: Old HRRR-B API &#8212; HRRR-B 0.0.4 documentation</title>
+    <title>THIS IS THE OLD, DEPRECATED HRRR-B API &#8212; HRRR-B 0.0.4 documentation</title>
     
   <link href="../_static/css/theme.css" rel="stylesheet" />
   <link href="../_static/css/index.c5995385ac14fb8791e8eb36b4908be2.css" rel="stylesheet" />
@@ -38,7 +38,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="📝 Jupyter Notebooks" href="notebooks.html" />
-    <link rel="prev" title="How to subset with searchString" href="searchString_help.html" />
+    <link rel="prev" title="👷🏻‍♂️ Extending Herbie" href="model_template.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="en" />
     
@@ -158,7 +158,7 @@
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="grib2.html">
-   What is GRIB2?
+   🔢 What is GRIB2?
   </a>
  </li>
  <li class="toctree-l1">
@@ -173,8 +173,8 @@
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="searchString_help.html">
-   How to subset with
+  <a class="reference internal" href="searchString.html">
+   🪂 Subset with
    <code class="docutils literal notranslate">
     <span class="pre">
      searchString
@@ -182,15 +182,14 @@
    </code>
   </a>
  </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="model_template.html">
+   👷🏻‍♂️ Extending Herbie
+  </a>
+ </li>
  <li class="toctree-l1 current active">
   <a class="current reference internal" href="#">
-   👨🏻‍💻 Examples: Old
-   <code class="docutils literal notranslate">
-    <span class="pre">
-     HRRR-B
-    </span>
-   </code>
-   API
+   THIS IS THE OLD, DEPRECATED HRRR-B API
   </a>
  </li>
  <li class="toctree-l1 has-children">
@@ -250,11 +249,6 @@
    </li>
   </ul>
  </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="model_template.html">
-   Extending Herbie
-  </a>
- </li>
 </ul>
 
   </div>
@@ -275,28 +269,46 @@
 
 <nav id="bd-toc-nav">
     <ul class="visible nav section-nav flex-column">
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#click-here-for-some-examples">
-   👉 Click Here For Some Examples
+ <li class="toc-h1 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#">
+   THIS IS THE OLD, DEPRECATED HRRR-B API
   </a>
  </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#function-arguments">
-   Function arguments
+ <li class="toc-h1 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#examples-old-hrrr-b-api">
+   👨🏻‍💻 Examples: Old
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     HRRR-B
+    </span>
+   </code>
+   API
   </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#the-searchstring-argument">
-   The
-   <strong>
-    <code class="docutils literal notranslate">
-     <span class="pre">
-      searchString
-     </span>
-    </code>
-   </strong>
-   argument
-  </a>
+  <ul class="visible nav section-nav flex-column">
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#click-here-for-some-examples">
+     👉 Click Here For Some Examples
+    </a>
+   </li>
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#function-arguments">
+     Function arguments
+    </a>
+   </li>
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#the-searchstring-argument">
+     The
+     <strong>
+      <code class="docutils literal notranslate">
+       <span class="pre">
+        searchString
+       </span>
+      </code>
+     </strong>
+     argument
+    </a>
+   </li>
+  </ul>
  </li>
 </ul>
 
@@ -326,7 +338,12 @@
               
               <div>
                 
-  <div class="section" id="examples-old-hrrr-b-api">
+  <hr class="docutils" />
+<div class="section" id="this-is-the-old-deprecated-hrrr-b-api">
+<h1>THIS IS THE OLD, DEPRECATED HRRR-B API<a class="headerlink" href="#this-is-the-old-deprecated-hrrr-b-api" title="Permalink to this headline">¶</a></h1>
+</div>
+<hr class="docutils" />
+<div class="section" id="examples-old-hrrr-b-api">
 <h1>👨🏻‍💻 Examples: Old <code class="docutils literal notranslate"><span class="pre">HRRR-B</span></code> API<a class="headerlink" href="#examples-old-hrrr-b-api" title="Permalink to this headline">¶</a></h1>
 <p>If you are looking for a no-fuss method to download the HRRR data you want, use the <code class="docutils literal notranslate"><span class="pre">hrrrb.archive</span></code> module.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">hrrrb.archive</span> <span class="k">as</span> <span class="nn">ha</span>
@@ -515,7 +532,7 @@
               
               <div class='prev-next-bottom'>
                 
-    <a class='left-prev' id="prev-link" href="searchString_help.html" title="previous page">How to subset with <code class="docutils literal notranslate"><span class="pre">searchString</span></code></a>
+    <a class='left-prev' id="prev-link" href="model_template.html" title="previous page">👷🏻‍♂️ Extending Herbie</a>
     <a class='right-next' id="next-link" href="notebooks.html" title="next page">📝 Jupyter Notebooks</a>
 
               </div>
