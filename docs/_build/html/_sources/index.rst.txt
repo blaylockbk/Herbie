@@ -4,6 +4,7 @@
 ====================
 Herbie Documentation
 ====================
+**Herbie** is a python package that downloads recent and archived GRIB2 files from numerical weather prediction output. 
 
 .. toctree::
    :maxdepth: 1
@@ -11,7 +12,7 @@ Herbie Documentation
    /user_guide/index
    /reference_guide/index
 
-**Herbie** is a python package that downloads recent and archived GRIB2 files from numerical weather prediction output. 
+
 
 Capabilities
 ------------
