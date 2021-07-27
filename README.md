@@ -8,11 +8,6 @@
 [![DOI](https://zenodo.org/badge/275214142.svg)](https://zenodo.org/badge/latestdoi/275214142)
 <!-- (Badges) -->
 
-**Brian Blaylock**  
-[🌐 Personal Webpage](http://home.chpc.utah.edu/~u0553130/Brian_Blaylock/home.html)  
-[🌐 University of Utah HRRR archive page](http://hrrr.chpc.utah.edu/)
-
-
 ---
 
 <br>
@@ -43,9 +38,16 @@ During my PhD at the University of Utah, I created, at the time, the only public
 
 I originally released this package under the name "HRRR-B" because it only dealt with the HRRR data set, but I have addeed ability to download RAP data. Thus, it was rebranded with the name "Herbie" as a model download assistant. For now, it is still called "hrrrb" on PyPI because "herbie" is already taken. Maybe someday, with some time and an enticing reason, I'll add additional download capabilities. The GOES ABI and GLM data can be downloaded with my [goes-2-go](https://github.com/blaylockbk/goes2go/tree/master/goes2go) package.
 
-
 ## Alternative Download Tools
 As an alternative you can use [rclone](https://rclone.org/) to download HRRR files from AWS or GCP. I quite like rclone. Here is a [short rclone tutorial](https://github.com/blaylockbk/pyBKB_v3/blob/master/rclone_howto.md)
+
+I hope some of these tips are helpful to you.
+
+**Best of luck 🍀**  
+\- Brian
+
+[🌐 Personal Webpage](http://home.chpc.utah.edu/~u0553130/Brian_Blaylock/home.html)  
+[🌐 University of Utah HRRR archive page](http://hrrr.chpc.utah.edu/)
 
 
 <br><br><br>
