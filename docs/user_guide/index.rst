@@ -8,6 +8,8 @@ User Guide
    contribute
    install
    data_sources
+   grib2
+   subsetting
    tutorial.ipynb
    searchString_help
    examples
