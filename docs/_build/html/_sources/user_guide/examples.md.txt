@@ -1,9 +1,8 @@
 
-# THIS IS THE OLD, DEPRECATED HRRR-B API
-
------
 
 # 👨🏻‍💻 Examples: Old `HRRR-B` API
+
+**THIS IS THE OLD, DEPRECATED HRRR-B API**
 
 If you are looking for a no-fuss method to download the HRRR data you want, use the `hrrrb.archive` module.
 
