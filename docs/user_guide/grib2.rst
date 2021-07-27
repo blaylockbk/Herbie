@@ -1,7 +1,7 @@
 .. _GRIB2_FAQ:
 
-What is GRIB2?
---------------
+🔢 What is GRIB2?
+------------------
 GRIB stands for "gridded binary" and is an international standard for meteorological data. There is an old standard GRIB, and a new standard GRIB2. In these documetns, when I refer to GRIB I really mean the new GRIB2 standard.
 
 Yes, GRIB is notoriously difficult to work with and has a steep learning curve for those unfamiliar with the format. I won't discuss here the good, bad, and ugly of GRIB frankly because I'm not an expert and probably will say something wrong. However, even seasoned meteorologists complain about GRIB. Since complaining won't fix the problem, I choose to embrace it because, for now, NWP data is widely distributed as GRIB2.  
