@@ -2,13 +2,14 @@
 
 What is GRIB2?
 --------------
-GRIB stands for "gridded binary" and is an international standard for meteorological data. 
+GRIB stands for "gridded binary" and is an international standard for meteorological data. There is an old standard GRIB, and a new standard GRIB2. In these documetns, when I refer to GRIB I really mean the new GRIB2 standard.
+
+Yes, GRIB is notoriously difficult to work with and has a steep learning curve for those unfamiliar with the format. I won't discuss here the good, bad, and ugly of GRIB frankly because I'm not an expert and probably will say something wrong. However, even seasoned meteorologists complain about GRIB. Since complaining won't fix the problem, I choose to embrace it because, for now, NWP data is widely distributed as GRIB2.  
 
 - `Wikipedia: GRIB <https://en.wikipedia.org/wiki/GRIB>`_
 
 GRIB2 Tools
 -----------
-Yes, GRIB is notoriously difficult to work with, and has a steep learning curve for those unfamiliar with the format or meteorological data. 
 
 Command Line Tools
 ^^^^^^^^^^^^^^^^^^
@@ -45,13 +46,15 @@ There are two key python packages for reading GRIB2 files. Both can be installed
 
 How GRIB subsetting works
 -------------------------
-GRIB files are gridded binary. They are made of "messages" or "fields" stacked on top of each other. Each field contains the data for a variable at a specific level across the model domain. It is possible to download portions of the full GRIB2 file and what you get is a valid GRIB2 file.
+GRIB files are gridded binary. GRIB "messages" or "fields" are stacked on top of each other in a file. Each field contains data for one variable at a specific level across the gridded model domain. Because the file is made up of individual "messages," it is possible to download portions of GRIB2 file by retrieving just specific messages.
 
-Herbie supports **subsetting GRIB2 files by GRIB message** provided that an index (.idx) file exists. GRIB files contain "messages" which define a grid of data for a particular variable. Data for each variable is stacked on top of each other. Instead of downloading full GRIB2 files, you may download a selections from a GRIB2 file based on GRIB message. This is enabled by the cURL command which allows you to download a range of bytes from a file. GRIB index files list the beginning byte for each GRIB field. Herbie searches these index file for the variables you want and performs the cURL command for each field. The returned data is a valid GRIB2 file that contains the whole grid for just the requested variable.
+Herbie supports **subsetting GRIB2 files by GRIB message**, provided that an index (.idx) file exists. The index file tells us the beginning byte of each GRIB message. To download a subset, Herbie uses the cURL command which allows you to download a range of bytes from a file. By repeating the cURL command and appending the messages you a file, you can subset a full file on the remote server and download only the fields you need. Keep in mind that a GRIB message represents the variable over the full grid. It is only possible to subset the file by GRIB message and not by geographical region (i.e., you cannot do a regional subset). 
 
-GRIB2 files are usually very large. Native HRRR files can be ~700 MB each! That adds up quick if you need a lot of days and forecasts. Often, you only need some of the data in the file. GRIB2 data is based on messages made up of binary gridded fields concatenated together. It is possible to download only the parts of the file for specific variables or "fields" that you want. You will save a lot of disk space and improve download time if you download just the variables you need. The size of a single HRRR grid is about 1 MB.
+Why would you want to subset GRIB2 files? Well, GRIB files provided by operational forecast centers are usually very large because they can contain hundred of model output variables, and each variable is its own GRIB message. For example, native grid HRRR files can be ~700 MB each! That adds up quick if you need a lot of days and forecasts. Often, you only need some of the data in the file. The size of a single HRRR message is about 1 MB. If you subset the data as you download it, you will save a lot of disk space and improve download time.
 
-.. image:: ../_static/diagrams/GRIB2_file_cURL.png
+.. figure:: ../_static/diagrams/GRIB2_file_cURL.png
+
+   GRIB2 files are made up of messages or fields that can be extracted instead of downloading the full file.
 
 The challenge to downloading parts of the full GRIB2 file finding the byte range for a variable you want. The beginning byte of each variable is given in the index, or .idx, file.
 
