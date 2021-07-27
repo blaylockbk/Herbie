@@ -8,8 +8,6 @@ Yes, GRIB is notoriously difficult to work with and has a steep learning curve f
 
 - `Wikipedia: GRIB <https://en.wikipedia.org/wiki/GRIB>`_
 
-GRIB2 Tools
------------
 
 Command Line Tools
 ^^^^^^^^^^^^^^^^^^
@@ -44,8 +42,8 @@ There are two key python packages for reading GRIB2 files. Both can be installed
 - **pygrib** is what I started to learn and still use sometimes. | `Video Demo <https://youtu.be/yLoudFv3hAY>`_ |  `pygrib GitHub <https://github.com/jswhit/pygrib>`_ |
 - **cfgrib** works well reading GRIB2 data as xarray datasets. Make sure you have the latest version (>0.9.8) |  `cfgrib GitHub <https://github.com/ecmwf/cfgrib>`_
 
-How GRIB subsetting works
--------------------------
+How GRIB subsetting works in Herbie
+-----------------------------------
 GRIB files are gridded binary. GRIB _messages_ or _fields_ are stacked on top of each other in a file. Each field contains data for one variable at a specific level across the gridded model domain. Because the file is made up of individual "messages," it is possible to download portions of GRIB2 file by retrieving just specific messages.
 
 Herbie supports **subsetting GRIB2 files by GRIB message**, provided that an _inventory_ or _index_ (.idx) file exists. The index file tells us the beginning byte of each GRIB message. To download a subset, Herbie uses the cURL command which allows you to download a range of bytes from a file. By repeating the cURL command and appending the messages you a file, you can subset a full file on the remote server and download only the fields you need. Keep in mind that a GRIB message represents the variable over the full grid. It is only possible to subset the file by GRIB message and not by geographical region (i.e., you cannot do a regional subset). 

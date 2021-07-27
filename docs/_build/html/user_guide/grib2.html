@@ -279,11 +279,6 @@
   <a class="reference internal nav-link" href="#">
    🔢 What is GRIB2?
   </a>
- </li>
- <li class="toc-h1 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#grib2-tools">
-   GRIB2 Tools
-  </a>
   <ul class="visible nav section-nav flex-column">
    <li class="toc-h2 nav-item toc-entry">
     <a class="reference internal nav-link" href="#command-line-tools">
@@ -298,8 +293,8 @@
   </ul>
  </li>
  <li class="toc-h1 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#how-grib-subsetting-works">
-   How GRIB subsetting works
+  <a class="reference internal nav-link" href="#how-grib-subsetting-works-in-herbie">
+   How GRIB subsetting works in Herbie
   </a>
  </li>
 </ul>
@@ -337,9 +332,6 @@
 <ul class="simple">
 <li><p><a class="reference external" href="https://en.wikipedia.org/wiki/GRIB">Wikipedia: GRIB</a></p></li>
 </ul>
-</div>
-<div class="section" id="grib2-tools">
-<h1>GRIB2 Tools<a class="headerlink" href="#grib2-tools" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="command-line-tools">
 <h2>Command Line Tools<a class="headerlink" href="#command-line-tools" title="Permalink to this headline">¶</a></h2>
 <p>There are two command-line tools for looking at GRIB file contents.</p>
@@ -373,8 +365,8 @@ edition      centre       date         dataType     gridType     typeOfLevel  le
 </ul>
 </div>
 </div>
-<div class="section" id="how-grib-subsetting-works">
-<h1>How GRIB subsetting works<a class="headerlink" href="#how-grib-subsetting-works" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="how-grib-subsetting-works-in-herbie">
+<h1>How GRIB subsetting works in Herbie<a class="headerlink" href="#how-grib-subsetting-works-in-herbie" title="Permalink to this headline">¶</a></h1>
 <p>GRIB files are gridded binary. GRIB _messages_ or _fields_ are stacked on top of each other in a file. Each field contains data for one variable at a specific level across the gridded model domain. Because the file is made up of individual “messages,” it is possible to download portions of GRIB2 file by retrieving just specific messages.</p>
 <p>Herbie supports <strong>subsetting GRIB2 files by GRIB message</strong>, provided that an _inventory_ or _index_ (.idx) file exists. The index file tells us the beginning byte of each GRIB message. To download a subset, Herbie uses the cURL command which allows you to download a range of bytes from a file. By repeating the cURL command and appending the messages you a file, you can subset a full file on the remote server and download only the fields you need. Keep in mind that a GRIB message represents the variable over the full grid. It is only possible to subset the file by GRIB message and not by geographical region (i.e., you cannot do a regional subset).</p>
 <p>Why would you want to subset GRIB2 files? Well, GRIB files provided by operational forecast centers are usually very large because they can contain hundred of model output variables, and each variable is its own GRIB message. For example, native grid HRRR files can be ~700 MB each! That adds up quick if you need a lot of days and forecasts. Often, you only need some of the data in the file. The size of a single HRRR message is about 1 MB. If you subset the data as you download it, you will save a lot of disk space and improve download time.</p>
