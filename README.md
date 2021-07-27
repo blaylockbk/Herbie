@@ -1,10 +1,10 @@
-![](https://github.com/blaylockbk/HRRR_archive_download/blob/master/docs/_static/HerbieLogo2_tan_transparent.png?raw=true)
+![](https://github.com/blaylockbk/Herbie/blob/master/docs/_static/HerbieLogo2_tan_transparent.png?raw=true)
 
 # Download HRRR and RAP model grids
 
 <!-- Badges -->
 [![](https://img.shields.io/pypi/v/hrrrb)](https://pypi.python.org/pypi/hrrrb/)
-![](https://img.shields.io/github/license/blaylockbk/HRRR_archive_download)
+![](https://img.shields.io/github/license/blaylockbk/Herbie)
 [![DOI](https://zenodo.org/badge/275214142.svg)](https://zenodo.org/badge/latestdoi/275214142)
 <!-- (Badges) -->
 
@@ -17,7 +17,7 @@
 
 <br>
 
-## 📔 [Herbie Documentation](https://blaylockbk.github.io/HRRR_archive_download/_build/html/)
+## 📔 [Herbie Documentation](https://blaylockbk.github.io/Herbie/_build/html/)
 
 <br>
 
@@ -56,11 +56,11 @@ HRRR model output is archived by the MesoWest group at the University of Utah on
 
 - Download full or partial HRRR GRIB2 files. Partial files are downloaded by GRIB message.
 - Different data sources: [NCEP-NOMADS](https://nomads.ncep.noaa.gov/), [Pando (University of Utah)](http://hrrr.chpc.utah.edu/), [Google Cloud Platform](https://console.cloud.google.com/storage/browser/high-resolution-rapid-refresh?pli=1), and [Amazon Web Services](). 
-    - > The Pando HRRR archive is in [process of moving to Amazon Web Services](https://github.com/blaylockbk/HRRR_archive_download/issues/2) as a public [Earth](https://aws.amazon.com/earth/) dataset. It will be available in [zarr](https://zarr.readthedocs.io/en/stable/) format that will allow for more flexibility for chunked data requests. See [Issue #2](https://github.com/blaylockbk/HRRR_archive_download/issues/2).
+    - > The Pando HRRR archive is in [process of moving to Amazon Web Services](https://github.com/blaylockbk/Herbie/issues/2) as a public [Earth](https://aws.amazon.com/earth/) dataset. It will be available in [zarr](https://zarr.readthedocs.io/en/stable/) format that will allow for more flexibility for chunked data requests. See [Issue #2](https://github.com/blaylockbk/Herbie/issues/2).
 - Open HRRR data as an xarray.Dataset.
 - Other useful tools (in development), like indexing nearest neighbor points and getting a cartopy crs object.
 
-<img src='https://raw.githubusercontent.com/blaylockbk/HRRR_archive_download/master/images/Herbie3.png' width=350 style='float:right;margin:10px' align=right>
+<img src='https://raw.githubusercontent.com/blaylockbk/Herbie/master/images/Herbie3.png' width=350 style='float:right;margin:10px' align=right>
 
 ## 🌹 What's in a name? 
 How do you pick the right name? For now, I settled on the name **HRRR-B**, pronounced "Herbie," because this package helps you get data from the High-Resolution Rapid Refresh (HRRR) model, and the B is for Brian. Is it a little pretentious to attach your own name to a package? Maybe the B will stand for something else someday. I'm also thinking about just naming this "Herbie," but that name is already taken on PyPI.
@@ -87,7 +87,7 @@ pip install hrrrb
 But the version on PyPI has diverged a lot from the code on GitHub, so I would recommend not getting from PyPI. To get the most recent hrrrb code, you may install the package directly from GitHub
 
 ```bash
-pip install git+https://github.com/blaylockbk/HRRR_archive_download.git
+pip install git+https://github.com/blaylockbk/Herbie.git
 ```
 
 > Requires: xarray, cfgrib, pandas, cartopy, requests, curl  
@@ -96,12 +96,12 @@ pip install git+https://github.com/blaylockbk/HRRR_archive_download.git
 ### Option 2: conda *recommended*
 If conda environments are new to you, I suggest you become familiar with [managing conda environments](https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html).
 
-I have provided a sample Anaconda [environment.yml](https://github.com/blaylockbk/HRRR_archive_download/blob/master/environment.yml) file that lists the minimum packages required plus some extras that might be useful when working with other types of weather data. Look at the bottom lines of that yaml file...there are two ways to install `hrrrb` with pip. Comment out the lines you don't want.
+I have provided a sample Anaconda [environment.yml](https://github.com/blaylockbk/Herbie/blob/master/environment.yml) file that lists the minimum packages required plus some extras that might be useful when working with other types of weather data. Look at the bottom lines of that yaml file...there are two ways to install `hrrrb` with pip. Comment out the lines you don't want.
 
 For the latest development code:
 ```yaml
 - pip:
-    - git+https://github.com/blaylockbk/HRRR_archive_download.git
+    - git+https://github.com/blaylockbk/Herbie.git
 ```
 For the latest published version
 ```yaml
@@ -128,23 +128,23 @@ conda env update -f environment.yml
 ```
 
 > ### Alternative "Install" Method
-> There are several other ways to "install" a python package so you can import them. One alternatively is you can `git clone https://github.com/blaylockbk/HRRR_archive_download.git` this repository to any directory. To import the package, you will need to update your PYTHONPATH environment variable to find the directory you put this package or add the line `sys.path.append("/path/to/hrrrb")` at the top of your python script.
+> There are several other ways to "install" a python package so you can import them. One alternatively is you can `git clone https://github.com/blaylockbk/Herbie.git` this repository to any directory. To import the package, you will need to update your PYTHONPATH environment variable to find the directory you put this package or add the line `sys.path.append("/path/to/hrrrb")` at the top of your python script.
 
 ---
 
 # 📝 Jupyter Notebooks
 
 These notebooks show practical use case of the `hrrrb` package:
-- [Main Package Examples](https://github.com/blaylockbk/HRRR_archive_download/blob/master/notebooks/examples.ipynb)
+- [Main Package Examples](https://github.com/blaylockbk/Herbie/blob/master/notebooks/examples.ipynb)
 
 These notebooks offer a deeper discussion on how the download process works. These are not intended for practical use, but should help illustrate my thought process when I created this package.
-- [Part 1: How to download a bunch of HRRR grib2 files (full file)](https://github.com/blaylockbk/HRRR_archive_download/blob/master/notebooks/demo_download_hrrr_archive_part1.ipynb)
-- [Part 2: How to download a subset of variables from a HRRR file](https://github.com/blaylockbk/HRRR_archive_download/blob/master/notebooks/demo_download_hrrr_archive_part2.ipynb)
-- [Part 3: A function that can download many full files, or subset of files](https://github.com/blaylockbk/HRRR_archive_download/blob/master/notebooks/demo_download_hrrr_archive_part3.ipynb)
-- [Part 4: Opening GRIB2 files in Python with xarray and cfgrib](https://github.com/blaylockbk/HRRR_archive_download/blob/master/notebooks/demo_download_hrrr_archive_part4.ipynb)
+- [Part 1: How to download a bunch of HRRR grib2 files (full file)](https://github.com/blaylockbk/Herbie/blob/master/notebooks/demo_download_hrrr_archive_part1.ipynb)
+- [Part 2: How to download a subset of variables from a HRRR file](https://github.com/blaylockbk/Herbie/blob/master/notebooks/demo_download_hrrr_archive_part2.ipynb)
+- [Part 3: A function that can download many full files, or subset of files](https://github.com/blaylockbk/Herbie/blob/master/notebooks/demo_download_hrrr_archive_part3.ipynb)
+- [Part 4: Opening GRIB2 files in Python with xarray and cfgrib](https://github.com/blaylockbk/Herbie/blob/master/notebooks/demo_download_hrrr_archive_part4.ipynb)
 
 These are additional notebooks for useful tips/tricks
-- [How to make Cartopy maps with HRRR data with Brian's `common_features` helper](https://github.com/blaylockbk/HRRR_archive_download/blob/master/notebooks/demo_plot-on-map-with-common-features.ipynb)
+- [How to make Cartopy maps with HRRR data with Brian's `common_features` helper](https://github.com/blaylockbk/Herbie/blob/master/notebooks/demo_plot-on-map-with-common-features.ipynb)
 ---
 
 # 👨🏻‍💻 `hrrrb.archive`
@@ -164,7 +164,7 @@ from hrrrb.archive import download_hrrr, xhrrr
 |`xhrrr` | Downloads single HRRR file and returns as an `xarray.Dataset` or list of Datasets.
 
 
-## [👉 Click Here For Some Examples](https://github.com/blaylockbk/HRRR_archive_download/blob/master/notebooks/examples.ipynb)
+## [👉 Click Here For Some Examples](https://github.com/blaylockbk/Herbie/blob/master/notebooks/examples.ipynb)
 
 ## Function arguments
 
@@ -281,10 +281,10 @@ I hope some of these tips are helpful to you.
 ---
 
 🌐 HRRR Archive Website: http://hrrr.chpc.utah.edu/  
-🚑 Support: [GitHub Issues](https://github.com/blaylockbk/HRRR_archive_download/issues) or atmos-mesowest@lists.utah.edu  
+🚑 Support: [GitHub Issues](https://github.com/blaylockbk/Herbie/issues) or atmos-mesowest@lists.utah.edu  
 📧 Brian Blaylock: blaylockbk@gmail.com  
 ✒ Pando HRRR Archive citation details:
 > Blaylock B., J. Horel and S. Liston, 2017: Cloud Archiving and Data Mining of High Resolution Rapid Refresh Model Output. Computers and Geosciences. 109, 43-50. https://doi.org/10.1016/j.cageo.2017.08.005
 
 Thanks for using HRRR-B
-![](https://raw.githubusercontent.com/blaylockbk/HRRR_archive_download/master/images/herbie.jpg)
+![](https://raw.githubusercontent.com/blaylockbk/Herbie/master/images/herbie.jpg)
