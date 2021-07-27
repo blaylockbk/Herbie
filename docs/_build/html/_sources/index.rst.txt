@@ -28,7 +28,7 @@ Herbie can download full or partial GRIB2 files from different models, including
 - Rapid Refresh Forecast System - Prototype (RRFS)
 - National Blend of Models (NMB)
 
-**Subsetting these files by GRIB message** is also supported, provided that an index (.idx) file exists. For more information about subsetting, read :ref:`What is GRIB2?`. 
+**Subsetting these files by GRIB message** is also supported, provided that an index (.idx) file exists. For more information about subsetting, read :ref:`What is GRIB2? <GRIB2_FAQ>`
 
 Read GRIB2 Data
 ^^^^^^^^^^^^^^^
