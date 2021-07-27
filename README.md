@@ -1,6 +1,6 @@
 ![](https://github.com/blaylockbk/Herbie/blob/master/docs/_static/HerbieLogo2_tan_transparent.png?raw=true)
 
-# Herbie: Retrieve Model Data
+# Herbie: Retrieve NWP Model Data
 
 <!-- Badges -->
 [![](https://img.shields.io/pypi/v/hrrrb)](https://pypi.python.org/pypi/hrrrb/)
@@ -23,7 +23,7 @@
 
 ---
 
-**Herbie**, is a python package that helps download recent and archived numerical weather prediction model output  from different cloud archive sources in GRIB2 format. The GRIB2 data can be read as an xarray Dataset with cfgrib.
+**Herbie**, is a python package that helps download recent and archived numerical weather prediction (NWP) model output  from different cloud archive sources in GRIB2 format. The GRIB2 data can be read as an xarray Dataset with cfgrib.
 Model data Herbie can retrieve includes the High Resolution Rapid Refresh (HRRR), Rapid Refresh (RAP), Global Forecast System (GFS), National Blend of Models (NBM), Rapid Refresh Forecast System - Prototype (RRFS).
 
 ## Capabilities
