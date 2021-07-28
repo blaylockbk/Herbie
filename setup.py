@@ -6,10 +6,10 @@ README = (HERE / 'README.md').read_text(encoding="utf8")
 
 setup(
     name = 'hrrrb',   # Unfortunately, "herbie" is already used.
-    version = '0.0.4',
+    version = '0.0.5',
     author = 'Brian K. Blaylock',
     author_email = "blaylockbk@gmail.com",
-    description = 'Retreive historical and recent forecasts from the High-Resolution Rapid Refresh (HRRR) and Rapid Refresh (RAP) models.',
+    description = "Download model data (HRRR, RAP, GFS, NBM, etc.) from NOMADS, NOAA's Big Data Program partners (Amazon, Google, Microsoft), and the University of Utah Pando Archive System.",
     long_description = README,
     long_description_content_type = 'text/markdown',
     project_urls = {
