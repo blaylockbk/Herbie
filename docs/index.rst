@@ -130,7 +130,7 @@ You can use xarray to open an subset of the file.
 Bulk Download
 ^^^^^^^^^^^^^
 Sometimes you need lots of data. Herbie can help download many files
-for a range of dates and forecast lead times.
+for a range of dates and forecast lead times. For example,
 
 .. code-block:: python
 
@@ -138,8 +138,10 @@ for a range of dates and forecast lead times.
    import pandas as pd
 
    # Download HRRR analysis for every hour of a day
-   DATES = pd.date_range('2021-01-01', '2021-01-02', freq='1H')
-   bulk_download(DATES, model='hrrr', product='sfc', fxx=0)
+   DATES = pd.date_range('2021-01-01 00:00', '2021-01-01 06:00', freq='1H')
+   bulk_download(DATES, model='hrrr', product='sfc', fxx=0, searchString='TMP:2 m')
+
+.. image:: _static/screenshots/usage_5.png
 
 History
 -------
