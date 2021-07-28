@@ -393,7 +393,7 @@ class Herbie:
             Searches for strings in the index file lines, specifically
             the variable, level, and forecast_time columns.
             Execute ``_searchString_help()`` for examples of a good
-            searchString.
+            searchString. 
 
             .. include:: ../user_guide/searchString.rst
         
@@ -470,15 +470,13 @@ class Herbie:
         searchString : str
             If None, download the full file. Else, use regex to subset
             the file by specific variables and levels.
+            .. include:: ../user_guide/searchString.rst
         source : {'nomads', 'aws', 'google', 'azure', 'pando', 'pando2'}
             If None, download GRIB2 file from self.grib2 which is
             the first location the GRIB2 file was found from the 
             priority lists when this class was initialized. Else, you 
             may specify the source to force downloading it from a 
             different location.
-
-            .. include:: ../user_guide/searchString.rst
-
         save_dir : str or pathlib.Path
             Location to save the model output files.
             If None, uses the default or path specified in __init__.
