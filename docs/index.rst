@@ -82,7 +82,11 @@ and create the environment with the following...
 General Usage
 -------------
 
-Create a Herbie object for the HRRR model sfc product and 6 hour forecast.
+Create a Herbie object
+^^^^^^^^^^^^^^^^^^^^^^
+This Herbie object is for the HRRR model sfc product and 6 hour forecast.
+When the object is created, Herbie has looked for the requested file
+at the different sources until a file was found.
 
 .. code-block:: python
 
@@ -90,18 +94,20 @@ Create a Herbie object for the HRRR model sfc product and 6 hour forecast.
    H = Herbie('2021-01-01 12:00', model='hrrr', product='sfc', fxx=6)
 
 .. image:: _static/screenshots/usage_1.png
-|
-|
-Download the full GRIB2 file
+
+Download full GRIB2 file
+^^^^^^^^^^^^^^^^^^^^^^^^
+This downloads the full GRIB2 file to your local machine.
 
 .. code-block:: python
 
    H.download()
 
 .. image:: _static/screenshots/usage_2.png
-|
-|
+
 Download a subset
+^^^^^^^^^^^^^^^^^
+If an index or inventory file exists for the GRIB2 file, Herbie can download a subset of the file (subset by GRIB message).
 
 .. code-block:: python
 
@@ -109,9 +115,10 @@ Download a subset
    H.download(':500 mb')
 
 .. image:: _static/screenshots/usage_3.png
-|
-|
+
 Open a subset with xarray
+^^^^^^^^^^^^^^^^^^^^^^^^^
+You can use xarray to open an subset of the file.
 
 .. code-block:: python
 
@@ -119,9 +126,11 @@ Open a subset with xarray
    H.xarray('TMP:2 m')
 
 .. image:: _static/screenshots/usage_4.png
-|
-|
+
 Bulk Download
+^^^^^^^^^^^^^
+Sometimes you need lots of data. Herbie can help download many files
+for a range of dates and forecast lead times.
 
 .. code-block:: python
 

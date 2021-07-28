@@ -196,6 +196,33 @@
   <a class="reference internal nav-link" href="#general-usage">
    General Usage
   </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#create-a-herbie-object">
+     Create a Herbie object
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#download-full-grib2-file">
+     Download full GRIB2 file
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#download-a-subset">
+     Download a subset
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#open-a-subset-with-xarray">
+     Open a subset with xarray
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#bulk-download">
+     Bulk Download
+    </a>
+   </li>
+  </ul>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#history">
@@ -302,46 +329,47 @@ conda activate herbie
 </div>
 <div class="section" id="general-usage">
 <h2>General Usage<a class="headerlink" href="#general-usage" title="Permalink to this headline">¶</a></h2>
-<p>Create a Herbie object for the HRRR model sfc product and 6 hour forecast.</p>
+<div class="section" id="create-a-herbie-object">
+<h3>Create a Herbie object<a class="headerlink" href="#create-a-herbie-object" title="Permalink to this headline">¶</a></h3>
+<p>This Herbie object is for the HRRR model sfc product and 6 hour forecast.
+When the object is created, Herbie has looked for the requested file
+at the different sources until a file was found.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">herbie.archive</span> <span class="kn">import</span> <span class="n">Herbie</span>
 <span class="n">H</span> <span class="o">=</span> <span class="n">Herbie</span><span class="p">(</span><span class="s1">&#39;2021-01-01 12:00&#39;</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="s1">&#39;hrrr&#39;</span><span class="p">,</span> <span class="n">product</span><span class="o">=</span><span class="s1">&#39;sfc&#39;</span><span class="p">,</span> <span class="n">fxx</span><span class="o">=</span><span class="mi">6</span><span class="p">)</span>
 </pre></div>
 </div>
 <img alt="_images/usage_1.png" src="_images/usage_1.png" />
-<div class="line-block">
-<div class="line"><br /></div>
-<div class="line"><br /></div>
 </div>
-<p>Download the full GRIB2 file</p>
+<div class="section" id="download-full-grib2-file">
+<h3>Download full GRIB2 file<a class="headerlink" href="#download-full-grib2-file" title="Permalink to this headline">¶</a></h3>
+<p>This downloads the full GRIB2 file to your local machine.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">H</span><span class="o">.</span><span class="n">download</span><span class="p">()</span>
 </pre></div>
 </div>
 <img alt="_images/usage_2.png" src="_images/usage_2.png" />
-<div class="line-block">
-<div class="line"><br /></div>
-<div class="line"><br /></div>
 </div>
-<p>Download a subset</p>
+<div class="section" id="download-a-subset">
+<h3>Download a subset<a class="headerlink" href="#download-a-subset" title="Permalink to this headline">¶</a></h3>
+<p>If an index or inventory file exists for the GRIB2 file, Herbie can download a subset of the file (subset by GRIB message).</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Download all fields at 500 mb level</span>
 <span class="n">H</span><span class="o">.</span><span class="n">download</span><span class="p">(</span><span class="s1">&#39;:500 mb&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 <img alt="_images/usage_3.png" src="_images/usage_3.png" />
-<div class="line-block">
-<div class="line"><br /></div>
-<div class="line"><br /></div>
 </div>
-<p>Open a subset with xarray</p>
+<div class="section" id="open-a-subset-with-xarray">
+<h3>Open a subset with xarray<a class="headerlink" href="#open-a-subset-with-xarray" title="Permalink to this headline">¶</a></h3>
+<p>You can use xarray to open an subset of the file.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Open 2-m Temperature field</span>
 <span class="n">H</span><span class="o">.</span><span class="n">xarray</span><span class="p">(</span><span class="s1">&#39;TMP:2 m&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 <img alt="_images/usage_4.png" src="_images/usage_4.png" />
-<div class="line-block">
-<div class="line"><br /></div>
-<div class="line"><br /></div>
 </div>
-<p>Bulk Download</p>
+<div class="section" id="bulk-download">
+<h3>Bulk Download<a class="headerlink" href="#bulk-download" title="Permalink to this headline">¶</a></h3>
+<p>Sometimes you need lots of data. Herbie can help download many files
+for a range of dates and forecast lead times.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">herbie.tools</span> <span class="kn">import</span> <span class="n">bulk_download</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 
@@ -349,6 +377,7 @@ conda activate herbie
 <span class="n">DATES</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">date_range</span><span class="p">(</span><span class="s1">&#39;2021-01-01&#39;</span><span class="p">,</span> <span class="s1">&#39;2021-01-02&#39;</span><span class="p">,</span> <span class="n">freq</span><span class="o">=</span><span class="s1">&#39;1H&#39;</span><span class="p">)</span>
 <span class="n">bulk_download</span><span class="p">(</span><span class="n">DATES</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="s1">&#39;hrrr&#39;</span><span class="p">,</span> <span class="n">product</span><span class="o">=</span><span class="s1">&#39;sfc&#39;</span><span class="p">,</span> <span class="n">fxx</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 </pre></div>
+</div>
 </div>
 </div>
 <div class="section" id="history">
