@@ -395,7 +395,7 @@ class Herbie:
             Execute ``_searchString_help()`` for examples of a good
             searchString.
 
-            .. include:: ../user_guide/searchString_help.rst
+            .. include:: ../user_guide/searchString.rst
         
         Returns
         -------
@@ -477,7 +477,7 @@ class Herbie:
             may specify the source to force downloading it from a 
             different location.
 
-            .. include:: ../user_guide/searchString_help.rst
+            .. include:: ../user_guide/searchString.rst
 
         save_dir : str or pathlib.Path
             Location to save the model output files.
