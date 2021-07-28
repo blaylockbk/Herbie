@@ -79,8 +79,8 @@ and create the environment with the following...
    # Activate the environment
    conda activate herbie
 
-General Usage Quick Start
--------------------------
+General Usage
+-------------
 
 Create a Herbie object for the HRRR model sfc product and 6 hour forecast.
 
@@ -90,7 +90,8 @@ Create a Herbie object for the HRRR model sfc product and 6 hour forecast.
    H = Herbie('2021-01-01 12:00', model='hrrr', product='sfc', fxx=6)
 
 .. image:: _static/screenshots/usage_1.png
-
+|
+|
 Download the full GRIB2 file
 
 .. code-block:: python
@@ -98,7 +99,8 @@ Download the full GRIB2 file
    H.download()
 
 .. image:: _static/screenshots/usage_2.png
-
+|
+|
 Download a subset
 
 .. code-block:: python
@@ -107,7 +109,8 @@ Download a subset
    H.download(':500 mb')
 
 .. image:: _static/screenshots/usage_3.png
-
+|
+|
 Open a subset with xarray
 
 .. code-block:: python
@@ -116,7 +119,8 @@ Open a subset with xarray
    H.xarray('TMP:2 m')
 
 .. image:: _static/screenshots/usage_4.png
-
+|
+|
 Bulk Download
 
 .. code-block:: python

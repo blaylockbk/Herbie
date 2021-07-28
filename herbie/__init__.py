@@ -12,7 +12,12 @@ from pathlib import Path
 try:
     import herbie.accessors
 except:
-    warnings.warn("herbie xarray accessors could not be imported.")
+    warnings.warn(
+        "herbie xarray accessors could not be imported."
+        "You are probably missing the Carpenter_Workshop."
+        "If you want to use these functions, try"
+        "`pip install git+https://github.com/blaylockbk/Carpenter_Workshop.git`"
+        )
     pass
 
 ########################################################################

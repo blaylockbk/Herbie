@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Herbie API &#8212; HRRR-B 0.0.4 documentation</title>
+    <title>Herbie API &#8212; Herbie 0.0.4 documentation</title>
     
   <link href="../_static/css/theme.css" rel="stylesheet" />
   <link href="../_static/css/index.c5995385ac14fb8791e8eb36b4908be2.css" rel="stylesheet" />
@@ -333,7 +333,7 @@ If None, then must set <code class="docutils literal notranslate"><span class="p
 <li><p><strong>fxx</strong> (<em>int</em>) – Forecast lead time in hours. Available lead times depend on
 the model type and model version. Range is model and run
 dependant.</p></li>
-<li><p><strong>model</strong> (<em>{'hrrr'</em><em>, </em><em>'hrrrak'</em><em>, </em><em>'rap'</em><em>, </em><em>'gfs'</em><em>, </em><em>'gfs-wave'</em><em>, </em><em>'rrfs'</em><em>, </em><em>etc.}</em>) – Model name as defined in the models template folder. CASE INSENSITIVE
+<li><p><strong>model</strong> (<em>{'hrrr'</em><em>, </em><em>'hrrrak'</em><em>, </em><em>'rap'</em><em>, </em><em>'gfs'</em><em>, </em><em>'gfs_wave'</em><em>, </em><em>'rrfs'</em><em>, </em><em>etc.}</em>) – Model name as defined in the models template folder. CASE INSENSITIVE
 Some examples:
 - <code class="docutils literal notranslate"><span class="pre">'hrrr'</span></code> HRRR contiguous United States model
 - <code class="docutils literal notranslate"><span class="pre">'hrrrak'</span></code> HRRR Alaska model (alias <code class="docutils literal notranslate"><span class="pre">'alaska'</span></code>)
@@ -525,6 +525,13 @@ before we downloaded it.</p></li>
 <h2>Herbie Extension: xarray accessors<a class="headerlink" href="#herbie-extension-xarray-accessors" title="Permalink to this headline">¶</a></h2>
 <p>Extend the xarray capabilities with a custom accessor.
 <a class="reference external" href="http://xarray.pydata.org/en/stable/internals.html#extending-xarray">http://xarray.pydata.org/en/stable/internals.html#extending-xarray</a></p>
+<p>To use the herbie xarray accessor, do this…</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">H</span> <span class="o">=</span> <span class="n">Herbie</span><span class="p">(</span><span class="s1">&#39;2021-01-01&#39;</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="s1">&#39;hrrr&#39;</span><span class="p">)</span>
+<span class="n">ds</span> <span class="o">=</span> <span class="n">H</span><span class="o">.</span><span class="n">xarray</span><span class="p">(</span><span class="s1">&#39;TMP:2 m&#39;</span><span class="p">)</span>
+<span class="n">ds</span><span class="o">.</span><span class="n">herbie</span><span class="o">.</span><span class="n">crs</span>
+<span class="n">ds</span><span class="o">.</span><span class="n">herbie</span><span class="o">.</span><span class="n">plot</span>
+</pre></div>
+</div>
 </div>
 <span class="target" id="module-herbie.tools"></span><div class="section" id="herbie-tools">
 <h2>Herbie Tools<a class="headerlink" href="#herbie-tools" title="Permalink to this headline">¶</a></h2>

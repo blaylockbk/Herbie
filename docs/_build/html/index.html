@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Herbie: Retrieve NWP Model Data &#8212; HRRR-B 0.0.4 documentation</title>
+    <title>Herbie: Retrieve NWP Model Data &#8212; Herbie 0.0.4 documentation</title>
     
   <link href="_static/css/theme.css" rel="stylesheet" />
   <link href="_static/css/index.c5995385ac14fb8791e8eb36b4908be2.css" rel="stylesheet" />
@@ -193,8 +193,8 @@
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#general-usage-quick-start">
-   General Usage Quick Start
+  <a class="reference internal nav-link" href="#general-usage">
+   General Usage
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
@@ -300,31 +300,47 @@ conda activate herbie
 </pre></div>
 </div>
 </div>
-<div class="section" id="general-usage-quick-start">
-<h2>General Usage Quick Start<a class="headerlink" href="#general-usage-quick-start" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="general-usage">
+<h2>General Usage<a class="headerlink" href="#general-usage" title="Permalink to this headline">¶</a></h2>
 <p>Create a Herbie object for the HRRR model sfc product and 6 hour forecast.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">herbie.archive</span> <span class="kn">import</span> <span class="n">Herbie</span>
 <span class="n">H</span> <span class="o">=</span> <span class="n">Herbie</span><span class="p">(</span><span class="s1">&#39;2021-01-01 12:00&#39;</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="s1">&#39;hrrr&#39;</span><span class="p">,</span> <span class="n">product</span><span class="o">=</span><span class="s1">&#39;sfc&#39;</span><span class="p">,</span> <span class="n">fxx</span><span class="o">=</span><span class="mi">6</span><span class="p">)</span>
 </pre></div>
 </div>
 <img alt="_images/usage_1.png" src="_images/usage_1.png" />
+<div class="line-block">
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+</div>
 <p>Download the full GRIB2 file</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">H</span><span class="o">.</span><span class="n">download</span><span class="p">()</span>
 </pre></div>
 </div>
 <img alt="_images/usage_2.png" src="_images/usage_2.png" />
+<div class="line-block">
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+</div>
 <p>Download a subset</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Download all fields at 500 mb level</span>
 <span class="n">H</span><span class="o">.</span><span class="n">download</span><span class="p">(</span><span class="s1">&#39;:500 mb&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 <img alt="_images/usage_3.png" src="_images/usage_3.png" />
+<div class="line-block">
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+</div>
 <p>Open a subset with xarray</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Open 2-m Temperature field</span>
 <span class="n">H</span><span class="o">.</span><span class="n">xarray</span><span class="p">(</span><span class="s1">&#39;TMP:2 m&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 <img alt="_images/usage_4.png" src="_images/usage_4.png" />
+<div class="line-block">
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+</div>
 <p>Bulk Download</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">herbie.tools</span> <span class="kn">import</span> <span class="n">bulk_download</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>

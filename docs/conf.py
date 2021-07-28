@@ -21,7 +21,7 @@ from datetime import datetime
 
 # -- Project information -----------------------------------------------------
 
-project = 'HRRR-B'
+project = 'Herbie'
 copyright = f'{datetime.utcnow():%Y}, Brian K. Blaylock'
 author = 'Brian K. Blaylock'
 

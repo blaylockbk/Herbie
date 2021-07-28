@@ -130,7 +130,7 @@ class Herbie:
             Forecast lead time in hours. Available lead times depend on
             the model type and model version. Range is model and run 
             dependant.
-        model : {'hrrr', 'hrrrak', 'rap', 'gfs', 'gfs-wave', 'rrfs', etc.}
+        model : {'hrrr', 'hrrrak', 'rap', 'gfs', 'gfs_wave', 'rrfs', etc.}
             Model name as defined in the models template folder. CASE INSENSITIVE 
             Some examples:
             - ``'hrrr'`` HRRR contiguous United States model

@@ -9,11 +9,19 @@ Herbie Extension: xarray accessors
 Extend the xarray capabilities with a custom accessor.
 http://xarray.pydata.org/en/stable/internals.html#extending-xarray
 
+To use the herbie xarray accessor, do this...
+
+.. code-block:: python
+
+    H = Herbie('2021-01-01', model='hrrr')
+    ds = H.xarray('TMP:2 m')
+    ds.herbie.crs
+    ds.herbie.plot
+
 """
 import warnings
 
 import numpy as np
-from paint.radar import cm_reflectivity
 import pandas as pd
 import xarray as xr
 import matplotlib.pyplot as plt
@@ -25,6 +33,7 @@ import cartopy.crs as ccrs
 from toolbox.cartopy_tools import common_features, pc
 from paint.standard2 import cm_tmp, cm_dpt, cm_rh, cm_wind, cm_pcp
 from paint.radar2 import cm_reflectivity
+from paint.radar import cm_reflectivity
 
 
 @xr.register_dataset_accessor("herbie")
