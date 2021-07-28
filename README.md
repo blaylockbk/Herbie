@@ -8,9 +8,9 @@
 [![DOI](https://zenodo.org/badge/275214142.svg)](https://zenodo.org/badge/latestdoi/275214142)
 <!-- (Badges) -->
 
-# 📔 [Herbie Documentation](https://blaylockbk.github.io/Herbie/_build/html/)
-
 The [NOAA Big Data Program](https://www.noaa.gov/information-technology/big-data) has made weather data more accessible than ever before. **Herbie** is a python package that downloads recent and archived numerical weather prediction (NWP) model output from different cloud archive sources. Herbie helps you discover and download High Resolution Rapid Refresh (HRRR), Rapid Refresh (RAP), Global Forecast System (GFS), National Blend of Models (NBM), and Rapid Refresh Forecast System - Prototype (RRFS). NWP data is usually in GRIB2 format and can be read with xarray/cfgrib.
+
+# 📔 [Herbie Documentation](https://blaylockbk.github.io/Herbie/_build/html/)
 
 ## Install
 Requires cURL and **Python 3.8+** with requests, numpy, pandas, xarray, and cfgrib. Optional packages are matplotlib, cartopy, and [Carpenter Workshop](https://github.com/blaylockbk/Carpenter_Workshop).
