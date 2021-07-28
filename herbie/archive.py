@@ -395,7 +395,7 @@ class Herbie:
             Execute ``_searchString_help()`` for examples of a good
             searchString.
 
-            .. include:: searchString_help.rst
+            .. include:: user_guide/searchString_help.rst
         
         Returns
         -------
