@@ -34,26 +34,8 @@ file in the ``herbie/models`` directory and make a pull-request.
 
 For more details, see https://blaylockbk.github.io/Herbie/_build/html/user_guide/data_sources.html
 
-.. note:: Updates since ``hrrrb``
+.. note:: Updates since the ``Herbie 0.0.5`` release
 
-    - Rename package to ``herbie``. "Herbie is your model output download assistant with a mind of its own."
-    - Implement new **Herbie** class
-    - Drop support for hrrrx (experimental HRRR no longer archived on Pando and ESRL is now developing RRFS)
-    - Added ability to download and read RAP model GRIB2 files.
-    - Less reliance on Pando, more on aws and google.
-    - New method for searchString index file search. Uses same regex search patterns as old API.
-    - Filename for GRIB2 subset includes all GRIB message numbers.
-    - Moved default download source to config file setting.
-    - Check local file copy on __init__. (Don't need to look for file on remote if we have local copy)
-    - Option to remove grib2 file when reading xarray if didn't already exist locally (don't clutter local disk).
-    - Attach index file DataFrame to object if it exists.
-    - If full file exists locally, use remote idx file to cURL local file instead of remote. (Can't create idx file locally because wgrib2 not available on windows)
-    - Added GFS data, though it isn't implemented as cleanly as HRRR or RAP
-    - Renamed 'field' to 'product'
-    - ✨ Moved the source URL templates to their own classes in the **models** folder
-    - Renamed GitHub repository to Herbie (from HRRR_archive_download)
-    - Added RRFS, NBM, GFS, RAP as models Herbie can download
-    - Reworked read_idx() to support index files with additional info (specifically for the NBM).
     - TODO: Rename 'searchString' to 'subset' (and rename subset function)
     - TODO: Create .idx file if wgrib2 is installed (linux only) when index file doesn't exist
     - TODO: add `idx_to_df()` and `df_to_idx()` methods.

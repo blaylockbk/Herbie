@@ -1,6 +1,6 @@
-====================
+======================
 👷🏻‍♂️ Extending Herbie
-====================
+======================
 
 Herbie download capability can be extended to include additional models. The requirements are:
 
