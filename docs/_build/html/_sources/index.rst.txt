@@ -12,44 +12,6 @@ Herbie: Retrieve NWP Model Data
    /user_guide/index
    /reference_guide/index
 
-
-Capabilities
-------------
-
-Download Model Data
-^^^^^^^^^^^^^^^^^^^
-Herbie can download full or partial GRIB2 files from different models, including the following:
-
-- High Resolution Rapid Refresh (HRRR)
-- High Resolution Rapid Refresh - Alaska (HRRRAK)
-- Rapid Refresh (RAP)
-- Global Forecast System (GFS)
-- Global Forecast System - Wave (GFS-Wave)
-- Rapid Refresh Forecast System - Prototype (RRFS)
-- National Blend of Models (NMB)
-
-**Subsetting these files by GRIB message** is also supported, provided that an index (.idx) file exists. For more information about subsetting, read :ref:`What is GRIB2? <GRIB2_FAQ>`
-
-Data Sources 
-""""""""""""
-Thanks to the `NOAA Big Data Program <https://www.noaa.gov/information-technology/big-data>`_ weather data is more easily accessible than ever before. Common data sources include
-
-- `NOAA NOMADS Server <https://nomads.ncep.noaa.gov/>`_ (most recent data, but not archived)
-- `Amazon Web Services <https://registry.opendata.aws/noaa-hrrr-pds/>`_
-- `Google Cloud Platform <https://console.cloud.google.com/marketplace/product/noaa-public/hrrr>`_
-- `Microsoft Azure <https://github.com/microsoft/AIforEarthDataSets/blob/main/data/noaa-hrrr.md>`_
-- `University of Utah Pando Archive <http://hrrr.chpc.utah.edu/>`_
-
-
-Read GRIB2 Data
-^^^^^^^^^^^^^^^
-Herbie can help you read these files with `xarray <http://xarray.pydata.org/en/stable/>`_ via `cfgrib <https://github.com/ecmwf/cfgrib>`_.
-
-Plot Fields
-^^^^^^^^^^^
-🏗 Under construction. I want to make some useful xarray accessors for plotting the GRIB2 fields. This will use tools I am developing in my `Carpenter Workshop <https://github.com/blaylockbk/Carpenter_Workshop>`_ package to plot the data on a Cartopy map or pluck points nearest specific latitudes and longitudes.
-
-
 Install
 -------
 Herbie requires **Python 3.8+**
@@ -79,14 +41,24 @@ and create the environment with the following...
    # Activate the environment
    conda activate herbie
 
-General Usage
--------------
+Capabilities
+------------
 
 Create a Herbie object
 ^^^^^^^^^^^^^^^^^^^^^^
-This Herbie object is for the HRRR model sfc product and 6 hour forecast.
-When the object is created, Herbie has looked for the requested file
-at the different sources until a file was found.
+Herbie looks for model data at different sources until the requested file is found.
+
+Some of the models Herbie looks for include:
+
+- High Resolution Rapid Refresh (HRRR)
+- High Resolution Rapid Refresh - Alaska (HRRRAK)
+- Rapid Refresh (RAP)
+- Global Forecast System (GFS)
+- Global Forecast System - Wave (GFS-Wave)
+- Rapid Refresh Forecast System - Prototype (RRFS)
+- National Blend of Models (NMB)
+
+This Herbie object is for the HRRR model sfc product and 6 hour forecast. The file was found an Amazon Web Services.
 
 .. code-block:: python
 
@@ -95,9 +67,20 @@ at the different sources until a file was found.
 
 .. image:: _static/screenshots/usage_1.png
 
-Download full GRIB2 file
-^^^^^^^^^^^^^^^^^^^^^^^^
-This downloads the full GRIB2 file to your local machine.
+Data Sources 
+""""""""""""
+Thanks to the `NOAA Big Data Program <https://www.noaa.gov/information-technology/big-data>`_ weather data is more easily accessible than ever before. Common data sources include
+
+- `NOAA NOMADS Server <https://nomads.ncep.noaa.gov/>`_ (most recent data, but not archived)
+- `Amazon Web Services <https://registry.opendata.aws/noaa-hrrr-pds/>`_
+- `Google Cloud Platform <https://console.cloud.google.com/marketplace/product/noaa-public/hrrr>`_
+- `Microsoft Azure <https://github.com/microsoft/AIforEarthDataSets/blob/main/data/noaa-hrrr.md>`_
+- `University of Utah Pando Archive <http://hrrr.chpc.utah.edu/>`_
+
+Download Model Data
+^^^^^^^^^^^^^^^^^^^
+
+Using the Herbie object we created above, this downloads the full GRIB2 file to your local machine.
 
 .. code-block:: python
 
@@ -106,9 +89,10 @@ This downloads the full GRIB2 file to your local machine.
 .. image:: _static/screenshots/usage_2.png
 
 Download a subset
-^^^^^^^^^^^^^^^^^
-If an index or inventory file exists for the GRIB2 file, Herbie can download a subset of the file (subset by GRIB message).
+"""""""""""""""""
+**Subsetting GRIB files by GRIB message** is also supported, provided that an index (.idx) file exists. For more information about subsetting, read :ref:`What is GRIB2? <GRIB2_FAQ>`.
 
+Using the Herbie object we created above, we can retrieve all fields at 500 mb.
 .. code-block:: python
 
    # Download all fields at 500 mb level
@@ -116,9 +100,9 @@ If an index or inventory file exists for the GRIB2 file, Herbie can download a s
 
 .. image:: _static/screenshots/usage_3.png
 
-Open a subset with xarray
-^^^^^^^^^^^^^^^^^^^^^^^^^
-You can use xarray to open an subset of the file.
+Read GRIB2 Data
+^^^^^^^^^^^^^^^
+Herbie can help you read these files with `xarray <http://xarray.pydata.org/en/stable/>`_ via `cfgrib <https://github.com/ecmwf/cfgrib>`_.
 
 .. code-block:: python
 
@@ -127,10 +111,13 @@ You can use xarray to open an subset of the file.
 
 .. image:: _static/screenshots/usage_4.png
 
+Plot Fields
+^^^^^^^^^^^
+🏗 Under construction. I want to make some useful xarray accessors for plotting the GRIB2 fields. This will use tools I am developing in my `Carpenter Workshop <https://github.com/blaylockbk/Carpenter_Workshop>`_ package to plot the data on a Cartopy map or pluck points nearest specific latitudes and longitudes.
+
 Bulk Download
 ^^^^^^^^^^^^^
-Sometimes you need lots of data. Herbie can help download many files
-for a range of dates and forecast lead times. For example,
+Sometimes you need lots of data. Herbie can help download many files for a range of dates and forecast lead times. For example,
 
 .. code-block:: python
 

@@ -159,18 +159,35 @@
 <nav id="bd-toc-nav">
     <ul class="visible nav section-nav flex-column">
  <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#install">
+   Install
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#capabilities">
    Capabilities
   </a>
   <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#create-a-herbie-object">
+     Create a Herbie object
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#data-sources">
+       Data Sources
+      </a>
+     </li>
+    </ul>
+   </li>
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#download-model-data">
      Download Model Data
     </a>
     <ul class="nav section-nav flex-column">
      <li class="toc-h4 nav-item toc-entry">
-      <a class="reference internal nav-link" href="#data-sources">
-       Data Sources
+      <a class="reference internal nav-link" href="#download-a-subset">
+       Download a subset
       </a>
      </li>
     </ul>
@@ -183,38 +200,6 @@
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#plot-fields">
      Plot Fields
-    </a>
-   </li>
-  </ul>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#install">
-   Install
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#general-usage">
-   General Usage
-  </a>
-  <ul class="nav section-nav flex-column">
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#create-a-herbie-object">
-     Create a Herbie object
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#download-full-grib2-file">
-     Download full GRIB2 file
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#download-a-subset">
-     Download a subset
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#open-a-subset-with-xarray">
-     Open a subset with xarray
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
@@ -267,42 +252,6 @@
 <li class="toctree-l1"><a class="reference internal" href="reference_guide/index.html">Reference Guide</a></li>
 </ul>
 </div>
-<div class="section" id="capabilities">
-<h2>Capabilities<a class="headerlink" href="#capabilities" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="download-model-data">
-<h3>Download Model Data<a class="headerlink" href="#download-model-data" title="Permalink to this headline">¶</a></h3>
-<p>Herbie can download full or partial GRIB2 files from different models, including the following:</p>
-<ul class="simple">
-<li><p>High Resolution Rapid Refresh (HRRR)</p></li>
-<li><p>High Resolution Rapid Refresh - Alaska (HRRRAK)</p></li>
-<li><p>Rapid Refresh (RAP)</p></li>
-<li><p>Global Forecast System (GFS)</p></li>
-<li><p>Global Forecast System - Wave (GFS-Wave)</p></li>
-<li><p>Rapid Refresh Forecast System - Prototype (RRFS)</p></li>
-<li><p>National Blend of Models (NMB)</p></li>
-</ul>
-<p><strong>Subsetting these files by GRIB message</strong> is also supported, provided that an index (.idx) file exists. For more information about subsetting, read <a class="reference internal" href="user_guide/grib2.html#grib2-faq"><span class="std std-ref">What is GRIB2?</span></a></p>
-<div class="section" id="data-sources">
-<h4>Data Sources<a class="headerlink" href="#data-sources" title="Permalink to this headline">¶</a></h4>
-<p>Thanks to the <a class="reference external" href="https://www.noaa.gov/information-technology/big-data">NOAA Big Data Program</a> weather data is more easily accessible than ever before. Common data sources include</p>
-<ul class="simple">
-<li><p><a class="reference external" href="https://nomads.ncep.noaa.gov/">NOAA NOMADS Server</a> (most recent data, but not archived)</p></li>
-<li><p><a class="reference external" href="https://registry.opendata.aws/noaa-hrrr-pds/">Amazon Web Services</a></p></li>
-<li><p><a class="reference external" href="https://console.cloud.google.com/marketplace/product/noaa-public/hrrr">Google Cloud Platform</a></p></li>
-<li><p><a class="reference external" href="https://github.com/microsoft/AIforEarthDataSets/blob/main/data/noaa-hrrr.md">Microsoft Azure</a></p></li>
-<li><p><a class="reference external" href="http://hrrr.chpc.utah.edu/">University of Utah Pando Archive</a></p></li>
-</ul>
-</div>
-</div>
-<div class="section" id="read-grib2-data">
-<h3>Read GRIB2 Data<a class="headerlink" href="#read-grib2-data" title="Permalink to this headline">¶</a></h3>
-<p>Herbie can help you read these files with <a class="reference external" href="http://xarray.pydata.org/en/stable/">xarray</a> via <a class="reference external" href="https://github.com/ecmwf/cfgrib">cfgrib</a>.</p>
-</div>
-<div class="section" id="plot-fields">
-<h3>Plot Fields<a class="headerlink" href="#plot-fields" title="Permalink to this headline">¶</a></h3>
-<p>🏗 Under construction. I want to make some useful xarray accessors for plotting the GRIB2 fields. This will use tools I am developing in my <a class="reference external" href="https://github.com/blaylockbk/Carpenter_Workshop">Carpenter Workshop</a> package to plot the data on a Cartopy map or pluck points nearest specific latitudes and longitudes.</p>
-</div>
-</div>
 <div class="section" id="install">
 <h2>Install<a class="headerlink" href="#install" title="Permalink to this headline">¶</a></h2>
 <p>Herbie requires <strong>Python 3.8+</strong></p>
@@ -327,49 +276,74 @@ conda activate herbie
 </pre></div>
 </div>
 </div>
-<div class="section" id="general-usage">
-<h2>General Usage<a class="headerlink" href="#general-usage" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="capabilities">
+<h2>Capabilities<a class="headerlink" href="#capabilities" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="create-a-herbie-object">
 <h3>Create a Herbie object<a class="headerlink" href="#create-a-herbie-object" title="Permalink to this headline">¶</a></h3>
-<p>This Herbie object is for the HRRR model sfc product and 6 hour forecast.
-When the object is created, Herbie has looked for the requested file
-at the different sources until a file was found.</p>
+<p>Herbie looks for model data at different sources until the requested file is found.</p>
+<p>Some of the models Herbie looks for include:</p>
+<ul class="simple">
+<li><p>High Resolution Rapid Refresh (HRRR)</p></li>
+<li><p>High Resolution Rapid Refresh - Alaska (HRRRAK)</p></li>
+<li><p>Rapid Refresh (RAP)</p></li>
+<li><p>Global Forecast System (GFS)</p></li>
+<li><p>Global Forecast System - Wave (GFS-Wave)</p></li>
+<li><p>Rapid Refresh Forecast System - Prototype (RRFS)</p></li>
+<li><p>National Blend of Models (NMB)</p></li>
+</ul>
+<p>This Herbie object is for the HRRR model sfc product and 6 hour forecast. The file was found an Amazon Web Services.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">herbie.archive</span> <span class="kn">import</span> <span class="n">Herbie</span>
 <span class="n">H</span> <span class="o">=</span> <span class="n">Herbie</span><span class="p">(</span><span class="s1">&#39;2021-01-01 12:00&#39;</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="s1">&#39;hrrr&#39;</span><span class="p">,</span> <span class="n">product</span><span class="o">=</span><span class="s1">&#39;sfc&#39;</span><span class="p">,</span> <span class="n">fxx</span><span class="o">=</span><span class="mi">6</span><span class="p">)</span>
 </pre></div>
 </div>
 <img alt="_images/usage_1.png" src="_images/usage_1.png" />
+<div class="section" id="data-sources">
+<h4>Data Sources<a class="headerlink" href="#data-sources" title="Permalink to this headline">¶</a></h4>
+<p>Thanks to the <a class="reference external" href="https://www.noaa.gov/information-technology/big-data">NOAA Big Data Program</a> weather data is more easily accessible than ever before. Common data sources include</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://nomads.ncep.noaa.gov/">NOAA NOMADS Server</a> (most recent data, but not archived)</p></li>
+<li><p><a class="reference external" href="https://registry.opendata.aws/noaa-hrrr-pds/">Amazon Web Services</a></p></li>
+<li><p><a class="reference external" href="https://console.cloud.google.com/marketplace/product/noaa-public/hrrr">Google Cloud Platform</a></p></li>
+<li><p><a class="reference external" href="https://github.com/microsoft/AIforEarthDataSets/blob/main/data/noaa-hrrr.md">Microsoft Azure</a></p></li>
+<li><p><a class="reference external" href="http://hrrr.chpc.utah.edu/">University of Utah Pando Archive</a></p></li>
+</ul>
 </div>
-<div class="section" id="download-full-grib2-file">
-<h3>Download full GRIB2 file<a class="headerlink" href="#download-full-grib2-file" title="Permalink to this headline">¶</a></h3>
-<p>This downloads the full GRIB2 file to your local machine.</p>
+</div>
+<div class="section" id="download-model-data">
+<h3>Download Model Data<a class="headerlink" href="#download-model-data" title="Permalink to this headline">¶</a></h3>
+<p>Using the Herbie object we created above, this downloads the full GRIB2 file to your local machine.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">H</span><span class="o">.</span><span class="n">download</span><span class="p">()</span>
 </pre></div>
 </div>
 <img alt="_images/usage_2.png" src="_images/usage_2.png" />
-</div>
 <div class="section" id="download-a-subset">
-<h3>Download a subset<a class="headerlink" href="#download-a-subset" title="Permalink to this headline">¶</a></h3>
-<p>If an index or inventory file exists for the GRIB2 file, Herbie can download a subset of the file (subset by GRIB message).</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Download all fields at 500 mb level</span>
-<span class="n">H</span><span class="o">.</span><span class="n">download</span><span class="p">(</span><span class="s1">&#39;:500 mb&#39;</span><span class="p">)</span>
-</pre></div>
-</div>
+<h4>Download a subset<a class="headerlink" href="#download-a-subset" title="Permalink to this headline">¶</a></h4>
+<p><strong>Subsetting GRIB files by GRIB message</strong> is also supported, provided that an index (.idx) file exists. For more information about subsetting, read <a class="reference internal" href="user_guide/grib2.html#grib2-faq"><span class="std std-ref">What is GRIB2?</span></a>.</p>
+<p>Using the Herbie object we created above, we can retrieve all fields at 500 mb.
+.. code-block:: python</p>
+<blockquote>
+<div><p># Download all fields at 500 mb level
+H.download(‘:500 mb’)</p>
+</div></blockquote>
 <img alt="_images/usage_3.png" src="_images/usage_3.png" />
 </div>
-<div class="section" id="open-a-subset-with-xarray">
-<h3>Open a subset with xarray<a class="headerlink" href="#open-a-subset-with-xarray" title="Permalink to this headline">¶</a></h3>
-<p>You can use xarray to open an subset of the file.</p>
+</div>
+<div class="section" id="read-grib2-data">
+<h3>Read GRIB2 Data<a class="headerlink" href="#read-grib2-data" title="Permalink to this headline">¶</a></h3>
+<p>Herbie can help you read these files with <a class="reference external" href="http://xarray.pydata.org/en/stable/">xarray</a> via <a class="reference external" href="https://github.com/ecmwf/cfgrib">cfgrib</a>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Open 2-m Temperature field</span>
 <span class="n">H</span><span class="o">.</span><span class="n">xarray</span><span class="p">(</span><span class="s1">&#39;TMP:2 m&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 <img alt="_images/usage_4.png" src="_images/usage_4.png" />
 </div>
+<div class="section" id="plot-fields">
+<h3>Plot Fields<a class="headerlink" href="#plot-fields" title="Permalink to this headline">¶</a></h3>
+<p>🏗 Under construction. I want to make some useful xarray accessors for plotting the GRIB2 fields. This will use tools I am developing in my <a class="reference external" href="https://github.com/blaylockbk/Carpenter_Workshop">Carpenter Workshop</a> package to plot the data on a Cartopy map or pluck points nearest specific latitudes and longitudes.</p>
+</div>
 <div class="section" id="bulk-download">
 <h3>Bulk Download<a class="headerlink" href="#bulk-download" title="Permalink to this headline">¶</a></h3>
-<p>Sometimes you need lots of data. Herbie can help download many files
-for a range of dates and forecast lead times. For example,</p>
+<p>Sometimes you need lots of data. Herbie can help download many files for a range of dates and forecast lead times. For example,</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">herbie.tools</span> <span class="kn">import</span> <span class="n">bulk_download</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 
