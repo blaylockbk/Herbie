@@ -79,6 +79,55 @@ and create the environment with the following...
    # Activate the environment
    conda activate herbie
 
+General Usage Quick Start
+-------------------------
+
+Create a Herbie object for the HRRR model sfc product and 6 hour forecast.
+
+.. code-block:: python
+
+   from herbie.archive import Herbie
+   H = Herbie('2021-01-01 12:00', model='hrrr', product='sfc', fxx=6)
+
+.. image:: _static/screenshots/usage_1.png
+
+Download the full GRIB2 file
+
+.. code-block:: python
+
+   H.download()
+
+.. image:: _static/screenshots/usage_2.png
+
+Download a subset
+
+.. code-block:: python
+
+   # Download all fields at 500 mb level
+   H.download(':500 mb')
+
+.. image:: _static/screenshots/usage_3.png
+
+Open a subset with xarray
+
+.. code-block:: python
+
+   # Open 2-m Temperature field
+   H.xarray('TMP:2 m')
+
+.. image:: _static/screenshots/usage_4.png
+
+Bulk Download
+
+.. code-block:: python
+
+   from herbie.tools import bulk_download
+   import pandas as pd
+
+   # Download HRRR analysis for every hour of a day
+   DATES = pd.date_range('2021-01-01', '2021-01-02', freq='1H')
+   bulk_download(DATES, model='hrrr', product='sfc', fxx=0)
+
 History
 -------
 **👨🏻‍🎓 During my PhD at the University of Utah**, I created, at the time, the only publicly-accessible archive of HRRR data. In the later half of 2020, this data was made available through the `NOAA Big Data Program <https://www.noaa.gov/information-technology/big-data>`_. The Herbie package organizes and expands my original download scripts into a more coherent package with the extended ability to download more than just the HRRR and RAP model data and from different data sources. It will continue to evolve at my own leisure.

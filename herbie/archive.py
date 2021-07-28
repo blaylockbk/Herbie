@@ -55,7 +55,7 @@ For more details, see https://blaylockbk.github.io/Herbie/_build/html/user_guide
     - Added RRFS, NBM, GFS, RAP as models Herbie can download
     - TODO: Rename 'searchString' to 'subset' (and rename subset function)
     - TODO: Add NCEI as a source for the RAP data?? URL is complex.
-    - TODO: Create .idx file if wgrib2 is installed (linux only)
+    - TODO: Create .idx file if wgrib2 is installed (linux only) when index file doesn't exist
     - TODO: Need to support NBM index files
 
 """
