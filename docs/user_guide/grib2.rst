@@ -110,7 +110,7 @@ Generally speaking, index files share the same URL as the GRIB2 file except with
    This method is similar to that used in Wesley Ebisuzaki's `Fast Downloading GRIB <https://www.cpc.ncep.noaa.gov/products/wesley/fast_downloading_grib.html>`_ script.
 
 .. note::
-   When an index file doesn't exist, wgrib2 is used to print the index inventory. **wgrib2** can be installed via conda for Linux, but the installation for Windows is a bit more i>nvolved. Instead, `eccodes <https://anaconda.org/conda-forge/eccodes`_ can be installed via conda for Linux, OS, and Windows. You can use eccodes' **grib_ls** command to print out a type of inventory that includes the beginning byte with ``grib_ls -p count,offset,date,hour,level,typeOfLevel,name,step file.grib2``, though Herbie does not interpret this type of inventory. (Pull request anyone?) 
+   When an index file doesn't exist, wgrib2 is used to print the index inventory. **wgrib2** can be installed via conda for Linux, but the installation for Windows is a bit more involved. Instead, `eccodes <https://anaconda.org/conda-forge/eccodes>`_ can be installed via conda for Linux, OS, and Windows. You can use eccodes' **grib_ls** command to print out a type of inventory that includes the beginning byte with ``grib_ls -p count,offset,date,hour,level,typeOfLevel,name,step file.grib2``, though Herbie does not interpret this type of inventory. (Pull request anyone?) 
 
    .. code-block::
 
