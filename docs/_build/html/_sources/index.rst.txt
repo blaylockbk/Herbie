@@ -93,6 +93,7 @@ Download a subset
 **Subsetting GRIB files by GRIB message** is also supported, provided that an index (.idx) file exists. For more information about subsetting, read :ref:`What is GRIB2? <GRIB2_FAQ>`.
 
 Using the Herbie object we created above, we can retrieve all fields at 500 mb.
+
 .. code-block:: python
 
    # Download all fields at 500 mb level

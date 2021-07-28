@@ -319,12 +319,11 @@ conda activate herbie
 <div class="section" id="download-a-subset">
 <h4>Download a subset<a class="headerlink" href="#download-a-subset" title="Permalink to this headline">¶</a></h4>
 <p><strong>Subsetting GRIB files by GRIB message</strong> is also supported, provided that an index (.idx) file exists. For more information about subsetting, read <a class="reference internal" href="user_guide/grib2.html#grib2-faq"><span class="std std-ref">What is GRIB2?</span></a>.</p>
-<p>Using the Herbie object we created above, we can retrieve all fields at 500 mb.
-.. code-block:: python</p>
-<blockquote>
-<div><p># Download all fields at 500 mb level
-H.download(‘:500 mb’)</p>
-</div></blockquote>
+<p>Using the Herbie object we created above, we can retrieve all fields at 500 mb.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Download all fields at 500 mb level</span>
+<span class="n">H</span><span class="o">.</span><span class="n">download</span><span class="p">(</span><span class="s1">&#39;:500 mb&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
 <img alt="_images/usage_3.png" src="_images/usage_3.png" />
 </div>
 </div>
