@@ -57,6 +57,7 @@ For more details, see https://blaylockbk.github.io/Herbie/_build/html/user_guide
     - TODO: Rename 'searchString' to 'subset' (and rename subset function)
     - TODO: Create .idx file if wgrib2 is installed (linux only) when index file doesn't exist
     - TODO: add `idx_to_df()` and `df_to_idx()` methods.
+    - TODO: clean up document examples. It's kind of scattered now.
 
 """
 import os
@@ -394,7 +395,7 @@ class Herbie:
             Execute ``_searchString_help()`` for examples of a good
             searchString.
 
-            .. include:: ~/searchString_help.rst
+            .. include:: searchString_help.rst
         
         Returns
         -------
@@ -402,10 +403,10 @@ class Herbie:
         """
         assert self.idx is not None, f"No index file found for {self.grib}."
         
-        # Sometimes idx lines end in ':', other times it doesn't (in some Pando files).
+        # Sometimes idx end in ':', other times it doesn't (in some Pando files).
         # https://pando-rgw01.chpc.utah.edu/hrrr/sfc/20180101/hrrr.t00z.wrfsfcf00.grib2.idx
         # https://noaa-hrrr-bdp-pds.s3.amazonaws.com/hrrr.20210101/conus/hrrr.t00z.wrfsfcf00.grib2.idx
-        # Sometimes idx has more than standard messages
+        # Sometimes idx has more than the standard messages
         # https://noaa-nbm-grib2-pds.s3.amazonaws.com/blend.20210711/13/core/blend.t13z.core.f001.co.grib2.idx
         
         r = requests.get(self.idx)
@@ -622,6 +623,8 @@ class Herbie:
 
         for h in Hxr:
             h.attrs['model'] = self.model
+            h.attrs['product'] = self.product
+            h.attrs['description'] = self.DESCRIPTION
             h.attrs['remote_grib'] = self.grib
             h.attrs['local_grib'] = self.get_localFilePath(searchString=searchString)
 
