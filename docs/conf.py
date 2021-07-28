@@ -81,7 +81,7 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store',
 html_theme = "pydata_sphinx_theme"
 
 html_theme_options = {
-    'github_url': 'https://github.com/blaylockbk/HRRR_archive_download',
+    'github_url': 'https://github.com/blaylockbk/Herbie',
     'twitter_url': "https://twitter.com/blaylockbk",
     "navbar_end": ["navbar-icon-links.html", "search-field.html"],
     "use_edit_page_button": True,
@@ -101,7 +101,7 @@ html_favicon = "_static/wxicon.png"
 
 html_context = {
     'github_user': 'blaylockbk',
-    'github_repo': 'HRRR_archive_download',
+    'github_repo': 'Herbie',
     'github_version': 'master',  # Make changes to the master branch
     "doc_path": "docs",
 }

@@ -13,8 +13,8 @@ setup(
     long_description = README,
     long_description_content_type = 'text/markdown',
     project_urls = {
-        'Source Code': 'https://github.com/blaylockbk/HRRR_archive_download',
-        'Documentation': 'https://blaylockbk.github.io/HRRR_archive_download/_build/html/',
+        'Source Code': 'https://github.com/blaylockbk/Herbie',
+        'Documentation': 'https://blaylockbk.github.io/Herbie/_build/html/',
     },
     license = "MIT",
     packages = find_packages(),
@@ -44,7 +44,7 @@ setup(
 # conda create -n pypi python=3 twine pip -c conda-forge
 '''
 conda activate pypi
-cd HRRR_archive_download
+cd Herbie
 python setup.py sdist bdist_wheel
 twine check dist/*
 # Test PyPI

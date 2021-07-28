@@ -103,7 +103,7 @@
       <div class="navbar-end-item">
         <ul id="navbar-icon-links" class="navbar-nav" aria-label="Icon Links">
         <li class="nav-item">
-          <a class="nav-link" href="https://github.com/blaylockbk/HRRR_archive_download" rel="noopener" target="_blank" title="GitHub">
+          <a class="nav-link" href="https://github.com/blaylockbk/Herbie" rel="noopener" target="_blank" title="GitHub">
             <span><i class="fab fa-github-square"></i></span>
             <label class="sr-only">GitHub</label>
           </a>
@@ -158,7 +158,7 @@
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="grib2.html">
-   What is GRIB2?
+   🔢 What is GRIB2?
   </a>
  </li>
  <li class="toctree-l1">
@@ -173,14 +173,66 @@
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="searchString_help.html">
-   How to subset with
+  <a class="reference internal" href="searchString.html">
+   🪂 Subset with
    <code class="docutils literal notranslate">
     <span class="pre">
      searchString
     </span>
    </code>
   </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="model_template.html">
+   👷🏻‍♂️ Extending Herbie
+  </a>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="notebooks/index.html">
+   👨🏻‍🔬 Model Examples
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/>
+  <label for="toctree-checkbox-1">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="notebooks/data_hrrr.html">
+     HRRR Data
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="notebooks/data_hrrrak.html">
+     HRRR-Alaska Data
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="notebooks/data_rap.html">
+     RAP Data
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="notebooks/data_gfs.html">
+     GFS Data
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="notebooks/data_nbm.html">
+     National Blend of Models (NMB)
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="notebooks/data_rrfs.html">
+     NAVGEM Data
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="notebooks/data_navgem.html">
+     RRFS Data
+    </a>
+   </li>
+  </ul>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="examples.html">
@@ -197,19 +249,19 @@
   <a class="reference internal" href="notebooks.html">
    📝 Jupyter Notebooks
   </a>
-  <input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/>
-  <label for="toctree-checkbox-1">
+  <input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/>
+  <label for="toctree-checkbox-2">
    <i class="fas fa-chevron-down">
    </i>
   </label>
   <ul>
    <li class="toctree-l2">
-    <a class="reference external" href="https://github.com/blaylockbk/HRRR_archive_download/blob/master/notebooks/examples.ipynb">
+    <a class="reference external" href="https://github.com/blaylockbk/Herbie/blob/master/notebooks/examples.ipynb">
      Main Package Examples
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference external" href="https://github.com/blaylockbk/HRRR_archive_download/blob/master/notebooks/demo_plot-on-map-with-common-features.ipynb">
+    <a class="reference external" href="https://github.com/blaylockbk/Herbie/blob/master/notebooks/demo_plot-on-map-with-common-features.ipynb">
      Make Cartopy maps with HRRR data
     </a>
    </li>
@@ -224,36 +276,31 @@
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference external" href="https://github.com/blaylockbk/HRRR_archive_download/blob/master/notebooks/zarr_HRRR.ipynb">
+    <a class="reference external" href="https://github.com/blaylockbk/Herbie/blob/master/notebooks/zarr_HRRR.ipynb">
      Brian Blaylock: HRRR-Zarr sandbox
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference external" href="https://github.com/blaylockbk/HRRR_archive_download/blob/master/notebooks/demo_download_hrrr_archive_part1.ipynb">
+    <a class="reference external" href="https://github.com/blaylockbk/Herbie/blob/master/notebooks/demo_download_hrrr_archive_part1.ipynb">
      Part 1: How to download a bunch of HRRR grib2 files (full file)
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference external" href="https://github.com/blaylockbk/HRRR_archive_download/blob/master/notebooks/demo_download_hrrr_archive_part2.ipynb">
+    <a class="reference external" href="https://github.com/blaylockbk/Herbie/blob/master/notebooks/demo_download_hrrr_archive_part2.ipynb">
      Part 2: How to download a subset of variables from a HRRR file
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference external" href="https://github.com/blaylockbk/HRRR_archive_download/blob/master/notebooks/demo_download_hrrr_archive_part3.ipynb">
+    <a class="reference external" href="https://github.com/blaylockbk/Herbie/blob/master/notebooks/demo_download_hrrr_archive_part3.ipynb">
      Part 3: A function that can download many full files, or subset of files
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference external" href="https://github.com/blaylockbk/HRRR_archive_download/blob/master/notebooks/demo_download_hrrr_archive_part4.ipynb">
+    <a class="reference external" href="https://github.com/blaylockbk/Herbie/blob/master/notebooks/demo_download_hrrr_archive_part4.ipynb">
      Part 4: Opening GRIB2 files in Python with xarray and cfgrib
     </a>
    </li>
   </ul>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="model_template.html">
-   Extending Herbie
-  </a>
  </li>
 </ul>
 
@@ -299,7 +346,7 @@
                 
 
 <div class="tocsection editthispage">
-    <a href="https://github.com/blaylockbk/HRRR_archive_download/edit/master/docs/user_guide/install.md">
+    <a href="https://github.com/blaylockbk/Herbie/edit/master/docs/user_guide/install.md">
         <i class="fas fa-pencil-alt"></i> Edit this page
     </a>
 </div>

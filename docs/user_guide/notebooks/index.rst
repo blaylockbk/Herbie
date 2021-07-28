@@ -12,4 +12,3 @@
    data_nbm.ipynb
    data_rrfs.ipynb
    data_navgem.ipynb
-   

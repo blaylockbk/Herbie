@@ -38,7 +38,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Reference Guide" href="../reference_guide/index.html" />
-    <link rel="prev" title="&lt;no title&gt;" href="examples.html" />
+    <link rel="prev" title="👨🏻‍💻 Examples: Old HRRR-B API" href="examples.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="en" />
     
@@ -103,7 +103,7 @@
       <div class="navbar-end-item">
         <ul id="navbar-icon-links" class="navbar-nav" aria-label="Icon Links">
         <li class="nav-item">
-          <a class="nav-link" href="https://github.com/blaylockbk/HRRR_archive_download" rel="noopener" target="_blank" title="GitHub">
+          <a class="nav-link" href="https://github.com/blaylockbk/Herbie" rel="noopener" target="_blank" title="GitHub">
             <span><i class="fab fa-github-square"></i></span>
             <label class="sr-only">GitHub</label>
           </a>
@@ -157,6 +157,11 @@
   </a>
  </li>
  <li class="toctree-l1">
+  <a class="reference internal" href="grib2.html">
+   🔢 What is GRIB2?
+  </a>
+ </li>
+ <li class="toctree-l1">
   <a class="reference internal" href="tutorial.html">
    👨🏻‍💻 Tutorial: New
    <code class="docutils literal notranslate">
@@ -168,8 +173,8 @@
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="searchString_help.html">
-   How to subset with
+  <a class="reference internal" href="searchString.html">
+   🪂 Subset with
    <code class="docutils literal notranslate">
     <span class="pre">
      searchString
@@ -177,23 +182,86 @@
    </code>
   </a>
  </li>
- <li class="toctree-l1 current active has-children">
-  <a class="current reference internal" href="#">
-   📝 Jupyter Notebooks
+ <li class="toctree-l1">
+  <a class="reference internal" href="model_template.html">
+   👷🏻‍♂️ Extending Herbie
   </a>
-  <input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="notebooks/index.html">
+   👨🏻‍🔬 Model Examples
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/>
   <label for="toctree-checkbox-1">
    <i class="fas fa-chevron-down">
    </i>
   </label>
   <ul>
    <li class="toctree-l2">
-    <a class="reference external" href="https://github.com/blaylockbk/HRRR_archive_download/blob/master/notebooks/examples.ipynb">
+    <a class="reference internal" href="notebooks/data_hrrr.html">
+     HRRR Data
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="notebooks/data_hrrrak.html">
+     HRRR-Alaska Data
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="notebooks/data_rap.html">
+     RAP Data
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="notebooks/data_gfs.html">
+     GFS Data
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="notebooks/data_nbm.html">
+     National Blend of Models (NMB)
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="notebooks/data_rrfs.html">
+     NAVGEM Data
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="notebooks/data_navgem.html">
+     RRFS Data
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="examples.html">
+   👨🏻‍💻 Examples: Old
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     HRRR-B
+    </span>
+   </code>
+   API
+  </a>
+ </li>
+ <li class="toctree-l1 current active has-children">
+  <a class="current reference internal" href="#">
+   📝 Jupyter Notebooks
+  </a>
+  <input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/>
+  <label for="toctree-checkbox-2">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference external" href="https://github.com/blaylockbk/Herbie/blob/master/notebooks/examples.ipynb">
      Main Package Examples
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference external" href="https://github.com/blaylockbk/HRRR_archive_download/blob/master/notebooks/demo_plot-on-map-with-common-features.ipynb">
+    <a class="reference external" href="https://github.com/blaylockbk/Herbie/blob/master/notebooks/demo_plot-on-map-with-common-features.ipynb">
      Make Cartopy maps with HRRR data
     </a>
    </li>
@@ -208,27 +276,27 @@
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference external" href="https://github.com/blaylockbk/HRRR_archive_download/blob/master/notebooks/zarr_HRRR.ipynb">
+    <a class="reference external" href="https://github.com/blaylockbk/Herbie/blob/master/notebooks/zarr_HRRR.ipynb">
      Brian Blaylock: HRRR-Zarr sandbox
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference external" href="https://github.com/blaylockbk/HRRR_archive_download/blob/master/notebooks/demo_download_hrrr_archive_part1.ipynb">
+    <a class="reference external" href="https://github.com/blaylockbk/Herbie/blob/master/notebooks/demo_download_hrrr_archive_part1.ipynb">
      Part 1: How to download a bunch of HRRR grib2 files (full file)
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference external" href="https://github.com/blaylockbk/HRRR_archive_download/blob/master/notebooks/demo_download_hrrr_archive_part2.ipynb">
+    <a class="reference external" href="https://github.com/blaylockbk/Herbie/blob/master/notebooks/demo_download_hrrr_archive_part2.ipynb">
      Part 2: How to download a subset of variables from a HRRR file
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference external" href="https://github.com/blaylockbk/HRRR_archive_download/blob/master/notebooks/demo_download_hrrr_archive_part3.ipynb">
+    <a class="reference external" href="https://github.com/blaylockbk/Herbie/blob/master/notebooks/demo_download_hrrr_archive_part3.ipynb">
      Part 3: A function that can download many full files, or subset of files
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference external" href="https://github.com/blaylockbk/HRRR_archive_download/blob/master/notebooks/demo_download_hrrr_archive_part4.ipynb">
+    <a class="reference external" href="https://github.com/blaylockbk/Herbie/blob/master/notebooks/demo_download_hrrr_archive_part4.ipynb">
      Part 4: Opening GRIB2 files in Python with xarray and cfgrib
     </a>
    </li>
@@ -258,7 +326,7 @@
                 
 
 <div class="tocsection editthispage">
-    <a href="https://github.com/blaylockbk/HRRR_archive_download/edit/master/docs/user_guide/notebooks.md">
+    <a href="https://github.com/blaylockbk/Herbie/edit/master/docs/user_guide/notebooks.md">
         <i class="fas fa-pencil-alt"></i> Edit this page
     </a>
 </div>
@@ -282,8 +350,8 @@
 <p>These notebooks show practical use case of the <code class="docutils literal notranslate"><span class="pre">hrrrb</span></code> package:</p>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference external" href="https://github.com/blaylockbk/HRRR_archive_download/blob/master/notebooks/examples.ipynb">Main Package Examples</a></li>
-<li class="toctree-l1"><a class="reference external" href="https://github.com/blaylockbk/HRRR_archive_download/blob/master/notebooks/demo_plot-on-map-with-common-features.ipynb">Make Cartopy maps with HRRR data</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/blaylockbk/Herbie/blob/master/notebooks/examples.ipynb">Main Package Examples</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/blaylockbk/Herbie/blob/master/notebooks/demo_plot-on-map-with-common-features.ipynb">Make Cartopy maps with HRRR data</a></li>
 </ul>
 </div>
 <p><strong>Zarr:</strong> Select parts of the HRRR archive are available in <a class="reference external" href="https://zarr.readthedocs.io/en/stable/">Zarr</a> format in the <code class="docutils literal notranslate"><span class="pre">s3://hrrrzarr</span></code> bucket on AWS developed by <a class="reference external" href="https://twitter.com/tayloragowan">Taylor Gowan</a> and managed by the MesoWest group at the University of Utah. To get started check out these notebooks:</p>
@@ -296,20 +364,20 @@
 <p>I haven’t added Zarr functionality into <code class="docutils literal notranslate"><span class="pre">hrrrb</span></code>, but I started to explore the capability. Here is my sandbox notebook…</p>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference external" href="https://github.com/blaylockbk/HRRR_archive_download/blob/master/notebooks/zarr_HRRR.ipynb">Brian Blaylock: HRRR-Zarr sandbox</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/blaylockbk/Herbie/blob/master/notebooks/zarr_HRRR.ipynb">Brian Blaylock: HRRR-Zarr sandbox</a></li>
 </ul>
 </div>
 <hr class="docutils" />
 <p>The following notebooks offer a deeper discussion on how the GRIB2 download process works. These are not intended for practical use, but should help illustrate my thought process when I created the <code class="docutils literal notranslate"><span class="pre">hrrrb</span></code> package.</p>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference external" href="https://github.com/blaylockbk/HRRR_archive_download/blob/master/notebooks/demo_download_hrrr_archive_part1.ipynb">Part 1: How to download a bunch of HRRR grib2 files (full file)</a></li>
-<li class="toctree-l1"><a class="reference external" href="https://github.com/blaylockbk/HRRR_archive_download/blob/master/notebooks/demo_download_hrrr_archive_part2.ipynb">Part 2: How to download a subset of variables from a HRRR file</a></li>
-<li class="toctree-l1"><a class="reference external" href="https://github.com/blaylockbk/HRRR_archive_download/blob/master/notebooks/demo_download_hrrr_archive_part3.ipynb">Part 3: A function that can download many full files, or subset of files</a></li>
-<li class="toctree-l1"><a class="reference external" href="https://github.com/blaylockbk/HRRR_archive_download/blob/master/notebooks/demo_download_hrrr_archive_part4.ipynb">Part 4: Opening GRIB2 files in Python with xarray and cfgrib</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/blaylockbk/Herbie/blob/master/notebooks/demo_download_hrrr_archive_part1.ipynb">Part 1: How to download a bunch of HRRR grib2 files (full file)</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/blaylockbk/Herbie/blob/master/notebooks/demo_download_hrrr_archive_part2.ipynb">Part 2: How to download a subset of variables from a HRRR file</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/blaylockbk/Herbie/blob/master/notebooks/demo_download_hrrr_archive_part3.ipynb">Part 3: A function that can download many full files, or subset of files</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/blaylockbk/Herbie/blob/master/notebooks/demo_download_hrrr_archive_part4.ipynb">Part 4: Opening GRIB2 files in Python with xarray and cfgrib</a></li>
 </ul>
 </div>
-<p><a class="reference external" href="https://binder.pangeo.io/v2/gh/blaylockbk/HRRR_archive_download/master"><img alt="Binder" src="https://binder.pangeo.io/badge_logo.svg" /></a></p>
+<p><a class="reference external" href="https://binder.pangeo.io/v2/gh/blaylockbk/Herbie/master"><img alt="Binder" src="https://binder.pangeo.io/badge_logo.svg" /></a></p>
 </div>
 
 
@@ -318,7 +386,7 @@
               
               <div class='prev-next-bottom'>
                 
-    <a class='left-prev' id="prev-link" href="examples.html" title="previous page">&lt;no title&gt;</a>
+    <a class='left-prev' id="prev-link" href="examples.html" title="previous page">👨🏻‍💻 Examples: Old <code class="docutils literal notranslate"><span class="pre">HRRR-B</span></code> API</a>
     <a class='right-next' id="next-link" href="../reference_guide/index.html" title="next page">Reference Guide</a>
 
               </div>

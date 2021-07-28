@@ -28,7 +28,7 @@ dependencies:
 
   - pip:
     # Development Version from GitHub
-    - git+https://github.com/blaylockbk/HRRR_archive_download.git
+    - git+https://github.com/blaylockbk/Herbie.git
     # *or* the latest release from PyPI
     #- hrrrb    # Release Version
 
