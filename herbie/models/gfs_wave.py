@@ -1,7 +1,7 @@
 ## Added by Brian Blaylock
 ## July 26, 2021
 
-class gfs:
+class gfs_wave:
     def template(self):
         self.DESCRIPTION = 'Global Forecast System - Wave Products'
         self.DETAILS = {

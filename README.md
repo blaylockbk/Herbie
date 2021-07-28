@@ -20,6 +20,13 @@
 
 **Herbie** is a python package that downloads recent and archived numerical weather prediction (NWP) model output from different cloud archive sources. This data is usually in GRIB2 format and can be read with xarray/cfgrib. Model data Herbie can retrieve includes the High Resolution Rapid Refresh (HRRR), Rapid Refresh (RAP), Global Forecast System (GFS), National Blend of Models (NBM), and Rapid Refresh Forecast System - Prototype (RRFS).
 
+## Install
+Requires cURL and **Python 3.8+** with requests, numpy, pandas, xarray, and cfgrib. Optional packages are matplotlib, cartopy, and [Carpenter Workshop](https://github.com/blaylockbk/Carpenter_Workshop). (Create a conda Environment from [environment.yml](https://github.com/blaylockbk/Herbie/blob/master/environment.yml)).
+    
+    pip install hrrrb
+
+    pip install git+https://github.com/blaylockbk/Herbie.git
+
 ## Capabilities
 - Download full GRIB2 files
 - Download subset GRIB2 files (by grib field)

@@ -53,10 +53,10 @@ For more details, see https://blaylockbk.github.io/Herbie/_build/html/user_guide
     - ✨ Moved the source URL templates to their own classes in the **models** folder
     - Renamed GitHub repository to Herbie (from HRRR_archive_download)
     - Added RRFS, NBM, GFS, RAP as models Herbie can download
+    - Reworked read_idx() to support index files with additional info (specifically for the NBM).
     - TODO: Rename 'searchString' to 'subset' (and rename subset function)
-    - TODO: Add NCEI as a source for the RAP data?? URL is complex.
     - TODO: Create .idx file if wgrib2 is installed (linux only) when index file doesn't exist
-    - TODO: Need to support NBM index files
+    - TODO: add `idx_to_df()` and `df_to_idx()` methods.
 
 """
 import os
@@ -182,11 +182,12 @@ class Herbie:
         
         self.priority = priority
         self.save_dir = Path(save_dir).expand()  # yes, the expand is my custom method from __init__
+        self.overwrite = overwrite
 
         # Get details from the template of the specified model.
         # This attaches the details from the `models.<model>.template`
         # class to this Herbie object.
-        # This line is equivelent to `models_template.gfs.template(self)`.
+        # This line is equivalent to `models_template.gfs.template(self)`.
         # We do it this way because the model name is a variable.
         # (see https://stackoverflow.com/a/7936588/2383070 for what I'm doing here)
         getattr(models_template, self.model).template(self)
@@ -199,6 +200,8 @@ class Herbie:
             # We need to rerun this so the sources have the new product value.
             getattr(models_template, self.model).template(self)
         
+        self.product_description = self.PRODUCTS[self.product]
+
         # Check the user input
         self._validate()
 
@@ -313,16 +316,17 @@ class Herbie:
         if isinstance(self.priority, str):
             self.priority = [self.priority]
         
-        self.priority = [i.lower() for i in self.priority]
-        
-        # Don't look for data from NOMADS if requested date is earlier
-        # than 14 days ago. NOMADS doesn't keep data that old,
-        # (I think this is true of all models).
-        if 'nomads' in self.priority:
-            expired = datetime.utcnow() - timedelta(days=14)
-            expired = pd.to_datetime(f"{expired:%Y-%m-%d}")
-            if self.date < expired:
-                self.priority.remove('nomads')
+        if self.priority is not None:
+            self.priority = [i.lower() for i in self.priority]
+
+            # Don't look for data from NOMADS if requested date is earlier
+            # than 14 days ago. NOMADS doesn't keep data that old,
+            # (I think this is true of all models).
+            if 'nomads' in self.priority:
+                expired = datetime.utcnow() - timedelta(days=14)
+                expired = pd.to_datetime(f"{expired:%Y-%m-%d}")
+                if self.date < expired:
+                    self.priority.remove('nomads')
     
     def _ping_pando(self):
         """Pinging the Pando server before downloading can prevent a bad handshake."""
@@ -398,34 +402,21 @@ class Herbie:
         """
         assert self.idx is not None, f"No index file found for {self.grib}."
         
-
-        ################################################################
-        ## TODO: Replace reading idx file this with pd.read_cvs()
-        #        Any reason why I shouldn't do it this way?
-        #        Sometimes idx lines end in ':', other times it doesn't (in some Pando files).
+        # Sometimes idx lines end in ':', other times it doesn't (in some Pando files).
         # https://pando-rgw01.chpc.utah.edu/hrrr/sfc/20180101/hrrr.t00z.wrfsfcf00.grib2.idx
         # https://noaa-hrrr-bdp-pds.s3.amazonaws.com/hrrr.20210101/conus/hrrr.t00z.wrfsfcf00.grib2.idx
-        '''
-        r = requests.get(self.idx)
-        assert r.ok, f"Index file does not exist: {self.idx}"   
-        read_idx = pd.read_csv(self.idx,
-                               sep=':', 
-                               names=['grib_message', 'start_byte', 
-                                      'reference_time', 'variable', 
-                                      'level', 'forecast_time', 'none']
-                               )
-        '''
-        ################################################################
-
-        # Open the idx file
-        r = requests.get(self.idx)
-        assert r.ok, f"Index file does not exist: {self.idx}"   
+        # Sometimes idx has more than standard messages
+        # https://noaa-nbm-grib2-pds.s3.amazonaws.com/blend.20210711/13/core/blend.t13z.core.f001.co.grib2.idx
         
-        read_idx = r.text.split('\n')[:-1]  # last line is empty
-        df = pd.DataFrame([i.split(':') for i in read_idx], 
-                            columns=['grib_message', 'start_byte', 
-                                     'reference_time', 'variable', 
-                                     'level', 'forecast_time', 'none'])
+        r = requests.get(self.idx)
+        assert r.ok, f"Index file does not exist: {self.idx}"   
+        df = pd.read_csv(self.idx,
+                         sep=':', 
+                         names=['grib_message', 'start_byte', 
+                                'reference_time', 'variable', 
+                                'level', 'forecast_time', 
+                                '?', '??', '???']
+                        )
 
         # Format the DataFrame
         df['grib_message'] = df['grib_message'].astype(float)  # float because RAP idx files have some decimal grib message numbers
@@ -434,14 +425,19 @@ class Herbie:
         df['start_byte'] = df['start_byte'].astype(int)
         df['end_byte'] = df['start_byte'].shift(-1, fill_value='')
         df['range'] = df.start_byte.astype(str) + '-' + df.end_byte.astype(str)
-        df = df.drop(columns='none')
         df = df.set_index('grib_message')
         df = df.reindex(columns=['start_byte', 'end_byte', 'range', 
                                  'reference_time', 'valid_time', 
-                                 'variable', 'level', 'forecast_time'])
+                                 'variable', 'level', 'forecast_time',
+                                 '?', '??', '???'])
+
+        df = df.dropna(how='all', axis=1)
+        df = df.fillna('')
+
         df.attrs = dict(
+            url=self.idx,
             source=self.idx_source, 
-            description='Index (.idx) file for the GRIB2 file.', 
+            description='Inventory index (.idx) file for the GRIB2 file.', 
             model=self.model, 
             product=self.product, 
             lead_time=self.fxx, 
@@ -450,7 +446,7 @@ class Herbie:
 
         # Filter DataFrame by searchString
         if searchString not in [None, ':']:
-            columns_to_search = df[['variable', 'level', 'forecast_time']].apply(lambda x: ':'.join(x), axis=1)
+            columns_to_search = df.loc[:, 'variable':].apply(lambda x: ':'.join(x).rstrip(':'), axis=1)
             logic = columns_to_search.str.contains(searchString)
             if logic.sum() == 0:
                 print(f"No GRIB messages found. There might be something wrong with {searchString=}")
@@ -458,9 +454,9 @@ class Herbie:
             df = df.loc[logic]
         return df
     
-    def download(self, searchString=None, source=None, *,
-                 save_dir=None, 
-                 overwrite=False, verbose=True,
+    def download(self, searchString=None, *,
+                 source=None, save_dir=None, overwrite=None,
+                 verbose=True,
                  errors='warn'):
         """
         Download file from source.
@@ -519,7 +515,7 @@ class Herbie:
 
             # Download subsets of the file by byte range with cURL.
             for i, (grbmsg, row) in enumerate(self.idx_df.iterrows()):
-                print(f"{i+1:>4g}: GRIB_message={grbmsg:<3g} \033[34m{row.variable}:{row.level}:{row.forecast_time}\033[m")
+                print(f"{i+1:>4g}: GRIB_message={grbmsg:<3g} \033[34m{':'.join(row.values[5:]).rstrip(':')}\033[m")
                 if i == 0:
                     # If we are working on the first item, overwrite the existing file...
                     curl = f'curl -s --range {row.range} {grib_source} > {outFile}'
@@ -533,7 +529,12 @@ class Herbie:
         # If the file exists in the localPath and we don't want to 
         # overwrite, then we don't need to download it.
         outFile = self.get_localFilePath(searchString=searchString)
-        if outFile.exists() and not overwrite:
+
+        # This overrides the overwrite specified in __init__
+        if overwrite is not None:
+            self.overwrite = overwrite
+
+        if outFile.exists() and not self.overwrite:
             if verbose: print(f'🌉 Already have local copy --> {outFile}')
             if searchString in [None, ':']:
                 self.local_grib = outFile
@@ -545,9 +546,10 @@ class Herbie:
         if self.idx is not None:
             self.idx_df = self.read_idx(searchString)
 
-        # This overwrites the save_dir specified in __init__
+        # This overrides the save_dir specified in __init__
         if save_dir is not None:
             self.save_dir = Path(save_dir).expand()
+        
         if not hasattr(Path(self.save_dir).expand(), 'exists'): 
             self.save_dir = Path(self.save_dir).expand()
 

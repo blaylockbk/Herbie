@@ -2,7 +2,7 @@
 
 🔢 What is GRIB2?
 ------------------
-GRIB stands for "gridded binary" and is an international standard for meteorological data. There is an old standard GRIB, and a new standard GRIB2. In these documetns, when I refer to GRIB I really mean the new GRIB2 standard.
+GRIB stands for "gridded binary" and is an international standard for meteorological data. There is an old standard GRIB, and a new standard GRIB2. In these documents, when I refer to GRIB I really mean the new GRIB2 standard.
 
 Yes, GRIB is notoriously difficult to work with and has a steep learning curve for those unfamiliar with the format. I won't discuss here the good, bad, and ugly of GRIB frankly because I'm not an expert and probably will say something wrong. However, even seasoned meteorologists complain about GRIB. Since complaining won't fix the problem, I choose to embrace it because, for now, NWP data is widely distributed as GRIB2.  
 
@@ -108,3 +108,18 @@ Generally speaking, index files share the same URL as the GRIB2 file except with
 
 .. note:: 
    This method is similar to that used in Wesley Ebisuzaki's `Fast Downloading GRIB <https://www.cpc.ncep.noaa.gov/products/wesley/fast_downloading_grib.html>`_ script.
+
+.. note::
+   When an index file doesn't exist, wgrib2 is used to print the index inventory. **wgrib2** can be installed via conda for Linux, but the installation for Windows is a bit more i>nvolved. Instead, `eccodes <https://anaconda.org/conda-forge/eccodes`_ can be installed via conda for Linux, OS, and Windows. You can use eccodes' **grib_ls** command to print out a type of inventory that includes the beginning byte with ``grib_ls -p count,offset,date,hour,level,typeOfLevel,name,step file.grib2``, though Herbie does not interpret this type of inventory. (Pull request anyone?) 
+
+   .. code-block::
+
+      $ grib_ls -p count,offset,date,hour,level,typeOfLevel,name,step file.grib2 
+      hrrr.t12z.wrfsfcf06.grib2.subset_14-15-16-17-18
+      count        offset       date         hour         level        typeOfLevel  name         step         
+      1            0            20210101     12           500          isobaricInhPa  Geopotential Height  6           
+      2            721229       20210101     12           500          isobaricInhPa  Temperature  6           
+      3            1.2795e+06   20210101     12           500          isobaricInhPa  Dew point temperature  6           
+      4            2.21452e+06  20210101     12           500          isobaricInhPa  U component of wind  6           
+      5            2.80253e+06  20210101     12           500          isobaricInhPa  V component of wind  6           
+      5 of 5 messages in file.grib2 

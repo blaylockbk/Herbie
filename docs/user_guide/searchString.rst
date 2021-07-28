@@ -5,9 +5,9 @@
 Use regular expression to search for lines in the index ``.idx`` file
 Here are some examples you can use for the ``searchString`` argument
 
-================================= ===============================================
+================================= ========================================================
 ``searchString=``                  GRIB messages that will be downloaded
-================================= ===============================================
+================================= ========================================================
 ``':TMP:2 m'``                    Temperature at 2 m.
 ``':TMP:'``                       Temperature fields at all levels.
 ``':UGRD:.* mb'``                 U Wind at all pressure levels.
@@ -23,7 +23,8 @@ Here are some examples you can use for the ``searchString`` argument
 ``':(TMP|DPT|RH):'``              TMP, DPT, and Relative Humidity for all levels.
 ``':REFC:'``                      Composite Reflectivity
 ``':surface:'``                   All variables at the surface.
-================================= ===============================================
+``'^TMP:2 m.*fcst$'``             Beginning of string (^), end of string ($) wildcard (.*)
+================================= ========================================================
 
 If you need help with regular expression, search the web
 or look at this `cheatsheet <https://www.petefreitag.com/cheatsheets/regex/>`_.

@@ -12,6 +12,7 @@ User Guide
    tutorial.ipynb
    searchString
    model_template
+   model_examples
    examples
    notebooks
    

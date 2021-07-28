@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>National Blend of Models Data &#8212; HRRR-B 0.0.4 documentation</title>
+    <title>National Blend of Models (NMB) &#8212; HRRR-B 0.0.4 documentation</title>
     
   <link href="../../_static/css/theme.css" rel="stylesheet" />
   <link href="../../_static/css/index.c5995385ac14fb8791e8eb36b4908be2.css" rel="stylesheet" />
@@ -434,8 +434,9 @@ div.rendered_html tbody tr:hover {
 <div class="line"><strong>Brian Blaylock</strong></div>
 <div class="line"><em>July 27, 2021</em></div>
 </div>
-<div class="section" id="National-Blend-of-Models-Data">
-<h1>National Blend of Models Data<a class="headerlink" href="#National-Blend-of-Models-Data" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="National-Blend-of-Models-(NMB)">
+<h1>National Blend of Models (NMB)<a class="headerlink" href="#National-Blend-of-Models-(NMB)" title="Permalink to this headline">¶</a></h1>
+<p>cgfrib interprets the NMB strangely. Not sure what is going on here. I posted an issue on GitHub: <a class="reference external" href="https://github.com/ecmwf/cfgrib/issues/240">https://github.com/ecmwf/cfgrib/issues/240</a></p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
@@ -443,7 +444,7 @@ div.rendered_html tbody tr:hover {
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
 <span></span><span class="kn">from</span> <span class="nn">herbie.archive</span> <span class="kn">import</span> <span class="n">Herbie</span>
 <span class="kn">from</span> <span class="nn">toolbox.cartopy_tools</span> <span class="kn">import</span> <span class="n">common_features</span><span class="p">,</span> <span class="n">pc</span>
-<span class="kn">from</span> <span class="nn">paint.standard2</span> <span class="kn">import</span> <span class="n">cm_tmp</span>
+<span class="kn">from</span> <span class="nn">paint.standard2</span> <span class="kn">import</span> <span class="n">cm_tmp</span><span class="p">,</span> <span class="n">cm_wind</span>
 
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 <span class="kn">import</span> <span class="nn">cartopy.crs</span> <span class="k">as</span> <span class="nn">ccrs</span>
@@ -451,7 +452,7 @@ div.rendered_html tbody tr:hover {
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -470,7 +471,7 @@ div.rendered_html tbody tr:hover {
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -479,7 +480,7 @@ div.rendered_html tbody tr:hover {
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
@@ -488,11 +489,11 @@ div.rendered_html tbody tr:hover {
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">x</span> <span class="o">=</span> <span class="n">H</span><span class="o">.</span><span class="n">xarray</span><span class="p">(</span><span class="s1">&#39;TMP:2 m above&#39;</span><span class="p">)</span>
+<span></span><span class="n">x</span> <span class="o">=</span> <span class="n">H</span><span class="o">.</span><span class="n">xarray</span><span class="p">(</span><span class="s1">&#39;^TMP:2 m .*$&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -501,95 +502,464 @@ div.rendered_html tbody tr:hover {
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-<span class="ansi-red-fg">---------------------------------------------------------------------------</span>
-<span class="ansi-red-fg">AssertionError</span>                            Traceback (most recent call last)
-<span class="ansi-green-fg">~/anaconda3/envs/basic38/lib/python3.8/site-packages/pandas/core/internals/construction.py</span> in <span class="ansi-cyan-fg">_finalize_columns_and_data</span><span class="ansi-blue-fg">(content, columns, dtype)</span>
-<span class="ansi-green-intense-fg ansi-bold">    897</span>     <span class="ansi-green-fg">try</span><span class="ansi-blue-fg">:</span>
-<span class="ansi-green-fg">--&gt; 898</span><span class="ansi-red-fg">         </span>columns <span class="ansi-blue-fg">=</span> _validate_or_indexify_columns<span class="ansi-blue-fg">(</span>contents<span class="ansi-blue-fg">,</span> columns<span class="ansi-blue-fg">)</span>
-<span class="ansi-green-intense-fg ansi-bold">    899</span>     <span class="ansi-green-fg">except</span> AssertionError <span class="ansi-green-fg">as</span> err<span class="ansi-blue-fg">:</span>
-
-<span class="ansi-green-fg">~/anaconda3/envs/basic38/lib/python3.8/site-packages/pandas/core/internals/construction.py</span> in <span class="ansi-cyan-fg">_validate_or_indexify_columns</span><span class="ansi-blue-fg">(content, columns)</span>
-<span class="ansi-green-intense-fg ansi-bold">    945</span>             <span class="ansi-red-fg"># caller&#39;s responsibility to check for this...</span>
-<span class="ansi-green-fg">--&gt; 946</span><span class="ansi-red-fg">             raise AssertionError(
-</span><span class="ansi-green-intense-fg ansi-bold">    947</span>                 <span class="ansi-blue-fg">f&#34;{len(columns)} columns passed, passed data had &#34;</span>
-
-<span class="ansi-red-fg">AssertionError</span>: 7 columns passed, passed data had 8 columns
-
-The above exception was the direct cause of the following exception:
-
-<span class="ansi-red-fg">ValueError</span>                                Traceback (most recent call last)
-<span class="ansi-green-fg">&lt;ipython-input-9-23e415b225d6&gt;</span> in <span class="ansi-cyan-fg">&lt;module&gt;</span>
-<span class="ansi-green-fg">----&gt; 1</span><span class="ansi-red-fg"> </span>x <span class="ansi-blue-fg">=</span> H<span class="ansi-blue-fg">.</span>xarray<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">&#39;TMP:2 m above&#39;</span><span class="ansi-blue-fg">)</span>
-
-<span class="ansi-green-fg">~/BB_python/HRRR_archive_download/herbie/archive.py</span> in <span class="ansi-cyan-fg">xarray</span><span class="ansi-blue-fg">(self, searchString, backend_kwargs, remove_grib, **download_kwargs)</span>
-<span class="ansi-green-intense-fg ansi-bold">    600</span>
-<span class="ansi-green-intense-fg ansi-bold">    601</span>         <span class="ansi-red-fg"># Download file if local file does not exists</span>
-<span class="ansi-green-fg">--&gt; 602</span><span class="ansi-red-fg">         </span>local_file <span class="ansi-blue-fg">=</span> self<span class="ansi-blue-fg">.</span>get_localFilePath<span class="ansi-blue-fg">(</span>searchString<span class="ansi-blue-fg">=</span>searchString<span class="ansi-blue-fg">)</span>
-<span class="ansi-green-intense-fg ansi-bold">    603</span>
-<span class="ansi-green-intense-fg ansi-bold">    604</span>         <span class="ansi-red-fg"># Only remove grib if it didn&#39;t exists before we download it</span>
-
-<span class="ansi-green-fg">~/BB_python/HRRR_archive_download/herbie/archive.py</span> in <span class="ansi-cyan-fg">get_localFilePath</span><span class="ansi-blue-fg">(self, searchString)</span>
-<span class="ansi-green-intense-fg ansi-bold">    366</span>         <span class="ansi-green-fg">if</span> searchString <span class="ansi-green-fg">is</span> <span class="ansi-green-fg">not</span> <span class="ansi-green-fg">None</span><span class="ansi-blue-fg">:</span>
-<span class="ansi-green-intense-fg ansi-bold">    367</span>             <span class="ansi-red-fg"># Reassign the index DataFrame with the requested searchString</span>
-<span class="ansi-green-fg">--&gt; 368</span><span class="ansi-red-fg">             </span>self<span class="ansi-blue-fg">.</span>idx_df <span class="ansi-blue-fg">=</span> self<span class="ansi-blue-fg">.</span>read_idx<span class="ansi-blue-fg">(</span>searchString<span class="ansi-blue-fg">)</span>
-<span class="ansi-green-intense-fg ansi-bold">    369</span>
-<span class="ansi-green-intense-fg ansi-bold">    370</span>             <span class="ansi-red-fg"># Get a list of all GRIB message numbers. We will use this</span>
-
-<span class="ansi-green-fg">~/BB_python/HRRR_archive_download/herbie/archive.py</span> in <span class="ansi-cyan-fg">read_idx</span><span class="ansi-blue-fg">(self, searchString)</span>
-<span class="ansi-green-intense-fg ansi-bold">    422</span>
-<span class="ansi-green-intense-fg ansi-bold">    423</span>         read_idx <span class="ansi-blue-fg">=</span> r<span class="ansi-blue-fg">.</span>text<span class="ansi-blue-fg">.</span>split<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">&#39;\n&#39;</span><span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">[</span><span class="ansi-blue-fg">:</span><span class="ansi-blue-fg">-</span><span class="ansi-cyan-fg">1</span><span class="ansi-blue-fg">]</span>  <span class="ansi-red-fg"># last line is empty</span>
-<span class="ansi-green-fg">--&gt; 424</span><span class="ansi-red-fg">         df = pd.DataFrame([i.split(&#39;:&#39;) for i in read_idx],
-</span><span class="ansi-green-intense-fg ansi-bold">    425</span>                             columns=[&#39;grib_message&#39;, &#39;start_byte&#39;,
-<span class="ansi-green-intense-fg ansi-bold">    426</span>                                      <span class="ansi-blue-fg">&#39;reference_time&#39;</span><span class="ansi-blue-fg">,</span> <span class="ansi-blue-fg">&#39;variable&#39;</span><span class="ansi-blue-fg">,</span>
-
-<span class="ansi-green-fg">~/anaconda3/envs/basic38/lib/python3.8/site-packages/pandas/core/frame.py</span> in <span class="ansi-cyan-fg">__init__</span><span class="ansi-blue-fg">(self, data, index, columns, dtype, copy)</span>
-<span class="ansi-green-intense-fg ansi-bold">    692</span>                         <span class="ansi-red-fg"># ndarray], Index, Series], Sequence[Any]]&#34;</span>
-<span class="ansi-green-intense-fg ansi-bold">    693</span>                         columns <span class="ansi-blue-fg">=</span> ensure_index<span class="ansi-blue-fg">(</span>columns<span class="ansi-blue-fg">)</span>  <span class="ansi-red-fg"># type: ignore[arg-type]</span>
-<span class="ansi-green-fg">--&gt; 694</span><span class="ansi-red-fg">                     arrays, columns, index = nested_data_to_arrays(
-</span><span class="ansi-green-intense-fg ansi-bold">    695</span>                         <span class="ansi-red-fg"># error: Argument 3 to &#34;nested_data_to_arrays&#34; has incompatible</span>
-<span class="ansi-green-intense-fg ansi-bold">    696</span>                         <span class="ansi-red-fg"># type &#34;Optional[Collection[Any]]&#34;; expected &#34;Optional[Index]&#34;</span>
-
-<span class="ansi-green-fg">~/anaconda3/envs/basic38/lib/python3.8/site-packages/pandas/core/internals/construction.py</span> in <span class="ansi-cyan-fg">nested_data_to_arrays</span><span class="ansi-blue-fg">(data, columns, index, dtype)</span>
-<span class="ansi-green-intense-fg ansi-bold">    481</span>         columns <span class="ansi-blue-fg">=</span> ensure_index<span class="ansi-blue-fg">(</span>data<span class="ansi-blue-fg">[</span><span class="ansi-cyan-fg">0</span><span class="ansi-blue-fg">]</span><span class="ansi-blue-fg">.</span>_fields<span class="ansi-blue-fg">)</span>
-<span class="ansi-green-intense-fg ansi-bold">    482</span>
-<span class="ansi-green-fg">--&gt; 483</span><span class="ansi-red-fg">     </span>arrays<span class="ansi-blue-fg">,</span> columns <span class="ansi-blue-fg">=</span> to_arrays<span class="ansi-blue-fg">(</span>data<span class="ansi-blue-fg">,</span> columns<span class="ansi-blue-fg">,</span> dtype<span class="ansi-blue-fg">=</span>dtype<span class="ansi-blue-fg">)</span>
-<span class="ansi-green-intense-fg ansi-bold">    484</span>     columns <span class="ansi-blue-fg">=</span> ensure_index<span class="ansi-blue-fg">(</span>columns<span class="ansi-blue-fg">)</span>
-<span class="ansi-green-intense-fg ansi-bold">    485</span>
-
-<span class="ansi-green-fg">~/anaconda3/envs/basic38/lib/python3.8/site-packages/pandas/core/internals/construction.py</span> in <span class="ansi-cyan-fg">to_arrays</span><span class="ansi-blue-fg">(data, columns, dtype)</span>
-<span class="ansi-green-intense-fg ansi-bold">    797</span>         arr <span class="ansi-blue-fg">=</span> _list_to_arrays<span class="ansi-blue-fg">(</span>data<span class="ansi-blue-fg">)</span>
-<span class="ansi-green-intense-fg ansi-bold">    798</span>
-<span class="ansi-green-fg">--&gt; 799</span><span class="ansi-red-fg">     </span>content<span class="ansi-blue-fg">,</span> columns <span class="ansi-blue-fg">=</span> _finalize_columns_and_data<span class="ansi-blue-fg">(</span>arr<span class="ansi-blue-fg">,</span> columns<span class="ansi-blue-fg">,</span> dtype<span class="ansi-blue-fg">)</span>
-<span class="ansi-green-intense-fg ansi-bold">    800</span>     <span class="ansi-green-fg">return</span> content<span class="ansi-blue-fg">,</span> columns
-<span class="ansi-green-intense-fg ansi-bold">    801</span>
-
-<span class="ansi-green-fg">~/anaconda3/envs/basic38/lib/python3.8/site-packages/pandas/core/internals/construction.py</span> in <span class="ansi-cyan-fg">_finalize_columns_and_data</span><span class="ansi-blue-fg">(content, columns, dtype)</span>
-<span class="ansi-green-intense-fg ansi-bold">    899</span>     <span class="ansi-green-fg">except</span> AssertionError <span class="ansi-green-fg">as</span> err<span class="ansi-blue-fg">:</span>
-<span class="ansi-green-intense-fg ansi-bold">    900</span>         <span class="ansi-red-fg"># GH#26429 do not raise user-facing AssertionError</span>
-<span class="ansi-green-fg">--&gt; 901</span><span class="ansi-red-fg">         </span><span class="ansi-green-fg">raise</span> ValueError<span class="ansi-blue-fg">(</span>err<span class="ansi-blue-fg">)</span> <span class="ansi-green-fg">from</span> err
-<span class="ansi-green-intense-fg ansi-bold">    902</span>
-<span class="ansi-green-intense-fg ansi-bold">    903</span>     <span class="ansi-green-fg">if</span> len<span class="ansi-blue-fg">(</span>contents<span class="ansi-blue-fg">)</span> <span class="ansi-green-fg">and</span> contents<span class="ansi-blue-fg">[</span><span class="ansi-cyan-fg">0</span><span class="ansi-blue-fg">]</span><span class="ansi-blue-fg">.</span>dtype <span class="ansi-blue-fg">==</span> np<span class="ansi-blue-fg">.</span>object_<span class="ansi-blue-fg">:</span>
-
-<span class="ansi-red-fg">ValueError</span>: 7 columns passed, passed data had 8 columns
+📇 Download subset: [NBM] model [co] product run at <span class="ansi-green-fg">2021-Jul-11 13:00 UTC F01</span>
+ cURL from https://noaa-nbm-grib2-pds.s3.amazonaws.com/blend.20210711/13/core/blend.t13z.core.f001.co.grib2
+   1: GRIB_message=54  <span class="ansi-blue-fg">TMP:2 m above ground:1 hour fcst</span>
+   2: GRIB_message=55  <span class="ansi-blue-fg">TMP:2 m above ground:1 hour fcst:ens std dev</span>
 </pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">x</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div><svg style="position: absolute; width: 0; height: 0; overflow: hidden">
+<defs>
+<symbol id="icon-database" viewBox="0 0 32 32">
+<path d="M16 0c-8.837 0-16 2.239-16 5v4c0 2.761 7.163 5 16 5s16-2.239 16-5v-4c0-2.761-7.163-5-16-5z"></path>
+<path d="M16 17c-8.837 0-16-2.239-16-5v6c0 2.761 7.163 5 16 5s16-2.239 16-5v-6c0 2.761-7.163 5-16 5z"></path>
+<path d="M16 26c-8.837 0-16-2.239-16-5v6c0 2.761 7.163 5 16 5s16-2.239 16-5v-6c0 2.761-7.163 5-16 5z"></path>
+</symbol>
+<symbol id="icon-file-text2" viewBox="0 0 32 32">
+<path d="M28.681 7.159c-0.694-0.947-1.662-2.053-2.724-3.116s-2.169-2.030-3.116-2.724c-1.612-1.182-2.393-1.319-2.841-1.319h-15.5c-1.378 0-2.5 1.121-2.5 2.5v27c0 1.378 1.122 2.5 2.5 2.5h23c1.378 0 2.5-1.122 2.5-2.5v-19.5c0-0.448-0.137-1.23-1.319-2.841zM24.543 5.457c0.959 0.959 1.712 1.825 2.268 2.543h-4.811v-4.811c0.718 0.556 1.584 1.309 2.543 2.268zM28 29.5c0 0.271-0.229 0.5-0.5 0.5h-23c-0.271 0-0.5-0.229-0.5-0.5v-27c0-0.271 0.229-0.5 0.5-0.5 0 0 15.499-0 15.5 0v7c0 0.552 0.448 1 1 1h7v19.5z"></path>
+<path d="M23 26h-14c-0.552 0-1-0.448-1-1s0.448-1 1-1h14c0.552 0 1 0.448 1 1s-0.448 1-1 1z"></path>
+<path d="M23 22h-14c-0.552 0-1-0.448-1-1s0.448-1 1-1h14c0.552 0 1 0.448 1 1s-0.448 1-1 1z"></path>
+<path d="M23 18h-14c-0.552 0-1-0.448-1-1s0.448-1 1-1h14c0.552 0 1 0.448 1 1s-0.448 1-1 1z"></path>
+</symbol>
+</defs>
+</svg>
+<style>/* CSS stylesheet for displaying xarray objects in jupyterlab.
+ *
+ */
+
+:root {
+  --xr-font-color0: var(--jp-content-font-color0, rgba(0, 0, 0, 1));
+  --xr-font-color2: var(--jp-content-font-color2, rgba(0, 0, 0, 0.54));
+  --xr-font-color3: var(--jp-content-font-color3, rgba(0, 0, 0, 0.38));
+  --xr-border-color: var(--jp-border-color2, #e0e0e0);
+  --xr-disabled-color: var(--jp-layout-color3, #bdbdbd);
+  --xr-background-color: var(--jp-layout-color0, white);
+  --xr-background-color-row-even: var(--jp-layout-color1, white);
+  --xr-background-color-row-odd: var(--jp-layout-color2, #eeeeee);
+}
+
+html[theme=dark],
+body.vscode-dark {
+  --xr-font-color0: rgba(255, 255, 255, 1);
+  --xr-font-color2: rgba(255, 255, 255, 0.54);
+  --xr-font-color3: rgba(255, 255, 255, 0.38);
+  --xr-border-color: #1F1F1F;
+  --xr-disabled-color: #515151;
+  --xr-background-color: #111111;
+  --xr-background-color-row-even: #111111;
+  --xr-background-color-row-odd: #313131;
+}
+
+.xr-wrap {
+  display: block;
+  min-width: 300px;
+  max-width: 700px;
+}
+
+.xr-text-repr-fallback {
+  /* fallback to plain text repr when CSS is not injected (untrusted notebook) */
+  display: none;
+}
+
+.xr-header {
+  padding-top: 6px;
+  padding-bottom: 6px;
+  margin-bottom: 4px;
+  border-bottom: solid 1px var(--xr-border-color);
+}
+
+.xr-header > div,
+.xr-header > ul {
+  display: inline;
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.xr-obj-type,
+.xr-array-name {
+  margin-left: 2px;
+  margin-right: 10px;
+}
+
+.xr-obj-type {
+  color: var(--xr-font-color2);
+}
+
+.xr-sections {
+  padding-left: 0 !important;
+  display: grid;
+  grid-template-columns: 150px auto auto 1fr 20px 20px;
+}
+
+.xr-section-item {
+  display: contents;
+}
+
+.xr-section-item input {
+  display: none;
+}
+
+.xr-section-item input + label {
+  color: var(--xr-disabled-color);
+}
+
+.xr-section-item input:enabled + label {
+  cursor: pointer;
+  color: var(--xr-font-color2);
+}
+
+.xr-section-item input:enabled + label:hover {
+  color: var(--xr-font-color0);
+}
+
+.xr-section-summary {
+  grid-column: 1;
+  color: var(--xr-font-color2);
+  font-weight: 500;
+}
+
+.xr-section-summary > span {
+  display: inline-block;
+  padding-left: 0.5em;
+}
+
+.xr-section-summary-in:disabled + label {
+  color: var(--xr-font-color2);
+}
+
+.xr-section-summary-in + label:before {
+  display: inline-block;
+  content: '►';
+  font-size: 11px;
+  width: 15px;
+  text-align: center;
+}
+
+.xr-section-summary-in:disabled + label:before {
+  color: var(--xr-disabled-color);
+}
+
+.xr-section-summary-in:checked + label:before {
+  content: '▼';
+}
+
+.xr-section-summary-in:checked + label > span {
+  display: none;
+}
+
+.xr-section-summary,
+.xr-section-inline-details {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+.xr-section-inline-details {
+  grid-column: 2 / -1;
+}
+
+.xr-section-details {
+  display: none;
+  grid-column: 1 / -1;
+  margin-bottom: 5px;
+}
+
+.xr-section-summary-in:checked ~ .xr-section-details {
+  display: contents;
+}
+
+.xr-array-wrap {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: 20px auto;
+}
+
+.xr-array-wrap > label {
+  grid-column: 1;
+  vertical-align: top;
+}
+
+.xr-preview {
+  color: var(--xr-font-color3);
+}
+
+.xr-array-preview,
+.xr-array-data {
+  padding: 0 5px !important;
+  grid-column: 2;
+}
+
+.xr-array-data,
+.xr-array-in:checked ~ .xr-array-preview {
+  display: none;
+}
+
+.xr-array-in:checked ~ .xr-array-data,
+.xr-array-preview {
+  display: inline-block;
+}
+
+.xr-dim-list {
+  display: inline-block !important;
+  list-style: none;
+  padding: 0 !important;
+  margin: 0;
+}
+
+.xr-dim-list li {
+  display: inline-block;
+  padding: 0;
+  margin: 0;
+}
+
+.xr-dim-list:before {
+  content: '(';
+}
+
+.xr-dim-list:after {
+  content: ')';
+}
+
+.xr-dim-list li:not(:last-child):after {
+  content: ',';
+  padding-right: 5px;
+}
+
+.xr-has-index {
+  font-weight: bold;
+}
+
+.xr-var-list,
+.xr-var-item {
+  display: contents;
+}
+
+.xr-var-item > div,
+.xr-var-item label,
+.xr-var-item > .xr-var-name span {
+  background-color: var(--xr-background-color-row-even);
+  margin-bottom: 0;
+}
+
+.xr-var-item > .xr-var-name:hover span {
+  padding-right: 5px;
+}
+
+.xr-var-list > li:nth-child(odd) > div,
+.xr-var-list > li:nth-child(odd) > label,
+.xr-var-list > li:nth-child(odd) > .xr-var-name span {
+  background-color: var(--xr-background-color-row-odd);
+}
+
+.xr-var-name {
+  grid-column: 1;
+}
+
+.xr-var-dims {
+  grid-column: 2;
+}
+
+.xr-var-dtype {
+  grid-column: 3;
+  text-align: right;
+  color: var(--xr-font-color2);
+}
+
+.xr-var-preview {
+  grid-column: 4;
+}
+
+.xr-var-name,
+.xr-var-dims,
+.xr-var-dtype,
+.xr-preview,
+.xr-attrs dt {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding-right: 10px;
+}
+
+.xr-var-name:hover,
+.xr-var-dims:hover,
+.xr-var-dtype:hover,
+.xr-attrs dt:hover {
+  overflow: visible;
+  width: auto;
+  z-index: 1;
+}
+
+.xr-var-attrs,
+.xr-var-data {
+  display: none;
+  background-color: var(--xr-background-color) !important;
+  padding-bottom: 5px !important;
+}
+
+.xr-var-attrs-in:checked ~ .xr-var-attrs,
+.xr-var-data-in:checked ~ .xr-var-data {
+  display: block;
+}
+
+.xr-var-data > table {
+  float: right;
+}
+
+.xr-var-name span,
+.xr-var-data,
+.xr-attrs {
+  padding-left: 25px !important;
+}
+
+.xr-attrs,
+.xr-var-attrs,
+.xr-var-data {
+  grid-column: 1 / -1;
+}
+
+dl.xr-attrs {
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: 125px auto;
+}
+
+.xr-attrs dt,
+.xr-attrs dd {
+  padding: 0;
+  margin: 0;
+  float: left;
+  padding-right: 10px;
+  width: auto;
+}
+
+.xr-attrs dt {
+  font-weight: normal;
+  grid-column: 1;
+}
+
+.xr-attrs dt:hover span {
+  display: inline-block;
+  background: var(--xr-background-color);
+  padding-right: 10px;
+}
+
+.xr-attrs dd {
+  grid-column: 2;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+.xr-icon-database,
+.xr-icon-file-text2 {
+  display: inline-block;
+  vertical-align: middle;
+  width: 1em;
+  height: 1.5em !important;
+  stroke-width: 0;
+  stroke: currentColor;
+  fill: currentColor;
+}
+</style><pre class='xr-text-repr-fallback'>&lt;xarray.Dataset&gt;
+Dimensions:            (y: 1597, x: 2345)
+Coordinates:
+    time               datetime64[ns] 2021-07-11T13:00:00
+    step               timedelta64[ns] 01:00:00
+    heightAboveGround  float64 2.0
+    latitude           (y, x) float64 19.23 19.23 19.24 ... 54.38 54.38 54.37
+    longitude          (y, x) float64 233.7 233.7 233.8 ... 300.9 300.9 301.0
+    valid_time         datetime64[ns] 2021-07-11T14:00:00
+Dimensions without coordinates: y, x
+Data variables:
+    t2m                (y, x) float32 294.1 294.1 294.1 ... 286.1 286.1 286.1
+Attributes:
+    GRIB_edition:            2
+    GRIB_centre:             kwbc
+    GRIB_centreDescription:  US National Weather Service - NCEP
+    GRIB_subCentre:          14
+    Conventions:             CF-1.7
+    institution:             US National Weather Service - NCEP
+    model:                   nbm
+    remote_grib:             https://noaa-nbm-grib2-pds.s3.amazonaws.com/blen...
+    local_grib:              /p/cwfs/blaylock/data/nbm/20210711/blend.t13z.co...</pre><div class='xr-wrap' hidden><div class='xr-header'><div class='xr-obj-type'>xarray.Dataset</div></div><ul class='xr-sections'><li class='xr-section-item'><input id='section-145f34a9-3f9b-4dbc-bb08-768ae13819a1' class='xr-section-summary-in' type='checkbox' disabled ><label for='section-145f34a9-3f9b-4dbc-bb08-768ae13819a1' class='xr-section-summary'  title='Expand/collapse section'>Dimensions:</label><div class='xr-section-inline-details'><ul class='xr-dim-list'><li><span>y</span>: 1597</li><li><span>x</span>: 2345</li></ul></div><div class='xr-section-details'></div></li><li class='xr-section-item'><input id='section-493ab028-531e-4a9f-80f3-0e69cb64c836' class='xr-section-summary-in' type='checkbox'  checked><label for='section-493ab028-531e-4a9f-80f3-0e69cb64c836' class='xr-section-summary' >Coordinates: <span>(6)</span></label><div class='xr-section-inline-details'></div><div class='xr-section-details'><ul class='xr-var-list'><li class='xr-var-item'><div class='xr-var-name'><span>time</span></div><div class='xr-var-dims'>()</div><div class='xr-var-dtype'>datetime64[ns]</div><div class='xr-var-preview xr-preview'>2021-07-11T13:00:00</div><input id='attrs-fc6320d9-ceea-4b81-a119-c6e0cf7323ce' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-fc6320d9-ceea-4b81-a119-c6e0cf7323ce' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-65541f0b-2471-4965-a239-f60645685d6c' class='xr-var-data-in' type='checkbox'><label for='data-65541f0b-2471-4965-a239-f60645685d6c' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>long_name :</span></dt><dd>initial time of forecast</dd><dt><span>standard_name :</span></dt><dd>forecast_reference_time</dd></dl></div><div class='xr-var-data'><pre>array(&#x27;2021-07-11T13:00:00.000000000&#x27;, dtype=&#x27;datetime64[ns]&#x27;)</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span>step</span></div><div class='xr-var-dims'>()</div><div class='xr-var-dtype'>timedelta64[ns]</div><div class='xr-var-preview xr-preview'>01:00:00</div><input id='attrs-8644386d-5945-4598-94fe-82fb16aa3fb5' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-8644386d-5945-4598-94fe-82fb16aa3fb5' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-b238948a-ba72-4c55-8ebf-9fbacea0e73e' class='xr-var-data-in' type='checkbox'><label for='data-b238948a-ba72-4c55-8ebf-9fbacea0e73e' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>long_name :</span></dt><dd>time since forecast_reference_time</dd><dt><span>standard_name :</span></dt><dd>forecast_period</dd></dl></div><div class='xr-var-data'><pre>array(3600000000000, dtype=&#x27;timedelta64[ns]&#x27;)</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span>heightAboveGround</span></div><div class='xr-var-dims'>()</div><div class='xr-var-dtype'>float64</div><div class='xr-var-preview xr-preview'>2.0</div><input id='attrs-c93092e4-aadc-4adc-9dfc-d4d7441b60cf' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-c93092e4-aadc-4adc-9dfc-d4d7441b60cf' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-789d0f9d-c515-41de-9694-12fc5342b718' class='xr-var-data-in' type='checkbox'><label for='data-789d0f9d-c515-41de-9694-12fc5342b718' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>long_name :</span></dt><dd>height above the surface</dd><dt><span>units :</span></dt><dd>m</dd><dt><span>positive :</span></dt><dd>up</dd><dt><span>standard_name :</span></dt><dd>height</dd></dl></div><div class='xr-var-data'><pre>array(2.)</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span>latitude</span></div><div class='xr-var-dims'>(y, x)</div><div class='xr-var-dtype'>float64</div><div class='xr-var-preview xr-preview'>19.23 19.23 19.24 ... 54.38 54.37</div><input id='attrs-f4192718-6ff3-464b-a5df-aa094ffee4c3' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-f4192718-6ff3-464b-a5df-aa094ffee4c3' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-e9ba10f9-81fc-4b14-8d62-a3f19930b15f' class='xr-var-data-in' type='checkbox'><label for='data-e9ba10f9-81fc-4b14-8d62-a3f19930b15f' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>units :</span></dt><dd>degrees_north</dd><dt><span>standard_name :</span></dt><dd>latitude</dd><dt><span>long_name :</span></dt><dd>latitude</dd></dl></div><div class='xr-var-data'><pre>array([[19.229     , 19.23419445, 19.23938511, ..., 20.34034804,
+        20.33604919, 20.33174644],
+       [19.25112363, 19.25631917, 19.26151093, ..., 20.36270393,
+        20.3584042 , 20.35410056],
+       [19.27324788, 19.27844452, 19.28363738, ..., 20.38506038,
+        20.38075976, 20.37645523],
+       ...,
+       [53.01277632, 53.01903163, 53.02528215, ..., 54.34521296,
+        54.3400818 , 54.3349458 ],
+       [53.0316719 , 53.03792737, 53.04417805, ..., 54.36413781,
+        54.35900656, 54.35387046],
+       [53.0505631 , 53.05681873, 53.06306956, ..., 54.38305814,
+        54.3779268 , 54.37279061]])</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span>longitude</span></div><div class='xr-var-dims'>(y, x)</div><div class='xr-var-dtype'>float64</div><div class='xr-var-preview xr-preview'>233.7 233.7 233.8 ... 300.9 301.0</div><input id='attrs-896e0cc5-aa75-47cb-ad19-dd8d3843af0d' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-896e0cc5-aa75-47cb-ad19-dd8d3843af0d' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-96e2c8d9-e1de-4ecc-9fce-16a4bf60d7a1' class='xr-var-data-in' type='checkbox'><label for='data-96e2c8d9-e1de-4ecc-9fce-16a4bf60d7a1' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>units :</span></dt><dd>degrees_east</dd><dt><span>standard_name :</span></dt><dd>longitude</dd><dt><span>long_name :</span></dt><dd>longitude</dd></dl></div><div class='xr-var-data'><pre>array([[233.7234    , 233.74683145, 233.77026481, ..., 290.74409026,
+        290.76793178, 290.79177169],
+       [233.71789568, 233.74133096, 233.76476815, ..., 290.74867371,
+        290.77251927, 290.79636321],
+       [233.71238946, 233.73582857, 233.75926958, ..., 290.75325878,
+        290.77710837, 290.80095636],
+       ...,
+       [221.64754381, 221.67895681, 221.71037462, ..., 300.87524264,
+        300.90771111, 300.94017537],
+       [221.63714024, 221.66855972, 221.69998402, ..., 300.88404341,
+        300.91651908, 300.94899054],
+       [221.62673185, 221.65815781, 221.6895886 , ..., 300.89284839,
+        300.92533128, 300.95780994]])</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span>valid_time</span></div><div class='xr-var-dims'>()</div><div class='xr-var-dtype'>datetime64[ns]</div><div class='xr-var-preview xr-preview'>2021-07-11T14:00:00</div><input id='attrs-dc2f7c2c-70a5-472b-8386-1812187b2602' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-dc2f7c2c-70a5-472b-8386-1812187b2602' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-471cdd1f-c992-4d05-804a-1db54d0e853d' class='xr-var-data-in' type='checkbox'><label for='data-471cdd1f-c992-4d05-804a-1db54d0e853d' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>standard_name :</span></dt><dd>time</dd><dt><span>long_name :</span></dt><dd>time</dd></dl></div><div class='xr-var-data'><pre>array(&#x27;2021-07-11T14:00:00.000000000&#x27;, dtype=&#x27;datetime64[ns]&#x27;)</pre></div></li></ul></div></li><li class='xr-section-item'><input id='section-c9cc8ef9-0db1-4807-9d52-366512bf9954' class='xr-section-summary-in' type='checkbox'  checked><label for='section-c9cc8ef9-0db1-4807-9d52-366512bf9954' class='xr-section-summary' >Data variables: <span>(1)</span></label><div class='xr-section-inline-details'></div><div class='xr-section-details'><ul class='xr-var-list'><li class='xr-var-item'><div class='xr-var-name'><span>t2m</span></div><div class='xr-var-dims'>(y, x)</div><div class='xr-var-dtype'>float32</div><div class='xr-var-preview xr-preview'>294.1 294.1 294.1 ... 286.1 286.1</div><input id='attrs-74551922-9f80-405b-b1b5-2e6e2c1352a3' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-74551922-9f80-405b-b1b5-2e6e2c1352a3' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-115ab2e6-713a-42de-ab10-8c507316a6e2' class='xr-var-data-in' type='checkbox'><label for='data-115ab2e6-713a-42de-ab10-8c507316a6e2' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>GRIB_paramId :</span></dt><dd>167</dd><dt><span>GRIB_dataType :</span></dt><dd>fc</dd><dt><span>GRIB_numberOfPoints :</span></dt><dd>3744965</dd><dt><span>GRIB_typeOfLevel :</span></dt><dd>heightAboveGround</dd><dt><span>GRIB_stepUnits :</span></dt><dd>1</dd><dt><span>GRIB_stepType :</span></dt><dd>instant</dd><dt><span>GRIB_gridType :</span></dt><dd>lambert</dd><dt><span>GRIB_DxInMetres :</span></dt><dd>2539.703</dd><dt><span>GRIB_DyInMetres :</span></dt><dd>2539.703</dd><dt><span>GRIB_LaDInDegrees :</span></dt><dd>25.0</dd><dt><span>GRIB_Latin1InDegrees :</span></dt><dd>25.0</dd><dt><span>GRIB_Latin2InDegrees :</span></dt><dd>25.0</dd><dt><span>GRIB_LoVInDegrees :</span></dt><dd>265.0</dd><dt><span>GRIB_NV :</span></dt><dd>0</dd><dt><span>GRIB_Nx :</span></dt><dd>2345</dd><dt><span>GRIB_Ny :</span></dt><dd>1597</dd><dt><span>GRIB_cfName :</span></dt><dd>air_temperature</dd><dt><span>GRIB_cfVarName :</span></dt><dd>t2m</dd><dt><span>GRIB_gridDefinitionDescription :</span></dt><dd>Lambert Conformal can be secant or tangent, conical or bipolar</dd><dt><span>GRIB_iScansNegatively :</span></dt><dd>0</dd><dt><span>GRIB_jPointsAreConsecutive :</span></dt><dd>0</dd><dt><span>GRIB_jScansPositively :</span></dt><dd>1</dd><dt><span>GRIB_latitudeOfFirstGridPointInDegrees :</span></dt><dd>19.229</dd><dt><span>GRIB_latitudeOfSouthernPoleInDegrees :</span></dt><dd>-90.0</dd><dt><span>GRIB_longitudeOfFirstGridPointInDegrees :</span></dt><dd>233.7234</dd><dt><span>GRIB_longitudeOfSouthernPoleInDegrees :</span></dt><dd>0.0</dd><dt><span>GRIB_missingValue :</span></dt><dd>9999</dd><dt><span>GRIB_name :</span></dt><dd>2 metre temperature</dd><dt><span>GRIB_parameterName :</span></dt><dd>Temperature </dd><dt><span>GRIB_parameterUnits :</span></dt><dd>K</dd><dt><span>GRIB_shortName :</span></dt><dd>2t</dd><dt><span>GRIB_stepRange :</span></dt><dd>1</dd><dt><span>GRIB_units :</span></dt><dd>K</dd><dt><span>long_name :</span></dt><dd>2 metre temperature</dd><dt><span>units :</span></dt><dd>K</dd><dt><span>standard_name :</span></dt><dd>air_temperature</dd></dl></div><div class='xr-var-data'><pre>array([[294.09   , 294.09   , 294.09   , ..., 301.28998, 301.28998,
+        301.28998],
+       [301.28998, 301.28998, 301.28998, ..., 294.09   , 294.09   ,
+        294.09   ],
+       [294.09   , 294.09   , 294.09   , ..., 301.28998, 301.28998,
+        301.28998],
+       ...,
+       [284.88998, 284.88998, 284.88998, ..., 286.09   , 286.49   ,
+        286.49   ],
+       [286.09   , 286.09   , 286.09   , ..., 284.88998, 284.88998,
+        284.88998],
+       [284.88998, 284.88998, 284.88998, ..., 286.09   , 286.09   ,
+        286.09   ]], dtype=float32)</pre></div></li></ul></div></li><li class='xr-section-item'><input id='section-9508ffeb-c14f-4d91-90d2-82645d16b9b9' class='xr-section-summary-in' type='checkbox'  checked><label for='section-9508ffeb-c14f-4d91-90d2-82645d16b9b9' class='xr-section-summary' >Attributes: <span>(9)</span></label><div class='xr-section-inline-details'></div><div class='xr-section-details'><dl class='xr-attrs'><dt><span>GRIB_edition :</span></dt><dd>2</dd><dt><span>GRIB_centre :</span></dt><dd>kwbc</dd><dt><span>GRIB_centreDescription :</span></dt><dd>US National Weather Service - NCEP </dd><dt><span>GRIB_subCentre :</span></dt><dd>14</dd><dt><span>Conventions :</span></dt><dd>CF-1.7</dd><dt><span>institution :</span></dt><dd>US National Weather Service - NCEP </dd><dt><span>model :</span></dt><dd>nbm</dd><dt><span>remote_grib :</span></dt><dd>https://noaa-nbm-grib2-pds.s3.amazonaws.com/blend.20210711/13/core/blend.t13z.core.f001.co.grib2</dd><dt><span>local_grib :</span></dt><dd>/p/cwfs/blaylock/data/nbm/20210711/blend.t13z.core.f001.co.grib2.subset_54-55</dd></dl></div></li></ul></div></div></div>
 </div>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">ax</span> <span class="o">=</span> <span class="n">common_features</span><span class="p">(</span><span class="n">crs</span><span class="o">=</span><span class="n">x</span><span class="o">.</span><span class="n">herbie</span><span class="o">.</span><span class="n">crs</span><span class="p">)</span>
-<span class="n">p</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">pcolormesh</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">longitude</span><span class="p">,</span> <span class="n">x</span><span class="o">.</span><span class="n">latitude</span><span class="p">,</span> <span class="n">x</span><span class="o">.</span><span class="n">t2m</span><span class="p">,</span>
+<span></span><span class="n">xvar</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">t2m</span>
+
+<span class="n">ax</span> <span class="o">=</span> <span class="n">common_features</span><span class="p">(</span><span class="n">crs</span><span class="o">=</span><span class="n">x</span><span class="o">.</span><span class="n">herbie</span><span class="o">.</span><span class="n">crs</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">[</span><span class="mi">8</span><span class="p">,</span><span class="mi">8</span><span class="p">])</span>
+<span class="n">p</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">pcolormesh</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">longitude</span><span class="p">,</span> <span class="n">x</span><span class="o">.</span><span class="n">latitude</span><span class="p">,</span> <span class="n">xvar</span><span class="p">,</span>
               <span class="n">transform</span><span class="o">=</span><span class="n">pc</span><span class="p">,</span>
               <span class="o">**</span><span class="n">cm_tmp</span><span class="p">(</span><span class="n">units</span><span class="o">=</span><span class="s1">&#39;K&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">cmap_kwargs</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span>
              <span class="n">orientation</span><span class="o">=</span><span class="s1">&#39;horizontal&#39;</span><span class="p">,</span> <span class="n">pad</span><span class="o">=.</span><span class="mi">05</span><span class="p">,</span>
              <span class="o">**</span><span class="n">cm_tmp</span><span class="p">(</span><span class="n">units</span><span class="o">=</span><span class="s1">&#39;K&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">cbar_kwargs</span><span class="p">)</span>
 
-<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">t2m</span><span class="o">.</span><span class="n">GRIB_name</span><span class="p">,</span> <span class="n">loc</span><span class="o">=</span><span class="s1">&#39;right&#39;</span><span class="p">)</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;GFS&quot;</span><span class="p">,</span> <span class="n">loc</span><span class="o">=</span><span class="s1">&#39;left&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">xvar</span><span class="o">.</span><span class="n">GRIB_name</span><span class="p">,</span> <span class="n">loc</span><span class="o">=</span><span class="s1">&#39;right&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">x</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">H</span><span class="o">.</span><span class="n">product_description</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">loc</span><span class="o">=</span><span class="s1">&#39;left&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+/p/home/blaylock/anaconda3/envs/basic38/lib/python3.8/site-packages/cartopy/mpl/geoaxes.py:1702: UserWarning: The input coordinates to pcolormesh are interpreted as cell centers, but are not monotonically increasing or decreasing. This may lead to incorrectly calculated cell edges, in which case, please supply explicit cell edges to pcolormesh.
+  X, Y, C, shading = self._pcolorargs(&#39;pcolormesh&#39;, *args,
+</pre></div></div>
 </div>
 <div class="nboutput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
@@ -597,49 +967,14 @@ The above exception was the direct cause of the following exception:
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Text(0.0, 1.0, &#39;GFS&#39;)
+Text(0.0, 1.0, &#39;NBM: CONUS 13-km resolution&#39;)
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../../_images/user_guide_notebooks_data_nbm_5_1.png" src="../../_images/user_guide_notebooks_data_nbm_5_1.png" />
-</div>
-</div>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">ax</span> <span class="o">=</span> <span class="n">common_features</span><span class="p">(</span><span class="n">crs</span><span class="o">=</span><span class="n">ccrs</span><span class="o">.</span><span class="n">Geostationary</span><span class="p">(</span><span class="n">central_longitude</span><span class="o">=-</span><span class="mi">100</span><span class="p">))</span>
-
-<span class="n">p</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">pcolormesh</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">longitude</span><span class="p">,</span> <span class="n">x</span><span class="o">.</span><span class="n">latitude</span><span class="p">,</span> <span class="n">x</span><span class="o">.</span><span class="n">t2m</span><span class="p">,</span>
-              <span class="n">transform</span><span class="o">=</span><span class="n">pc</span><span class="p">,</span>
-              <span class="o">**</span><span class="n">cm_tmp</span><span class="p">(</span><span class="n">units</span><span class="o">=</span><span class="s1">&#39;K&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">cmap_kwargs</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span>
-             <span class="n">orientation</span><span class="o">=</span><span class="s1">&#39;horizontal&#39;</span><span class="p">,</span> <span class="n">pad</span><span class="o">=.</span><span class="mi">05</span><span class="p">,</span>
-             <span class="o">**</span><span class="n">cm_tmp</span><span class="p">(</span><span class="n">units</span><span class="o">=</span><span class="s1">&#39;K&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">cbar_kwargs</span><span class="p">)</span>
-
-<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">t2m</span><span class="o">.</span><span class="n">GRIB_name</span><span class="p">,</span> <span class="n">loc</span><span class="o">=</span><span class="s1">&#39;right&#39;</span><span class="p">)</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;GFS&quot;</span><span class="p">,</span> <span class="n">loc</span><span class="o">=</span><span class="s1">&#39;left&#39;</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
-</pre></div>
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-Text(0.0, 1.0, &#39;GFS&#39;)
-</pre></div></div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<img alt="../../_images/user_guide_notebooks_data_nbm_6_1.png" src="../../_images/user_guide_notebooks_data_nbm_6_1.png" />
+<img alt="../../_images/user_guide_notebooks_data_nbm_6_2.png" src="../../_images/user_guide_notebooks_data_nbm_6_2.png" />
 </div>
 </div>
 <div class="nbinput nblast docutils container">
@@ -650,6 +985,194 @@ Text(0.0, 1.0, &#39;GFS&#39;)
 <span></span>
 </pre></div>
 </div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">x</span> <span class="o">=</span> <span class="n">H</span><span class="o">.</span><span class="n">xarray</span><span class="p">(</span><span class="s1">&#39;WIND:10 m.*$&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+📇 Download subset: [NBM] model [co] product run at <span class="ansi-green-fg">2021-Jul-11 13:00 UTC F01</span>
+ cURL from https://noaa-nbm-grib2-pds.s3.amazonaws.com/blend.20210711/13/core/blend.t13z.core.f001.co.grib2
+   1: GRIB_message=69  <span class="ansi-blue-fg">WIND:10 m above ground:1 hour fcst</span>
+   2: GRIB_message=72  <span class="ansi-blue-fg">WIND:10 m above ground:1 hour fcst:ens std dev</span>
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">xvar</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">si10</span>
+
+<span class="n">ax</span> <span class="o">=</span> <span class="n">common_features</span><span class="p">(</span><span class="n">crs</span><span class="o">=</span><span class="n">x</span><span class="o">.</span><span class="n">herbie</span><span class="o">.</span><span class="n">crs</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">[</span><span class="mi">8</span><span class="p">,</span><span class="mi">8</span><span class="p">])</span>
+<span class="n">p</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">pcolormesh</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">longitude</span><span class="p">,</span> <span class="n">x</span><span class="o">.</span><span class="n">latitude</span><span class="p">,</span> <span class="n">xvar</span><span class="p">,</span>
+              <span class="n">transform</span><span class="o">=</span><span class="n">pc</span><span class="p">,</span>
+              <span class="o">**</span><span class="n">cm_wind</span><span class="p">()</span><span class="o">.</span><span class="n">cmap_kwargs</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span>
+             <span class="n">orientation</span><span class="o">=</span><span class="s1">&#39;horizontal&#39;</span><span class="p">,</span> <span class="n">pad</span><span class="o">=.</span><span class="mi">05</span><span class="p">,</span>
+             <span class="o">**</span><span class="n">cm_wind</span><span class="p">()</span><span class="o">.</span><span class="n">cbar_kwargs</span><span class="p">)</span>
+
+<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">xvar</span><span class="o">.</span><span class="n">GRIB_name</span><span class="p">,</span> <span class="n">loc</span><span class="o">=</span><span class="s1">&#39;right&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">x</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">H</span><span class="o">.</span><span class="n">product_description</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">loc</span><span class="o">=</span><span class="s1">&#39;left&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+/p/home/blaylock/anaconda3/envs/basic38/lib/python3.8/site-packages/cartopy/mpl/geoaxes.py:1702: UserWarning: The input coordinates to pcolormesh are interpreted as cell centers, but are not monotonically increasing or decreasing. This may lead to incorrectly calculated cell edges, in which case, please supply explicit cell edges to pcolormesh.
+  X, Y, C, shading = self._pcolorargs(&#39;pcolormesh&#39;, *args,
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Text(0.0, 1.0, &#39;NBM: CONUS 13-km resolution&#39;)
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../_images/user_guide_notebooks_data_nbm_10_2.png" src="../../_images/user_guide_notebooks_data_nbm_10_2.png" />
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">H</span><span class="o">.</span><span class="n">read_idx</span><span class="p">()</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="s1">&#39;variable&#39;</span><span class="p">:]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="s1">&#39;:&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s1">&#39;:&#39;</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+grib_message
+1.0                    APTMP:2 m above ground:1 hour fcst
+2.0                              CAPE:surface:1 hour fcst
+3.0                  CAPE:surface:1 hour fcst:ens std dev
+4.0                        CEIL:cloud ceiling:1 hour fcst
+5.0     CEIL:cloud ceiling:1 hour fcst:prob &lt;304.8:pro...
+                              ...
+68.0       GUST:10 m above ground:1 hour fcst:ens std dev
+69.0                   WIND:10 m above ground:1 hour fcst
+70.0                   WIND:30 m above ground:1 hour fcst
+71.0                   WIND:80 m above ground:1 hour fcst
+72.0       WIND:10 m above ground:1 hour fcst:ens std dev
+Length: 72, dtype: object
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">H</span><span class="o">.</span><span class="n">read_idx</span><span class="p">(</span><span class="s1">&#39;^TMP:2 m .*1 hour fcst$&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>start_byte</th>
+      <th>end_byte</th>
+      <th>range</th>
+      <th>reference_time</th>
+      <th>valid_time</th>
+      <th>variable</th>
+      <th>level</th>
+      <th>forecast_time</th>
+      <th>?</th>
+      <th>??</th>
+    </tr>
+    <tr>
+      <th>grib_message</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>54.0</th>
+      <td>68539263</td>
+      <td>69940961</td>
+      <td>68539263-69940961</td>
+      <td>2021-07-11 13:00:00</td>
+      <td>2021-07-11 14:00:00</td>
+      <td>TMP</td>
+      <td>2 m above ground</td>
+      <td>1 hour fcst</td>
+      <td></td>
+      <td></td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
 </div>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:

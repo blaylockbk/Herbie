@@ -173,13 +173,18 @@
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="searchString_help.html">
-   How to subset with
+  <a class="reference internal" href="searchString.html">
+   🪂 Subset with
    <code class="docutils literal notranslate">
     <span class="pre">
      searchString
     </span>
    </code>
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="model_template.html">
+   👷🏻‍♂️ Extending Herbie
   </a>
  </li>
  <li class="toctree-l1">
@@ -249,11 +254,6 @@
     </a>
    </li>
   </ul>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="model_template.html">
-   Extending Herbie
-  </a>
  </li>
 </ul>
 
@@ -327,7 +327,7 @@
                 
   <div class="section" id="what-is-grib2">
 <span id="grib2-faq"></span><h1>🔢 What is GRIB2?<a class="headerlink" href="#what-is-grib2" title="Permalink to this headline">¶</a></h1>
-<p>GRIB stands for “gridded binary” and is an international standard for meteorological data. There is an old standard GRIB, and a new standard GRIB2. In these documetns, when I refer to GRIB I really mean the new GRIB2 standard.</p>
+<p>GRIB stands for “gridded binary” and is an international standard for meteorological data. There is an old standard GRIB, and a new standard GRIB2. In these documents, when I refer to GRIB I really mean the new GRIB2 standard.</p>
 <p>Yes, GRIB is notoriously difficult to work with and has a steep learning curve for those unfamiliar with the format. I won’t discuss here the good, bad, and ugly of GRIB frankly because I’m not an expert and probably will say something wrong. However, even seasoned meteorologists complain about GRIB. Since complaining won’t fix the problem, I choose to embrace it because, for now, NWP data is widely distributed as GRIB2.</p>
 <ul class="simple">
 <li><p><a class="reference external" href="https://en.wikipedia.org/wiki/GRIB">Wikipedia: GRIB</a></p></li>
@@ -420,6 +420,21 @@ edition      centre       date         dataType     gridType     typeOfLevel  le
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>This method is similar to that used in Wesley Ebisuzaki’s <a class="reference external" href="https://www.cpc.ncep.noaa.gov/products/wesley/fast_downloading_grib.html">Fast Downloading GRIB</a> script.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>When an index file doesn’t exist, wgrib2 is used to print the index inventory. <strong>wgrib2</strong> can be installed via conda for Linux, but the installation for Windows is a bit more i&gt;nvolved. Instead, <a href="#id2"><span class="problematic" id="id3">`eccodes &lt;https://anaconda.org/conda-forge/eccodes`_</span></a> can be installed via conda for Linux, OS, and Windows. You can use eccodes’ <strong>grib_ls</strong> command to print out a type of inventory that includes the beginning byte with <code class="docutils literal notranslate"><span class="pre">grib_ls</span> <span class="pre">-p</span> <span class="pre">count,offset,date,hour,level,typeOfLevel,name,step</span> <span class="pre">file.grib2</span></code>, though Herbie does not interpret this type of inventory. (Pull request anyone?)</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ grib_ls -p count,offset,date,hour,level,typeOfLevel,name,step file.grib2
+hrrr.t12z.wrfsfcf06.grib2.subset_14-15-16-17-18
+count        offset       date         hour         level        typeOfLevel  name         step
+1            0            20210101     12           500          isobaricInhPa  Geopotential Height  6
+2            721229       20210101     12           500          isobaricInhPa  Temperature  6
+3            1.2795e+06   20210101     12           500          isobaricInhPa  Dew point temperature  6
+4            2.21452e+06  20210101     12           500          isobaricInhPa  U component of wind  6
+5            2.80253e+06  20210101     12           500          isobaricInhPa  V component of wind  6
+5 of 5 messages in file.grib2
+</pre></div>
+</div>
 </div>
 </div>
 
