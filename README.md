@@ -8,15 +8,7 @@
 [![DOI](https://zenodo.org/badge/275214142.svg)](https://zenodo.org/badge/latestdoi/275214142)
 <!-- (Badges) -->
 
----
-
-<br>
-
-## 📔 [Herbie Documentation](https://blaylockbk.github.io/Herbie/_build/html/)
-
-<br>
-
----
+# 📔 [Herbie Documentation](https://blaylockbk.github.io/Herbie/_build/html/)
 
 The [NOAA Big Data Program](https://www.noaa.gov/information-technology/big-data) has made weather data more accessible than ever before. **Herbie** is a python package that downloads recent and archived numerical weather prediction (NWP) model output from different cloud archive sources. Herbie helps you discover and download High Resolution Rapid Refresh (HRRR), Rapid Refresh (RAP), Global Forecast System (GFS), National Blend of Models (NBM), and Rapid Refresh Forecast System - Prototype (RRFS). NWP data is usually in GRIB2 format and can be read with xarray/cfgrib.
 
@@ -27,7 +19,7 @@ Requires cURL and **Python 3.8+** with requests, numpy, pandas, xarray, and cfgr
 
     pip install git+https://github.com/blaylockbk/Herbie.git
 
-Or, create the provided conda environment from [environment.yml](https://github.com/blaylockbk/Herbie/blob/master/environment.yml).
+Or, create the provided [conda environment](https://github.com/blaylockbk/Herbie/blob/master/environment.yml).
 
 ## Capabilities
 - Search different data sources for model output.
@@ -55,6 +47,7 @@ As an alternative you can use [rclone](https://rclone.org/) to download HRRR fil
 Thanks for using Herbie, and Happy Racing 🏎🏁
 
 \- Brian  
+
 👨🏻‍💻 [Contributing Guidelines](https://blaylockbk.github.io/Herbie/_build/html/user_guide/contribute.html)  
 💬 [GitHub Discussions](https://github.com/blaylockbk/Herbie/discussions)  
 🚑 [GitHub Issues](https://github.com/blaylockbk/Herbie/issues)  
