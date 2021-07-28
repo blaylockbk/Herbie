@@ -39,8 +39,8 @@ During my PhD at the University of Utah, I created, at the time, the [only publi
 
 I originally released this package under the name "HRRR-B" because it only dealt with the HRRR data set, but I have addeed ability to download RAP data. Thus, it was rebranded with the name "Herbie" as a model download assistant. For now, it is still called "hrrrb" on PyPI because "herbie" is already taken. Maybe someday, with some time and an enticing reason, I'll add additional download capabilities. 
 
-## Alternative Download Tools
-As an alternative you can use [rclone](https://rclone.org/) to download HRRR files from AWS or GCP. I quite like rclone. Here is a [short rclone tutorial](https://github.com/blaylockbk/pyBKB_v3/blob/master/rclone_howto.md)
+### Alternative Download Tools
+As an alternative you can use [rclone](https://rclone.org/) to download files from AWS or GCP. I quite like rclone. Here is a [short rclone tutorial](https://github.com/blaylockbk/pyBKB_v3/blob/master/rclone_howto.md)
 
 ---
 
