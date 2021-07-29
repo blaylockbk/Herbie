@@ -18,3 +18,10 @@ The model class template function must include the properties
 - ``PRODUCTS``
 - ``SOURCES``
 - ``LOCALFILE``
+
+
+HRRR Zarr
+---------
+The HRRR model is available in `Zarr format on AWS <https://hrrrzarr.s3.amazonaws.com/index.html>`_. Herbie doesn't download this type of data yet, but might in the future.
+
+For more information about HRRR-Zarr, read the `documentation <https://mesowest.utah.edu/html/hrrr/>`_.
