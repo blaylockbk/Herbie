@@ -1,3 +1,5 @@
+<p align="center">
+
 ![](https://github.com/blaylockbk/Herbie/blob/master/docs/_static/HerbieLogo2_tan_transparent.png?raw=true)
 
 # Herbie: Retrieve NWP Model Data
@@ -7,6 +9,8 @@
 ![](https://img.shields.io/github/license/blaylockbk/Herbie)
 [![DOI](https://zenodo.org/badge/275214142.svg)](https://zenodo.org/badge/latestdoi/275214142)
 <!-- (Badges) -->
+
+</p>
 
 The [NOAA Big Data Program](https://www.noaa.gov/information-technology/big-data) has made weather data more accessible than ever before. **Herbie** is a python package that downloads recent and archived numerical weather prediction (NWP) model output from different cloud archive sources. Herbie helps you discover and download High Resolution Rapid Refresh (HRRR), Rapid Refresh (RAP), Global Forecast System (GFS), National Blend of Models (NBM), and Rapid Refresh Forecast System - Prototype (RRFS). NWP data is usually in GRIB2 format and can be read with xarray/cfgrib.
 
