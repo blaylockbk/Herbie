@@ -136,6 +136,8 @@ Other Tools
 -----------
 **🛰 GOES ABI and GLM data** can be downloaded from AWS with my `goes-2-go <https://github.com/blaylockbk/goes2go/tree/master/goes2go>`_ package. This package was also originally developed during grad school and has been updated.
 
+**🌡 Synoptic API (MesoWest)** data can be retrieved with my `SynopticPy <https://github.com/blaylockbk/goes2go/tree/master/SynopticPy>`_ package, also originally developed during grad school and has been updated.
+
 Indices and tables
 ==================
 
