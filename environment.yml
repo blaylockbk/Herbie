@@ -24,7 +24,7 @@ dependencies:
   - pylint
   - s3fs
   - zarr
-  #- wgrib2  # ONLY AVAILABLE ON LINUX. Uncomment if using Linux.
+  - wgrib2  # ONLY AVAILABLE ON LINUX. Comment if not using Linux.
 
   - pip:
     # Development Version from GitHub

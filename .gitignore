@@ -1,6 +1,6 @@
 __pycache__/
 .ipynb_checkpoints
-.vscode
+#.vscode
 *.py[cod]
 *$py.class
 *.log

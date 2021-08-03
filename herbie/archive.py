@@ -164,7 +164,7 @@ class Herbie:
         self.product = product
         
         self.priority = priority
-        self.save_dir = Path(save_dir).expand()  # yes, the expand is my custom method from __init__
+        self.save_dir = Path(save_dir).expand()  # yes, `expand` is my custom method from __init__
         self.overwrite = overwrite
 
         # Get details from the template of the specified model.
