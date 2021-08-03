@@ -5,7 +5,7 @@
 
 .. note::
    ✒ I wrote a paper about archiving HRRR data in the cloud
-   Blaylock B., J. Horel and S. Liston, 2017: Cloud Archiving and Data Mining of High Resolution Rapid Refresh Model Output. Computers and Geosciences. 109, 43-50. `https://doi.org/10.1016/j.cageo.2017.08.005 <https://doi.org/10.1016/j.cageo.2017.08.005>`_
+      Blaylock B., J. Horel and S. Liston, 2017: Cloud Archiving and Data Mining of High Resolution Rapid Refresh Model Output. Computers and Geosciences. 109, 43-50. `https://doi.org/10.1016/j.cageo.2017.08.005 <https://doi.org/10.1016/j.cageo.2017.08.005>`_
 
 **🌹 What's in a name?** I originally released this package under the name "HRRR-B" because it only dealt with the HRRR data set and the "B" is for my initial. Since then, I have added the ability to download RAP, GFS, NBM, RRFS, and potentially more models in the future. Also, there is an archive of HRRR data in Zarr format, and Herbie could potentially be used to download that format. Thus, it was re-branded with the name "Herbie," named after a favorite childhood movie. For now, it is still called "hrrrb" on PyPI because "herbie" is already taken.
 
