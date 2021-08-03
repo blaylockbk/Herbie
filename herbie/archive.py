@@ -53,12 +53,23 @@ import pandas as pd
 # Path imported from __init__ because it has my custom `expand()` method
 from . import Path
 
-# NOTE: These values are set in the config file at 
-# ~/.config/herbie/config.cfg and are read in from the __init__ file.
-from . import _default_save_dir
-from . import _default_priority
+# NOTE: These config dict values are retrieved from __init__ and read
+# from the file ${HOME}/.config/herbie/config.toml
+from . import config
 
 import herbie.models as models_template
+
+try:
+    # Load custom xarray accessors
+    import herbie.accessors
+except:
+    warnings.warn(
+        "herbie xarray accessors could not be imported."
+        "You are probably missing the Carpenter_Workshop."
+        "If you want to use these functions, try"
+        "`pip install git+https://github.com/blaylockbk/Carpenter_Workshop.git`"
+        )
+    pass
 
 def _searchString_help():
     """Help/Error Message for `searchString`"""
@@ -94,8 +105,8 @@ class Herbie:
 
     def __init__(self, date=None, *, valid_date=None,
                  model='hrrr', fxx=0, product=None, member=1,
-                 priority=_default_priority,
-                 save_dir=_default_save_dir,
+                 priority=config['default']['priority'],
+                 save_dir=config['default']['save_dir'],
                  overwrite=False,
                  verbose=True):
         """

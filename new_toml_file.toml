@@ -1,0 +1,3 @@
+[default]
+save_dir = "${CENTER}/data"
+priority = [ "aws", "nomads", "google", "azure", "pando", "pando2",]

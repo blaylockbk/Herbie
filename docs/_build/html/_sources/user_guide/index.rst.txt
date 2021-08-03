@@ -8,6 +8,7 @@ User Guide
    contribute
    install
    data_sources
+   configure
    grib2
    tutorial.ipynb
    searchString

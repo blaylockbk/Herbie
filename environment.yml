@@ -5,6 +5,7 @@ dependencies:
   - python=3.8
   - pip
   - curl
+  - toml     # <-- For the config file (https://toml.io/en/)
   - requests
   - numpy
   - matplotlib
