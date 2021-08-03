@@ -147,6 +147,11 @@
   </a>
  </li>
  <li class="toctree-l1">
+  <a class="reference internal" href="history.html">
+   History
+  </a>
+ </li>
+ <li class="toctree-l1">
   <a class="reference internal" href="install.html">
    🐍 Installation and Conda Environment
   </a>
@@ -321,9 +326,19 @@
               
               <div class="toc-item">
                 
+<div class="tocsection onthispage pt-5 pb-3">
+    <i class="fas fa-list"></i> On this page
+</div>
 
 <nav id="bd-toc-nav">
-    
+    <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#default-download-priority-rational">
+   Default Download Priority Rational
+  </a>
+ </li>
+</ul>
+
 </nav>
               </div>
               
@@ -365,6 +380,13 @@
 <dt>priority</dt><dd><p>Default data source search order, listed in order of priority. Can overwrite when creating a Herbie object.</p>
 </dd>
 </dl>
+<div class="section" id="default-download-priority-rational">
+<h2>Default Download Priority Rational<a class="headerlink" href="#default-download-priority-rational" title="Permalink to this headline">¶</a></h2>
+<p>The reason for this default is that I anticipate most often a user will request model output from the recent past or earlier rather than relying on Herbie for operational, real-time needs.</p>
+<p>Much of the past data and near real-time data is archived at one of NOAA’s Big Data partners. Amazon AWS in particular hosts many of these datasets. While, NOMADS is the official operational source of model output data and has the most recent model output available, NOMADS only retains data for a few days, they throttle the download speed, and will block users who violate their usage agreement and download too much data within an hour. For this</p>
+<p>To prevent being blocked by NOMADS, the default is to first look for data on AWS. If the data requested is within the last few hours and was not found on AWS, then Herbie will look for the data at NOMADS. If the data is still not found on NOMADS, the file may be on google, azure, or pando.</p>
+<p>If you _really_ want to download the real-time data from NOMADS first and not a Big Data Project partner, you may change the priority order in the herbie config file or set the priority argument when creating the Herbie object (e.g., <code class="docutils literal notranslate"><span class="pre">priority=['nomads',</span> <span class="pre">...]</span></code>).</p>
+</div>
 </div>
 
 

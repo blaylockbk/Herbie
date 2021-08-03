@@ -6,6 +6,7 @@ User Guide
    :maxdepth: 4
 
    contribute
+   history
    install
    data_sources
    configure
