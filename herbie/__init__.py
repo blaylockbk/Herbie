@@ -33,8 +33,7 @@ default_toml = f"""
 ['default']
 model = "hrrr"
 fxx = 0
-product = "sfc"
-priority = ['aws', 'nomads', 'google', 'azure', 'pando', 'pando2']
+priority = ['aws', 'nomads', 'google', 'azure', 'pando', 'pando2', 'aws-old']
 save_dir = "{str(Path('~/data').expand())}"
 overwrite = false
 verbose = true
