@@ -62,7 +62,7 @@ priority
     - ``'pando2'`` University of Utah Pando Archive (gateway 2)
 
 save_dir
-    Location to save GRIB2 files locally. You may use system environment variables like _${HOME}_, and _${TMPDIR}_
+    Location to save GRIB2 files locally. You may use system environment variables like *${HOME}*, and *${TMPDIR}*
 
 overwrite
     If true, look for GRIB2 file even if local copy exists.
