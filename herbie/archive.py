@@ -103,12 +103,18 @@ def _searchString_help():
 class Herbie:
     """Find model output file location based on source priority."""
 
-    def __init__(self, date=None, *, valid_date=None,
-                 model='hrrr', fxx=0, product=None, member=1,
-                 priority=config['default']['priority'],
-                 save_dir=config['default']['save_dir'],
-                 overwrite=False,
-                 verbose=True):
+    def __init__(self,
+        date=None,
+        *,
+        valid_date=None,
+        model=config['default'].get('model'),
+        fxx=config['default'].get('fxx'),
+        product=config['default'].get('product'),
+        member=config['default'].get('member'),
+        priority=config['default'].get('priority'),
+        save_dir=config['default'].get('save_dir'),
+        overwrite=config['default'].get('overwrite', False),
+        verbose=config['default'].get('verbose', True)):
         """
         Specify model output and find GRIB2 file at one of the sources.
         

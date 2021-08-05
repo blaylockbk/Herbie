@@ -6,7 +6,6 @@ import toml
 import os
 from pathlib import Path
 
-
 ########################################################################
 # Append Path object with my custom expand method so user can use
 # environment variables in the config file (e.g., ${HOME}).
@@ -26,15 +25,19 @@ Path.expand = _expand
 ########################################################################
 # Herbie configuration file
 # Configuration file is save in `~/config/herbie/config.toml`
-# `_default_save_dir` is the default path to save GRIB2 files.
 _config_path = Path('~/.config/herbie/config.toml').expand()
 
 ########################################################################
 # Default TOML Configuration Values
 default_toml = f"""
 ['default']
-save_dir = "{str(Path('~/data').expand())}"
+model = "hrrr"
+fxx = 0
+product = "sfc"
 priority = ['aws', 'nomads', 'google', 'azure', 'pando', 'pando2']
+save_dir = "{str(Path('~/data').expand())}"
+overwrite = false
+verbose = true
 """
 
 ########################################################################

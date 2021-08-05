@@ -148,7 +148,7 @@
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="history.html">
-   History
+   📜 History
   </a>
  </li>
  <li class="toctree-l1">
@@ -370,14 +370,55 @@
 <p>Some default settings are set in the <code class="docutils literal notranslate"><span class="pre">config.toml</span></code> file. This file is automatically created the first time you import a Herbie module and is located at <code class="docutils literal notranslate"><span class="pre">${HOME}/.config/herbie/config.toml</span></code>. The configuration file is written in <a class="reference external" href="https://toml.io/en/">TOML format</a>.</p>
 <p>The default settings are</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">default</span><span class="p">]</span>
-<span class="n">save_dir</span> <span class="o">=</span> <span class="s2">&quot;$</span><span class="si">{HOME}</span><span class="s2">/data&quot;</span>
+<span class="n">model</span> <span class="o">=</span> <span class="s2">&quot;hrrr&quot;</span>
+<span class="n">fxx</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">product</span> <span class="o">=</span> <span class="s2">&quot;sfc&quot;</span>
 <span class="n">priority</span> <span class="o">=</span> <span class="p">[</span> <span class="s2">&quot;aws&quot;</span><span class="p">,</span> <span class="s2">&quot;nomads&quot;</span><span class="p">,</span> <span class="s2">&quot;google&quot;</span><span class="p">,</span> <span class="s2">&quot;azure&quot;</span><span class="p">,</span> <span class="s2">&quot;pando&quot;</span><span class="p">,</span> <span class="s2">&quot;pando2&quot;</span><span class="p">,]</span>
+<span class="n">save_dir</span> <span class="o">=</span> <span class="s2">&quot;$</span><span class="si">{CENTER}</span><span class="s2">/data&quot;</span>
+<span class="n">overwrite</span> <span class="o">=</span> <span class="n">false</span>
+<span class="n">verbose</span> <span class="o">=</span> <span class="n">true</span>
 </pre></div>
 </div>
-<dl class="simple">
-<dt>save_dir</dt><dd><p>Default location downloaded files are saved. May use environment variables to specify directory paths. Can overwrite when creating a Herbie object.</p>
+<p>Any of the default options can be overwritten when creating a new Herbie object.</p>
+<dl>
+<dt>model</dt><dd><p>Model name as defined in the models template folder. CASE INSENSITIVE</p>
+<p>Some examples:
+- <code class="docutils literal notranslate"><span class="pre">'hrrr'</span></code> HRRR contiguous United States model
+- <code class="docutils literal notranslate"><span class="pre">'hrrrak'</span></code> HRRR Alaska model (alias <code class="docutils literal notranslate"><span class="pre">'alaska'</span></code>)
+- <code class="docutils literal notranslate"><span class="pre">'rap'</span></code> RAP model
+- <code class="docutils literal notranslate"><span class="pre">'gfs'</span></code> Global Forecast System (atmosphere)
+- <code class="docutils literal notranslate"><span class="pre">'gfs_wave'</span></code> Global Forecast System (wave)
+- <code class="docutils literal notranslate"><span class="pre">'rrfs'</span></code> Rapid Refresh Forecast System prototype
+- etc.</p>
 </dd>
-<dt>priority</dt><dd><p>Default data source search order, listed in order of priority. Can overwrite when creating a Herbie object.</p>
+<dt>fxx</dt><dd><p>Forecast lead time in hours. Available lead times depend on
+the model type and model version. Range is model and run
+dependant.</p>
+</dd>
+<dt>product</dt><dd><p>Output variable product file type. If not specified, will
+use first product in model template file. CASE SENSITIVE.</p>
+<p>For example, the HRRR model has these products:
+- <code class="docutils literal notranslate"><span class="pre">'sfc'</span></code> surface fields
+- <code class="docutils literal notranslate"><span class="pre">'prs'</span></code> pressure fields
+- <code class="docutils literal notranslate"><span class="pre">'nat'</span></code> native fields
+- <code class="docutils literal notranslate"><span class="pre">'subh'</span></code> subhourly fields</p>
+</dd>
+<dt>member</dt><dd><p>Some ensemble models (e.g. the future RRFS) will need to
+specify an ensemble member.</p>
+</dd>
+<dt>priority</dt><dd><p>List of data sources in the order of download priority. CASE INSENSITIVE.</p>
+<p>For example:
+- <code class="docutils literal notranslate"><span class="pre">'aws'</span></code> Amazon Web Services (Big Data Program)
+- <code class="docutils literal notranslate"><span class="pre">'nomads'</span></code> NOAA NOMADS server
+- <code class="docutils literal notranslate"><span class="pre">'google'</span></code> Google Cloud Platform (Big Data Program)
+- <code class="docutils literal notranslate"><span class="pre">'azure'</span></code> Microsoft Azure (Big Data Program)
+- <code class="docutils literal notranslate"><span class="pre">'pando'</span></code> University of Utah Pando Archive (gateway 1)
+- <code class="docutils literal notranslate"><span class="pre">'pando2'</span></code> University of Utah Pando Archive (gateway 2)</p>
+</dd>
+<dt>save_dir</dt><dd><p>Location to save GRIB2 files locally. You may use system environment variables like _${HOME}_, and _${TMPDIR}_</p>
+</dd>
+<dt>overwrite</dt><dd><p>If true, look for GRIB2 file even if local copy exists.
+If false, use the local copy (still need to find the idx file).</p>
 </dd>
 </dl>
 <div class="section" id="default-download-priority-rational">
