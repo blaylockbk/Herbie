@@ -11,7 +11,7 @@ The default settings are
     [default]
     model = "hrrr"
     fxx = 0
-    priority = [ "aws", "nomads", "google", "azure", "pando", "pando2",]
+    priority = [ "aws", "nomads", "google", "azure", "pando", "pando2", "aws-old"]
     save_dir = "~/data"
     overwrite = false
     verbose = true
@@ -59,6 +59,7 @@ priority
     - ``'azure'`` Microsoft Azure (Big Data Program)
     - ``'pando'`` University of Utah Pando Archive (gateway 1)
     - ``'pando2'`` University of Utah Pando Archive (gateway 2)
+    - ``'aws-old'`` File name formats change. This is so Herbie can find old GFS filenames.
 
 save_dir
     Location to save GRIB2 files locally. You may use system environment variables like *${HOME}*, and *${TMPDIR}*

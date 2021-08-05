@@ -372,7 +372,7 @@
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">default</span><span class="p">]</span>
 <span class="n">model</span> <span class="o">=</span> <span class="s2">&quot;hrrr&quot;</span>
 <span class="n">fxx</span> <span class="o">=</span> <span class="mi">0</span>
-<span class="n">priority</span> <span class="o">=</span> <span class="p">[</span> <span class="s2">&quot;aws&quot;</span><span class="p">,</span> <span class="s2">&quot;nomads&quot;</span><span class="p">,</span> <span class="s2">&quot;google&quot;</span><span class="p">,</span> <span class="s2">&quot;azure&quot;</span><span class="p">,</span> <span class="s2">&quot;pando&quot;</span><span class="p">,</span> <span class="s2">&quot;pando2&quot;</span><span class="p">,]</span>
+<span class="n">priority</span> <span class="o">=</span> <span class="p">[</span> <span class="s2">&quot;aws&quot;</span><span class="p">,</span> <span class="s2">&quot;nomads&quot;</span><span class="p">,</span> <span class="s2">&quot;google&quot;</span><span class="p">,</span> <span class="s2">&quot;azure&quot;</span><span class="p">,</span> <span class="s2">&quot;pando&quot;</span><span class="p">,</span> <span class="s2">&quot;pando2&quot;</span><span class="p">,</span> <span class="s2">&quot;aws-old&quot;</span><span class="p">]</span>
 <span class="n">save_dir</span> <span class="o">=</span> <span class="s2">&quot;~/data&quot;</span>
 <span class="n">overwrite</span> <span class="o">=</span> <span class="n">false</span>
 <span class="n">verbose</span> <span class="o">=</span> <span class="n">true</span>
@@ -412,7 +412,8 @@ specify an ensemble member.</p>
 - <code class="docutils literal notranslate"><span class="pre">'google'</span></code> Google Cloud Platform (Big Data Program)
 - <code class="docutils literal notranslate"><span class="pre">'azure'</span></code> Microsoft Azure (Big Data Program)
 - <code class="docutils literal notranslate"><span class="pre">'pando'</span></code> University of Utah Pando Archive (gateway 1)
-- <code class="docutils literal notranslate"><span class="pre">'pando2'</span></code> University of Utah Pando Archive (gateway 2)</p>
+- <code class="docutils literal notranslate"><span class="pre">'pando2'</span></code> University of Utah Pando Archive (gateway 2)
+- <code class="docutils literal notranslate"><span class="pre">'aws-old'</span></code> File name formats change. This is so Herbie can find old GFS filenames.</p>
 </dd>
 <dt>save_dir</dt><dd><p>Location to save GRIB2 files locally. You may use system environment variables like <em>${HOME}</em>, and <em>${TMPDIR}</em></p>
 </dd>
