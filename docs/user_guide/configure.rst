@@ -22,6 +22,7 @@ model
     Model name as defined in the models template folder. CASE INSENSITIVE 
         
     Some examples:
+    
     - ``'hrrr'`` HRRR contiguous United States model
     - ``'hrrrak'`` HRRR Alaska model (alias ``'alaska'``)
     - ``'rap'`` RAP model
@@ -40,6 +41,7 @@ product
     use first product in model template file. CASE SENSITIVE.
     
     For example, the HRRR model has these products:
+
     - ``'sfc'`` surface fields
     - ``'prs'`` pressure fields
     - ``'nat'`` native fields
@@ -53,6 +55,7 @@ priority
     List of data sources in the order of download priority. CASE INSENSITIVE. 
     
     For example:
+
     - ``'aws'`` Amazon Web Services (Big Data Program)
     - ``'nomads'`` NOAA NOMADS server
     - ``'google'`` Google Cloud Platform (Big Data Program)

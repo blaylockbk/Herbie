@@ -381,14 +381,16 @@
 <p>Any of the default options can be overwritten when creating a new Herbie object.</p>
 <dl>
 <dt>model</dt><dd><p>Model name as defined in the models template folder. CASE INSENSITIVE</p>
-<p>Some examples:
-- <code class="docutils literal notranslate"><span class="pre">'hrrr'</span></code> HRRR contiguous United States model
-- <code class="docutils literal notranslate"><span class="pre">'hrrrak'</span></code> HRRR Alaska model (alias <code class="docutils literal notranslate"><span class="pre">'alaska'</span></code>)
-- <code class="docutils literal notranslate"><span class="pre">'rap'</span></code> RAP model
-- <code class="docutils literal notranslate"><span class="pre">'gfs'</span></code> Global Forecast System (atmosphere)
-- <code class="docutils literal notranslate"><span class="pre">'gfs_wave'</span></code> Global Forecast System (wave)
-- <code class="docutils literal notranslate"><span class="pre">'rrfs'</span></code> Rapid Refresh Forecast System prototype
-- etc.</p>
+<p>Some examples:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">'hrrr'</span></code> HRRR contiguous United States model</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'hrrrak'</span></code> HRRR Alaska model (alias <code class="docutils literal notranslate"><span class="pre">'alaska'</span></code>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'rap'</span></code> RAP model</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'gfs'</span></code> Global Forecast System (atmosphere)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'gfs_wave'</span></code> Global Forecast System (wave)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'rrfs'</span></code> Rapid Refresh Forecast System prototype</p></li>
+<li><p>etc.</p></li>
+</ul>
 </dd>
 <dt>fxx</dt><dd><p>Forecast lead time in hours. Available lead times depend on
 the model type and model version. Range is model and run
@@ -396,24 +398,28 @@ dependant.</p>
 </dd>
 <dt>product</dt><dd><p>Output variable product file type. If not specified, will
 use first product in model template file. CASE SENSITIVE.</p>
-<p>For example, the HRRR model has these products:
-- <code class="docutils literal notranslate"><span class="pre">'sfc'</span></code> surface fields
-- <code class="docutils literal notranslate"><span class="pre">'prs'</span></code> pressure fields
-- <code class="docutils literal notranslate"><span class="pre">'nat'</span></code> native fields
-- <code class="docutils literal notranslate"><span class="pre">'subh'</span></code> subhourly fields</p>
+<p>For example, the HRRR model has these products:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">'sfc'</span></code> surface fields</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'prs'</span></code> pressure fields</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'nat'</span></code> native fields</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'subh'</span></code> subhourly fields</p></li>
+</ul>
 </dd>
 <dt>member</dt><dd><p>Some ensemble models (e.g. the future RRFS) will need to
 specify an ensemble member.</p>
 </dd>
 <dt>priority</dt><dd><p>List of data sources in the order of download priority. CASE INSENSITIVE.</p>
-<p>For example:
-- <code class="docutils literal notranslate"><span class="pre">'aws'</span></code> Amazon Web Services (Big Data Program)
-- <code class="docutils literal notranslate"><span class="pre">'nomads'</span></code> NOAA NOMADS server
-- <code class="docutils literal notranslate"><span class="pre">'google'</span></code> Google Cloud Platform (Big Data Program)
-- <code class="docutils literal notranslate"><span class="pre">'azure'</span></code> Microsoft Azure (Big Data Program)
-- <code class="docutils literal notranslate"><span class="pre">'pando'</span></code> University of Utah Pando Archive (gateway 1)
-- <code class="docutils literal notranslate"><span class="pre">'pando2'</span></code> University of Utah Pando Archive (gateway 2)
-- <code class="docutils literal notranslate"><span class="pre">'aws-old'</span></code> File name formats change. This is so Herbie can find old GFS filenames.</p>
+<p>For example:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">'aws'</span></code> Amazon Web Services (Big Data Program)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'nomads'</span></code> NOAA NOMADS server</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'google'</span></code> Google Cloud Platform (Big Data Program)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'azure'</span></code> Microsoft Azure (Big Data Program)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'pando'</span></code> University of Utah Pando Archive (gateway 1)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'pando2'</span></code> University of Utah Pando Archive (gateway 2)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'aws-old'</span></code> File name formats change. This is so Herbie can find old GFS filenames.</p></li>
+</ul>
 </dd>
 <dt>save_dir</dt><dd><p>Location to save GRIB2 files locally. You may use system environment variables like <em>${HOME}</em>, and <em>${TMPDIR}</em></p>
 </dd>
