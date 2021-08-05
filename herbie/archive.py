@@ -110,7 +110,7 @@ class Herbie:
         model=config['default'].get('model'),
         fxx=config['default'].get('fxx'),
         product=config['default'].get('product'),
-        member=config['default'].get('member'),
+        member=config['default'].get('member', 1),
         priority=config['default'].get('priority'),
         save_dir=config['default'].get('save_dir'),
         overwrite=config['default'].get('overwrite', False),

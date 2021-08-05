@@ -11,7 +11,6 @@ The default settings are
     [default]
     model = "hrrr"
     fxx = 0
-    product = "sfc"
     priority = [ "aws", "nomads", "google", "azure", "pando", "pando2",]
     save_dir = "~/data"
     overwrite = false
