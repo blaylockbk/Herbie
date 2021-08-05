@@ -68,6 +68,9 @@ overwrite
     If true, look for GRIB2 file even if local copy exists.
     If false, use the local copy (still need to find the idx file).
 
+verbose
+    If true, print info to screen
+    If false, do not print extra info to screen.
 
 Default Download Priority Rational
 ----------------------------------
