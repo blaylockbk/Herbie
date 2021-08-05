@@ -13,7 +13,7 @@ The default settings are
     fxx = 0
     product = "sfc"
     priority = [ "aws", "nomads", "google", "azure", "pando", "pando2",]
-    save_dir = "${CENTER}/data"
+    save_dir = "~/data"
     overwrite = false
     verbose = true
 
