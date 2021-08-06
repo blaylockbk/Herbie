@@ -27,7 +27,7 @@ dependencies:
   - zarr
   - wgrib2  # ONLY AVAILABLE ON LINUX. Comment if not using Linux.
 
-  # Formatter (not sure which I prefer)
+  # Formatter (I prefer Black at the moment)
   - black
   - autopep8
 
