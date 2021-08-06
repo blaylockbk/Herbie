@@ -27,6 +27,10 @@ dependencies:
   - zarr
   - wgrib2  # ONLY AVAILABLE ON LINUX. Comment if not using Linux.
 
+  # Formatter (not sure which I prefer)
+  - black
+  - autopep8
+
   - pip:
     # Development Version from GitHub
     - git+https://github.com/blaylockbk/Herbie.git
