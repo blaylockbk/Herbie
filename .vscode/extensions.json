@@ -4,6 +4,8 @@
         "ms-pyright.pyright",
         "vscode-icons-team.vscode-icons",
         "redhat.vscode-yaml",
-        "streetsidesoftware.code-spell-checker"
+        "streetsidesoftware.code-spell-checker",
+        "ms-python.vscode-pylance",
+        "ms-toolsai.jupyter"
     ]
 }
