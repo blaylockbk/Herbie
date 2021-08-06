@@ -6,6 +6,7 @@
         "redhat.vscode-yaml",
         "streetsidesoftware.code-spell-checker",
         "ms-python.vscode-pylance",
-        "ms-toolsai.jupyter"
+        "ms-toolsai.jupyter",
+        "bungcip.better-toml"
     ]
 }
