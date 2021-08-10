@@ -14,5 +14,6 @@
         "button.background": "#0c3576",
         "button.foreground": "#f0ead2"
     },
+    "python.formatting.provider": "black",
         
 }
