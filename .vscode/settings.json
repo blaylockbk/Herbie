@@ -22,7 +22,7 @@
                 "name": "Remake Docs",
                 "singleInstance": true,
                 "color": "#af565c",
-                "command": "cd docs;  ./remake_docs.sh",
+                "command": "conda activate basic38; cd docs;  ./remake_docs.sh",
             },
         ]
     }

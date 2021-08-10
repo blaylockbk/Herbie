@@ -255,14 +255,54 @@ file in the <code class="docutils literal notranslate"><span class="pre">herbie/
 </colgroup>
 <tbody>
 <tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">Herbie</span></code>([date, valid_date, model, fxx, …])</p></td>
-<td><p>Find model output file location based on source priority.</p></td>
+<td><p>Locate GRIB2 file at one of the archive sources.</p></td>
 </tr>
 </tbody>
 </table>
 <dl class="py class">
 <dt class="sig sig-object py" id="herbie.archive.Herbie">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">herbie.archive.</span></span><span class="sig-name descname"><span class="pre">Herbie</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">date</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">valid_date</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'hrrr'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fxx</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">product</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">member</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">priority</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">['aws',</span> <span class="pre">'nomads',</span> <span class="pre">'google',</span> <span class="pre">'azure',</span> <span class="pre">'pando',</span> <span class="pre">'pando2',</span> <span class="pre">'aws-old']</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">PosixPath('/p/cwfs/blaylock/data')</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#herbie.archive.Herbie" title="Permalink to this definition">¶</a></dt>
-<dd><p>Find model output file location based on source priority.</p>
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">herbie.archive.</span></span><span class="sig-name descname"><span class="pre">Herbie</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">date</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">valid_date</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'hrrr'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fxx</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">product</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">member</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">priority</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">['aws',</span> <span class="pre">'nomads',</span> <span class="pre">'google',</span> <span class="pre">'azure',</span> <span class="pre">'pando',</span> <span class="pre">'pando2',</span> <span class="pre">'aws-old']</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">PosixPath('/p/home/blaylock/data')</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#herbie.archive.Herbie" title="Permalink to this definition">¶</a></dt>
+<dd><p>Locate GRIB2 file at one of the archive sources.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>date</strong> (<em>pandas-parsable datetime</em>) – <em>Model initialization datetime</em>.
+If None, then must set <code class="docutils literal notranslate"><span class="pre">valid_date</span></code>.</p></li>
+<li><p><strong>valid_date</strong> (<em>pandas-parsable datetime</em>) – Model valid datetime. Must set when <code class="docutils literal notranslate"><span class="pre">date</span></code> is None.</p></li>
+<li><p><strong>fxx</strong> (<em>int</em>) – Forecast lead time in hours. Available lead times depend on
+the model type and model version. Range is model and run
+dependant.</p></li>
+<li><p><strong>model</strong> (<em>{'hrrr'</em><em>, </em><em>'hrrrak'</em><em>, </em><em>'rap'</em><em>, </em><em>'gfs'</em><em>, </em><em>'gfs_wave'</em><em>, </em><em>'rrfs'</em><em>, </em><em>etc.}</em>) – Model name as defined in the models template folder. CASE INSENSITIVE
+Some examples:
+- <code class="docutils literal notranslate"><span class="pre">'hrrr'</span></code> HRRR contiguous United States model
+- <code class="docutils literal notranslate"><span class="pre">'hrrrak'</span></code> HRRR Alaska model (alias <code class="docutils literal notranslate"><span class="pre">'alaska'</span></code>)
+- <code class="docutils literal notranslate"><span class="pre">'rap'</span></code> RAP model</p></li>
+<li><p><strong>product</strong> (<em>{'sfc'</em><em>, </em><em>'prs'</em><em>, </em><em>'nat'</em><em>, </em><em>'subh'}</em>) – Output variable product file type. If not specified, will
+use first product in model template file. CASE SENSITIVE.
+For example, the HRRR model has these products:
+- <code class="docutils literal notranslate"><span class="pre">'sfc'</span></code> surface fields
+- <code class="docutils literal notranslate"><span class="pre">'prs'</span></code> pressure fields
+- <code class="docutils literal notranslate"><span class="pre">'nat'</span></code> native fields
+- <code class="docutils literal notranslate"><span class="pre">'subh'</span></code> subhourly fields</p></li>
+<li><p><strong>member</strong> (<em>None</em><em> or </em><em>int</em>) – Some ensemble models (e.g. the future RRFS) will need to
+specify an ensemble member.</p></li>
+<li><p><strong>priority</strong> (<em>list</em><em> or </em><em>str</em>) – List of model sources to get the data in the order of
+download priority. CASE INSENSITIVE. Some example data
+sources and the default priority order are listed below.
+- <code class="docutils literal notranslate"><span class="pre">'aws'</span></code> Amazon Web Services (Big Data Program)
+- <code class="docutils literal notranslate"><span class="pre">'nomads'</span></code> NOAA’s NOMADS server
+- <code class="docutils literal notranslate"><span class="pre">'google'</span></code> Google Cloud Platform (Big Data Program)
+- <code class="docutils literal notranslate"><span class="pre">'azure'</span></code> Microsoft Azure (Big Data Program)
+- <code class="docutils literal notranslate"><span class="pre">'pando'</span></code> University of Utah Pando Archive (gateway 1)
+- <code class="docutils literal notranslate"><span class="pre">'pando2'</span></code> University of Utah Pando Archive (gateway 2)</p></li>
+<li><p><strong>save_dir</strong> (<em>str</em><em> or </em><em>pathlib.Path</em>) – Location to save GRIB2 files locally. Default save directory
+is set in <code class="docutils literal notranslate"><span class="pre">~/.config/herbie/config.cfg</span></code>.</p></li>
+<li><p><strong>Overwrite</strong> (<em>bool</em>) – If True, look for GRIB2 files even if local copy exists.
+If False (default), use the local copy (still need to find
+the idx file).</p></li>
+</ul>
+</dd>
+</dl>
 <p><strong>Methods:</strong></p>
 <table class="longtable table autosummary">
 <colgroup>
@@ -304,48 +344,8 @@ file in the <code class="docutils literal notranslate"><span class="pre">herbie/
 </table>
 <dl class="py method">
 <dt class="sig sig-object py" id="herbie.archive.Herbie.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">date</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">valid_date</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'hrrr'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fxx</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">product</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">member</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">priority</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">['aws',</span> <span class="pre">'nomads',</span> <span class="pre">'google',</span> <span class="pre">'azure',</span> <span class="pre">'pando',</span> <span class="pre">'pando2',</span> <span class="pre">'aws-old']</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">PosixPath('/p/cwfs/blaylock/data')</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#herbie.archive.Herbie.__init__" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">date</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">valid_date</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'hrrr'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fxx</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">product</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">member</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">priority</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">['aws',</span> <span class="pre">'nomads',</span> <span class="pre">'google',</span> <span class="pre">'azure',</span> <span class="pre">'pando',</span> <span class="pre">'pando2',</span> <span class="pre">'aws-old']</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">PosixPath('/p/home/blaylock/data')</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#herbie.archive.Herbie.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Specify model output and find GRIB2 file at one of the sources.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>date</strong> (<em>pandas-parsable datetime</em>) – <em>Model initialization datetime</em>.
-If None, then must set <code class="docutils literal notranslate"><span class="pre">valid_date</span></code>.</p></li>
-<li><p><strong>valid_date</strong> (<em>pandas-parsable datetime</em>) – Model valid datetime. Must set when <code class="docutils literal notranslate"><span class="pre">date</span></code> is None.</p></li>
-<li><p><strong>fxx</strong> (<em>int</em>) – Forecast lead time in hours. Available lead times depend on
-the model type and model version. Range is model and run
-dependant.</p></li>
-<li><p><strong>model</strong> (<em>{'hrrr'</em><em>, </em><em>'hrrrak'</em><em>, </em><em>'rap'</em><em>, </em><em>'gfs'</em><em>, </em><em>'gfs_wave'</em><em>, </em><em>'rrfs'</em><em>, </em><em>etc.}</em>) – Model name as defined in the models template folder. CASE INSENSITIVE
-Some examples:
-- <code class="docutils literal notranslate"><span class="pre">'hrrr'</span></code> HRRR contiguous United States model
-- <code class="docutils literal notranslate"><span class="pre">'hrrrak'</span></code> HRRR Alaska model (alias <code class="docutils literal notranslate"><span class="pre">'alaska'</span></code>)
-- <code class="docutils literal notranslate"><span class="pre">'rap'</span></code> RAP model</p></li>
-<li><p><strong>product</strong> (<em>{'sfc'</em><em>, </em><em>'prs'</em><em>, </em><em>'nat'</em><em>, </em><em>'subh'}</em>) – Output variable product file type. If not specified, will
-use first product in model template file. CASE SENSITIVE.
-For example, the HRRR model has these products:
-- <code class="docutils literal notranslate"><span class="pre">'sfc'</span></code> surface fields
-- <code class="docutils literal notranslate"><span class="pre">'prs'</span></code> pressure fields
-- <code class="docutils literal notranslate"><span class="pre">'nat'</span></code> native fields
-- <code class="docutils literal notranslate"><span class="pre">'subh'</span></code> subhourly fields</p></li>
-<li><p><strong>member</strong> (<em>None</em><em> or </em><em>int</em>) – Some ensemble models (e.g. the future RRFS) will need to
-specify an ensemble member.</p></li>
-<li><p><strong>priority</strong> (<em>list</em><em> or </em><em>str</em>) – List of model sources to get the data in the order of
-download priority. CASE INSENSITIVE. Some example data
-sources and the default priority order are listed below.
-- <code class="docutils literal notranslate"><span class="pre">'aws'</span></code> Amazon Web Services (Big Data Program)
-- <code class="docutils literal notranslate"><span class="pre">'nomads'</span></code> NOAA’s NOMADS server
-- <code class="docutils literal notranslate"><span class="pre">'google'</span></code> Google Cloud Platform (Big Data Program)
-- <code class="docutils literal notranslate"><span class="pre">'azure'</span></code> Microsoft Azure (Big Data Program)
-- <code class="docutils literal notranslate"><span class="pre">'pando'</span></code> University of Utah Pando Archive (gateway 1)
-- <code class="docutils literal notranslate"><span class="pre">'pando2'</span></code> University of Utah Pando Archive (gateway 2)</p></li>
-<li><p><strong>save_dir</strong> (<em>str</em><em> or </em><em>pathlib.Path</em>) – Location to save GRIB2 files locally. Default save directory
-is set in <code class="docutils literal notranslate"><span class="pre">~/.config/herbie/config.cfg</span></code>.</p></li>
-<li><p><strong>Overwrite</strong> (<em>bool</em>) – If True, look for GRIB2 files even if local copy exists.
-If False (default), use the local copy (still need to find
-the idx file).</p></li>
-</ul>
-</dd>
-</dl>
 </dd></dl>
 
 <dl class="py method">
