@@ -5,6 +5,7 @@ __pycache__/
 *$py.class
 *.log
 env_pypi.yml
+condaenv*
 
 *.idx
 *.grib2

@@ -28,6 +28,12 @@ Path.expand = _expand
 # Configuration file is save in `~/config/herbie/config.toml`
 _config_path = Path("~/.config/herbie/config.toml").expand()
 
+# NOTE: The `\\` is an escape character in TOML. 
+# For Windows paths "C:\\user\\"" needs to be "C:\\\\user\\\\""
+_save_dir = str(Path('~/data').expand())
+_save_dir = _save_dir.replace('\\', '\\\\')
+
+
 ########################################################################
 # Default TOML Configuration Values
 default_toml = f"""
@@ -35,7 +41,7 @@ default_toml = f"""
 model = "hrrr"
 fxx = 0
 priority = ['aws', 'nomads', 'google', 'azure', 'pando', 'pando2', 'aws-old']
-save_dir = "{str(Path('~/data').expand())}"
+save_dir = "{_save_dir}"
 overwrite = false
 verbose = true
 """

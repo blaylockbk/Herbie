@@ -1,7 +1,6 @@
 {
     "recommendations": [
         "ms-python.python",
-        "ms-pyright.pyright",
         "vscode-icons-team.vscode-icons",
         "redhat.vscode-yaml",
         "streetsidesoftware.code-spell-checker",

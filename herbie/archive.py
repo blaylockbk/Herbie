@@ -103,7 +103,55 @@ def _searchString_help():
 
 
 class Herbie:
-    """Find model output file location based on source priority."""
+    """
+    Locate GRIB2 file at one of the archive sources.
+    
+    Parameters
+    ----------
+    date : pandas-parsable datetime
+        *Model initialization datetime*.
+        If None, then must set ``valid_date``.
+    valid_date : pandas-parsable datetime
+        Model valid datetime. Must set when ``date`` is None.
+    fxx : int
+        Forecast lead time in hours. Available lead times depend on
+        the model type and model version. Range is model and run
+        dependant.
+    model : {'hrrr', 'hrrrak', 'rap', 'gfs', 'gfs_wave', 'rrfs', etc.}
+        Model name as defined in the models template folder. CASE INSENSITIVE
+        Some examples:
+        - ``'hrrr'`` HRRR contiguous United States model
+        - ``'hrrrak'`` HRRR Alaska model (alias ``'alaska'``)
+        - ``'rap'`` RAP model
+    product : {'sfc', 'prs', 'nat', 'subh'}
+        Output variable product file type. If not specified, will
+        use first product in model template file. CASE SENSITIVE.
+        For example, the HRRR model has these products:
+        - ``'sfc'`` surface fields
+        - ``'prs'`` pressure fields
+        - ``'nat'`` native fields
+        - ``'subh'`` subhourly fields
+    member : None or int
+        Some ensemble models (e.g. the future RRFS) will need to
+        specify an ensemble member.
+    priority : list or str
+        List of model sources to get the data in the order of
+        download priority. CASE INSENSITIVE. Some example data
+        sources and the default priority order are listed below.
+        - ``'aws'`` Amazon Web Services (Big Data Program)
+        - ``'nomads'`` NOAA's NOMADS server
+        - ``'google'`` Google Cloud Platform (Big Data Program)
+        - ``'azure'`` Microsoft Azure (Big Data Program)
+        - ``'pando'`` University of Utah Pando Archive (gateway 1)
+        - ``'pando2'`` University of Utah Pando Archive (gateway 2)
+    save_dir : str or pathlib.Path
+        Location to save GRIB2 files locally. Default save directory
+        is set in ``~/.config/herbie/config.cfg``.
+    Overwrite : bool
+        If True, look for GRIB2 files even if local copy exists.
+        If False (default), use the local copy (still need to find
+        the idx file).
+    """
 
     def __init__(
         self,
@@ -121,52 +169,6 @@ class Herbie:
     ):
         """
         Specify model output and find GRIB2 file at one of the sources.
-
-        Parameters
-        ----------
-        date : pandas-parsable datetime
-            *Model initialization datetime*.
-            If None, then must set ``valid_date``.
-        valid_date : pandas-parsable datetime
-            Model valid datetime. Must set when ``date`` is None.
-        fxx : int
-            Forecast lead time in hours. Available lead times depend on
-            the model type and model version. Range is model and run
-            dependant.
-        model : {'hrrr', 'hrrrak', 'rap', 'gfs', 'gfs_wave', 'rrfs', etc.}
-            Model name as defined in the models template folder. CASE INSENSITIVE
-            Some examples:
-            - ``'hrrr'`` HRRR contiguous United States model
-            - ``'hrrrak'`` HRRR Alaska model (alias ``'alaska'``)
-            - ``'rap'`` RAP model
-        product : {'sfc', 'prs', 'nat', 'subh'}
-            Output variable product file type. If not specified, will
-            use first product in model template file. CASE SENSITIVE.
-            For example, the HRRR model has these products:
-            - ``'sfc'`` surface fields
-            - ``'prs'`` pressure fields
-            - ``'nat'`` native fields
-            - ``'subh'`` subhourly fields
-        member : None or int
-            Some ensemble models (e.g. the future RRFS) will need to
-            specify an ensemble member.
-        priority : list or str
-            List of model sources to get the data in the order of
-            download priority. CASE INSENSITIVE. Some example data
-            sources and the default priority order are listed below.
-            - ``'aws'`` Amazon Web Services (Big Data Program)
-            - ``'nomads'`` NOAA's NOMADS server
-            - ``'google'`` Google Cloud Platform (Big Data Program)
-            - ``'azure'`` Microsoft Azure (Big Data Program)
-            - ``'pando'`` University of Utah Pando Archive (gateway 1)
-            - ``'pando2'`` University of Utah Pando Archive (gateway 2)
-        save_dir : str or pathlib.Path
-            Location to save GRIB2 files locally. Default save directory
-            is set in ``~/.config/herbie/config.cfg``.
-        Overwrite : bool
-            If True, look for GRIB2 files even if local copy exists.
-            If False (default), use the local copy (still need to find
-            the idx file).
         """
         self.fxx = fxx
 
