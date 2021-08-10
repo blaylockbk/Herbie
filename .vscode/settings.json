@@ -14,5 +14,16 @@
         "button.background": "#0c3576",
         "button.foreground": "#f0ead2"
     },
-        
+    "actionButtons": {
+        "reloadButton": null,
+        "loadNpmCommands": false,
+        "commands": [
+            {
+                "name": "Remake Docs",
+                "singleInstance": true,
+                "color": "#af565c",
+                "command": "./docs/remake_docs.sh",
+            },
+        ]
+    }
 }
