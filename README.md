@@ -7,7 +7,7 @@
 # Herbie: Retrieve NWP Model Data
 
 <!-- Badges -->
-[![](https://img.shields.io/pypi/v/hrrrb)](https://pypi.python.org/pypi/hrrrb/)
+[![](https://img.shields.io/pypi/v/herbie-data)](https://pypi.python.org/pypi/herbie-data/)
 ![](https://img.shields.io/github/license/blaylockbk/Herbie)
 [![DOI](https://zenodo.org/badge/275214142.svg)](https://zenodo.org/badge/latestdoi/275214142)
 <!-- (Badges) -->
@@ -23,12 +23,14 @@ The [NOAA Big Data Program](https://www.noaa.gov/information-technology/big-data
 Requires cURL and **Python 3.8+** with requests, numpy, pandas, xarray, and cfgrib. Optional packages are matplotlib, cartopy, and [Carpenter Workshop](https://github.com/blaylockbk/Carpenter_Workshop).
 
 ```bash
-pip install hrrrb
-
+pip install herbie-data
+```
+or
+```bash
 pip install git+https://github.com/blaylockbk/Herbie.git
 ```
 
-Or, create the provided [conda environment](https://github.com/blaylockbk/Herbie/blob/master/environment.yml).
+or, create the provided **[conda environment](https://github.com/blaylockbk/Herbie/blob/master/environment.yml)**.
 
 ## Capabilities
 
