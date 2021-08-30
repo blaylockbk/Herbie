@@ -31,7 +31,7 @@ For the latest development code:
 For the latest published version
 ```yaml
 - pip:
-    - hrrrb
+    - herbie-data
 ```
 
 First, create the virtual environment with 
