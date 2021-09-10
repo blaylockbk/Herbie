@@ -80,7 +80,7 @@ verbose
 
 Default Download Priority Rational
 ----------------------------------
-The default download priority is controled by the order of the SOURCES listed in each model's template file. Take a look at the order of the `HRRR data sources <https://github.com/blaylockbk/Herbie/blob/master/herbie/models/hrrr.py>`_ ``['aws', 'nomads', 'google', 'azure', 'pando', 'pando2']``. The reason for this default is that I anticipate most often a user will request model output from the recent past or earlier rather than relying on Herbie for operational, real-time needs.
+The default download priority is controled by the order of the SOURCES listed in each model's template file. Take a look at the order of the `HRRR data sources <https://github.com/blaylockbk/Herbie/blob/master/herbie/models/hrrr.py>`_ ``['aws', 'nomads', 'google', 'azure', 'pando', 'pando2']``. The reason for this default order is that I anticipate most often a user will request model output from the recent past or earlier rather than relying on Herbie for operational, real-time needs.
 
 Much of the past data and near real-time data is archived at one of NOAA's Big Data partners. Amazon AWS in particular hosts many of these datasets. While, NOMADS is the official operational source of model output data and has the most recent model output available, NOMADS only retains data for a few days, they throttle the download speed, and will block users who violate their usage agreement and download too much data within an hour.
 
