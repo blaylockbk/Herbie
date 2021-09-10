@@ -372,7 +372,6 @@
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">default</span><span class="p">]</span>
 <span class="n">model</span> <span class="o">=</span> <span class="s2">&quot;hrrr&quot;</span>
 <span class="n">fxx</span> <span class="o">=</span> <span class="mi">0</span>
-<span class="n">priority</span> <span class="o">=</span> <span class="p">[</span> <span class="s2">&quot;aws&quot;</span><span class="p">,</span> <span class="s2">&quot;nomads&quot;</span><span class="p">,</span> <span class="s2">&quot;google&quot;</span><span class="p">,</span> <span class="s2">&quot;azure&quot;</span><span class="p">,</span> <span class="s2">&quot;pando&quot;</span><span class="p">,</span> <span class="s2">&quot;pando2&quot;</span><span class="p">,</span> <span class="s2">&quot;aws-old&quot;</span><span class="p">]</span>
 <span class="n">save_dir</span> <span class="o">=</span> <span class="s2">&quot;~/data&quot;</span>
 <span class="n">overwrite</span> <span class="o">=</span> <span class="n">false</span>
 <span class="n">verbose</span> <span class="o">=</span> <span class="n">true</span>
@@ -410,6 +409,7 @@ use first product in model template file. CASE SENSITIVE.</p>
 specify an ensemble member.</p>
 </dd>
 <dt>priority</dt><dd><p>List of data sources in the order of download priority. CASE INSENSITIVE.</p>
+<p>Default is None, which will use the order of the SOURCES in the model template files. However, you can still hard code the priority order with this config option (maybe you want to only get files from Google or only from NOMADS and AWS).</p>
 <p>For example:</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">'aws'</span></code> Amazon Web Services (Big Data Program)</p></li>
@@ -420,6 +420,7 @@ specify an ensemble member.</p>
 <li><p><code class="docutils literal notranslate"><span class="pre">'pando2'</span></code> University of Utah Pando Archive (gateway 2)</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">'aws-old'</span></code> File name formats change. This is so Herbie can find old GFS filenames.</p></li>
 </ul>
+<p>Look in the <cite>herbie/models</cite> model template files for all the SOURCES available for each model.</p>
 </dd>
 <dt>save_dir</dt><dd><p>Location to save GRIB2 files locally. You may use system environment variables like <em>${HOME}</em>, and <em>${TMPDIR}</em></p>
 </dd>
@@ -432,8 +433,8 @@ If false, do not print extra info to screen.</p>
 </dl>
 <div class="section" id="default-download-priority-rational">
 <h2>Default Download Priority Rational<a class="headerlink" href="#default-download-priority-rational" title="Permalink to this headline">¶</a></h2>
-<p>The reason for this default is that I anticipate most often a user will request model output from the recent past or earlier rather than relying on Herbie for operational, real-time needs.</p>
-<p>Much of the past data and near real-time data is archived at one of NOAA’s Big Data partners. Amazon AWS in particular hosts many of these datasets. While, NOMADS is the official operational source of model output data and has the most recent model output available, NOMADS only retains data for a few days, they throttle the download speed, and will block users who violate their usage agreement and download too much data within an hour. For this</p>
+<p>The default download priority is controled by the order of the SOURCES listed in each model’s template file. Take a look at the order of the HRRR data sources–<code class="docutils literal notranslate"><span class="pre">['aws',</span> <span class="pre">'nomads',</span> <span class="pre">'google',</span> <span class="pre">'azure',</span> <span class="pre">'pando',</span> <span class="pre">'pando2']</span></code>. The reason for this default is that I anticipate most often a user will request model output from the recent past or earlier rather than relying on Herbie for operational, real-time needs.</p>
+<p>Much of the past data and near real-time data is archived at one of NOAA’s Big Data partners. Amazon AWS in particular hosts many of these datasets. While, NOMADS is the official operational source of model output data and has the most recent model output available, NOMADS only retains data for a few days, they throttle the download speed, and will block users who violate their usage agreement and download too much data within an hour.</p>
 <p>To prevent being blocked by NOMADS, the default is to first look for data on AWS. If the data requested is within the last few hours and was not found on AWS, then Herbie will look for the data at NOMADS. If the data is still not found on NOMADS, the file may be on google, azure, or pando.</p>
 <p>If you _really_ want to download the real-time data from NOMADS first and not a Big Data Project partner, you may change the priority order in the herbie config file or set the priority argument when creating the Herbie object (e.g., <code class="docutils literal notranslate"><span class="pre">priority=['nomads',</span> <span class="pre">...]</span></code>).</p>
 </div>
