@@ -28,7 +28,7 @@ Path.expand = _expand
 # Configuration file is save in `~/config/herbie/config.toml`
 _config_path = Path("~/.config/herbie/config.toml").expand()
 
-# NOTE: The `\\` is an escape character in TOML. 
+# NOTE: The `\\` is an escape character in TOML.
 # For Windows paths "C:\\user\\"" needs to be "C:\\\\user\\\\""
 _save_dir = str(Path('~/data').expand())
 _save_dir = _save_dir.replace('\\', '\\\\')

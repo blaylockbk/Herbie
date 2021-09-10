@@ -1,11 +1,11 @@
 __pycache__/
 .ipynb_checkpoints
-#.vscode
 *.py[cod]
 *$py.class
 *.log
 env_pypi.yml
 condaenv*
+core.*
 
 *.idx
 *.grib2
