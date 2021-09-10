@@ -1,10 +1,12 @@
 ## Brian Blaylock
 ## April 28, 2021
 
-import warnings
-import toml
 import os
+import warnings
 from pathlib import Path
+
+import toml
+
 
 ########################################################################
 # Append Path object with my custom expand method so user can use
@@ -40,7 +42,6 @@ default_toml = f"""
 ['default']
 model = "hrrr"
 fxx = 0
-priority = ['aws', 'nomads', 'google', 'azure', 'pando', 'pando2', 'aws-old']
 save_dir = "{_save_dir}"
 overwrite = false
 verbose = true

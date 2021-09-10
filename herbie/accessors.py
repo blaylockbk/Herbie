@@ -21,19 +21,17 @@ To use the herbie xarray accessor, do this...
 """
 import warnings
 
+import cartopy.crs as ccrs
+import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import xarray as xr
-import matplotlib.pyplot as plt
-import cartopy.crs as ccrs
-
-
+from paint.radar import cm_reflectivity
+from paint.radar2 import cm_reflectivity
+from paint.standard2 import cm_dpt, cm_pcp, cm_rh, cm_tmp, cm_wind
 # From Carpenter_Workshop:
 # https://github.com/blaylockbk/Carpenter_Workshop
 from toolbox.cartopy_tools import common_features, pc
-from paint.standard2 import cm_tmp, cm_dpt, cm_rh, cm_wind, cm_pcp
-from paint.radar2 import cm_reflectivity
-from paint.radar import cm_reflectivity
 
 
 @xr.register_dataset_accessor("herbie")

@@ -1,8 +1,8 @@
 ## Brian Blaylock
 ## May 13, 2021
 
-import matplotlib.pyplot as plt
 import matplotlib.patheffects as path_effects
+import matplotlib.pyplot as plt
 
 
 def HerbieColors():
