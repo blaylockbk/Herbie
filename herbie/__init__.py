@@ -49,6 +49,7 @@ verbose = true
 ########################################################################
 # If a config file isn't found, make one
 if not _config_path.exists():
+    _config_path.parent.mkdir(parents=True, exist_ok=True)
     with open(_config_path, "w") as f:
         toml_string = toml.dump(toml.loads(default_toml), f)
     print(f"⚙ Created config file [{_config_path}] with default values.")
