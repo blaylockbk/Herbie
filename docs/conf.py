@@ -122,6 +122,10 @@ html_js_files = [
     'https://kit.fontawesome.com/f6cc126dcc.js',
 ]
 
+fontawesome_included = True
+panels_add_bootstrap_css = False  # False, because pydata theme already loads it
+blog_post_pattern = ["blog/posts/*.rst", "blog/posts/*.md"]
+
 # Set autodoc defaults
 autodoc_default_options = {
     'autosummary': True,        # Include a members "table of contents"
