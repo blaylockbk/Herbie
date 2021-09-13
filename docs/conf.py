@@ -124,7 +124,7 @@ html_js_files = [
 
 fontawesome_included = True
 panels_add_bootstrap_css = False  # False, because pydata theme already loads it
-blog_post_pattern = ["blog/posts/*.rst", "blog/posts/*.md"]
+#blog_post_pattern = ["blog/posts/*.rst", "blog/posts/*.md"]
 
 # Set autodoc defaults
 autodoc_default_options = {

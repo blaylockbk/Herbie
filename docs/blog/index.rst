@@ -1,5 +1,5 @@
-Blog (Under Construction)
-=========================
+Blog
+====
 
 .. postlist:: 10
    :author: Brian Blaylock
