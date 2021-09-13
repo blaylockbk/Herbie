@@ -5,5 +5,5 @@ Blog (Under Construction)
    :author: Brian Blaylock
    :date: %Y-%m-%d
    :format: {date} - {title}
-   :list-style: none
+   :list-style: circle
    :excerpts:

@@ -8,4 +8,4 @@ My First Post
 
 Hello, there. This is my first post using ablog in sphinx.
 
-We'll so if how it works.
+We'll see if how it works.

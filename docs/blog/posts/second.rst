@@ -1,4 +1,4 @@
-My First Post
+My Second Post
 =============
 
 .. post:: September 13, 2021
@@ -6,6 +6,6 @@ My First Post
     :category: Category One
     :author: Brian Blaylock
 
-Hello, there. This is my first post using ablog in sphinx.
+Hello, there. This is my second post using ablog in sphinx.
 
-We'll see if how it works.
+It's OK so far.
