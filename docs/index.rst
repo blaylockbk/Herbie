@@ -11,7 +11,6 @@ Herbie: Retrieve NWP Model Data
 
    /user_guide/index
    /reference_guide/index
-   /blog/index
 
 Install
 -------
