@@ -1,11 +1,11 @@
 ## Added by Brian Blaylock
-## July 26, 2021 
+## July 26, 2021
 
 """
 A Herbie template for the HRRR model.
 
-Because the file path to GRIB2 model data is predictable, we can 
-template the download URL for model output. Follow this template for 
+Because the file path to GRIB2 model data is predictable, we can
+template the download URL for model output. Follow this template for
 writing your own template file for any model with GRIB2 files available
 via https.
 
@@ -18,7 +18,7 @@ Requirements
 Properties
 ----------
 DESCRIPTION : str
-    A description of the model. Give the full name and the 
+    A description of the model. Give the full name and the
     domain, if relevant.
 DETAILS : dict
     Some additional details about the model. Provide links
@@ -30,14 +30,14 @@ PRODUCTS : dict
     as default.
 SOURCES : dict
     Build the URL for the GRIB2 file for different sources.
-    The parameters are from arguments passed into the 
+    The parameters are from arguments passed into the
     ``herbie.archive.Herbie()`` class.
     ORDER MATTERS -- If priority is None, then Herbie searches the
     sources in the order given here.
 LOCALFILE : str
     The local file to save the model output. The file will be saved in
     ``save_dir/model/YYYYmmdd/localFile.grib2``
-    It is sometimes necessary to add details to maintain unique 
+    It is sometimes necessary to add details to maintain unique
     filenames (e.g., rrfs needs to have the member number in LOCALFILE).
 """
 

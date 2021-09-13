@@ -20,14 +20,14 @@ Install with pip
 
 .. code:: bash
 
-   pip install hrrrb
+   pip install herbie-data
 
    # or
 
    pip install git+https://github.com/blaylockbk/Herbie.git
 
 To install within a conda environment file, you may use this minimum `environment.yml
-<https://github.com/blaylockbk/Herbie/blob/master/environment.yml>`_ file 
+<https://github.com/blaylockbk/Herbie/blob/master/environment.yml>`_ file
 and create the environment with the following...
 
 .. code:: bash
@@ -67,7 +67,7 @@ This Herbie object is for the HRRR model sfc product and 6 hour forecast. The fi
 
 .. image:: _static/screenshots/usage_1.png
 
-Data Sources 
+Data Sources
 """"""""""""
 Thanks to the `NOAA Big Data Program <https://www.noaa.gov/information-technology/big-data>`_ weather data is more easily accessible than ever before. Common data sources include
 

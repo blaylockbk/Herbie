@@ -7,18 +7,20 @@ HRRR Plots
 ==========
 """
 import warnings
-import matplotlib.pyplot as plt
+
 import cartopy.crs as ccrs
 import cartopy.feature as feature
 import cartopy.io.img_tiles as cimgt
-from shapely.geometry import Polygon
-import xarray as xr
+import matplotlib.pyplot as plt
 import numpy as np
+import xarray as xr
+from shapely.geometry import Polygon
+
 try:
     from metpy.plots import USCOUNTIES
 except:
     print('metpy package not found/imported, so you can not plot US Counties')
-    
+
 
 def simple_plot(ds, ax=None):
     """
@@ -34,7 +36,7 @@ def simple_plot(ds, ax=None):
     for var in ds.data_vars:
         fig = plt.figure()
         ax = plt.axes(projection=ds.crs)
-        ds[var].plot(x='longitude', y='latitude', 
+        ds[var].plot(x='longitude', y='latitude',
                      ax=ax, transform=ccrs.PlateCarree())
         ax.coastlines()
     return None

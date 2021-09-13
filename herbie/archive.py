@@ -9,7 +9,7 @@ Herbie: Retrieve NWP Model Data
 ===============================
 
 Herbie is your model output download assistant with a mind of his own!
-Herbie might look small on the outside, but he has a big heart on the 
+Herbie might look small on the outside, but he has a big heart on the
 inside and will get you to the
 `finish line <https://www.youtube.com/watch?v=4XWufUZ1mxQ&t=189s>`_.
 Happy racing! 🏎🏁
@@ -17,12 +17,12 @@ Happy racing! 🏎🏁
 `📔 Documentation <https://blaylockbk.github.io/Herbie/_build/html/>`_
 
 With Herbie's API, you can search and download GRIB2 model output files
-from different archive sources for the High-Resolution Rapid Refresh 
-(HRRR) HRRR-Alaska, Rapid Refresh (RAP), Global Forecast System (GFS), 
+from different archive sources for the High-Resolution Rapid Refresh
+(HRRR) HRRR-Alaska, Rapid Refresh (RAP), Global Forecast System (GFS),
 and others.
 
-Herbie looks for GRIB2 model output data from NOMADS, NOAA's Big Data 
-Project partners (Amazon Web Services, Google Cloud Platform, and 
+Herbie looks for GRIB2 model output data from NOMADS, NOAA's Big Data
+Project partners (Amazon Web Services, Google Cloud Platform, and
 Microsoft Azure), and the CHPC Pando archive at the University of Utah.
 
 Herbie supports subsetting of GRIB2 files by individual GRIB
@@ -43,21 +43,20 @@ For more details, see https://blaylockbk.github.io/Herbie/_build/html/user_guide
 
 """
 import os
+import urllib.request
 import warnings
 from datetime import datetime, timedelta
-import urllib.request
-import requests
+
 import cfgrib
 import pandas as pd
+import requests
 
-# Path imported from __init__ because it has my custom `expand()` method
-from . import Path
+import herbie.models as models_template
 
 # NOTE: These config dict values are retrieved from __init__ and read
 # from the file ${HOME}/.config/herbie/config.toml
-from . import config
-
-import herbie.models as models_template
+# Path imported from __init__ because it has my custom `expand()` method
+from . import Path, config
 
 try:
     # Load custom xarray accessors
@@ -105,7 +104,7 @@ def _searchString_help():
 class Herbie:
     """
     Locate GRIB2 file at one of the archive sources.
-    
+
     Parameters
     ----------
     date : pandas-parsable datetime

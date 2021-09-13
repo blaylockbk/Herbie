@@ -10,14 +10,14 @@
 Retrieve HRRR GRIB2 files from archives
 =======================================
 
-Download High-Resolution Rapid Refresh (HRRR) model GRIB2 files from 
+Download High-Resolution Rapid Refresh (HRRR) model GRIB2 files from
 different archive sources. Support for subsetting GRIB2 files by fields
 if the `.idx`` file exist.
 
 Default HRRR Data Source Priority
 ---------------------------------
-NOAA started pushing the HRRR data to the Google Cloud Platform and 
-Amazon Web Services at the end of 2020. The archives were also 
+NOAA started pushing the HRRR data to the Google Cloud Platform and
+Amazon Web Services at the end of 2020. The archives were also
 backfilled to previous years as far back as July 30, 2014. This module
 will download HRRR data from these sources in the following order (the
 default download source priority can be changed).
@@ -33,7 +33,7 @@ default download source priority can be changed).
     - https://console.cloud.google.com/storage/browser/high-resolution-rapid-refresh
     - Available from July 30, 2014 to Present.
     - Does not have ``.idx`` files before September 17, 2018.
-    - Has all original data including nat, subh, prs, and sfc files 
+    - Has all original data including nat, subh, prs, and sfc files
       for all forecast hours.
 
 3. AWS: Amazon Web Services
@@ -58,22 +58,22 @@ xhrrr
 
 """
 
+import configparser
 import os
 import re
-from datetime import datetime, timedelta
-from pathlib import Path
-from itertools import product
-import warnings
-import configparser
-
 import urllib.request
-import requests
+import warnings
+from datetime import datetime, timedelta
+from itertools import product
+from pathlib import Path
+
 import cfgrib
 import numpy as np
 import pandas as pd
+import requests
 import xarray as xr
 
-from hrrrb.tools import to_180, get_crs
+from hrrrb.tools import get_crs, to_180
 
 warnings.warn(
       "The hrrrb API is deprecated. Use the new Herbie API instead."
@@ -210,7 +210,7 @@ def _download_hrrr_subset(url, searchString, *,
     There must be an index (.idx) file available for the file.
 
     A USER, YOU SHOULD NOT USE THIS FUNCTION DIRECTLY. Instead, use the
-    ``download_hrrr`` function and specify the search string to get a 
+    ``download_hrrr`` function and specify the search string to get a
     subset of a GRIB2 file.
 
     Parameters
@@ -226,7 +226,7 @@ def _download_hrrr_subset(url, searchString, *,
         Refer to the _searchString_help for examples.
     df_row_urls : None or list
         THIS VARIABLE IS RESERVED FOR INPUT FROM THE ``download_hrrr``
-        FUNCTION for the case when there isn't an .idx file from the 
+        FUNCTION for the case when there isn't an .idx file from the
         requested source, the .idx might be available at a different URL.
         This is a list of those other URLs (supplied by the download_hrrr function's loop)
     save_dir : string
@@ -263,7 +263,7 @@ def _download_hrrr_subset(url, searchString, *,
                         continue
                     else:
                         print(f'❌ .idx file does not exist at {idx}')
-    
+
     if not r.ok:
         notice = [
             '',
@@ -351,13 +351,13 @@ def _download_hrrr_subset(url, searchString, *,
 ###############################################################################
 ###############################################################################
 
-def download_hrrr(DATES, searchString=None, *, 
+def download_hrrr(DATES, searchString=None, *,
                   fxx=range(0, 1),
                   model='hrrr',
                   field='sfc',
                   save_dir=_default_save_dir,
                   download_source_priority=None,
-                  overwrite=False, 
+                  overwrite=False,
                   dryrun=False, verbose=True):
     """
     Download full or partial HRRR grib2 files for a list of dates and forecasts.
@@ -377,14 +377,14 @@ def download_hrrr(DATES, searchString=None, *,
         initialization time for which you want to download. May also
         use a date as a string if it can be parsed by Pandas.
     searchString : str
-        A regular expression string that describes the variables you 
-        want to download from the file. This is used as the 
-        `searchString` in ``_download_hrrr_subset`` to looking for 
+        A regular expression string that describes the variables you
+        want to download from the file. This is used as the
+        `searchString` in ``_download_hrrr_subset`` to looking for
         specific byte ranges from the file to download.
 
-        Default is None, meaning to not search for all variables and 
-        **downloads the full GRIB2 file**. Furthermore, ``':'`` is an 
-        alias for None because it is equivalent to identifying every 
+        Default is None, meaning to not search for all variables and
+        **downloads the full GRIB2 file**. Furthermore, ``':'`` is an
+        alias for None because it is equivalent to identifying every
         line in the .idx file.
 
         Take a look at the .idx file at
@@ -418,7 +418,7 @@ def download_hrrr(DATES, searchString=None, *,
         ':(TMP|DPT|RH):'              TMP, DPT, and Relative Humidity for all levels.
         ':REFC:'                      Composite Reflectivity
         ':surface:'                   All variables at the surface.
-        ''             
+        ''
         ============================= ===============================================
 
     fxx : int or list of int
@@ -453,7 +453,7 @@ def download_hrrr(DATES, searchString=None, *,
         This also makes is possible to exclude a source.
     overwrite : bool
         Only applicable if ``searchString=None``. Will check if the
-        file exists, and if ``overwrite=False``, will not redownload 
+        file exists, and if ``overwrite=False``, will not redownload
         the file.
     dryrun : bool
         If True, instead of downloading the files, it will print out the
@@ -471,7 +471,7 @@ def download_hrrr(DATES, searchString=None, *,
     #*******************************************************************
     ## Check function input
     #*******************************************************************
-       
+
     # The user may set `model='alaska'` as an alias for 'hrrrak'.
     if model.lower() == 'alaska': model = 'hrrrak'
 
@@ -491,7 +491,7 @@ def download_hrrr(DATES, searchString=None, *,
         warnings.warn("🦨 Whoops! One or more of your DATES is in the future.")
 
     # Make save_dir if path doesn't exist
-    if not hasattr(save_dir, 'exists'): 
+    if not hasattr(save_dir, 'exists'):
         save_dir = Path(save_dir).resolve()
 
     save_dir = save_dir / model
@@ -506,9 +506,9 @@ def download_hrrr(DATES, searchString=None, *,
         source_priority = {}
         for i in download_source_priority:
             i = i.lower()
-            if i in base_url: 
+            if i in base_url:
                 source_priority[i] = base_url[i]
-            else: 
+            else:
                 print(f'  ♟ Skipping `{i}` as a potential source '
                       f'because it is not a valid source name. Must be '
                       f'one of {list(base_url)}.')
@@ -545,7 +545,7 @@ def download_hrrr(DATES, searchString=None, *,
     URL_list = {}
     for source, source_url in source_priority.items():
         URL_list[source] = []
-        
+
         for DATE, f in product(DATES, fxx):
             if source.startswith('pando'):
                 # Pando URL is unique
@@ -689,7 +689,7 @@ def xhrrr(DATE, searchString, fxx=0, *,
 
     You may only request one `DATE` and one `fxx` (forecast lead time).
 
-    .. note:: 
+    .. note::
         See https://github.com/ecmwf/cfgrib/issues/187 for why there is
         a problem with reading multiple accumulated precipitation
         fields when searchString=':APCP:'.
@@ -754,7 +754,7 @@ def xhrrr(DATE, searchString, fxx=0, *,
     # Convert DATE input to a pandas datetime (Pandas can parse some strings as dates.)
     DATE = pd.to_datetime(DATE)
 
-    inputs = locals()  
+    inputs = locals()
 
     assert not hasattr(DATE, '__len__'), "`DATE` must be a single datetime, not a list."
     assert not hasattr(fxx, '__len__'), "`fxx` must be a single integer, not a list."

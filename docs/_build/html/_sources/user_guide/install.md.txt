@@ -9,7 +9,7 @@ Herbie requires `curl` and **Python 3.8+** with the following packages: `request
 Install the last published version from PyPI.
 
 ```bash
-pip install hrrrb
+pip install herbie-data
 ```
 
 The version on PyPI has likely diverged from the code on GitHub, so to get the most recent Herbie code, install the package directly from GitHub.
@@ -31,7 +31,7 @@ For the latest development code:
 For the latest published version
 ```yaml
 - pip:
-    - hrrrb
+    - herbie-data
 ```
 
 First, create the virtual environment with 

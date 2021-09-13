@@ -11,9 +11,9 @@ The directory structure is very different than the GRIB2 format.
 
 """
 
-import xarray as xr
-import s3fs
 import pandas as pd
+import s3fs
+import xarray as xr
 
 # Let's grab an analysis file using s3fs
 

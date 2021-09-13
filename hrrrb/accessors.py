@@ -12,15 +12,14 @@ http://xarray.pydata.org/en/stable/internals.html#extending-xarray
 """
 import warnings
 
+import matplotlib.pyplot as plt
 import numpy as np
-from paint.radar import cm_reflectivity
 import pandas as pd
 import xarray as xr
-import matplotlib.pyplot as plt
-
-from toolbox.cartopy_tools import common_features, pc
-from paint.standard2 import cm_tmp, cm_dpt, cm_rh, cm_wind, cm_pcp
+from paint.radar import cm_reflectivity
 from paint.radar2 import cm_reflectivity
+from paint.standard2 import cm_dpt, cm_pcp, cm_rh, cm_tmp, cm_wind
+from toolbox.cartopy_tools import common_features, pc
 
 
 @xr.register_dataset_accessor("hrrrb")
@@ -82,11 +81,11 @@ class hrrrb_accessor:
             print('GRIB_typeOfLevel', ds[var].GRIB_typeOfLevel)
             print()
             ds[var].attrs['units'] = ds[var].attrs['units'].replace('**-1', '$^{-1}$').replace('**-2', '$^{-2}$')
-            
+
             dpi = common_features_kw.pop('dpi', 150)
             figsize = common_features_kw.pop('figsize', [10,5])
             fig, ax = plt.subplots(1,1, subplot_kw=dict(projection=ds.crs), dpi=dpi, figsize=figsize)
-            
+
             default = dict(scale='50m', ax=ax, crs=ds.crs, STATES=True, BORDERS=True)
             common_features_kw = {**default, **common_features_kw}
             common_features(**common_features_kw)
@@ -113,7 +112,7 @@ class hrrrb_accessor:
                     ds[var] -= 273.15
                     ds[var].attrs['GRIB_units'] = 'C'
                     ds[var].attrs['units'] = 'C'
-                
+
             elif ds[var].GRIB_name == 'Total Precipitation':
                 title = '-'.join([f'F{int(i):02d}' for i in ds[var].GRIB_stepRange.split('-')])
                 ds[var] = ds[var].where(ds[var]!=0)
@@ -128,17 +127,17 @@ class hrrrb_accessor:
             elif ds[var].GRIB_cfName == 'relative_humidity':
                 cbar_kwargs = {**cm_rh().cbar_kwargs, **cbar_kwargs}
                 kwargs = {**cm_rh().cmap_kwargs, **kwargs}
-                
+
             else:
-                cbar_kwargs = {**dict(label=f"{ds[var].GRIB_parameterName.strip().title()} ({ds[var].units})"), **cbar_kwargs}            
-            
+                cbar_kwargs = {**dict(label=f"{ds[var].GRIB_parameterName.strip().title()} ({ds[var].units})"), **cbar_kwargs}
+
             p = ax.pcolormesh(ds.longitude, ds.latitude, ds[var], transform=pc, **kwargs)
             plt.colorbar(p, ax=ax, **cbar_kwargs)
 
             VALID = pd.to_datetime(ds.valid_time.data).strftime('%H:%M UTC %d %b %Y')
             RUN = pd.to_datetime(ds.time.data).strftime('%H:%M UTC %d %b %Y')
             FXX = f"F{pd.to_timedelta(ds.step.data).total_seconds()/3600:02.0f}"
-            
+
             level_type = ds[var].GRIB_typeOfLevel
             if level_type in _level_units:
                 level_units = _level_units[level_type]
@@ -159,5 +158,5 @@ class hrrrb_accessor:
             LONS = new[:,:,0]
             LATS = new[:,:,1]
             ax.set_extent([LONS.min(), LONS.max(), LATS.min(), LATS.max()], crs=ds.crs)
-        
+
         return ax
