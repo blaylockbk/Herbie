@@ -24,6 +24,9 @@
     
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/basic.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/panels-bootstrap.5fd3999ee7762ccc51105388f4a9d115.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/panels-variables.06eb56fa6e07937060861dad626602ad.css" />
     <link rel="stylesheet" type="text/css" href="../_static/brian_style.css" />
     
   <link rel="preload" as="script" href="../_static/js/index.1c5a1a01449ed65a7b51.js">
@@ -38,10 +41,35 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="👨🏻‍💻 Tutorial: New herbie API" href="tutorial.html" />
-    <link rel="prev" title="🛠 Configure" href="configure.html" />
+    <link rel="prev" title="🛠 Configure" href="configure.html" /> 
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="en" />
-    
+      
+<style type="text/css">
+  ul.ablog-archive {
+    list-style: none;
+    overflow: auto;
+    margin-left: 0px;
+  }
+  ul.ablog-archive li {
+    float: left;
+    margin-right: 5px;
+    font-size: 80%;
+  }
+  ul.postlist a {
+    font-style: italic;
+  }
+  ul.postlist-style-disc {
+    list-style-type: disc;
+  }
+  ul.postlist-style-none {
+    list-style-type: none;
+  }
+  ul.postlist-style-circle {
+    list-style-type: circle;
+  }
+</style>
+
   </head>
   <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
     
@@ -81,6 +109,12 @@
 <li class="toctree-l1 nav-item">
  <a class="reference internal nav-link" href="../reference_guide/index.html">
   Reference Guide
+ </a>
+</li>
+
+<li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="../blog/index.html">
+  Blog (Under Construction)
  </a>
 </li>
 
@@ -381,8 +415,7 @@
           <main class="col-12 col-md-9 col-xl-7 py-md-5 pl-md-5 pr-md-4 bd-content" role="main">
               
               <div>
-                
-  <div class="section" id="what-is-grib2">
+                 <div class="section" id="what-is-grib2">
 <span id="grib2-faq"></span><h1>🔢 What is GRIB2?<a class="headerlink" href="#what-is-grib2" title="Permalink to this headline">¶</a></h1>
 <p>GRIB stands for “gridded binary” and is an international standard for meteorological data. There is an old standard GRIB, and a new standard GRIB2. In these documents, when I refer to GRIB I really mean the new GRIB2 standard.</p>
 <p>Yes, GRIB is notoriously difficult to work with and has a steep learning curve for those unfamiliar with the format. I won’t discuss here the good, bad, and ugly of GRIB frankly because I’m not an expert and probably will say something wrong. However, even seasoned meteorologists complain about GRIB. Since complaining won’t fix the problem, I choose to embrace it because, for now, NWP data is widely distributed as GRIB2.</p>
@@ -495,6 +528,9 @@ count        offset       date         hour         level        typeOfLevel  na
 </div>
 </div>
 
+<div class="section">
+   
+</div>
 
               </div>
               
