@@ -3,6 +3,7 @@
         "activityBar.activeBorder": "#0c3576",
         "activityBar.background": "#d8c89d",
         "activityBar.foreground": "#0c3576",
+        "activityBar.activeBackground": "#ffffff56",
         "activityBar.inactiveForeground": "#88211b",
         "activityBarBadge.background": "#88211b",
         "activityBarBadge.foreground": "#f0ead2",
@@ -12,7 +13,8 @@
         "titleBar.activeForeground": "#f0ead2",
         "menu.selectionBackground": "#0c3576",
         "button.background": "#0c3576",
-        "button.foreground": "#f0ead2"
+        "button.foreground": "#f0ead2",
+        "statusBarItem.remoteBackground": "#0c3576"
     },
     "python.formatting.provider": "black",
 
