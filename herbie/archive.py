@@ -42,6 +42,7 @@ For more details, see https://blaylockbk.github.io/Herbie/_build/html/user_guide
     - TODO: clean up document examples. It's kind of scattered now.
 
 """
+import hashlib
 import os
 import urllib.request
 import warnings
@@ -396,8 +397,12 @@ class Herbie:
             # in the output file name as a unique identifier.
             all_grib_msg = "-".join([f"{i:g}" for i in self.idx_df.index])
 
+            # To prevent "filename too long" error, create a hash to
+            # make unique filename.
+            hash_label = hashlib.sha1(all_grib_msg.encode()).hexdigest()
+
             # Append the filename to distinguish it from the full file.
-            outFile = outFile.with_suffix(f".grib2.subset_{all_grib_msg}")
+            outFile = outFile.with_suffix(f".grib2.subset_{hash_label}")
 
         return outFile
 
