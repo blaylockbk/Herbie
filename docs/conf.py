@@ -40,7 +40,9 @@ extensions = [
     'sphinx.ext.autosectionlabel',
     'sphinx.ext.napoleon',
     #'sphinx.ext.jsmath',    # Can't seem to get the math function to work
-    'recommonmark', 
+    'ablog',
+    'sphinx_panels',
+    'recommonmark',
     'autodocsumm',
     'sphinx_markdown_tables'
 ]
@@ -120,10 +122,14 @@ html_js_files = [
     'https://kit.fontawesome.com/f6cc126dcc.js',
 ]
 
+fontawesome_included = True
+panels_add_bootstrap_css = False  # False, because pydata theme already loads it
+#blog_post_pattern = ["blog/posts/*.rst", "blog/posts/*.md"]
+
 # Set autodoc defaults
 autodoc_default_options = {
     'autosummary': True,        # Include a members "table of contents"
-    'members': True,            # Document all functions/members  
+    'members': True,            # Document all functions/members
     'special-members': '__init__',
 }
 
@@ -150,5 +156,5 @@ IMPORTANT NOTES ABOUT PUBLISHING TO GITHUB PAGES
    Something like this in that file (yes, only one line)...
         <meta http-equiv="Refresh" content="0;url=_build/html/"/>
 
-3. 
+3.
 """
