@@ -693,12 +693,66 @@ class Herbie:
             backend_kwargs=backend_kwargs,
         )
 
-        for h in Hxr:
-            h.attrs["model"] = self.model
-            h.attrs["product"] = self.product
-            h.attrs["description"] = self.DESCRIPTION
-            h.attrs["remote_grib"] = self.grib
-            h.attrs["local_grib"] = self.get_localFilePath(searchString=searchString)
+        # Here I'm looping over each dataset in the list returned by cfgrib
+        for ds in Hxr:
+            # Add some details
+            # ----------------
+            ds.attrs["model"] = self.model
+            ds.attrs["product"] = self.product
+            ds.attrs["description"] = self.DESCRIPTION
+            ds.attrs["remote_grib"] = self.grib
+            ds.attrs["local_grib"] = self.get_localFilePath(searchString=searchString)
+
+            # Attach CF grid mapping
+            # ----------------------
+            # http://cfconventions.org/Data/cf-conventions/cf-conventions-1.8/cf-conventions.html#appendix-grid-mappings
+            grid_mapping = f"{self.model}_projection"
+            ds[grid_mapping] = None
+            ds[grid_mapping].attrs[
+                "long_name"
+            ] = f"{self.model.upper()} model grid projection"
+
+            # Need attributes from a reference variable, the first will do
+            attrs = ds[list(ds)[0]].attrs
+            if attrs["GRIB_gridType"] == "lambert":
+                ds[grid_mapping].attrs["grid_mapping_name"] = "lambert_conformal_conic"
+                ds[grid_mapping].attrs["standard_parallel"] = (
+                    attrs.get("GRIB_Latin1InDegrees"),
+                    attrs.get("GRIB_Latin2InDegrees"),
+                )
+                ds[grid_mapping].attrs["longitude_of_central_meridian"] = attrs.get(
+                    "GRIB_LoVInDegrees"
+                )
+                ds[grid_mapping].attrs["latitude_of_projection_origin"] = attrs.get(
+                    "GRIB_LaDInDegrees"
+                )
+                ds[grid_mapping].attrs["false_easting"] = 0
+                ds[grid_mapping].attrs["false_northing"] = 0
+
+            elif attrs["GRIB_gridType"] == "polar_stereographic":
+                warnings.warn('the grib file might not have enough info to parse grid_mapping')
+                ds[grid_mapping].attrs["grid_mapping_name"] = "polar_stereographic"
+                ds[grid_mapping].attrs[
+                    "straight_vertical_longitude_from_pole"
+                ] = "not enough info"
+                ds[grid_mapping].attrs[
+                    "latitude_of_projection_origin"
+                ] = "not enough info (either +90 or -90)"
+                ds[grid_mapping].attrs["standard_parallel"] = "not enough info"
+                ds[grid_mapping].attrs["false_easting"] = 0
+                ds[grid_mapping].attrs["false_northing"] = 0
+
+            elif attrs["GRIB_gridType"] == "regular_ll":
+                ds[grid_mapping].attrs["grid_mapping_name"] = "latitude_longitude"
+
+            else:
+                warnings.warn(
+                    f'GRIB_gridType [{attrs["GRIB_gridType"]}] is not yet recognized by Herbie.'
+                )
+
+            # Set this grid_mapping for all variables
+            for var in list(ds):
+                ds[var].attrs["grid_mapping"] = grid_mapping
 
         if remove_grib:
             # Load the data to memory before removing the file
