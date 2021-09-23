@@ -730,15 +730,34 @@ class Herbie:
                 ds[grid_mapping].attrs["false_northing"] = 0
 
             elif attrs["GRIB_gridType"] == "polar_stereographic":
-                warnings.warn('the grib file might not have enough info to parse grid_mapping')
+                warnings.warn(
+                    "the grib file might not have enough info to parse grid_mapping"
+                )
+
+                # Are we at the north or south pole?
+                total = ds.latitude.size
+                num_pos = (ds.longitude > 0).sum().item()
+                num_neg = total - num_pos
+                if num_pos > num_neg:
+                    origin = 90
+                else:
+                    origin = -90
+
+                if ds.model == "hrrrak":
+                    # See https://rapidrefresh.noaa.gov/hrrr/ALASKA/static/
+                    central_longitude = -135
+                    standard_parallel = 60
+                    # Is it necessary to set the globe to WGS84? How??
+                else:
+                    central_longitude = None
+                    standard_parallel = None
+
                 ds[grid_mapping].attrs["grid_mapping_name"] = "polar_stereographic"
                 ds[grid_mapping].attrs[
                     "straight_vertical_longitude_from_pole"
-                ] = "not enough info"
-                ds[grid_mapping].attrs[
-                    "latitude_of_projection_origin"
-                ] = "not enough info (either +90 or -90)"
-                ds[grid_mapping].attrs["standard_parallel"] = "not enough info"
+                ] = central_longitude
+                ds[grid_mapping].attrs["latitude_of_projection_origin"] = origin
+                ds[grid_mapping].attrs["standard_parallel"] = standard_parallel
                 ds[grid_mapping].attrs["false_easting"] = 0
                 ds[grid_mapping].attrs["false_northing"] = 0
 
