@@ -154,6 +154,9 @@ class Herbie:
         If True, look for GRIB2 files even if local copy exists.
         If False (default), use the local copy (still need to find
         the idx file).
+    **kwargs
+        Any other paremeter needed to satisfy the conditions in the
+        model template file (e.g., nest=2, other_label='run2')
     """
 
     def __init__(
