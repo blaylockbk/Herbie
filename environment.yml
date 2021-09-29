@@ -41,4 +41,4 @@ dependencies:
       - git+https://github.com/blaylockbk/Carpenter_Workshop.git
 
       # Reading bufr files (beta)
-      #- pdbufr
+      #- pdbufr  # Sooo, eccodes does not support prepbufr formate

@@ -50,7 +50,9 @@ from datetime import datetime, timedelta
 
 import cfgrib
 import pandas as pd
+import pygrib
 import requests
+from pyproj import CRS
 
 import herbie.models as models_template
 
@@ -693,6 +695,20 @@ class Herbie:
             backend_kwargs=backend_kwargs,
         )
 
+        # Get CF grid projection information with pygrib and pyproj because
+        # this is something cfgrib doesn't do (https://github.com/ecmwf/cfgrib/issues/251)
+        # NOTE: Assumes the projection is the same for all variables
+        grib = pygrib.open(str(self.get_localFilePath(searchString=searchString)))
+        msg = grib.message(1)
+        cf_params = CRS(msg.projparams).to_cf()
+
+        # Funny stuff with polar stereographic (https://github.com/pyproj4/pyproj/issues/856)
+        # TODO: Is there a better way to handle this? What about south pole?
+        if cf_params["grid_mapping_name"] == "polar_stereographic":
+            cf_params["latitude_of_projection_origin"] = cf_params.get(
+                "latitude_of_projection_origin", 90
+            )
+
         # Here I'm looping over each dataset in the list returned by cfgrib
         for ds in Hxr:
             # Add some details
@@ -706,72 +722,17 @@ class Herbie:
             # Attach CF grid mapping
             # ----------------------
             # http://cfconventions.org/Data/cf-conventions/cf-conventions-1.8/cf-conventions.html#appendix-grid-mappings
-            grid_mapping = f"{self.model}_projection"
-            ds[grid_mapping] = None
-            ds[grid_mapping].attrs[
+            ds["gribfile_projection"] = None
+            ds["gribfile_projection"].attrs = cf_params
+            ds["gribfile_projection"].attrs[
                 "long_name"
             ] = f"{self.model.upper()} model grid projection"
 
-            # Need attributes from a reference variable, the first will do
-            attrs = ds[list(ds)[0]].attrs
-            if attrs["GRIB_gridType"] == "lambert":
-                ds[grid_mapping].attrs["grid_mapping_name"] = "lambert_conformal_conic"
-                ds[grid_mapping].attrs["standard_parallel"] = (
-                    attrs.get("GRIB_Latin1InDegrees"),
-                    attrs.get("GRIB_Latin2InDegrees"),
-                )
-                ds[grid_mapping].attrs["longitude_of_central_meridian"] = attrs.get(
-                    "GRIB_LoVInDegrees"
-                )
-                ds[grid_mapping].attrs["latitude_of_projection_origin"] = attrs.get(
-                    "GRIB_LaDInDegrees"
-                )
-                ds[grid_mapping].attrs["false_easting"] = 0
-                ds[grid_mapping].attrs["false_northing"] = 0
-
-            elif attrs["GRIB_gridType"] == "polar_stereographic":
-                warnings.warn(
-                    "the grib file might not have enough info to parse grid_mapping"
-                )
-
-                # Are we at the north or south pole?
-                total = ds.latitude.size
-                num_pos = (ds.longitude > 0).sum().item()
-                num_neg = total - num_pos
-                if num_pos > num_neg:
-                    origin = 90
-                else:
-                    origin = -90
-
-                if ds.model == "hrrrak":
-                    # See https://rapidrefresh.noaa.gov/hrrr/ALASKA/static/
-                    central_longitude = -135
-                    standard_parallel = 60
-                    # Is it necessary to set the globe to WGS84? How??
-                else:
-                    central_longitude = None
-                    standard_parallel = None
-
-                ds[grid_mapping].attrs["grid_mapping_name"] = "polar_stereographic"
-                ds[grid_mapping].attrs[
-                    "straight_vertical_longitude_from_pole"
-                ] = central_longitude
-                ds[grid_mapping].attrs["latitude_of_projection_origin"] = origin
-                ds[grid_mapping].attrs["standard_parallel"] = standard_parallel
-                ds[grid_mapping].attrs["false_easting"] = 0
-                ds[grid_mapping].attrs["false_northing"] = 0
-
-            elif attrs["GRIB_gridType"] == "regular_ll":
-                ds[grid_mapping].attrs["grid_mapping_name"] = "latitude_longitude"
-
-            else:
-                warnings.warn(
-                    f'GRIB_gridType [{attrs["GRIB_gridType"]}] is not yet recognized by Herbie.'
-                )
-
-            # Set this grid_mapping for all variables
+            # Assign this grid_mapping for all variables
             for var in list(ds):
-                ds[var].attrs["grid_mapping"] = grid_mapping
+                if var == "gribfile_projection":
+                    continue
+                ds[var].attrs["grid_mapping"] = "gribfile_projection"
 
         if remove_grib:
             # Load the data to memory before removing the file

@@ -23,6 +23,7 @@ import warnings
 
 import cartopy.crs as ccrs
 import matplotlib.pyplot as plt
+import metpy
 import numpy as np
 import pandas as pd
 import xarray as xr
@@ -33,7 +34,7 @@ from paint.standard2 import cm_dpt, cm_pcp, cm_rh, cm_tmp, cm_wind
 # From Carpenter_Workshop:
 # https://github.com/blaylockbk/Carpenter_Workshop
 # TODO: update to the new cartopy_tools
-from toolbox.cartopy_tools_OLD import common_features, pc
+from toolbox.cartopy_tools import common_features, pc
 
 
 @xr.register_dataset_accessor("herbie")
@@ -67,44 +68,9 @@ class HerbieAccessor:
         """
 
         ds = self._obj
-
-        # Get projection from the attributes of HRRR xarray.Dataset
-        # CF 1.8 map projection information for the HRRR model
-        # http://cfconventions.org/Data/cf-conventions/cf-conventions-1.8/cf-conventions.html#_lambert_conformal
-
-        # Projection info is in the variable attributes. The first variable will do.
-        attrs = ds[list(ds)[0]].attrs
-
-        if attrs["GRIB_gridType"] == "lambert":
-            lc_kwargs = dict(
-                globe=ccrs.Globe(ellipse="sphere"),
-                central_latitude=attrs["GRIB_LaDInDegrees"],
-                central_longitude=attrs["GRIB_LoVInDegrees"],
-                standard_parallels=(
-                    attrs["GRIB_Latin1InDegrees"],
-                    attrs["GRIB_Latin2InDegrees"],
-                ),
-            )
-            lc = ccrs.LambertConformal(**lc_kwargs)
-            return lc
-        elif attrs["GRIB_gridType"] == "polar_stereographic":
-            npc_kwargs = {}
-            if ds.model == "hrrrak":
-                # See https://rapidrefresh.noaa.gov/hrrr/ALASKA/static/
-                npc_kwargs["central_longitude"] = -135
-            npc = ccrs.NorthPolarStereo(**npc_kwargs)
-            return npc
-        elif attrs["GRIB_gridType"] == "regular_ll":
-            pc_kwargs = {}
-            if attrs["GRIB_longitudeOfFirstGridPointInDegrees"] == 0:
-                pc_kwargs["central_longitude"] = 180
-            pc = ccrs.PlateCarree(**pc_kwargs)
-            return pc
-        else:
-            warnings.warn(
-                f'GRIB_gridType [{attrs["GRIB_gridType"]}] is not recognized.'
-            )
-            return None
+        ds = ds.metpy.parse_cf()
+        crs = ds.metpy_crs.item().to_cartopy()
+        return crs
 
     def plot(self, ax=None, common_features_kw={}, **kwargs):
         """Plot data on a map."""
@@ -140,12 +106,16 @@ class HerbieAccessor:
         )
 
         for var in ds.data_vars:
+            if "longitude" not in ds[var].coords:
+                # This is the case for the gribfile_projection variable
+                continue
+
             print("cfgrib variable:", var)
-            print("GRIB_cfName", ds[var].GRIB_cfName)
-            print("GRIB_cfVarName", ds[var].GRIB_cfVarName)
-            print("GRIB_name", ds[var].GRIB_name)
-            print("GRIB_units", ds[var].GRIB_units)
-            print("GRIB_typeOfLevel", ds[var].GRIB_typeOfLevel)
+            print("GRIB_cfName", ds[var].attrs.get("GRIB_cfName"))
+            print("GRIB_cfVarName", ds[var].attrs.get("GRIB_cfVarName"))
+            print("GRIB_name", ds[var].attrs.get("GRIB_name"))
+            print("GRIB_units", ds[var].attrs.get("GRIB_units"))
+            print("GRIB_typeOfLevel", ds[var].attrs.get("GRIB_typeOfLevel"))
             print()
 
             ds[var].attrs["units"] = (
@@ -155,21 +125,17 @@ class HerbieAccessor:
                 .replace("**-2", "$^{-2}$")
             )
 
-            dpi = common_features_kw.pop("dpi", 150)
-            figsize = common_features_kw.pop("figsize", [10, 5])
-            fig, ax = plt.subplots(
-                1,
-                1,
-                subplot_kw=dict(projection=ds.herbie.crs),
-                dpi=dpi,
-                figsize=figsize,
+            defaults = dict(
+                scale="50m",
+                dpi=150,
+                figsize=(10, 5),
+                crs=ds.herbie.crs,
+                ax=ax,
             )
 
-            default = dict(
-                scale="50m", ax=ax, crs=ds.herbie.crs, STATES=True, BORDERS=True
-            )
-            common_features_kw = {**default, **common_features_kw}
-            common_features(**common_features_kw)
+            common_features_kw = {**defaults, **common_features_kw}
+
+            ax = common_features(**common_features_kw).STATES().ax
 
             title = ""
             kwargs = {}
