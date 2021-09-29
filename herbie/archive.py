@@ -40,6 +40,7 @@ For more details, see https://blaylockbk.github.io/Herbie/_build/html/user_guide
     - TODO: Create .idx file if wgrib2 is installed (linux only) when index file doesn't exist
     - TODO: add `idx_to_df()` and `df_to_idx()` methods.
     - TODO: clean up document examples. It's kind of scattered now.
+    - TODO: Allow for searching of locally stored model data.
 
 """
 import hashlib
@@ -168,6 +169,7 @@ class Herbie:
         save_dir=config["default"].get("save_dir"),
         overwrite=config["default"].get("overwrite", False),
         verbose=config["default"].get("verbose", True),
+        **kwargs,
     ):
         """
         Specify model output and find GRIB2 file at one of the sources.
@@ -191,6 +193,11 @@ class Herbie:
         self.priority = priority
         self.save_dir = Path(save_dir).expand()
         self.overwrite = overwrite
+
+        # In the future, you may want to have extra kwargs
+        for key, value in kwargs.items():
+            # TODO: Check if the kwarg is a config default.
+            setattr(self, key, value)
 
         # Get details from the template of the specified model.
         # This attaches the details from the `models.<model>.template`
@@ -227,7 +234,11 @@ class Herbie:
             self.grib = local_copy
             self.grib_source = "local"
             # NOTE: We will still get the idx files from a remote
-            #       because they aren't stored locally.
+            #       because they aren't stored locally, or are they?
+        if self.model == "local":
+            # TODO: Experimental special case, not very elegant yet.
+            self.idx = Path(str(self.grib) + ".idx")
+            return None
 
         # If priority list is set, we want to search SOURCES in that
         # priority order. If priority is None, then search all SOURCES
@@ -385,12 +396,17 @@ class Herbie:
 
     def get_localFilePath(self, searchString=None):
         """Get path to local file"""
-        outFile = (
-            self.save_dir.expand()
-            / self.model
-            / f"{self.date:%Y%m%d}"
-            / self.get_localFileName
-        )
+        if self.model == "local":
+            # TODO: An experimental special case
+            outFile = Path(self.SOURCES["local"]).expand()
+        else:
+            outFile = (
+                self.save_dir.expand()
+                / self.model
+                / f"{self.date:%Y%m%d}"
+                / self.get_localFileName
+            )
+
         if searchString is not None:
             # Reassign the index DataFrame with the requested searchString
             self.idx_df = self.read_idx(searchString)
@@ -435,8 +451,12 @@ class Herbie:
         # Sometimes idx has more than the standard messages
         # https://noaa-nbm-grib2-pds.s3.amazonaws.com/blend.20210711/13/core/blend.t13z.core.f001.co.grib2.idx
 
-        r = requests.get(self.idx)
-        assert r.ok, f"Index file does not exist: {self.idx}"
+        # TODO: Experimental special case when self.idx is a pathlib.Path
+        if not hasattr(self.idx, "exists"):
+            # If the self.idx is not a pathlib.Path, then we assume it needs to be downloaded
+            r = requests.get(self.idx)
+            assert r.ok, f"Index file does not exist: {self.idx}"
+
         df = pd.read_csv(
             self.idx,
             sep=":",

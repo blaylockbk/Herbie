@@ -30,7 +30,6 @@ import xarray as xr
 from paint.radar import cm_reflectivity
 from paint.radar2 import cm_reflectivity
 from paint.standard2 import cm_dpt, cm_pcp, cm_rh, cm_tmp, cm_wind
-
 # From Carpenter_Workshop:
 # https://github.com/blaylockbk/Carpenter_Workshop
 # TODO: update to the new cartopy_tools
@@ -231,14 +230,19 @@ class HerbieAccessor:
                 fontsize="x-small",
             )
 
-            # Set extent (could do this more efficiently by storing the data elsewhere)
-            new = ds.herbie.crs.transform_points(
-                pc, ds.longitude.data, ds.latitude.data
-            )
-            LONS = new[:, :, 0]
-            LATS = new[:, :, 1]
-            ax.set_extent(
-                [LONS.min(), LONS.max(), LATS.min(), LATS.max()], crs=ds.herbie.crs
-            )
+            # TODO: Any better way to do this? With metpy.assign_y_x
+            # !!!!: The metpy.assign_y_x method could be used for pluck_point :)
+            # Set extent so no whitespace shows around pcolormesh area
+            try:
+                if 'x' in ds.dims:
+                    ds = ds.metpy.parse_cf()
+                    ds = ds.metpy.assign_y_x()
+
+                    ax.set_extent(
+                        [ds.x.min().item(), ds.x.max().item(),
+                        ds.y.min().item(), ds.y.max().item()], crs=ds.herbie.crs
+                    )
+            except:
+                pass
 
         return ax
