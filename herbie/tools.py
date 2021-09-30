@@ -85,7 +85,7 @@ def bulk_download(
     return grib_sources
 
 
-def xr_concat_sameRun(DATE, searchString, fxx=range(0, 18)):
+def xr_concat_sameRun(DATE, searchString, fxx=range(0, 18), **kwargs):
     """
     Load and concatenate xarray objects by forecast lead time for the same run.
 
@@ -99,11 +99,11 @@ def xr_concat_sameRun(DATE, searchString, fxx=range(0, 18)):
     fxx : list of int
         List of forecast lead times, in hours, to concat together.
     """
-    Hs_to_cat = [Herbie(DATE, fxx=f).xarray(searchString) for f in fxx]
+    Hs_to_cat = [Herbie(DATE, fxx=f, **kwargs).xarray(searchString) for f in fxx]
     return xr.concat(Hs_to_cat, dim="f")
 
 
-def xr_concat_sameLead(DATES, searchString, fxx=0, DATE_is_valid_time=True):
+def xr_concat_sameLead(DATES, searchString, fxx=0, DATE_is_valid_time=True, **kwargs):
     """
     Load and concatenate xarray objects by model initialization date for the same lead time.
 
@@ -118,7 +118,7 @@ def xr_concat_sameLead(DATES, searchString, fxx=0, DATE_is_valid_time=True):
         The forecast lead time, in hours.
     """
     Hs_to_cat = [
-        Herbie(DATE, fxx=fxx, DATE_is_valid_time=DATE_is_valid_time).xarray(
+        Herbie(DATE, fxx=fxx, DATE_is_valid_time=DATE_is_valid_time, **kwargs).xarray(
             searchString
         )
         for DATE in DATES

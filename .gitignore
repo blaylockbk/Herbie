@@ -14,7 +14,7 @@ core.*
 sandbox/
 sandbox*
 
-local.py
+local_B.py
 
 dist/*
 build/*
