@@ -197,7 +197,7 @@ class Herbie:
         self.save_dir = Path(save_dir).expand()
         self.overwrite = overwrite
 
-        # In the future, you may want to have extra kwargs
+        # Some model templates may require kwargs not listed (e.g., "nest").
         for key, value in kwargs.items():
             # TODO: Check if the kwarg is a config default.
             setattr(self, key, value)
@@ -238,7 +238,8 @@ class Herbie:
             self.grib_source = "local"
             # NOTE: We will still get the idx files from a remote
             #       because they aren't stored locally, or are they?
-        if self.model == "local":
+
+        if list(self.SOURCES)[0] == "local":
             # TODO: Experimental special case, not very elegant yet.
             self.idx = Path(str(self.grib) + ".idx")
             return None
@@ -318,18 +319,12 @@ class Herbie:
         return " ".join(msg)
 
     def __str__(self):
-        """When class object is printed"""
-        msg = [
-            f"{self.model=}",
-            f"{self.DETAILS=}",
-            f"{self.DESCRIPTION=}",
-            f"{self.product=}",
-            f"{self.fxx=}",
-            f"{self.date=}",
-            f"{self.priority=}",
-            f"{self.DETAILS=}",
-            f"{self.SOURCES=}",
-        ]
+        """When Herbie class object is printed, print all properties"""
+        msg = []
+        for i in dir(self):
+            if isinstance(getattr(self, i), (int, str, dict)):
+                if not i.startswith("__"):
+                    msg.append(f"self.{i}={getattr(self, i)}")
         return "\n".join(msg)
 
     def _validate(self):
@@ -399,7 +394,7 @@ class Herbie:
 
     def get_localFilePath(self, searchString=None):
         """Get path to local file"""
-        if self.model == "local":
+        if list(self.SOURCES)[0] == "local":
             # TODO: An experimental special case
             outFile = Path(self.SOURCES["local"]).expand()
         else:
