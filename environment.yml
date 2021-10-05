@@ -31,14 +31,16 @@ dependencies:
   - black
   - autopep8
 
+  - pytest
+
   - pip:
-      # Development Version from GitHub
-      - git+https://github.com/blaylockbk/Herbie.git
-      # *or* the latest release from PyPI
-      #- herbie-data    # Release Version
+    # Development Version from GitHub
+    - git+https://github.com/blaylockbk/Herbie.git
+    # *or* the latest release from PyPI
+    #- herbie-data    # Release Version
 
-      # Borrow some tools from my garage
-      - git+https://github.com/blaylockbk/Carpenter_Workshop.git
+    # Borrow some tools from my garage
+    - git+https://github.com/blaylockbk/Carpenter_Workshop.git
 
-      # Reading bufr files (beta)
-      #- pdbufr  # Sooo, eccodes does not support prepbufr formate
+    # Reading bufr files (beta)
+    #- pdbufr  # Sooo, eccodes does not support prepbufr format
