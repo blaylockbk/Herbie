@@ -22,8 +22,8 @@ setup(
         "": ['*.cfg'],
     },
     python_requires=">=3.8",
-    install_requires = ['numpy', 'pandas', 'xarray', 'cfgrib'],
-    keywords = ['xarray', 'meteorology', 'weather', 'HRRR', 'numerical weather prediction', 'forecast'],
+    install_requires = ['numpy', 'pandas', 'xarray', 'cfgrib', 'metpy'],
+    keywords = ['xarray', 'meteorology', 'weather', 'HRRR', 'numerical weather prediction', 'forecast', 'atmosphere'],
     classifiers = [
         "Development Status :: 4 - Beta",
         "License :: OSI Approved :: MIT License",
@@ -47,8 +47,10 @@ conda activate pypi
 cd Herbie
 python setup.py sdist bdist_wheel
 twine check dist/*
-# Test PyPI
-twine upload --skip-existing --repository-url https://test.pypi.org/legacy/ dist/*
+
 # PyPI
 twine upload --skip-existing dist/*
+
+# Test PyPI
+twine upload --skip-existing --repository-url https://test.pypi.org/legacy/ dist/*
 '''
