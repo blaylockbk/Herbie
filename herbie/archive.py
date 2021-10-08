@@ -588,15 +588,17 @@ class Herbie:
                 # The GRIB source is local. Curl the local file
                 # See https://stackoverflow.com/a/21023161/2383070
                 grib_source = f"file://{str(self.grib)}"
-            print(
-                f'📇 Download subset: {self.__repr__()}{" ":60s}\n cURL from {grib_source}'
-            )
+            if verbose:
+                print(
+                    f'📇 Download subset: {self.__repr__()}{" ":60s}\n cURL from {grib_source}'
+                )
 
             # Download subsets of the file by byte range with cURL.
             for i, (grbmsg, row) in enumerate(self.idx_df.iterrows()):
-                print(
-                    f"{i+1:>4g}: GRIB_message={grbmsg:<3g} \033[34m{':'.join(row.values[5:]).rstrip(':')}\033[m"
-                )
+                if verbose:
+                    print(
+                        f"{i+1:>4g}: GRIB_message={grbmsg:<3g} \033[34m{':'.join(row.values[5:]).rstrip(':')}\033[m"
+                    )
                 if i == 0:
                     # If we are working on the first item, overwrite the existing file...
                     curl = f"curl -s --range {row.range} {grib_source} > {outFile}"
