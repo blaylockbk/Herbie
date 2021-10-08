@@ -10,6 +10,7 @@ from datetime import datetime, timedelta
 
 import pandas as pd
 import xarray as xr
+import metpy
 
 from herbie.archive import Herbie
 
@@ -124,3 +125,29 @@ def xr_concat_sameLead(DATES, searchString, fxx=0, DATE_is_valid_time=True, **kw
         for DATE in DATES
     ]
     return xr.concat(Hs_to_cat, dim="t")
+
+
+# TODO: Probably should implement this as an accessor instead of a "tool".
+def nearest_points(ds, points, names=None, verbose=True):
+    """
+    Pluck the nearest latitude/longitude points from a model grid.
+    ds
+    """
+    # Check if MetPy has already parsed the CF metadata grid projection.
+    # Do that if it hasn't been done yet.
+
+    # Apply the MetPy method `assign_y_x` to the dataset
+    # https://unidata.github.io/MetPy/latest/api/generated/metpy.xarray.html?highlight=assign_y_x#metpy.xarray.MetPyDataArrayAccessor.assign_y_x
+
+    # Convert the requested [(lon,lat), (lon,lat)] points to map projection.
+    # Accept a list of point tuples, or Shapely Points object.
+
+
+    # Do a `ds.sel(x=??, y=??)`` to get all the nearest points.
+    # ds.sel(x=xs, y=ys)
+
+    pass
+
+
+#TODO: I like the idea in Salem to mask data by a geographic region
+#TODO: Maybe can use that in Herbie. https://github.com/fmaussion/salem
