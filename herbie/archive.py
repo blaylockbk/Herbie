@@ -755,10 +755,16 @@ class Herbie:
                 ds[var].attrs["grid_mapping"] = "gribfile_projection"
 
         if remove_grib:
+            # Only remove grib if it didn't exists before
+
             # Load the data to memory before removing the file
             Hxr = [ds.load() for ds in Hxr]
-            # Only remove grib if it didn't exists before
-            local_file.unlink()  # Removes file
+
+            # Close the file so it can be removed
+            ds.close()
+
+            # Removes file
+            local_file.unlink()
 
         if len(Hxr) == 1:
             return Hxr[0]
