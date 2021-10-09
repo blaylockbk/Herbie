@@ -759,12 +759,17 @@ class Herbie:
 
             # Load the data to memory before removing the file
             Hxr = [ds.load() for ds in Hxr]
+            #new = Hxr.copy()
 
-            # Close the file so it can be removed
-            ds.close()
+            # Close the files so it can be removed (this issue seems
+            # to be WindowsOS specific).
+            #for ds in Hxr:
+            #    ds.close()
 
             # Removes file
             local_file.unlink()
+
+            #Hxr = new
 
         if len(Hxr) == 1:
             return Hxr[0]
