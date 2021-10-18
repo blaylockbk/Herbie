@@ -263,12 +263,12 @@
    </li>
    <li class="toctree-l2">
     <a class="reference internal" href="data_rrfs.html">
-     NAVGEM Data
+     RRFS Data
     </a>
    </li>
    <li class="toctree-l2">
     <a class="reference internal" href="data_navgem.html">
-     RRFS Data
+     NAVGEM Data
     </a>
    </li>
   </ul>
@@ -638,7 +638,7 @@ div.rendered_html tbody tr:hover {
 <div class="section" id="HRRR-Data">
 <h1>HRRR Data<a class="headerlink" href="#HRRR-Data" title="Permalink to this headline">¶</a></h1>
 <p>There are different products available on the cloud.</p>
-<div class="nbinput nblast docutils container">
+<div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
 </div>
@@ -651,6 +651,19 @@ div.rendered_html tbody tr:hover {
 <span class="kn">import</span> <span class="nn">cartopy.crs</span> <span class="k">as</span> <span class="nn">ccrs</span>
 </pre></div>
 </div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+/p/home/blaylock/BB_python/Carpenter_Workshop/toolbox/cartopy_tools_OLD.py:37: UserWarning: Migrate to new `cartopy_tools` for latest updates and features.
+  warnings.warn(&#34;Migrate to new `cartopy_tools` for latest updates and features.&#34;)
+/p/home/blaylock/BB_python/Carpenter_Workshop/toolbox/cartopy_tools.py:38: UserWarning: Migrate to `cartopy_tools2` for latest updates and features.
+  warnings.warn(&#34;Migrate to `cartopy_tools2` for latest updates and features.&#34;)
+/p/home/blaylock/BB_python/Carpenter_Workshop/toolbox/cartopy_tools.py:994: AccessorRegistrationWarning: registration of accessor &lt;class &#39;toolbox.cartopy_tools.xr_to_cartopy&#39;&gt; under name &#39;xmap&#39; for type &lt;class &#39;xarray.core.dataset.Dataset&#39;&gt; is overriding a preexisting attribute with the same name.
+  class xr_to_cartopy:
+</pre></div></div>
 </div>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
@@ -695,12 +708,12 @@ div.rendered_html tbody tr:hover {
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">ax</span> <span class="o">=</span> <span class="n">common_features</span><span class="p">(</span><span class="s1">&#39;50m&#39;</span><span class="p">,</span> <span class="n">crs</span><span class="o">=</span><span class="n">x</span><span class="o">.</span><span class="n">herbie</span><span class="o">.</span><span class="n">crs</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">[</span><span class="mi">8</span><span class="p">,</span><span class="mi">8</span><span class="p">],</span> <span class="n">STATES</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span></span><span class="n">ax</span> <span class="o">=</span> <span class="n">common_features</span><span class="p">(</span><span class="s1">&#39;50m&#39;</span><span class="p">,</span> <span class="n">crs</span><span class="o">=</span><span class="n">x</span><span class="o">.</span><span class="n">herbie</span><span class="o">.</span><span class="n">crs</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">[</span><span class="mi">8</span><span class="p">,</span><span class="mi">8</span><span class="p">])</span><span class="o">.</span><span class="n">STATES</span><span class="p">()</span><span class="o">.</span><span class="n">ax</span>
 <span class="n">p</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">pcolormesh</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">longitude</span><span class="p">,</span> <span class="n">x</span><span class="o">.</span><span class="n">latitude</span><span class="p">,</span> <span class="n">x</span><span class="o">.</span><span class="n">t2m</span><span class="p">,</span>
               <span class="n">transform</span><span class="o">=</span><span class="n">pc</span><span class="p">,</span>
               <span class="o">**</span><span class="n">cm_tmp</span><span class="p">(</span><span class="n">units</span><span class="o">=</span><span class="s1">&#39;K&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">cmap_kwargs</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span>
-             <span class="n">orientation</span><span class="o">=</span><span class="s1">&#39;horizontal&#39;</span><span class="p">,</span> <span class="n">pad</span><span class="o">=</span><span class="mf">.05</span><span class="p">,</span>
+             <span class="n">orientation</span><span class="o">=</span><span class="s1">&#39;horizontal&#39;</span><span class="p">,</span> <span class="n">pad</span><span class="o">=.</span><span class="mi">05</span><span class="p">,</span>
              <span class="o">**</span><span class="n">cm_tmp</span><span class="p">(</span><span class="n">units</span><span class="o">=</span><span class="s1">&#39;K&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">cbar_kwargs</span><span class="p">)</span>
 
 <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">t2m</span><span class="o">.</span><span class="n">GRIB_name</span><span class="p">,</span> <span class="n">loc</span><span class="o">=</span><span class="s1">&#39;right&#39;</span><span class="p">)</span>
@@ -713,7 +726,7 @@ div.rendered_html tbody tr:hover {
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-/p/home/blaylock/anaconda3/envs/basic38/lib/python3.8/site-packages/cartopy/mpl/geoaxes.py:1702: UserWarning: The input coordinates to pcolormesh are interpreted as cell centers, but are not monotonically increasing or decreasing. This may lead to incorrectly calculated cell edges, in which case, please supply explicit cell edges to pcolormesh.
+/p/home/blaylock/anaconda3/envs/herbie/lib/python3.8/site-packages/cartopy/mpl/geoaxes.py:1702: UserWarning: The input coordinates to pcolormesh are interpreted as cell centers, but are not monotonically increasing or decreasing. This may lead to incorrectly calculated cell edges, in which case, please supply explicit cell edges to pcolormesh.
   X, Y, C, shading = self._pcolorargs(&#39;pcolormesh&#39;, *args,
 </pre></div></div>
 </div>
@@ -731,15 +744,6 @@ Text(0.0, 1.0, &#39;HRRR: 2D surface level fields; 3-km resolution&#39;)
 </div>
 <div class="output_area docutils container">
 <img alt="../../_images/user_guide_notebooks_data_hrrr_4_2.png" src="../../_images/user_guide_notebooks_data_hrrr_4_2.png" />
-</div>
-</div>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span>
-</pre></div>
 </div>
 </div>
 <div class="nbinput nblast docutils container">

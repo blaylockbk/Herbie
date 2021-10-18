@@ -263,12 +263,12 @@
    </li>
    <li class="toctree-l2">
     <a class="reference internal" href="data_rrfs.html">
-     NAVGEM Data
+     RRFS Data
     </a>
    </li>
    <li class="toctree-l2">
     <a class="reference internal" href="data_navgem.html">
-     RRFS Data
+     NAVGEM Data
     </a>
    </li>
   </ul>
@@ -361,6 +361,11 @@
 
 <nav id="bd-toc-nav">
     <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#Can-also-use-metpy-to-parse-GFS-grid_mapping">
+   Can also use metpy to parse GFS grid_mapping
+  </a>
+ </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#Get-data-from-the-GFS-wave-output">
    Get data from the GFS wave output
@@ -649,7 +654,7 @@ div.rendered_html tbody tr:hover {
 <h1>GFS Data<a class="headerlink" href="#GFS-Data" title="Permalink to this headline">¶</a></h1>
 <p>The product names are not as simple as the HRRR dataset, but we can still get GFS data.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -663,7 +668,7 @@ div.rendered_html tbody tr:hover {
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -682,7 +687,7 @@ div.rendered_html tbody tr:hover {
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -691,18 +696,20 @@ div.rendered_html tbody tr:hover {
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
 {&#39;aws&#39;: &#39;https://noaa-gfs-bdp-pds.s3.amazonaws.com/gfs.20210711/00/atmos/gfs.t00z.pgrb2.0p25.f000&#39;,
+ &#39;aws-old&#39;: &#39;https://noaa-gfs-bdp-pds.s3.amazonaws.com/gfs.20210711/00/gfs.t00z.pgrb2.0p25.f000&#39;,
+ &#39;nomads&#39;: &#39;https://nomads.ncep.noaa.gov/pub/data/nccf/com/gfs/prod/gfs.20210711/00/atmos/gfs.t00z.pgrb2.0p25.f000&#39;,
  &#39;google&#39;: &#39;https://storage.googleapis.com/global-forecast-system/gfs.20210711/00/atmos/gfs.t00z.pgrb2.0p25.f000&#39;,
  &#39;azure&#39;: &#39;https://noaagfs.blob.core.windows.net/gfs/gfs.20210711/00/atmos/gfs.t00z.pgrb2.0p25.f000&#39;}
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -721,16 +728,16 @@ div.rendered_html tbody tr:hover {
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">ax</span> <span class="o">=</span> <span class="n">common_features</span><span class="p">(</span><span class="n">crs</span><span class="o">=</span><span class="n">x</span><span class="o">.</span><span class="n">herbie</span><span class="o">.</span><span class="n">crs</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">[</span><span class="mi">8</span><span class="p">,</span><span class="mi">8</span><span class="p">])</span>
+<span></span><span class="n">ax</span> <span class="o">=</span> <span class="n">common_features</span><span class="p">(</span><span class="n">crs</span><span class="o">=</span><span class="n">x</span><span class="o">.</span><span class="n">herbie</span><span class="o">.</span><span class="n">crs</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">[</span><span class="mi">8</span><span class="p">,</span><span class="mi">8</span><span class="p">])</span><span class="o">.</span><span class="n">ax</span>
 <span class="n">p</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">pcolormesh</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">longitude</span><span class="p">,</span> <span class="n">x</span><span class="o">.</span><span class="n">latitude</span><span class="p">,</span> <span class="n">x</span><span class="o">.</span><span class="n">t2m</span><span class="p">,</span>
               <span class="n">transform</span><span class="o">=</span><span class="n">pc</span><span class="p">,</span>
               <span class="o">**</span><span class="n">cm_tmp</span><span class="p">(</span><span class="n">units</span><span class="o">=</span><span class="s1">&#39;K&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">cmap_kwargs</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span>
-             <span class="n">orientation</span><span class="o">=</span><span class="s1">&#39;horizontal&#39;</span><span class="p">,</span> <span class="n">pad</span><span class="o">=</span><span class="mf">.05</span><span class="p">,</span>
+             <span class="n">orientation</span><span class="o">=</span><span class="s1">&#39;horizontal&#39;</span><span class="p">,</span> <span class="n">pad</span><span class="o">=.</span><span class="mi">05</span><span class="p">,</span>
              <span class="o">**</span><span class="n">cm_tmp</span><span class="p">(</span><span class="n">units</span><span class="o">=</span><span class="s1">&#39;K&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">cbar_kwargs</span><span class="p">)</span>
 
 <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">t2m</span><span class="o">.</span><span class="n">GRIB_name</span><span class="p">,</span> <span class="n">loc</span><span class="o">=</span><span class="s1">&#39;right&#39;</span><span class="p">)</span>
@@ -739,7 +746,7 @@ div.rendered_html tbody tr:hover {
 </div>
 </div>
 <div class="nboutput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
@@ -755,17 +762,17 @@ Text(0.0, 1.0, &#39;GFS: common fields, 0.25 degree resolution&#39;)
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">ax</span> <span class="o">=</span> <span class="n">common_features</span><span class="p">(</span><span class="n">crs</span><span class="o">=</span><span class="n">ccrs</span><span class="o">.</span><span class="n">Geostationary</span><span class="p">(</span><span class="n">central_longitude</span><span class="o">=-</span><span class="mi">100</span><span class="p">),</span> <span class="n">figsize</span><span class="o">=</span><span class="p">[</span><span class="mi">10</span><span class="p">,</span><span class="mi">10</span><span class="p">])</span>
+<span></span><span class="n">ax</span> <span class="o">=</span> <span class="n">common_features</span><span class="p">(</span><span class="n">crs</span><span class="o">=</span><span class="n">ccrs</span><span class="o">.</span><span class="n">Geostationary</span><span class="p">(</span><span class="n">central_longitude</span><span class="o">=-</span><span class="mi">100</span><span class="p">),</span> <span class="n">figsize</span><span class="o">=</span><span class="p">[</span><span class="mi">10</span><span class="p">,</span><span class="mi">10</span><span class="p">])</span><span class="o">.</span><span class="n">ax</span>
 
 <span class="n">p</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">pcolormesh</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">longitude</span><span class="p">,</span> <span class="n">x</span><span class="o">.</span><span class="n">latitude</span><span class="p">,</span> <span class="n">x</span><span class="o">.</span><span class="n">t2m</span><span class="p">,</span>
               <span class="n">transform</span><span class="o">=</span><span class="n">pc</span><span class="p">,</span>
               <span class="o">**</span><span class="n">cm_tmp</span><span class="p">(</span><span class="n">units</span><span class="o">=</span><span class="s1">&#39;K&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">cmap_kwargs</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span>
-             <span class="n">orientation</span><span class="o">=</span><span class="s1">&#39;horizontal&#39;</span><span class="p">,</span> <span class="n">pad</span><span class="o">=</span><span class="mf">.05</span><span class="p">,</span> <span class="n">shrink</span><span class="o">=</span><span class="mf">.8</span><span class="p">,</span>
+             <span class="n">orientation</span><span class="o">=</span><span class="s1">&#39;horizontal&#39;</span><span class="p">,</span> <span class="n">pad</span><span class="o">=.</span><span class="mi">05</span><span class="p">,</span> <span class="n">shrink</span><span class="o">=.</span><span class="mi">8</span><span class="p">,</span>
              <span class="o">**</span><span class="n">cm_tmp</span><span class="p">(</span><span class="n">units</span><span class="o">=</span><span class="s1">&#39;K&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">cbar_kwargs</span><span class="p">)</span>
 
 <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">t2m</span><span class="o">.</span><span class="n">GRIB_name</span><span class="p">,</span> <span class="n">loc</span><span class="o">=</span><span class="s1">&#39;right&#39;</span><span class="p">)</span>
@@ -774,7 +781,7 @@ Text(0.0, 1.0, &#39;GFS: common fields, 0.25 degree resolution&#39;)
 </div>
 </div>
 <div class="nboutput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
@@ -789,19 +796,53 @@ Text(0.0, 1.0, &#39;GFS: common fields, 0.25 degree resolution&#39;)
 <img alt="../../_images/user_guide_notebooks_data_gfs_6_1.png" src="../../_images/user_guide_notebooks_data_gfs_6_1.png" />
 </div>
 </div>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+<div class="section" id="Can-also-use-metpy-to-parse-GFS-grid_mapping">
+<h2>Can also use metpy to parse GFS grid_mapping<a class="headerlink" href="#Can-also-use-metpy-to-parse-GFS-grid_mapping" title="Permalink to this headline">¶</a></h2>
+<p>This works because Herbie attempts to parse the grid_mapping from the cfgrib GRIB info.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span>
+<span></span><span class="n">crs</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">metpy</span><span class="o">.</span><span class="n">parse_cf</span><span class="p">()</span><span class="o">.</span><span class="n">metpy_crs</span><span class="o">.</span><span class="n">item</span><span class="p">()</span><span class="o">.</span><span class="n">to_cartopy</span><span class="p">()</span>
+<span class="n">ax</span> <span class="o">=</span> <span class="n">common_features</span><span class="p">(</span><span class="n">crs</span><span class="o">=</span><span class="n">crs</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">[</span><span class="mi">8</span><span class="p">,</span><span class="mi">8</span><span class="p">])</span><span class="o">.</span><span class="n">ax</span>
+<span class="n">p</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">pcolormesh</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">longitude</span><span class="p">,</span> <span class="n">x</span><span class="o">.</span><span class="n">latitude</span><span class="p">,</span> <span class="n">x</span><span class="o">.</span><span class="n">t2m</span><span class="p">,</span>
+              <span class="n">transform</span><span class="o">=</span><span class="n">pc</span><span class="p">,</span>
+              <span class="o">**</span><span class="n">cm_tmp</span><span class="p">(</span><span class="n">units</span><span class="o">=</span><span class="s1">&#39;K&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">cmap_kwargs</span><span class="p">)</span>
 </pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../_images/user_guide_notebooks_data_gfs_8_0.png" src="../../_images/user_guide_notebooks_data_gfs_8_0.png" />
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">ax</span> <span class="o">=</span> <span class="n">common_features</span><span class="p">(</span><span class="n">crs</span><span class="o">=</span><span class="n">ccrs</span><span class="o">.</span><span class="n">Robinson</span><span class="p">(),</span> <span class="n">figsize</span><span class="o">=</span><span class="p">[</span><span class="mi">8</span><span class="p">,</span><span class="mi">8</span><span class="p">])</span><span class="o">.</span><span class="n">ax</span>
+<span class="n">p</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">pcolormesh</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">longitude</span><span class="p">,</span> <span class="n">x</span><span class="o">.</span><span class="n">latitude</span><span class="p">,</span> <span class="n">x</span><span class="o">.</span><span class="n">t2m</span><span class="p">,</span>
+              <span class="n">transform</span><span class="o">=</span><span class="n">pc</span><span class="p">,</span>
+              <span class="o">**</span><span class="n">cm_tmp</span><span class="p">(</span><span class="n">units</span><span class="o">=</span><span class="s1">&#39;K&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">cmap_kwargs</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../_images/user_guide_notebooks_data_gfs_9_0.png" src="../../_images/user_guide_notebooks_data_gfs_9_0.png" />
+</div>
 </div>
 </div>
 <div class="section" id="Get-data-from-the-GFS-wave-output">
 <h2>Get data from the GFS wave output<a class="headerlink" href="#Get-data-from-the-GFS-wave-output" title="Permalink to this headline">¶</a></h2>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -815,7 +856,7 @@ Text(0.0, 1.0, &#39;GFS: common fields, 0.25 degree resolution&#39;)
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-/p/home/blaylock/BB_python/HRRR_archive_download/herbie/archive.py:199: UserWarning: `product` not specified. Will use [&#34;arctic.9km&#34;].
+/p/home/blaylock/BB_python/Herbie/herbie/archive.py:205: UserWarning: `product` not specified. Will use [&#34;arctic.9km&#34;].
   warnings.warn(f&#39;`product` not specified. Will use [&#34;{self.product}&#34;].&#39;)
 </pre></div></div>
 </div>
@@ -828,7 +869,7 @@ Text(0.0, 1.0, &#39;GFS: common fields, 0.25 degree resolution&#39;)
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -837,7 +878,7 @@ Text(0.0, 1.0, &#39;GFS: common fields, 0.25 degree resolution&#39;)
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
 </pre></div>
 </div>
 <div class="output_area rendered_html docutils container">
@@ -1095,11 +1136,11 @@ Text(0.0, 1.0, &#39;GFS: common fields, 0.25 degree resolution&#39;)
 </div></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">x</span> <span class="o">=</span> <span class="n">H</span><span class="o">.</span><span class="n">xarray</span><span class="p">(</span><span class="s1">&#39;SWELL:1 in sequence&#39;</span><span class="p">)</span>
+<span></span><span class="n">x</span> <span class="o">=</span> <span class="n">H</span><span class="o">.</span><span class="n">xarray</span><span class="p">(</span><span class="s1">&#39;SWELL:1 in sequence&#39;</span><span class="p">,</span> <span class="n">remove_grib</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1108,7 +1149,6 @@ Text(0.0, 1.0, &#39;GFS: common fields, 0.25 degree resolution&#39;)
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-👨🏻‍🏭 Created directory: [/p/cwfs/blaylock/data/gfs_wave/20210711]
 📇 Download subset: [GFS_WAVE] model [arctic.9km] product run at <span class="ansi-green-fg">2021-Jul-11 00:00 UTC F00</span>
  cURL from https://noaa-gfs-bdp-pds.s3.amazonaws.com/gfs.20210711/00/wave/gridded/gfswave.t00z.arctic.9km.f000.grib2
    1: GRIB_message=9   <span class="ansi-blue-fg">SWELL:1 in sequence:anl</span>
@@ -1120,10 +1160,12 @@ Text(0.0, 1.0, &#39;GFS: common fields, 0.25 degree resolution&#39;)
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
 ecCodes provides no latitudes/longitudes for gridType=&#39;polar_stereographic&#39;
+/p/home/blaylock/BB_python/Herbie/herbie/archive.py:733: UserWarning: the grib file might not have enough info to parse grid_mapping
+  warnings.warn(&#39;the grib file might not have enough info to parse grid_mapping&#39;)
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -1132,23 +1174,23 @@ ecCodes provides no latitudes/longitudes for gridType=&#39;polar_stereographic&#
 </div>
 </div>
 <div class="nboutput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-&lt;matplotlib.collections.QuadMesh at 0x2b5f22614670&gt;
+&lt;matplotlib.collections.QuadMesh at 0x2acff29132b0&gt;
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../../_images/user_guide_notebooks_data_gfs_12_1.png" src="../../_images/user_guide_notebooks_data_gfs_12_1.png" />
+<img alt="../../_images/user_guide_notebooks_data_gfs_14_1.png" src="../../_images/user_guide_notebooks_data_gfs_14_1.png" />
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -1157,7 +1199,7 @@ ecCodes provides no latitudes/longitudes for gridType=&#39;polar_stereographic&#
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
 </pre></div>
 </div>
 <div class="output_area rendered_html docutils container">
@@ -1169,11 +1211,11 @@ ecCodes provides no latitudes/longitudes for gridType=&#39;polar_stereographic&#
   <rdf:RDF xmlns:cc="http://creativecommons.org/ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
    <cc:Work>
     <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
-    <dc:date>2021-07-28T19:52:57.131971</dc:date>
+    <dc:date>2021-09-22T23:50:47.594899</dc:date>
     <dc:format>image/svg+xml</dc:format>
     <dc:creator>
      <cc:Agent>
-      <dc:title>Matplotlib v3.4.1, https://matplotlib.org/</dc:title>
+      <dc:title>Matplotlib v3.4.2, https://matplotlib.org/</dc:title>
      </cc:Agent>
     </dc:creator>
    </cc:Work>
@@ -1288,7 +1330,7 @@ L 170.28 88.74
 " style="fill:#ffffff;"/>
    </g>
    <g id="PathCollection_1">
-    <path clip-path="url(#pbc096d83a3)" d="M 88.005866 95.500146
+    <path clip-path="url(#p4be078aaf2)" d="M 88.005866 95.500146
 L 88.010218 95.645166
 L 87.897851 95.814175
 L 87.661557 95.903324
@@ -1301,7 +1343,7 @@ L 87.973287 95.233608
 L 88.082715 95.36969
 L 88.005866 95.500146
 " style="fill:none;stroke:#000000;"/>
-    <path clip-path="url(#pbc096d83a3)" d="M 102.389689 71.883911
+    <path clip-path="url(#p4be078aaf2)" d="M 102.389689 71.883911
 L 102.031098 71.270656
 L 101.587689 70.672253
 L 101.482414 70.356046
@@ -1369,7 +1411,7 @@ L 102.78243 72.480342
 L 102.65686 72.197567
 L 102.389689 71.883911
 " style="fill:none;stroke:#000000;"/>
-    <path clip-path="url(#pbc096d83a3)" d="M 106.222187 80.881721
+    <path clip-path="url(#p4be078aaf2)" d="M 106.222187 80.881721
 L 106.054406 80.81286
 L 105.771625 80.634309
 L 105.457312 80.506544
@@ -1416,7 +1458,7 @@ L 106.825876 81.064635
 L 106.482878 80.946643
 L 106.222187 80.881721
 " style="fill:none;stroke:#000000;"/>
-    <path clip-path="url(#pbc096d83a3)" d="M 85.994422 88.566649
+    <path clip-path="url(#p4be078aaf2)" d="M 85.994422 88.566649
 L 85.924561 88.535376
 L 85.944394 88.465461
 L 85.998796 88.412115
@@ -1425,7 +1467,7 @@ L 86.121839 88.517808
 L 86.054032 88.553227
 L 85.994422 88.566649
 " style="fill:none;stroke:#000000;"/>
-    <path clip-path="url(#pbc096d83a3)" d="M 86.463217 88.58718
+    <path clip-path="url(#p4be078aaf2)" d="M 86.463217 88.58718
 L 86.459239 88.568685
 L 86.477742 88.495452
 L 86.530062 88.490698
@@ -1433,7 +1475,7 @@ L 86.519982 88.568299
 L 86.483922 88.593289
 L 86.463217 88.58718
 " style="fill:none;stroke:#000000;"/>
-    <path clip-path="url(#pbc096d83a3)" d="M 86.701617 88.498583
+    <path clip-path="url(#p4be078aaf2)" d="M 86.701617 88.498583
 L 86.633423 88.53496
 L 86.568265 88.518243
 L 86.537036 88.457409
@@ -1443,7 +1485,7 @@ L 86.729907 88.434854
 L 86.716243 88.479414
 L 86.701617 88.498583
 " style="fill:none;stroke:#000000;"/>
-    <path clip-path="url(#pbc096d83a3)" d="M 85.88154 88.83231
+    <path clip-path="url(#p4be078aaf2)" d="M 85.88154 88.83231
 L 85.902925 88.75165
 L 85.965092 88.622608
 L 86.067384 88.61077
@@ -1472,7 +1514,7 @@ L 85.931612 89.073444
 L 85.88996 88.934424
 L 85.88154 88.83231
 " style="fill:none;stroke:#000000;"/>
-    <path clip-path="url(#pbc096d83a3)" d="M 86.722073 87.954686
+    <path clip-path="url(#p4be078aaf2)" d="M 86.722073 87.954686
 L 86.676241 87.994785
 L 86.628873 87.963803
 L 86.606101 87.87563
@@ -1480,7 +1522,7 @@ L 86.683738 87.844449
 L 86.725436 87.896274
 L 86.722073 87.954686
 " style="fill:none;stroke:#000000;"/>
-    <path clip-path="url(#pbc096d83a3)" d="M 86.82987 88.00816
+    <path clip-path="url(#p4be078aaf2)" d="M 86.82987 88.00816
 L 86.778697 88.039175
 L 86.760526 87.984852
 L 86.783405 87.927867
@@ -1488,7 +1530,7 @@ L 86.807412 87.938473
 L 86.844596 87.99338
 L 86.82987 88.00816
 " style="fill:none;stroke:#000000;"/>
-    <path clip-path="url(#pbc096d83a3)" d="M 75.049414 94.754754
+    <path clip-path="url(#p4be078aaf2)" d="M 75.049414 94.754754
 L 75.081628 94.88654
 L 75.051436 94.952
 L 74.960538 94.919107
@@ -1498,7 +1540,7 @@ L 74.915143 94.539392
 L 74.966387 94.558009
 L 75.049414 94.754754
 " style="fill:none;stroke:#000000;"/>
-    <path clip-path="url(#pbc096d83a3)" d="M 74.130487 91.960237
+    <path clip-path="url(#p4be078aaf2)" d="M 74.130487 91.960237
 L 74.145408 92.137176
 L 74.113496 92.287886
 L 74.05062 92.348151
@@ -1510,7 +1552,7 @@ L 74.085351 91.796784
 L 74.126812 91.900187
 L 74.130487 91.960237
 " style="fill:none;stroke:#000000;"/>
-    <path clip-path="url(#pbc096d83a3)" d="M 75.154466 90.584527
+    <path clip-path="url(#p4be078aaf2)" d="M 75.154466 90.584527
 L 75.165547 90.791863
 L 75.19208 90.978284
 L 75.143579 91.215908
@@ -1553,7 +1595,7 @@ L 75.071455 90.353534
 L 75.118575 90.530771
 L 75.154466 90.584527
 " style="fill:none;stroke:#000000;"/>
-    <path clip-path="url(#pbc096d83a3)" d="M 82.703666 92.87313
+    <path clip-path="url(#p4be078aaf2)" d="M 82.703666 92.87313
 L 82.558622 92.888386
 L 82.361027 92.914938
 L 82.466629 92.948683
@@ -1587,7 +1629,7 @@ L 82.737285 92.80858
 L 82.763093 92.862119
 L 82.703666 92.87313
 " style="fill:none;stroke:#000000;"/>
-    <path clip-path="url(#pbc096d83a3)" d="M 84.162625 89.230584
+    <path clip-path="url(#p4be078aaf2)" d="M 84.162625 89.230584
 L 84.107926 89.326187
 L 84.061686 89.427328
 L 83.972763 89.447923
@@ -1608,7 +1650,7 @@ L 84.17459 89.141368
 L 84.207612 89.179293
 L 84.162625 89.230584
 " style="fill:none;stroke:#000000;"/>
-    <path clip-path="url(#pbc096d83a3)" d="M 85.562826 89.37079
+    <path clip-path="url(#p4be078aaf2)" d="M 85.562826 89.37079
 L 85.646035 89.407547
 L 85.582904 89.550261
 L 85.517746 89.650068
@@ -1682,7 +1724,7 @@ L 85.611266 89.257954
 L 85.489527 89.269435
 L 85.562826 89.37079
 " style="fill:none;stroke:#000000;"/>
-    <path clip-path="url(#pbc096d83a3)" d="M 85.841282 88.51168
+    <path clip-path="url(#p4be078aaf2)" d="M 85.841282 88.51168
 L 85.828431 88.61695
 L 85.78079 88.71367
 L 85.617071 88.630729
@@ -1694,7 +1736,7 @@ L 85.719522 88.421561
 L 85.795327 88.456678
 L 85.841282 88.51168
 " style="fill:none;stroke:#000000;"/>
-    <path clip-path="url(#pbc096d83a3)" d="M 85.619217 88.165069
+    <path clip-path="url(#p4be078aaf2)" d="M 85.619217 88.165069
 L 85.750078 88.129519
 L 85.826535 88.207569
 L 85.777494 88.262096
@@ -1710,7 +1752,7 @@ L 85.601133 88.045279
 L 85.664238 88.059246
 L 85.619217 88.165069
 " style="fill:none;stroke:#000000;"/>
-    <path clip-path="url(#pbc096d83a3)" d="M 86.273389 87.947135
+    <path clip-path="url(#p4be078aaf2)" d="M 86.273389 87.947135
 L 86.290944 87.99457
 L 86.270001 88.037288
 L 86.180663 88.020362
@@ -1733,7 +1775,7 @@ L 86.429497 87.964737
 L 86.341384 87.950846
 L 86.273389 87.947135
 " style="fill:none;stroke:#000000;"/>
-    <path clip-path="url(#pbc096d83a3)" d="M 86.605587 87.361567
+    <path clip-path="url(#p4be078aaf2)" d="M 86.605587 87.361567
 L 86.683857 87.496838
 L 86.744958 87.629394
 L 86.713675 87.682008
@@ -1745,7 +1787,7 @@ L 86.527212 87.467626
 L 86.539476 87.391517
 L 86.605587 87.361567
 " style="fill:none;stroke:#000000;"/>
-    <path clip-path="url(#pbc096d83a3)" d="M 86.31143 87.249562
+    <path clip-path="url(#p4be078aaf2)" d="M 86.31143 87.249562
 L 86.241736 87.291238
 L 86.170511 87.399236
 L 86.100075 87.418921
@@ -1763,7 +1805,7 @@ L 86.257647 87.069411
 L 86.37977 87.092394
 L 86.31143 87.249562
 " style="fill:none;stroke:#000000;"/>
-    <path clip-path="url(#pbc096d83a3)" d="M 87.44998 83.379957
+    <path clip-path="url(#p4be078aaf2)" d="M 87.44998 83.379957
 L 87.37153 83.381272
 L 87.344027 83.311242
 L 87.395011 83.267167
@@ -1771,7 +1813,7 @@ L 87.466006 83.287613
 L 87.53532 83.326042
 L 87.44998 83.379957
 " style="fill:none;stroke:#000000;"/>
-    <path clip-path="url(#pbc096d83a3)" d="M 86.044095 83.39636
+    <path clip-path="url(#p4be078aaf2)" d="M 86.044095 83.39636
 L 85.976233 83.416162
 L 85.908402 83.382743
 L 85.947086 83.257104
@@ -1781,7 +1823,7 @@ L 86.136685 83.239853
 L 86.080766 83.344573
 L 86.044095 83.39636
 " style="fill:none;stroke:#000000;"/>
-    <path clip-path="url(#pbc096d83a3)" d="M 83.768898 84.151191
+    <path clip-path="url(#p4be078aaf2)" d="M 83.768898 84.151191
 L 83.704682 84.245808
 L 83.558649 84.066583
 L 83.36583 84.038741
@@ -1793,7 +1835,7 @@ L 83.783905 84.079456
 L 83.825712 84.128403
 L 83.768898 84.151191
 " style="fill:none;stroke:#000000;"/>
-    <path clip-path="url(#pbc096d83a3)" d="M 82.549899 84.338485
+    <path clip-path="url(#p4be078aaf2)" d="M 82.549899 84.338485
 L 82.432075 84.33613
 L 82.285636 84.399166
 L 82.159219 84.382624
@@ -1810,7 +1852,7 @@ L 82.723942 84.256586
 L 82.63359 84.343204
 L 82.549899 84.338485
 " style="fill:none;stroke:#000000;"/>
-    <path clip-path="url(#pbc096d83a3)" d="M 88.041479 83.933219
+    <path clip-path="url(#p4be078aaf2)" d="M 88.041479 83.933219
 L 87.984103 83.904973
 L 87.934804 83.93292
 L 87.85798 83.89497
@@ -1823,7 +1865,7 @@ L 88.013405 83.847244
 L 88.036152 83.860997
 L 88.041479 83.933219
 " style="fill:none;stroke:#000000;"/>
-    <path clip-path="url(#pbc096d83a3)" d="M 86.856829 88.218023
+    <path clip-path="url(#p4be078aaf2)" d="M 86.856829 88.218023
 L 86.81572 88.276981
 L 86.730154 88.355687
 L 86.639067 88.367273
@@ -1835,7 +1877,7 @@ L 86.734426 88.232123
 L 86.788283 88.20169
 L 86.856829 88.218023
 " style="fill:none;stroke:#000000;"/>
-    <path clip-path="url(#pbc096d83a3)" d="M 94.584308 97.757709
+    <path clip-path="url(#p4be078aaf2)" d="M 94.584308 97.757709
 L 94.698917 97.686101
 L 94.801395 97.534215
 L 94.751628 97.685974
@@ -1846,7 +1888,7 @@ L 94.509935 97.882436
 L 94.591507 97.8189
 L 94.584308 97.757709
 " style="fill:none;stroke:#000000;"/>
-    <path clip-path="url(#pbc096d83a3)" d="M 93.50833 98.392223
+    <path clip-path="url(#p4be078aaf2)" d="M 93.50833 98.392223
 L 93.517114 98.463367
 L 93.279427 98.598097
 L 93.265286 98.562863
@@ -1858,7 +1900,7 @@ L 93.415018 98.424017
 L 93.42826 98.461926
 L 93.50833 98.392223
 " style="fill:none;stroke:#000000;"/>
-    <path clip-path="url(#pbc096d83a3)" d="M 108.357483 105.469161
+    <path clip-path="url(#p4be078aaf2)" d="M 108.357483 105.469161
 L 108.584293 105.504397
 L 108.892265 105.615915
 L 109.37896 105.925098
@@ -1908,13 +1950,13 @@ L 108.163779 105.706239
 L 108.107138 105.460421
 L 108.357483 105.469161
 " style="fill:none;stroke:#000000;"/>
-    <path clip-path="url(#pbc096d83a3)" d="M 94.804764 62.009562
+    <path clip-path="url(#p4be078aaf2)" d="M 94.804764 62.009562
 L 94.571581 61.66522
 L 94.741544 61.634801
 L 94.851431 61.883814
 L 94.804764 62.009562
 " style="fill:none;stroke:#000000;"/>
-    <path clip-path="url(#pbc096d83a3)" d="M 94.977116 62.162195
+    <path clip-path="url(#p4be078aaf2)" d="M 94.977116 62.162195
 L 95.012315 62.309577
 L 94.936034 62.672977
 L 94.751147 62.477711
@@ -1922,7 +1964,7 @@ L 94.76342 62.077018
 L 94.874575 62.165682
 L 94.977116 62.162195
 " style="fill:none;stroke:#000000;"/>
-    <path clip-path="url(#pbc096d83a3)" d="M 105.493367 72.442296
+    <path clip-path="url(#p4be078aaf2)" d="M 105.493367 72.442296
 L 105.302034 72.683111
 L 105.149064 72.732468
 L 104.994484 72.766972
@@ -1930,7 +1972,7 @@ L 105.01369 72.620655
 L 105.150197 72.486791
 L 105.493367 72.442296
 " style="fill:none;stroke:#000000;"/>
-    <path clip-path="url(#pbc096d83a3)" d="M 96.143691 59.523807
+    <path clip-path="url(#p4be078aaf2)" d="M 96.143691 59.523807
 L 95.805986 59.080114
 L 95.595236 58.760356
 L 95.825722 58.671459
@@ -1944,7 +1986,7 @@ L 96.441421 59.957648
 L 96.267482 59.71697
 L 96.143691 59.523807
 " style="fill:none;stroke:#000000;"/>
-    <path clip-path="url(#pbc096d83a3)" d="M 98.893259 69.118848
+    <path clip-path="url(#p4be078aaf2)" d="M 98.893259 69.118848
 L 98.818803 68.94216
 L 98.868444 68.741122
 L 99.025012 68.704062
@@ -1959,7 +2001,7 @@ L 99.054123 69.488097
 L 98.955216 69.332297
 L 98.893259 69.118848
 " style="fill:none;stroke:#000000;"/>
-    <path clip-path="url(#pbc096d83a3)" d="M 99.759106 68.612031
+    <path clip-path="url(#p4be078aaf2)" d="M 99.759106 68.612031
 L 99.998328 68.633149
 L 100.224771 68.652984
 L 100.410264 68.760762
@@ -1982,14 +2024,14 @@ L 99.451063 68.610005
 L 99.650216 68.680038
 L 99.759106 68.612031
 " style="fill:none;stroke:#000000;"/>
-    <path clip-path="url(#pbc096d83a3)" d="M 96.382594 65.051184
+    <path clip-path="url(#p4be078aaf2)" d="M 96.382594 65.051184
 L 96.312673 64.869868
 L 96.602271 64.966643
 L 96.673313 65.275344
 L 96.461002 65.093273
 L 96.382594 65.051184
 " style="fill:none;stroke:#000000;"/>
-    <path clip-path="url(#pbc096d83a3)" d="M 96.443208 65.474922
+    <path clip-path="url(#p4be078aaf2)" d="M 96.443208 65.474922
 L 96.529543 65.419754
 L 96.708239 65.873431
 L 96.707371 66.14061
@@ -1997,7 +2039,7 @@ L 96.573112 66.093725
 L 96.539365 65.724218
 L 96.443208 65.474922
 " style="fill:none;stroke:#000000;"/>
-    <path clip-path="url(#pbc096d83a3)" d="M 96.817198 65.47719
+    <path clip-path="url(#p4be078aaf2)" d="M 96.817198 65.47719
 L 96.978438 65.523557
 L 97.21131 65.654193
 L 97.272488 65.747708
@@ -2006,7 +2048,7 @@ L 96.947045 65.739008
 L 96.846071 65.607556
 L 96.817198 65.47719
 " style="fill:none;stroke:#000000;"/>
-    <path clip-path="url(#pbc096d83a3)" d="M 97.033354 66.392098
+    <path clip-path="url(#p4be078aaf2)" d="M 97.033354 66.392098
 L 96.987326 66.233522
 L 96.999724 66.147983
 L 97.244528 66.429502
@@ -2016,7 +2058,7 @@ L 97.423511 66.852636
 L 97.283276 66.691294
 L 97.033354 66.392098
 " style="fill:none;stroke:#000000;"/>
-    <path clip-path="url(#pbc096d83a3)" d="M 97.839974 67.155318
+    <path clip-path="url(#p4be078aaf2)" d="M 97.839974 67.155318
 L 97.740819 66.968814
 L 97.825424 66.978552
 L 97.954503 67.134779
@@ -2024,7 +2066,7 @@ L 98.042113 67.355427
 L 97.99594 67.409207
 L 97.839974 67.155318
 " style="fill:none;stroke:#000000;"/>
-    <path clip-path="url(#pbc096d83a3)" d="M 98.439787 68.16421
+    <path clip-path="url(#p4be078aaf2)" d="M 98.439787 68.16421
 L 98.368827 68.031574
 L 98.298271 67.719887
 L 98.18043 67.516546
@@ -2036,7 +2078,7 @@ L 98.493825 68.277709
 L 98.428047 68.288675
 L 98.439787 68.16421
 " style="fill:none;stroke:#000000;"/>
-    <path clip-path="url(#pbc096d83a3)" d="M 91.148704 44.467408
+    <path clip-path="url(#p4be078aaf2)" d="M 91.148704 44.467408
 L 91.473972 43.937078
 L 91.910984 43.250884
 L 92.559471 42.875312
@@ -2073,7 +2115,7 @@ L 91.074102 45.07786
 L 91.025349 44.647839
 L 91.148704 44.467408
 " style="fill:none;stroke:#000000;"/>
-    <path clip-path="url(#pbc096d83a3)" d="M 97.366941 41.420123
+    <path clip-path="url(#p4be078aaf2)" d="M 97.366941 41.420123
 L 96.559676 41.886279
 L 95.978923 42.380397
 L 95.499759 43.129839
@@ -2104,7 +2146,7 @@ L 98.625569 40.988597
 L 98.044413 41.097579
 L 97.366941 41.420123
 " style="fill:none;stroke:#000000;"/>
-    <path clip-path="url(#pbc096d83a3)" d="M 112.844431 50.626381
+    <path clip-path="url(#p4be078aaf2)" d="M 112.844431 50.626381
 L 112.480745 50.316858
 L 113.094928 49.213696
 L 113.53066 49.039979
@@ -2122,7 +2164,7 @@ L 113.90959 50.908141
 L 113.47064 50.790848
 L 112.844431 50.626381
 " style="fill:none;stroke:#000000;"/>
-    <path clip-path="url(#pbc096d83a3)" d="M 118.969807 66.656652
+    <path clip-path="url(#p4be078aaf2)" d="M 118.969807 66.656652
 L 119.698331 66.991303
 L 120.173466 67.360472
 L 120.590115 67.233407
@@ -2273,7 +2315,7 @@ L 118.63856 66.125544
 L 118.969807 66.656652
 L 118.969807 66.656652
 " style="fill:none;stroke:#000000;"/>
-    <path clip-path="url(#pbc096d83a3)" d="M 106.744681 91.338377
+    <path clip-path="url(#p4be078aaf2)" d="M 106.744681 91.338377
 L 107.06816 91.434269
 L 107.139083 91.582404
 L 107.167178 91.873811
@@ -2284,7 +2326,7 @@ L 106.158082 91.549005
 L 106.39723 91.440574
 L 106.744681 91.338377
 " style="fill:none;stroke:#000000;"/>
-    <path clip-path="url(#pbc096d83a3)" d="M 105.566191 74.933069
+    <path clip-path="url(#p4be078aaf2)" d="M 105.566191 74.933069
 L 105.38198 74.540795
 L 105.512872 74.24424
 L 105.603466 74.594613
@@ -2294,14 +2336,14 @@ L 106.092571 75.231931
 L 105.872228 75.289284
 L 105.566191 74.933069
 " style="fill:none;stroke:#000000;"/>
-    <path clip-path="url(#pbc096d83a3)" d="M 106.453084 75.452759
+    <path clip-path="url(#p4be078aaf2)" d="M 106.453084 75.452759
 L 106.555165 75.709003
 L 106.466435 75.866174
 L 106.221836 75.56618
 L 106.264584 75.414376
 L 106.453084 75.452759
 " style="fill:none;stroke:#000000;"/>
-    <path clip-path="url(#pbc096d83a3)" d="M 104.48797 76.466241
+    <path clip-path="url(#p4be078aaf2)" d="M 104.48797 76.466241
 L 104.622311 76.329524
 L 104.517571 76.147383
 L 104.608955 76.031912
@@ -2315,7 +2357,7 @@ L 104.924588 76.366176
 L 104.658972 76.480515
 L 104.48797 76.466241
 " style="fill:none;stroke:#000000;"/>
-    <path clip-path="url(#pbc096d83a3)" d="M 105.880639 77.639521
+    <path clip-path="url(#p4be078aaf2)" d="M 105.880639 77.639521
 L 105.642123 77.30607
 L 105.233358 77.162894
 L 105.261914 77.067572
@@ -2361,7 +2403,7 @@ L 106.13385 78.335858
 L 106.078963 78.045105
 L 105.880639 77.639521
 " style="fill:none;stroke:#000000;"/>
-    <path clip-path="url(#pbc096d83a3)" d="M 110.147274 76.233098
+    <path clip-path="url(#p4be078aaf2)" d="M 110.147274 76.233098
 L 110.165325 76.87948
 L 109.896211 76.574487
 L 109.896747 76.314623
@@ -2369,7 +2411,7 @@ L 109.93349 76.118423
 L 110.047727 76.080545
 L 110.147274 76.233098
 " style="fill:none;stroke:#000000;"/>
-    <path clip-path="url(#pbc096d83a3)" d="M 109.283986 76.228588
+    <path clip-path="url(#p4be078aaf2)" d="M 109.283986 76.228588
 L 109.110036 76.007748
 L 108.779347 75.77421
 L 109.008843 75.69915
@@ -2379,7 +2421,7 @@ L 109.554325 76.761113
 L 109.311213 76.518378
 L 109.283986 76.228588
 " style="fill:none;stroke:#000000;"/>
-    <path clip-path="url(#pbc096d83a3)" d="M 109.862106 77.385639
+    <path clip-path="url(#p4be078aaf2)" d="M 109.862106 77.385639
 L 109.7084 77.175104
 L 109.814628 76.997239
 L 110.122474 77.384902
@@ -2390,7 +2432,7 @@ L 110.017792 77.601092
 L 109.834355 77.571105
 L 109.862106 77.385639
 " style="fill:none;stroke:#000000;"/>
-    <path clip-path="url(#pbc096d83a3)" d="M 110.72437 81.389744
+    <path clip-path="url(#p4be078aaf2)" d="M 110.72437 81.389744
 L 110.843576 81.29124
 L 110.620263 80.542226
 L 110.431939 80.517514
@@ -2414,7 +2456,7 @@ L 110.696555 81.916002
 L 110.747716 81.558633
 L 110.72437 81.389744
 " style="fill:none;stroke:#000000;"/>
-    <path clip-path="url(#pbc096d83a3)" d="M 109.205998 83.496649
+    <path clip-path="url(#p4be078aaf2)" d="M 109.205998 83.496649
 L 109.439279 83.371579
 L 109.607295 83.192364
 L 109.566421 82.916494
@@ -2450,14 +2492,14 @@ L 109.156178 83.862003
 L 109.229359 83.627331
 L 109.205998 83.496649
 " style="fill:none;stroke:#000000;"/>
-    <path clip-path="url(#pbc096d83a3)" d="M 102.997093 80.229631
+    <path clip-path="url(#p4be078aaf2)" d="M 102.997093 80.229631
 L 102.879229 80.469941
 L 102.763176 80.253909
 L 102.801414 80.113904
 L 103.059403 80.046604
 L 102.997093 80.229631
 " style="fill:none;stroke:#000000;"/>
-    <path clip-path="url(#pbc096d83a3)" d="M 103.420654 79.356352
+    <path clip-path="url(#p4be078aaf2)" d="M 103.420654 79.356352
 L 103.307348 79.338636
 L 103.13079 79.41328
 L 103.02553 79.285027
@@ -2470,7 +2512,7 @@ L 103.601605 79.090298
 L 103.523785 79.365142
 L 103.420654 79.356352
 " style="fill:none;stroke:#000000;"/>
-    <path clip-path="url(#pbc096d83a3)" d="M 103.159491 78.118039
+    <path clip-path="url(#p4be078aaf2)" d="M 103.159491 78.118039
 L 103.309139 77.967857
 L 103.441562 77.846549
 L 103.743874 77.760122
@@ -2498,7 +2540,7 @@ L 102.968762 78.317455
 L 103.079707 78.20388
 L 103.159491 78.118039
 " style="fill:none;stroke:#000000;"/>
-    <path clip-path="url(#pbc096d83a3)" d="M 102.919958 83.725517
+    <path clip-path="url(#p4be078aaf2)" d="M 102.919958 83.725517
 L 102.909759 83.956145
 L 102.690329 84.038088
 L 102.533775 83.958339
@@ -2509,7 +2551,7 @@ L 102.551169 83.556796
 L 102.719308 83.558024
 L 102.919958 83.725517
 " style="fill:none;stroke:#000000;"/>
-    <path clip-path="url(#pbc096d83a3)" d="M 100.131469 81.683094
+    <path clip-path="url(#p4be078aaf2)" d="M 100.131469 81.683094
 L 100.558504 81.589328
 L 100.795829 81.568368
 L 100.670717 81.790557
@@ -2519,7 +2561,7 @@ L 99.970888 81.859039
 L 99.979758 81.729912
 L 100.131469 81.683094
 " style="fill:none;stroke:#000000;"/>
-    <path clip-path="url(#pbc096d83a3)" d="M 94.845155 80.958116
+    <path clip-path="url(#p4be078aaf2)" d="M 94.845155 80.958116
 L 95.111247 80.883529
 L 95.254872 80.701594
 L 95.422224 80.604994
@@ -2557,7 +2599,7 @@ L 94.61326 81.39086
 L 94.73056 81.096037
 L 94.845155 80.958116
 " style="fill:none;stroke:#000000;"/>
-    <path clip-path="url(#pbc096d83a3)" d="M 93.865066 81.524751
+    <path clip-path="url(#p4be078aaf2)" d="M 93.865066 81.524751
 L 93.724106 81.536444
 L 93.83208 81.319015
 L 94.057063 81.405643
@@ -2574,7 +2616,7 @@ L 93.978207 81.752481
 L 93.926406 81.625012
 L 93.865066 81.524751
 " style="fill:none;stroke:#000000;"/>
-    <path clip-path="url(#pbc096d83a3)" d="M 90.180467 98.142532
+    <path clip-path="url(#p4be078aaf2)" d="M 90.180467 98.142532
 L 90.251624 98.062727
 L 90.375638 98.199517
 L 90.401461 98.491179
@@ -2585,7 +2627,7 @@ L 90.144332 98.263625
 L 90.088593 98.145093
 L 90.180467 98.142532
 " style="fill:none;stroke:#000000;"/>
-    <path clip-path="url(#pbc096d83a3)" d="M 90.129262 97.770363
+    <path clip-path="url(#p4be078aaf2)" d="M 90.129262 97.770363
 L 90.217237 97.672937
 L 90.2745 97.851173
 L 90.248888 98.025599
@@ -2593,14 +2635,14 @@ L 90.168493 97.993434
 L 90.109386 97.85466
 L 90.129262 97.770363
 " style="fill:none;stroke:#000000;"/>
-    <path clip-path="url(#pbc096d83a3)" d="M 90.100856 94.944552
+    <path clip-path="url(#p4be078aaf2)" d="M 90.100856 94.944552
 L 90.157274 95.034061
 L 90.125105 95.20645
 L 89.985194 95.120075
 L 89.954019 95.041991
 L 90.100856 94.944552
 " style="fill:none;stroke:#000000;"/>
-    <path clip-path="url(#pbc096d83a3)" d="M 88.308847 94.595111
+    <path clip-path="url(#p4be078aaf2)" d="M 88.308847 94.595111
 L 88.43309 94.58642
 L 88.308986 94.791713
 L 88.418097 94.771482
@@ -2645,7 +2687,7 @@ L 88.133551 94.724062
 L 88.228646 94.573076
 L 88.308847 94.595111
 " style="fill:none;stroke:#000000;"/>
-    <path clip-path="url(#pbc096d83a3)" d="M 87.65083 92.948873
+    <path clip-path="url(#p4be078aaf2)" d="M 87.65083 92.948873
 L 87.602596 93.06334
 L 87.657507 93.211165
 L 87.518875 93.326156
@@ -2666,7 +2708,7 @@ L 87.384263 92.962974
 L 87.533174 92.902649
 L 87.65083 92.948873
 " style="fill:none;stroke:#000000;"/>
-    <path clip-path="url(#pbc096d83a3)" d="M 92.860109 83.28935
+    <path clip-path="url(#p4be078aaf2)" d="M 92.860109 83.28935
 L 92.943281 83.1089
 L 93.065157 82.951018
 L 93.145259 82.754358
@@ -2689,7 +2731,7 @@ L 92.862791 83.423062
 L 92.804306 83.413561
 L 92.860109 83.28935
 " style="fill:none;stroke:#000000;"/>
-    <path clip-path="url(#pbc096d83a3)" d="M 104.231354 80.327277
+    <path clip-path="url(#p4be078aaf2)" d="M 104.231354 80.327277
 L 104.685804 80.554018
 L 104.421609 80.51937
 L 104.148554 80.413173
@@ -2699,7 +2741,7 @@ L 103.723924 80.196898
 L 103.96843 80.288505
 L 104.231354 80.327277
 " style="fill:none;stroke:#000000;"/>
-    <path clip-path="url(#pbc096d83a3)" d="M 101.441656 80.698875
+    <path clip-path="url(#p4be078aaf2)" d="M 101.441656 80.698875
 L 101.561038 80.674197
 L 101.680323 80.491134
 L 101.914881 80.426526
@@ -2733,7 +2775,7 @@ L 101.498869 80.786681
 L 101.395493 80.756212
 L 101.441656 80.698875
 " style="fill:none;stroke:#000000;"/>
-    <path clip-path="url(#pbc096d83a3)" d="M 103.140399 79.728217
+    <path clip-path="url(#p4be078aaf2)" d="M 103.140399 79.728217
 L 103.043656 79.842456
 L 103.027774 79.643355
 L 102.925493 79.48546
@@ -2743,7 +2785,7 @@ L 103.396189 79.580868
 L 103.282091 79.664605
 L 103.140399 79.728217
 " style="fill:none;stroke:#000000;"/>
-    <path clip-path="url(#pbc096d83a3)" d="M 102.387785 79.004213
+    <path clip-path="url(#p4be078aaf2)" d="M 102.387785 79.004213
 L 102.611394 78.741738
 L 102.679243 78.975327
 L 102.758598 78.912122
@@ -2758,7 +2800,7 @@ L 102.497749 79.36679
 L 102.344042 79.133759
 L 102.387785 79.004213
 " style="fill:none;stroke:#000000;"/>
-    <path clip-path="url(#pbc096d83a3)" d="M 71.343271 92.643501
+    <path clip-path="url(#p4be078aaf2)" d="M 71.343271 92.643501
 L 71.369508 92.802484
 L 71.797489 93.069709
 L 72.061658 93.059392
@@ -2900,7 +2942,7 @@ L 29.863072 105.953744
 L 30.465987 104.412522
 L 30.465987 104.412522
 " style="fill:none;stroke:#000000;"/>
-    <path clip-path="url(#pbc096d83a3)" d="M 70.860862 92.57897
+    <path clip-path="url(#p4be078aaf2)" d="M 70.860862 92.57897
 L 70.721576 92.74229
 L 70.465057 92.852131
 L 70.365935 92.802257
@@ -2977,7 +3019,7 @@ L 32.418283 103.855981
 L 31.415873 103.821457
 L 30.465987 104.412522
 " style="fill:none;stroke:#000000;"/>
-    <path clip-path="url(#pbc096d83a3)" d="M 29.57885 104.966238
+    <path clip-path="url(#p4be078aaf2)" d="M 29.57885 104.966238
 L 29.460024 105.91969
 L 28.740145 107.73369
 L 28.560981 109.334823
@@ -3002,7 +3044,7 @@ L 27.392422 108.361103
 L 28.032411 106.970231
 L 29.57885 104.966238
 " style="fill:none;stroke:#000000;"/>
-    <path clip-path="url(#pbc096d83a3)" d="M 89.951404 89.957893
+    <path clip-path="url(#p4be078aaf2)" d="M 89.951404 89.957893
 L 89.967855 89.893067
 L 89.996341 89.858632
 L 90.037329 89.886859
@@ -3018,7 +3060,7 @@ L 90.03166 89.965619
 L 90.001864 89.913727
 L 89.951404 89.957893
 " style="fill:none;stroke:#000000;"/>
-    <path clip-path="url(#pbc096d83a3)" d="M 91.135091 90.511738
+    <path clip-path="url(#p4be078aaf2)" d="M 91.135091 90.511738
 L 91.072177 90.318857
 L 90.995289 90.282383
 L 90.971033 90.141227
@@ -3045,7 +3087,7 @@ L 91.245505 90.666423
 L 91.181682 90.486293
 L 91.135091 90.511738
 " style="fill:none;stroke:#000000;"/>
-    <path clip-path="url(#pbc096d83a3)" d="M 89.575753 90.351814
+    <path clip-path="url(#p4be078aaf2)" d="M 89.575753 90.351814
 L 89.576981 90.461808
 L 89.497252 90.521859
 L 89.394057 90.529695
@@ -3058,7 +3100,7 @@ L 89.404153 90.310798
 L 89.492481 90.321328
 L 89.575753 90.351814
 " style="fill:none;stroke:#000000;"/>
-    <path clip-path="url(#pbc096d83a3)" d="M 89.668687 90.756875
+    <path clip-path="url(#p4be078aaf2)" d="M 89.668687 90.756875
 L 89.618183 90.861132
 L 89.537327 90.847172
 L 89.545301 90.793188
@@ -3067,7 +3109,7 @@ L 89.560437 90.683736
 L 89.601191 90.741456
 L 89.668687 90.756875
 " style="fill:none;stroke:#000000;"/>
-    <path clip-path="url(#pbc096d83a3)" d="M 89.232602 90.560254
+    <path clip-path="url(#p4be078aaf2)" d="M 89.232602 90.560254
 L 89.227868 90.496509
 L 89.270851 90.477329
 L 89.329023 90.526075
@@ -3086,7 +3128,7 @@ L 89.155614 90.516056
 L 89.187811 90.574415
 L 89.232602 90.560254
 " style="fill:none;stroke:#000000;"/>
-    <path clip-path="url(#pbc096d83a3)" d="M 70.860862 92.57897
+    <path clip-path="url(#p4be078aaf2)" d="M 70.860862 92.57897
 L 71.082699 92.355159
 L 71.180815 92.414032
 L 71.185832 92.332031
@@ -3354,7 +3396,7 @@ L 71.757661 90.582193
 L 71.337266 91.01684
 L 71.337266 91.01684
 " style="fill:none;stroke:#000000;"/>
-    <path clip-path="url(#pbc096d83a3)" d="M 71.337266 91.01684
+    <path clip-path="url(#p4be078aaf2)" d="M 71.337266 91.01684
 L 71.24191 91.140947
 L 71.175826 91.143623
 L 71.179138 91.267879
@@ -3371,7 +3413,7 @@ L 71.472564 92.392694
 L 71.402289 92.510878
 L 71.343271 92.643501
 " style="fill:none;stroke:#000000;"/>
-    <path clip-path="url(#pbc096d83a3)" d="M 74.851028 93.330014
+    <path clip-path="url(#p4be078aaf2)" d="M 74.851028 93.330014
 L 74.904635 93.345818
 L 74.926508 93.394121
 L 74.967492 93.534287
@@ -3409,7 +3451,7 @@ L 74.789168 92.954717
 L 74.823498 93.10659
 L 74.851028 93.330014
 " style="fill:none;stroke:#000000;"/>
-    <path clip-path="url(#pbc096d83a3)" d="M 91.318983 98.527857
+    <path clip-path="url(#p4be078aaf2)" d="M 91.318983 98.527857
 L 91.443202 98.47402
 L 91.42814 98.661201
 L 91.472475 98.721472
@@ -3421,11 +3463,11 @@ L 90.943871 98.623091
 L 91.15011 98.595895
 L 91.318983 98.527857
 " style="fill:none;stroke:#000000;"/>
-    <path clip-path="url(#pbc096d83a3)" d="M 94.041957 95.639882
+    <path clip-path="url(#p4be078aaf2)" d="M 94.041957 95.639882
 L 94.228519 95.595696
 L 94.495836 95.610488
 " style="fill:none;stroke:#000000;"/>
-    <path clip-path="url(#pbc096d83a3)" d="M 97.00723 81.198605
+    <path clip-path="url(#p4be078aaf2)" d="M 97.00723 81.198605
 L 96.832503 81.213565
 L 96.776873 81.115166
 L 96.65183 81.125184
@@ -3438,7 +3480,7 @@ L 97.051772 80.985117
 L 97.090126 81.125139
 L 97.00723 81.198605
 " style="fill:none;stroke:#000000;"/>
-    <path clip-path="url(#pbc096d83a3)" d="M 84.598241 102.943379
+    <path clip-path="url(#p4be078aaf2)" d="M 84.598241 102.943379
 L 84.749057 102.136629
 L 85.397242 101.391003
 L 85.878896 100.996153
@@ -3698,7 +3740,7 @@ L 89.347134 85.129933
 L 88.74 84.866324
 L 88.74 84.866324
 " style="fill:none;stroke:#000000;"/>
-    <path clip-path="url(#pbc096d83a3)" d="M 88.74 84.111635
+    <path clip-path="url(#p4be078aaf2)" d="M 88.74 84.111635
 L 88.881341 83.941009
 L 88.80925 83.59903
 L 88.974501 83.645928
@@ -4007,15 +4049,15 @@ L 84.446225 103.45163
 L 84.598241 102.943379
 L 84.598241 102.943379
 " style="fill:none;stroke:#000000;"/>
-    <path clip-path="url(#pbc096d83a3)" d="M 88.56826 84.726118
+    <path clip-path="url(#p4be078aaf2)" d="M 88.56826 84.726118
 L 88.739999 84.866324
 " style="fill:none;stroke:#000000;"/>
-    <path clip-path="url(#pbc096d83a3)" d="M 88.739995 61.243367
+    <path clip-path="url(#p4be078aaf2)" d="M 88.739995 61.243367
 L 88.640891 61.266489
 L 88.700027 61.026576
 L 88.739995 60.999741
 " style="fill:none;stroke:#000000;"/>
-    <path clip-path="url(#pbc096d83a3)" d="M 108.177387 74.645327
+    <path clip-path="url(#p4be078aaf2)" d="M 108.177387 74.645327
 L 107.992909 74.418208
 L 107.872577 74.344942
 L 107.818421 74.187223
@@ -4031,7 +4073,7 @@ L 108.574848 74.867641
 L 108.464537 74.884435
 L 108.177387 74.645327
 " style="fill:none;stroke:#000000;"/>
-    <path clip-path="url(#pbc096d83a3)" d="M 88.74 84.866322
+    <path clip-path="url(#p4be078aaf2)" d="M 88.74 84.866322
 L 88.56826 84.726118
 L 88.36823 84.551077
 L 88.364284 84.43321
@@ -4055,7 +4097,7 @@ L 88.730957 84.282071
 L 88.694974 84.192756
 L 88.74 84.111635
 " style="fill:none;stroke:#000000;"/>
-    <path clip-path="url(#pbc096d83a3)" d="M 88.74 85.344749
+    <path clip-path="url(#p4be078aaf2)" d="M 88.74 85.344749
 L 88.732425 85.352584
 L 88.682313 85.352676
 L 88.594572 85.301815
@@ -4063,12 +4105,12 @@ L 88.598668 85.276066
 L 88.659949 85.229253
 L 88.74 85.216959
 " style="fill:none;stroke:#000000;"/>
-    <path clip-path="url(#pbc096d83a3)" d="M 88.74 85.216959
+    <path clip-path="url(#p4be078aaf2)" d="M 88.74 85.216959
 L 88.807606 85.208051
 L 88.817264 85.267691
 L 88.74 85.344749
 " style="fill:none;stroke:#000000;"/>
-    <path clip-path="url(#pbc096d83a3)" d="M 88.74 60.999741
+    <path clip-path="url(#p4be078aaf2)" d="M 88.74 60.999741
 L 89.049225 60.877543
 L 89.362353 60.776114
 L 89.420318 60.965897
@@ -4076,7 +4118,7 @@ L 89.176408 61.063953
 L 89.023046 61.08944
 L 88.74 61.243367
 " style="fill:none;stroke:#000000;"/>
-    <path clip-path="url(#pbc096d83a3)" d="M 36.473868 117.473549
+    <path clip-path="url(#p4be078aaf2)" d="M 36.473868 117.473549
 L 37.947453 118.065091
 L 38.035805 119.025769
 L 38.913724 119.213803
@@ -4087,7 +4129,7 @@ L 37.165331 118.696952
 L 36.059391 118.302979
 L 36.473868 117.473549
 " style="fill:none;stroke:#000000;"/>
-    <path clip-path="url(#pbc096d83a3)" d="M 139.719204 108.375468
+    <path clip-path="url(#p4be078aaf2)" d="M 139.719204 108.375468
 L 140.364714 107.959575
 L 140.847173 107.166534
 L 141.122616 107.227946
@@ -4097,7 +4139,7 @@ L 140.484739 108.893625
 L 139.972363 108.542318
 L 139.719204 108.375468
 " style="fill:none;stroke:#000000;"/>
-    <path clip-path="url(#pbc096d83a3)" d="M 89.663127 60.532802
+    <path clip-path="url(#p4be078aaf2)" d="M 89.663127 60.532802
 L 89.538614 60.613516
 L 89.372817 60.461212
 L 89.461257 60.192737
@@ -4107,7 +4149,7 @@ L 90.082173 60.436357
 L 89.884372 60.604356
 L 89.663127 60.532802
 " style="fill:none;stroke:#000000;"/>
-    <path clip-path="url(#pbc096d83a3)" d="M 73.611163 96.892853
+    <path clip-path="url(#p4be078aaf2)" d="M 73.611163 96.892853
 L 73.728236 97.02523
 L 73.749442 97.085351
 L 73.545299 97.185109
@@ -4116,7 +4158,7 @@ L 73.39268 96.917502
 L 73.508251 96.955174
 L 73.611163 96.892853
 " style="fill:none;stroke:#000000;"/>
-    <path clip-path="url(#pbc096d83a3)" d="M 82.692137 75.529018
+    <path clip-path="url(#p4be078aaf2)" d="M 82.692137 75.529018
 L 82.641451 75.526683
 L 82.588872 75.511353
 L 82.489869 75.453336
@@ -4134,7 +4176,7 @@ L 82.818703 75.526862
 L 82.799142 75.53021
 L 82.692137 75.529018
 " style="fill:none;stroke:#000000;"/>
-    <path clip-path="url(#pbc096d83a3)" d="M 82.903721 75.634175
+    <path clip-path="url(#p4be078aaf2)" d="M 82.903721 75.634175
 L 82.90988 75.596433
 L 82.979235 75.545059
 L 83.041236 75.579297
@@ -4144,13 +4186,13 @@ L 83.071387 75.632714
 L 82.980015 75.64503
 L 82.903721 75.634175
 " style="fill:none;stroke:#000000;"/>
-    <path clip-path="url(#pbc096d83a3)" d="M 83.121926 75.658391
+    <path clip-path="url(#p4be078aaf2)" d="M 83.121926 75.658391
 L 83.11773 75.629005
 L 83.243569 75.584102
 L 83.238848 75.621068
 L 83.121926 75.658391
 " style="fill:none;stroke:#000000;"/>
-    <path clip-path="url(#pbc096d83a3)" d="M 83.46592 75.669645
+    <path clip-path="url(#p4be078aaf2)" d="M 83.46592 75.669645
 L 83.440503 75.661674
 L 83.341479 75.607851
 L 83.348108 75.588613
@@ -4160,7 +4202,7 @@ L 83.500753 75.605193
 L 83.513556 75.611428
 L 83.46592 75.669645
 " style="fill:none;stroke:#000000;"/>
-    <path clip-path="url(#pbc096d83a3)" d="M 83.819194 75.672173
+    <path clip-path="url(#p4be078aaf2)" d="M 83.819194 75.672173
 L 83.792967 75.616813
 L 83.811022 75.582254
 L 83.904974 75.598423
@@ -4168,7 +4210,7 @@ L 83.899719 75.620712
 L 83.873745 75.657692
 L 83.819194 75.672173
 " style="fill:none;stroke:#000000;"/>
-    <path clip-path="url(#pbc096d83a3)" d="M 75.826484 91.439922
+    <path clip-path="url(#p4be078aaf2)" d="M 75.826484 91.439922
 L 75.830865 91.509835
 L 75.641875 91.634192
 L 75.496901 91.667521
@@ -4177,14 +4219,14 @@ L 75.60394 91.523997
 L 75.658419 91.423245
 L 75.826484 91.439922
 " style="fill:none;stroke:#000000;"/>
-    <path clip-path="url(#pbc096d83a3)" d="M 76.179658 91.186034
+    <path clip-path="url(#p4be078aaf2)" d="M 76.179658 91.186034
 L 76.219647 91.285019
 L 76.2425 91.430641
 L 76.180611 91.450847
 L 76.092122 91.219123
 L 76.179658 91.186034
 " style="fill:none;stroke:#000000;"/>
-    <path clip-path="url(#pbc096d83a3)" d="M 76.293893 91.433218
+    <path clip-path="url(#p4be078aaf2)" d="M 76.293893 91.433218
 L 76.223122 91.629749
 L 76.04098 91.631545
 L 76.06317 91.583735
@@ -4192,7 +4234,7 @@ L 76.191591 91.558702
 L 76.26611 91.439681
 L 76.293893 91.433218
 " style="fill:none;stroke:#000000;"/>
-    <path clip-path="url(#pbc096d83a3)" d="M 81.369251 92.332588
+    <path clip-path="url(#p4be078aaf2)" d="M 81.369251 92.332588
 L 81.300034 92.422798
 L 81.322144 92.52949
 L 81.3895 92.646343
@@ -4202,7 +4244,7 @@ L 81.239796 92.374982
 L 81.287424 92.311858
 L 81.369251 92.332588
 " style="fill:none;stroke:#000000;"/>
-    <path clip-path="url(#pbc096d83a3)" d="M 95.078402 94.716767
+    <path clip-path="url(#p4be078aaf2)" d="M 95.078402 94.716767
 L 95.019255 94.458511
 L 95.088988 94.328449
 L 95.038813 94.19598
@@ -4255,7 +4297,7 @@ L 95.418416 94.861245
 L 95.322074 94.752169
 L 95.078402 94.716767
 " style="fill:none;stroke:#000000;"/>
-    <path clip-path="url(#pbc096d83a3)" d="M 81.869102 92.014436
+    <path clip-path="url(#p4be078aaf2)" d="M 81.869102 92.014436
 L 81.904558 92.048324
 L 81.936396 92.227832
 L 81.923836 92.389346
@@ -4264,7 +4306,7 @@ L 81.858105 92.354121
 L 81.836062 92.168758
 L 81.869102 92.014436
 " style="fill:none;stroke:#000000;"/>
-    <path clip-path="url(#pbc096d83a3)" d="M 83.630286 89.612006
+    <path clip-path="url(#p4be078aaf2)" d="M 83.630286 89.612006
 L 83.693245 89.636293
 L 83.695629 89.673096
 L 83.660975 89.70283
@@ -4273,7 +4315,7 @@ L 83.563701 89.64345
 L 83.616433 89.610068
 L 83.630286 89.612006
 " style="fill:none;stroke:#000000;"/>
-    <path clip-path="url(#pbc096d83a3)" d="M 83.65529 89.274993
+    <path clip-path="url(#p4be078aaf2)" d="M 83.65529 89.274993
 L 83.750834 89.330464
 L 83.76461 89.450141
 L 83.727438 89.453549
@@ -4281,7 +4323,7 @@ L 83.608405 89.363848
 L 83.605535 89.300083
 L 83.65529 89.274993
 " style="fill:none;stroke:#000000;"/>
-    <path clip-path="url(#pbc096d83a3)" d="M 84.717434 89.801608
+    <path clip-path="url(#p4be078aaf2)" d="M 84.717434 89.801608
 L 84.651454 89.76956
 L 84.622848 89.691513
 L 84.70903 89.653121
@@ -4291,7 +4333,7 @@ L 84.822687 89.781255
 L 84.744701 89.802818
 L 84.717434 89.801608
 " style="fill:none;stroke:#000000;"/>
-    <path clip-path="url(#pbc096d83a3)" d="M 85.025446 88.31301
+    <path clip-path="url(#p4be078aaf2)" d="M 85.025446 88.31301
 L 84.912097 88.361454
 L 84.850833 88.312727
 L 84.918483 88.228919
@@ -4302,7 +4344,7 @@ L 85.125459 88.217961
 L 85.063647 88.278345
 L 85.025446 88.31301
 " style="fill:none;stroke:#000000;"/>
-    <path clip-path="url(#pbc096d83a3)" d="M 85.763769 87.857124
+    <path clip-path="url(#p4be078aaf2)" d="M 85.763769 87.857124
 L 85.674693 87.895533
 L 85.489999 87.882839
 L 85.357762 87.867513
@@ -4348,7 +4390,7 @@ L 85.796619 87.761073
 L 85.807906 87.814589
 L 85.763769 87.857124
 " style="fill:none;stroke:#000000;"/>
-    <path clip-path="url(#pbc096d83a3)" d="M 85.634862 89.300055
+    <path clip-path="url(#p4be078aaf2)" d="M 85.634862 89.300055
 L 85.722078 89.224684
 L 85.788478 89.216251
 L 85.804761 89.238932
@@ -4360,7 +4402,7 @@ L 85.662744 89.372136
 L 85.626622 89.317803
 L 85.634862 89.300055
 " style="fill:none;stroke:#000000;"/>
-    <path clip-path="url(#pbc096d83a3)" d="M 90.705938 86.408421
+    <path clip-path="url(#p4be078aaf2)" d="M 90.705938 86.408421
 L 90.620669 86.43311
 L 90.559319 86.40617
 L 90.543155 86.304703
@@ -4369,7 +4411,7 @@ L 90.632736 86.309757
 L 90.705123 86.394888
 L 90.705938 86.408421
 " style="fill:none;stroke:#000000;"/>
-    <path clip-path="url(#pbc096d83a3)" d="M 90.153106 86.458917
+    <path clip-path="url(#p4be078aaf2)" d="M 90.153106 86.458917
 L 90.075566 86.356964
 L 90.160424 86.321275
 L 90.218554 86.375888
@@ -4377,7 +4419,7 @@ L 90.253698 86.485749
 L 90.211072 86.529336
 L 90.153106 86.458917
 " style="fill:none;stroke:#000000;"/>
-    <path clip-path="url(#pbc096d83a3)" d="M 90.410119 86.830149
+    <path clip-path="url(#p4be078aaf2)" d="M 90.410119 86.830149
 L 90.325408 86.748894
 L 90.252824 86.572523
 L 90.362641 86.481856
@@ -4387,7 +4429,7 @@ L 90.581526 86.766974
 L 90.477061 86.843549
 L 90.410119 86.830149
 " style="fill:none;stroke:#000000;"/>
-    <path clip-path="url(#pbc096d83a3)" d="M 86.313784 88.374065
+    <path clip-path="url(#p4be078aaf2)" d="M 86.313784 88.374065
 L 86.337276 88.38091
 L 86.247924 88.401482
 L 86.153779 88.390126
@@ -4401,7 +4443,7 @@ L 86.28427 88.240834
 L 86.333989 88.316471
 L 86.313784 88.374065
 " style="fill:none;stroke:#000000;"/>
-    <path clip-path="url(#pbc096d83a3)" d="M 90.648961 88.30497
+    <path clip-path="url(#p4be078aaf2)" d="M 90.648961 88.30497
 L 90.728495 88.193307
 L 90.803483 88.184177
 L 90.918162 88.377918
@@ -4409,7 +4451,7 @@ L 90.668704 88.355835
 L 90.642806 88.332548
 L 90.648961 88.30497
 " style="fill:none;stroke:#000000;"/>
-    <path clip-path="url(#pbc096d83a3)" d="M 90.374531 88.632075
+    <path clip-path="url(#p4be078aaf2)" d="M 90.374531 88.632075
 L 90.328148 88.574735
 L 90.413004 88.508332
 L 90.576887 88.409934
@@ -4421,7 +4463,7 @@ L 90.5378 88.660079
 L 90.502943 88.703654
 L 90.374531 88.632075
 " style="fill:none;stroke:#000000;"/>
-    <path clip-path="url(#pbc096d83a3)" d="M 87.033963 88.560194
+    <path clip-path="url(#p4be078aaf2)" d="M 87.033963 88.560194
 L 87.087571 88.586027
 L 87.097871 88.616573
 L 87.140706 88.607519
@@ -4442,7 +4484,7 @@ L 86.870466 88.540992
 L 86.955297 88.530038
 L 87.033963 88.560194
 " style="fill:none;stroke:#000000;"/>
-    <path clip-path="url(#pbc096d83a3)" d="M 87.26174 88.699044
+    <path clip-path="url(#p4be078aaf2)" d="M 87.26174 88.699044
 L 87.296076 88.73748
 L 87.302273 88.766796
 L 87.33365 88.814436
@@ -4508,7 +4550,7 @@ L 87.145045 88.734433
 L 87.199152 88.703207
 L 87.26174 88.699044
 " style="fill:none;stroke:#000000;"/>
-    <path clip-path="url(#pbc096d83a3)" d="M 87.760409 89.661063
+    <path clip-path="url(#p4be078aaf2)" d="M 87.760409 89.661063
 L 88.073952 89.688117
 L 88.267952 89.979717
 L 88.112699 89.997207
@@ -4569,7 +4611,7 @@ L 87.677458 89.619305
 L 87.67307 89.824844
 L 87.760409 89.661063
 " style="fill:none;stroke:#000000;"/>
-    <path clip-path="url(#pbc096d83a3)" d="M 85.858316 87.880933
+    <path clip-path="url(#p4be078aaf2)" d="M 85.858316 87.880933
 L 85.846183 87.950512
 L 85.796389 87.97873
 L 85.690054 87.90105
@@ -4578,7 +4620,7 @@ L 85.858316 87.880933
 " style="fill:none;stroke:#000000;"/>
    </g>
    <g id="LineCollection_1">
-    <path clip-path="url(#pbc096d83a3)" d="M 88.74 7.295731
+    <path clip-path="url(#p4be078aaf2)" d="M 88.74 7.295731
 L 88.74 11.461508
 L 88.74 15.245533
 L 88.74 18.699043
@@ -4679,7 +4721,7 @@ L 88.74 87.038419
 L 88.74 87.307037
 L 88.74 87.575202
 " style="fill:none;stroke:#b0b0b0;stroke-width:0.8;"/>
-    <path clip-path="url(#pbc096d83a3)" d="M 18.207194 48.017866
+    <path clip-path="url(#p4be078aaf2)" d="M 18.207194 48.017866
 L 21.814863 50.100754
 L 25.091925 51.992766
 L 28.082752 53.719522
@@ -4780,7 +4822,7 @@ L 87.266388 87.88921
 L 87.499018 88.023519
 L 87.731256 88.157601
 " style="fill:none;stroke:#b0b0b0;stroke-width:0.8;"/>
-    <path clip-path="url(#pbc096d83a3)" d="M 18.207194 129.462134
+    <path clip-path="url(#p4be078aaf2)" d="M 18.207194 129.462134
 L 21.814863 127.379246
 L 25.091925 125.487234
 L 28.082752 123.760478
@@ -4881,7 +4923,7 @@ L 87.266388 89.59079
 L 87.499018 89.456481
 L 87.731256 89.322399
 " style="fill:none;stroke:#b0b0b0;stroke-width:0.8;"/>
-    <path clip-path="url(#pbc096d83a3)" d="M 88.74 170.184269
+    <path clip-path="url(#p4be078aaf2)" d="M 88.74 170.184269
 L 88.74 166.018492
 L 88.74 162.234467
 L 88.74 158.780957
@@ -4982,7 +5024,7 @@ L 88.74 90.441581
 L 88.74 90.172963
 L 88.74 89.904798
 " style="fill:none;stroke:#b0b0b0;stroke-width:0.8;"/>
-    <path clip-path="url(#pbc096d83a3)" d="M 159.272806 129.462134
+    <path clip-path="url(#p4be078aaf2)" d="M 159.272806 129.462134
 L 155.665137 127.379246
 L 152.388075 125.487234
 L 149.397248 123.760478
@@ -5083,7 +5125,7 @@ L 90.213612 89.59079
 L 89.980982 89.456481
 L 89.748744 89.322399
 " style="fill:none;stroke:#b0b0b0;stroke-width:0.8;"/>
-    <path clip-path="url(#pbc096d83a3)" d="M 159.272806 48.017866
+    <path clip-path="url(#p4be078aaf2)" d="M 159.272806 48.017866
 L 155.665137 50.100754
 L 152.388075 51.992766
 L 149.397248 53.719522
@@ -5184,7 +5226,7 @@ L 90.213612 87.88921
 L 89.980982 88.023519
 L 89.748744 88.157601
 " style="fill:none;stroke:#b0b0b0;stroke-width:0.8;"/>
-    <path clip-path="url(#pbc096d83a3)" d="M 88.74 7.295731
+    <path clip-path="url(#p4be078aaf2)" d="M 88.74 7.295731
 L 88.74 11.461508
 L 88.74 15.245533
 L 88.74 18.699043
@@ -5287,7 +5329,7 @@ L 88.74 87.575202
 " style="fill:none;stroke:#b0b0b0;stroke-width:0.8;"/>
    </g>
    <g id="LineCollection_2">
-    <path clip-path="url(#pbc096d83a3)" d="M 88.74 11.810175
+    <path clip-path="url(#p4be078aaf2)" d="M 88.74 11.810175
 L 83.860809 11.965059
 L 79.001265 12.429089
 L 74.180935 13.200397
@@ -5388,7 +5430,7 @@ L 98.478735 12.429089
 L 93.619191 11.965059
 L 88.74 11.810175
 " style="fill:none;stroke:#b0b0b0;stroke-width:0.8;"/>
-    <path clip-path="url(#pbc096d83a3)" d="M 88.74 44.468302
+    <path clip-path="url(#p4be078aaf2)" d="M 88.74 44.468302
 L 85.932115 44.557435
 L 83.135537 44.824476
 L 80.361526 45.268349
@@ -5489,7 +5531,7 @@ L 94.344463 44.824476
 L 91.547885 44.557435
 L 88.74 44.468302
 " style="fill:none;stroke:#b0b0b0;stroke-width:0.8;"/>
-    <path clip-path="url(#pbc096d83a3)" d="M 88.74 59.197459
+    <path clip-path="url(#p4be078aaf2)" d="M 88.74 59.197459
 L 86.866296 59.256938
 L 85.000137 59.435135
 L 83.149037 59.731332
@@ -5590,7 +5632,7 @@ L 92.479863 59.435135
 L 90.613704 59.256938
 L 88.74 59.197459
 " style="fill:none;stroke:#b0b0b0;stroke-width:0.8;"/>
-    <path clip-path="url(#pbc096d83a3)" d="M 88.74 68.006661
+    <path clip-path="url(#p4be078aaf2)" d="M 88.74 68.006661
 L 87.42501 68.048404
 L 86.115316 68.173465
 L 84.81619 68.381339
@@ -5691,7 +5733,7 @@ L 91.364684 68.173465
 L 90.05499 68.048404
 L 88.74 68.006661
 " style="fill:none;stroke:#b0b0b0;stroke-width:0.8;"/>
-    <path clip-path="url(#pbc096d83a3)" d="M 88.74 74.189073
+    <path clip-path="url(#p4be078aaf2)" d="M 88.74 74.189073
 L 87.817123 74.218369
 L 86.897962 74.306138
 L 85.986219 74.452027
@@ -5792,7 +5834,7 @@ L 90.582038 74.306138
 L 89.662877 74.218369
 L 88.74 74.189073
 " style="fill:none;stroke:#b0b0b0;stroke-width:0.8;"/>
-    <path clip-path="url(#pbc096d83a3)" d="M 88.74 79.030154
+    <path clip-path="url(#p4be078aaf2)" d="M 88.74 79.030154
 L 88.124164 79.049704
 L 87.510807 79.108272
 L 86.9024 79.205624
@@ -5893,7 +5935,7 @@ L 89.969193 79.108272
 L 89.355836 79.049704
 L 88.74 79.030154
 " style="fill:none;stroke:#b0b0b0;stroke-width:0.8;"/>
-    <path clip-path="url(#pbc096d83a3)" d="M 88.74 83.152163
+    <path clip-path="url(#p4be078aaf2)" d="M 88.74 83.152163
 L 88.385597 83.163413
 L 88.032622 83.197118
 L 87.682495 83.253142
@@ -5994,7 +6036,7 @@ L 89.447378 83.197118
 L 89.094403 83.163413
 L 88.74 83.152163
 " style="fill:none;stroke:#b0b0b0;stroke-width:0.8;"/>
-    <path clip-path="url(#pbc096d83a3)" d="M 88.74 86.914044
+    <path clip-path="url(#p4be078aaf2)" d="M 88.74 86.914044
 L 88.624191 86.91772
 L 88.508848 86.928734
 L 88.394435 86.947041
@@ -6194,7 +6236,7 @@ L 170.28 88.74
   </g>
  </g>
  <defs>
-  <clipPath id="pbc096d83a3">
+  <clipPath id="p4be078aaf2">
    <path d="M 170.28 88.74
 L 170.081373 94.427943
 L 169.486458 100.088175
@@ -6291,25 +6333,402 @@ L 170.28 88.74
   </clipPath>
  </defs>
 </svg>
-<pre>&lt;cartopy.crs.NorthPolarStereo object at 0x2b5f22739720&gt;</pre></div>
+<pre>&lt;cartopy.crs.NorthPolarStereo object at 0x2acff2950f90&gt;</pre></div>
 </div>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span>
+<span></span><span class="n">x</span>
 </pre></div>
 </div>
 </div>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span>
-</pre></div>
-</div>
+<div class="output_area rendered_html docutils container">
+<div><svg style="position: absolute; width: 0; height: 0; overflow: hidden">
+<defs>
+<symbol id="icon-database" viewBox="0 0 32 32">
+<path d="M16 0c-8.837 0-16 2.239-16 5v4c0 2.761 7.163 5 16 5s16-2.239 16-5v-4c0-2.761-7.163-5-16-5z"></path>
+<path d="M16 17c-8.837 0-16-2.239-16-5v6c0 2.761 7.163 5 16 5s16-2.239 16-5v-6c0 2.761-7.163 5-16 5z"></path>
+<path d="M16 26c-8.837 0-16-2.239-16-5v6c0 2.761 7.163 5 16 5s16-2.239 16-5v-6c0 2.761-7.163 5-16 5z"></path>
+</symbol>
+<symbol id="icon-file-text2" viewBox="0 0 32 32">
+<path d="M28.681 7.159c-0.694-0.947-1.662-2.053-2.724-3.116s-2.169-2.030-3.116-2.724c-1.612-1.182-2.393-1.319-2.841-1.319h-15.5c-1.378 0-2.5 1.121-2.5 2.5v27c0 1.378 1.122 2.5 2.5 2.5h23c1.378 0 2.5-1.122 2.5-2.5v-19.5c0-0.448-0.137-1.23-1.319-2.841zM24.543 5.457c0.959 0.959 1.712 1.825 2.268 2.543h-4.811v-4.811c0.718 0.556 1.584 1.309 2.543 2.268zM28 29.5c0 0.271-0.229 0.5-0.5 0.5h-23c-0.271 0-0.5-0.229-0.5-0.5v-27c0-0.271 0.229-0.5 0.5-0.5 0 0 15.499-0 15.5 0v7c0 0.552 0.448 1 1 1h7v19.5z"></path>
+<path d="M23 26h-14c-0.552 0-1-0.448-1-1s0.448-1 1-1h14c0.552 0 1 0.448 1 1s-0.448 1-1 1z"></path>
+<path d="M23 22h-14c-0.552 0-1-0.448-1-1s0.448-1 1-1h14c0.552 0 1 0.448 1 1s-0.448 1-1 1z"></path>
+<path d="M23 18h-14c-0.552 0-1-0.448-1-1s0.448-1 1-1h14c0.552 0 1 0.448 1 1s-0.448 1-1 1z"></path>
+</symbol>
+</defs>
+</svg>
+<style>/* CSS stylesheet for displaying xarray objects in jupyterlab.
+ *
+ */
+
+:root {
+  --xr-font-color0: var(--jp-content-font-color0, rgba(0, 0, 0, 1));
+  --xr-font-color2: var(--jp-content-font-color2, rgba(0, 0, 0, 0.54));
+  --xr-font-color3: var(--jp-content-font-color3, rgba(0, 0, 0, 0.38));
+  --xr-border-color: var(--jp-border-color2, #e0e0e0);
+  --xr-disabled-color: var(--jp-layout-color3, #bdbdbd);
+  --xr-background-color: var(--jp-layout-color0, white);
+  --xr-background-color-row-even: var(--jp-layout-color1, white);
+  --xr-background-color-row-odd: var(--jp-layout-color2, #eeeeee);
+}
+
+html[theme=dark],
+body.vscode-dark {
+  --xr-font-color0: rgba(255, 255, 255, 1);
+  --xr-font-color2: rgba(255, 255, 255, 0.54);
+  --xr-font-color3: rgba(255, 255, 255, 0.38);
+  --xr-border-color: #1F1F1F;
+  --xr-disabled-color: #515151;
+  --xr-background-color: #111111;
+  --xr-background-color-row-even: #111111;
+  --xr-background-color-row-odd: #313131;
+}
+
+.xr-wrap {
+  display: block;
+  min-width: 300px;
+  max-width: 700px;
+}
+
+.xr-text-repr-fallback {
+  /* fallback to plain text repr when CSS is not injected (untrusted notebook) */
+  display: none;
+}
+
+.xr-header {
+  padding-top: 6px;
+  padding-bottom: 6px;
+  margin-bottom: 4px;
+  border-bottom: solid 1px var(--xr-border-color);
+}
+
+.xr-header > div,
+.xr-header > ul {
+  display: inline;
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.xr-obj-type,
+.xr-array-name {
+  margin-left: 2px;
+  margin-right: 10px;
+}
+
+.xr-obj-type {
+  color: var(--xr-font-color2);
+}
+
+.xr-sections {
+  padding-left: 0 !important;
+  display: grid;
+  grid-template-columns: 150px auto auto 1fr 20px 20px;
+}
+
+.xr-section-item {
+  display: contents;
+}
+
+.xr-section-item input {
+  display: none;
+}
+
+.xr-section-item input + label {
+  color: var(--xr-disabled-color);
+}
+
+.xr-section-item input:enabled + label {
+  cursor: pointer;
+  color: var(--xr-font-color2);
+}
+
+.xr-section-item input:enabled + label:hover {
+  color: var(--xr-font-color0);
+}
+
+.xr-section-summary {
+  grid-column: 1;
+  color: var(--xr-font-color2);
+  font-weight: 500;
+}
+
+.xr-section-summary > span {
+  display: inline-block;
+  padding-left: 0.5em;
+}
+
+.xr-section-summary-in:disabled + label {
+  color: var(--xr-font-color2);
+}
+
+.xr-section-summary-in + label:before {
+  display: inline-block;
+  content: '►';
+  font-size: 11px;
+  width: 15px;
+  text-align: center;
+}
+
+.xr-section-summary-in:disabled + label:before {
+  color: var(--xr-disabled-color);
+}
+
+.xr-section-summary-in:checked + label:before {
+  content: '▼';
+}
+
+.xr-section-summary-in:checked + label > span {
+  display: none;
+}
+
+.xr-section-summary,
+.xr-section-inline-details {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+.xr-section-inline-details {
+  grid-column: 2 / -1;
+}
+
+.xr-section-details {
+  display: none;
+  grid-column: 1 / -1;
+  margin-bottom: 5px;
+}
+
+.xr-section-summary-in:checked ~ .xr-section-details {
+  display: contents;
+}
+
+.xr-array-wrap {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: 20px auto;
+}
+
+.xr-array-wrap > label {
+  grid-column: 1;
+  vertical-align: top;
+}
+
+.xr-preview {
+  color: var(--xr-font-color3);
+}
+
+.xr-array-preview,
+.xr-array-data {
+  padding: 0 5px !important;
+  grid-column: 2;
+}
+
+.xr-array-data,
+.xr-array-in:checked ~ .xr-array-preview {
+  display: none;
+}
+
+.xr-array-in:checked ~ .xr-array-data,
+.xr-array-preview {
+  display: inline-block;
+}
+
+.xr-dim-list {
+  display: inline-block !important;
+  list-style: none;
+  padding: 0 !important;
+  margin: 0;
+}
+
+.xr-dim-list li {
+  display: inline-block;
+  padding: 0;
+  margin: 0;
+}
+
+.xr-dim-list:before {
+  content: '(';
+}
+
+.xr-dim-list:after {
+  content: ')';
+}
+
+.xr-dim-list li:not(:last-child):after {
+  content: ',';
+  padding-right: 5px;
+}
+
+.xr-has-index {
+  font-weight: bold;
+}
+
+.xr-var-list,
+.xr-var-item {
+  display: contents;
+}
+
+.xr-var-item > div,
+.xr-var-item label,
+.xr-var-item > .xr-var-name span {
+  background-color: var(--xr-background-color-row-even);
+  margin-bottom: 0;
+}
+
+.xr-var-item > .xr-var-name:hover span {
+  padding-right: 5px;
+}
+
+.xr-var-list > li:nth-child(odd) > div,
+.xr-var-list > li:nth-child(odd) > label,
+.xr-var-list > li:nth-child(odd) > .xr-var-name span {
+  background-color: var(--xr-background-color-row-odd);
+}
+
+.xr-var-name {
+  grid-column: 1;
+}
+
+.xr-var-dims {
+  grid-column: 2;
+}
+
+.xr-var-dtype {
+  grid-column: 3;
+  text-align: right;
+  color: var(--xr-font-color2);
+}
+
+.xr-var-preview {
+  grid-column: 4;
+}
+
+.xr-var-name,
+.xr-var-dims,
+.xr-var-dtype,
+.xr-preview,
+.xr-attrs dt {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding-right: 10px;
+}
+
+.xr-var-name:hover,
+.xr-var-dims:hover,
+.xr-var-dtype:hover,
+.xr-attrs dt:hover {
+  overflow: visible;
+  width: auto;
+  z-index: 1;
+}
+
+.xr-var-attrs,
+.xr-var-data {
+  display: none;
+  background-color: var(--xr-background-color) !important;
+  padding-bottom: 5px !important;
+}
+
+.xr-var-attrs-in:checked ~ .xr-var-attrs,
+.xr-var-data-in:checked ~ .xr-var-data {
+  display: block;
+}
+
+.xr-var-data > table {
+  float: right;
+}
+
+.xr-var-name span,
+.xr-var-data,
+.xr-attrs {
+  padding-left: 25px !important;
+}
+
+.xr-attrs,
+.xr-var-attrs,
+.xr-var-data {
+  grid-column: 1 / -1;
+}
+
+dl.xr-attrs {
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: 125px auto;
+}
+
+.xr-attrs dt,
+.xr-attrs dd {
+  padding: 0;
+  margin: 0;
+  float: left;
+  padding-right: 10px;
+  width: auto;
+}
+
+.xr-attrs dt {
+  font-weight: normal;
+  grid-column: 1;
+}
+
+.xr-attrs dt:hover span {
+  display: inline-block;
+  background: var(--xr-background-color);
+  padding-right: 10px;
+}
+
+.xr-attrs dd {
+  grid-column: 2;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+.xr-icon-database,
+.xr-icon-file-text2 {
+  display: inline-block;
+  vertical-align: middle;
+  width: 1em;
+  height: 1.5em !important;
+  stroke-width: 0;
+  stroke: currentColor;
+  fill: currentColor;
+}
+</style><pre class='xr-text-repr-fallback'>&lt;xarray.Dataset&gt;
+Dimensions:              (y: 1006, x: 1006)
+Coordinates:
+    time                 datetime64[ns] 2021-07-11
+    step                 timedelta64[ns] 00:00:00
+    orderedSequenceData  float64 1.0
+    valid_time           datetime64[ns] 2021-07-11
+Dimensions without coordinates: y, x
+Data variables:
+    swell                (y, x) float32 nan nan nan nan nan ... nan nan nan nan
+    gfs_wave_projection  object None
+Attributes:
+    GRIB_edition:            2
+    GRIB_centre:             kwbc
+    GRIB_centreDescription:  US National Weather Service - NCEP
+    GRIB_subCentre:          0
+    Conventions:             CF-1.7
+    institution:             US National Weather Service - NCEP
+    model:                   gfs_wave
+    product:                 arctic.9km
+    description:             Global Forecast System - Wave Products
+    remote_grib:             https://noaa-gfs-bdp-pds.s3.amazonaws.com/gfs.20...
+    local_grib:              /p/cwfs/blaylock/data/gfs_wave/20210711/gfswave....</pre><div class='xr-wrap' hidden><div class='xr-header'><div class='xr-obj-type'>xarray.Dataset</div></div><ul class='xr-sections'><li class='xr-section-item'><input id='section-d1d78fd6-e3b9-4308-87b6-c8b60aa2cbab' class='xr-section-summary-in' type='checkbox' disabled ><label for='section-d1d78fd6-e3b9-4308-87b6-c8b60aa2cbab' class='xr-section-summary'  title='Expand/collapse section'>Dimensions:</label><div class='xr-section-inline-details'><ul class='xr-dim-list'><li><span>y</span>: 1006</li><li><span>x</span>: 1006</li></ul></div><div class='xr-section-details'></div></li><li class='xr-section-item'><input id='section-27a5bb25-f505-48c6-98d9-e1008c905cb3' class='xr-section-summary-in' type='checkbox'  checked><label for='section-27a5bb25-f505-48c6-98d9-e1008c905cb3' class='xr-section-summary' >Coordinates: <span>(4)</span></label><div class='xr-section-inline-details'></div><div class='xr-section-details'><ul class='xr-var-list'><li class='xr-var-item'><div class='xr-var-name'><span>time</span></div><div class='xr-var-dims'>()</div><div class='xr-var-dtype'>datetime64[ns]</div><div class='xr-var-preview xr-preview'>2021-07-11</div><input id='attrs-e5bb90fb-beef-45eb-9ce4-460288fee9ce' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-e5bb90fb-beef-45eb-9ce4-460288fee9ce' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-35904651-64b5-4e7d-a070-b47263402da5' class='xr-var-data-in' type='checkbox'><label for='data-35904651-64b5-4e7d-a070-b47263402da5' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>long_name :</span></dt><dd>initial time of forecast</dd><dt><span>standard_name :</span></dt><dd>forecast_reference_time</dd></dl></div><div class='xr-var-data'><pre>array(&#x27;2021-07-11T00:00:00.000000000&#x27;, dtype=&#x27;datetime64[ns]&#x27;)</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span>step</span></div><div class='xr-var-dims'>()</div><div class='xr-var-dtype'>timedelta64[ns]</div><div class='xr-var-preview xr-preview'>00:00:00</div><input id='attrs-bdcfbb0a-e8e9-4623-9e23-46d10ba87835' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-bdcfbb0a-e8e9-4623-9e23-46d10ba87835' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-a39be3eb-15a0-41a7-988a-b160363c601b' class='xr-var-data-in' type='checkbox'><label for='data-a39be3eb-15a0-41a7-988a-b160363c601b' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>long_name :</span></dt><dd>time since forecast_reference_time</dd><dt><span>standard_name :</span></dt><dd>forecast_period</dd></dl></div><div class='xr-var-data'><pre>array(0, dtype=&#x27;timedelta64[ns]&#x27;)</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span>orderedSequenceData</span></div><div class='xr-var-dims'>()</div><div class='xr-var-dtype'>float64</div><div class='xr-var-preview xr-preview'>1.0</div><input id='attrs-ec7c541b-6987-4a22-a2e7-f20ea28f2525' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-ec7c541b-6987-4a22-a2e7-f20ea28f2525' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-d2300810-4cc2-4a7e-ae3a-2a587822586a' class='xr-var-data-in' type='checkbox'><label for='data-d2300810-4cc2-4a7e-ae3a-2a587822586a' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>long_name :</span></dt><dd>original GRIB coordinate for key: level(orderedSequenceData)</dd><dt><span>units :</span></dt><dd>1</dd></dl></div><div class='xr-var-data'><pre>array(1.)</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span>valid_time</span></div><div class='xr-var-dims'>()</div><div class='xr-var-dtype'>datetime64[ns]</div><div class='xr-var-preview xr-preview'>2021-07-11</div><input id='attrs-623c9a8d-1cc0-4d60-b64f-e8703cf961cc' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-623c9a8d-1cc0-4d60-b64f-e8703cf961cc' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-6ad99dc2-5677-44b7-9b3a-2bb8d0af5660' class='xr-var-data-in' type='checkbox'><label for='data-6ad99dc2-5677-44b7-9b3a-2bb8d0af5660' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>standard_name :</span></dt><dd>time</dd><dt><span>long_name :</span></dt><dd>time</dd></dl></div><div class='xr-var-data'><pre>array(&#x27;2021-07-11T00:00:00.000000000&#x27;, dtype=&#x27;datetime64[ns]&#x27;)</pre></div></li></ul></div></li><li class='xr-section-item'><input id='section-de1bfe7c-4a04-43b5-9c3a-3904313260b6' class='xr-section-summary-in' type='checkbox'  checked><label for='section-de1bfe7c-4a04-43b5-9c3a-3904313260b6' class='xr-section-summary' >Data variables: <span>(2)</span></label><div class='xr-section-inline-details'></div><div class='xr-section-details'><ul class='xr-var-list'><li class='xr-var-item'><div class='xr-var-name'><span>swell</span></div><div class='xr-var-dims'>(y, x)</div><div class='xr-var-dtype'>float32</div><div class='xr-var-preview xr-preview'>nan nan nan nan ... nan nan nan nan</div><input id='attrs-c80d333d-867e-4418-ab68-120d84506fa1' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-c80d333d-867e-4418-ab68-120d84506fa1' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-af6421ee-0908-4264-a774-9f37ee3bf1f7' class='xr-var-data-in' type='checkbox'><label for='data-af6421ee-0908-4264-a774-9f37ee3bf1f7' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>GRIB_paramId :</span></dt><dd>3105</dd><dt><span>GRIB_dataType :</span></dt><dd>fc</dd><dt><span>GRIB_numberOfPoints :</span></dt><dd>1012036</dd><dt><span>GRIB_typeOfLevel :</span></dt><dd>orderedSequenceData</dd><dt><span>GRIB_stepUnits :</span></dt><dd>1</dd><dt><span>GRIB_stepType :</span></dt><dd>instant</dd><dt><span>GRIB_gridType :</span></dt><dd>polar_stereographic</dd><dt><span>GRIB_NV :</span></dt><dd>0</dd><dt><span>GRIB_cfName :</span></dt><dd>unknown</dd><dt><span>GRIB_cfVarName :</span></dt><dd>swell</dd><dt><span>GRIB_gridDefinitionDescription :</span></dt><dd>Polar stereographic can be south or north</dd><dt><span>GRIB_missingValue :</span></dt><dd>9999</dd><dt><span>GRIB_name :</span></dt><dd>Significant height of swell waves</dd><dt><span>GRIB_parameterName :</span></dt><dd>Significant height of swell waves </dd><dt><span>GRIB_parameterUnits :</span></dt><dd>m</dd><dt><span>GRIB_shortName :</span></dt><dd>swell</dd><dt><span>GRIB_stepRange :</span></dt><dd>0</dd><dt><span>GRIB_units :</span></dt><dd>m</dd><dt><span>long_name :</span></dt><dd>Significant height of swell waves</dd><dt><span>units :</span></dt><dd>m</dd><dt><span>standard_name :</span></dt><dd>unknown</dd><dt><span>grid_mapping :</span></dt><dd>gfs_wave_projection</dd></dl></div><div class='xr-var-data'><pre>array([[nan, nan, nan, ..., nan, nan, nan],
+       [nan, nan, nan, ..., nan, nan, nan],
+       [nan, nan, nan, ..., nan, nan, nan],
+       ...,
+       [nan, nan, nan, ..., nan, nan, nan],
+       [nan, nan, nan, ..., nan, nan, nan],
+       [nan, nan, nan, ..., nan, nan, nan]], dtype=float32)</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span>gfs_wave_projection</span></div><div class='xr-var-dims'>()</div><div class='xr-var-dtype'>object</div><div class='xr-var-preview xr-preview'>None</div><input id='attrs-dccd4505-6d8c-4d6a-8e89-68190eb03378' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-dccd4505-6d8c-4d6a-8e89-68190eb03378' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-e9c29563-d513-4a24-be57-0ac910b0eaa0' class='xr-var-data-in' type='checkbox'><label for='data-e9c29563-d513-4a24-be57-0ac910b0eaa0' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>long_name :</span></dt><dd>GFS_WAVE model grid projection</dd><dt><span>grid_mapping_name :</span></dt><dd>polar_stereographic</dd><dt><span>straight_vertical_longitude_from_pole :</span></dt><dd>not enough info</dd><dt><span>latitude_of_projection_origin :</span></dt><dd>not enough info (either +90 or -90)</dd><dt><span>standard_parallel :</span></dt><dd>not enough info</dd><dt><span>false_easting :</span></dt><dd>0</dd><dt><span>false_northing :</span></dt><dd>0</dd><dt><span>grid_mapping :</span></dt><dd>gfs_wave_projection</dd></dl></div><div class='xr-var-data'><pre>array(None, dtype=object)</pre></div></li></ul></div></li><li class='xr-section-item'><input id='section-2f355e25-1ec2-485a-b1dc-a897ef3c7a6d' class='xr-section-summary-in' type='checkbox'  ><label for='section-2f355e25-1ec2-485a-b1dc-a897ef3c7a6d' class='xr-section-summary' >Attributes: <span>(11)</span></label><div class='xr-section-inline-details'></div><div class='xr-section-details'><dl class='xr-attrs'><dt><span>GRIB_edition :</span></dt><dd>2</dd><dt><span>GRIB_centre :</span></dt><dd>kwbc</dd><dt><span>GRIB_centreDescription :</span></dt><dd>US National Weather Service - NCEP </dd><dt><span>GRIB_subCentre :</span></dt><dd>0</dd><dt><span>Conventions :</span></dt><dd>CF-1.7</dd><dt><span>institution :</span></dt><dd>US National Weather Service - NCEP </dd><dt><span>model :</span></dt><dd>gfs_wave</dd><dt><span>product :</span></dt><dd>arctic.9km</dd><dt><span>description :</span></dt><dd>Global Forecast System - Wave Products</dd><dt><span>remote_grib :</span></dt><dd>https://noaa-gfs-bdp-pds.s3.amazonaws.com/gfs.20210711/00/wave/gridded/gfswave.t00z.arctic.9km.f000.grib2</dd><dt><span>local_grib :</span></dt><dd>/p/cwfs/blaylock/data/gfs_wave/20210711/gfswave.t00z.arctic.9km.f000.grib2.subset_0ade7c2cf97f75d009975f4d720d1fa6c19f4897</dd></dl></div></li></ul></div></div></div>
 </div>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:

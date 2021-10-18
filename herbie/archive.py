@@ -220,6 +220,9 @@ class Herbie:
 
         self.product_description = self.PRODUCTS[self.product]
 
+        # Default value is .idx, but some have weird suffix (.inv for NCEI files).
+        self.IDX_SUFFIX = getattr(self, "IDX_SUFFIX", ".idx")
+
         # Check the user input
         self._validate()
 
@@ -241,7 +244,7 @@ class Herbie:
 
         if list(self.SOURCES)[0] == "local":
             # TODO: Experimental special case, not very elegant yet.
-            self.idx = Path(str(self.grib) + ".idx")
+            self.idx = Path(str(self.grib) + self.IDX_SUFFIX)
             return None
 
         # If priority list is set, we want to search SOURCES in that
@@ -274,7 +277,7 @@ class Herbie:
                 self.grib_source = source
             if self.idx is None and self._check_idx(url):
                 found_idx = True
-                self.idx = url + ".idx"
+                self.idx = url + self.IDX_SUFFIX
                 self.idx_source = source
 
             if verbose:
@@ -376,8 +379,8 @@ class Herbie:
 
     def _check_idx(self, url):
         """Check if an index file exist for the GRIB2 URL."""
-        if not url.endswith(".idx"):
-            url += ".idx"
+        if not url.endswith(self.IDX_SUFFIX):
+            url += self.IDX_SUFFIX
         return requests.head(url).ok
 
     @property
@@ -759,17 +762,17 @@ class Herbie:
 
             # Load the data to memory before removing the file
             Hxr = [ds.load() for ds in Hxr]
-            #new = Hxr.copy()
+            # new = Hxr.copy()
 
             # Close the files so it can be removed (this issue seems
             # to be WindowsOS specific).
-            #for ds in Hxr:
+            # for ds in Hxr:
             #    ds.close()
 
             # Removes file
             local_file.unlink()
 
-            #Hxr = new
+            # Hxr = new
 
         if len(Hxr) == 1:
             return Hxr[0]

@@ -263,12 +263,12 @@
    </li>
    <li class="toctree-l2">
     <a class="reference internal" href="data_rrfs.html">
-     NAVGEM Data
+     RRFS Data
     </a>
    </li>
    <li class="toctree-l2">
     <a class="reference internal" href="data_navgem.html">
-     RRFS Data
+     NAVGEM Data
     </a>
    </li>
   </ul>
@@ -644,7 +644,7 @@ div.rendered_html tbody tr:hover {
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
 <span></span><span class="kn">from</span> <span class="nn">herbie.archive</span> <span class="kn">import</span> <span class="n">Herbie</span>
-<span class="kn">from</span> <span class="nn">toolbox.cartopy_tools</span> <span class="kn">import</span> <span class="n">common_features</span><span class="p">,</span> <span class="n">pc</span>
+<span class="kn">from</span> <span class="nn">toolbox.cartopy_tools_OLD</span> <span class="kn">import</span> <span class="n">common_features</span><span class="p">,</span> <span class="n">pc</span>
 <span class="kn">from</span> <span class="nn">paint.standard2</span> <span class="kn">import</span> <span class="n">cm_tmp</span>
 
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
@@ -700,7 +700,7 @@ div.rendered_html tbody tr:hover {
               <span class="n">transform</span><span class="o">=</span><span class="n">pc</span><span class="p">,</span>
               <span class="o">**</span><span class="n">cm_tmp</span><span class="p">(</span><span class="n">units</span><span class="o">=</span><span class="s1">&#39;K&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">cmap_kwargs</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span>
-             <span class="n">orientation</span><span class="o">=</span><span class="s1">&#39;horizontal&#39;</span><span class="p">,</span> <span class="n">pad</span><span class="o">=</span><span class="mf">.05</span><span class="p">,</span>
+             <span class="n">orientation</span><span class="o">=</span><span class="s1">&#39;horizontal&#39;</span><span class="p">,</span> <span class="n">pad</span><span class="o">=.</span><span class="mi">05</span><span class="p">,</span>
              <span class="o">**</span><span class="n">cm_tmp</span><span class="p">(</span><span class="n">units</span><span class="o">=</span><span class="s1">&#39;K&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">cbar_kwargs</span><span class="p">)</span>
 
 <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">t2m</span><span class="o">.</span><span class="n">GRIB_name</span><span class="p">,</span> <span class="n">loc</span><span class="o">=</span><span class="s1">&#39;right&#39;</span><span class="p">)</span>
