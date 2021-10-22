@@ -32,14 +32,14 @@ _config_path = Path("~/.config/herbie/config.toml").expand()
 
 # NOTE: The `\\` is an escape character in TOML.
 # For Windows paths "C:\\user\\"" needs to be "C:\\\\user\\\\""
-_save_dir = str(Path('~/data').expand())
-_save_dir = _save_dir.replace('\\', '\\\\')
+_save_dir = str(Path("~/data").expand())
+_save_dir = _save_dir.replace("\\", "\\\\")
 
 
 ########################################################################
 # Default TOML Configuration Values
 default_toml = f"""
-['default']
+[default]
 model = "hrrr"
 fxx = 0
 save_dir = "{_save_dir}"
@@ -50,10 +50,23 @@ verbose = true
 ########################################################################
 # If a config file isn't found, make one
 if not _config_path.exists():
+    print(
+        f" ╭─────────────────────────────────────────────────╮\n"
+        f" │ I'm building Herbie's default config file.      │\n"
+        f" ╰╥────────────────────────────────────────────────╯\n"
+        f" 👷🏻‍♂️"
+    )
     _config_path.parent.mkdir(parents=True, exist_ok=True)
     with open(_config_path, "w") as f:
         toml_string = toml.dump(toml.loads(default_toml), f)
-    print(f"⚙ Created config file [{_config_path}] with default values.")
+    print(
+        f" ╭─────────────────────────────────────────────────╮\n"
+        f" │ You're ready to go.                             │\n"
+        f" │ You may edit the config file here:              │\n"
+        f" │ {str(_config_path):<45s}   │\n"
+        f" ╰╥────────────────────────────────────────────────╯\n"
+        f" 👷🏻‍♂️"
+    )
 
 ########################################################################
 # Read the config file
