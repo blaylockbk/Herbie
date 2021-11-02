@@ -44,6 +44,7 @@ class rap_ncei:
             "nomads product description": "https://www.ncei.noaa.gov/products/weather-climate-models/rapid-refresh-update",
         }
         self.PRODUCTS = {
+            "historical/analysis": "RAP 13 km",
             "rap-130-13km/analysis": "RAP 13 km",  # longer archive
             "rap-130-13km/forecast": "RAP 13 km",  # very short archive
             "rap-252-20km/analysis": "RAP 20 km",
