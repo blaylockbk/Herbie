@@ -54,7 +54,7 @@ import pandas as pd
 import pygrib
 import requests
 from pyproj import CRS
-from os.path import exists
+
 import herbie.models as models_template
 
 # NOTE: These config dict values are retrieved from __init__ and read
