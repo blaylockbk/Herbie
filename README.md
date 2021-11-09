@@ -9,7 +9,8 @@
 <!-- Badges -->
 [![](https://img.shields.io/pypi/v/herbie-data)](https://pypi.python.org/pypi/herbie-data/)
 ![](https://img.shields.io/github/license/blaylockbk/Herbie)
-[![DOI](https://zenodo.org/badge/275214142.svg)](https://zenodo.org/badge/latestdoi/275214142) [![Join the chat at https://gitter.im/blaylockbk/Herbie](https://badges.gitter.im/blaylockbk/Herbie.svg)](https://gitter.im/blaylockbk/Herbie?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![DOI](https://zenodo.org/badge/275214142.svg)](https://zenodo.org/badge/latestdoi/275214142)
+<!--[![Join the chat at https://gitter.im/blaylockbk/Herbie](https://badges.gitter.im/blaylockbk/Herbie.svg)](https://gitter.im/blaylockbk/Herbie?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)-->
 <!-- (Badges) -->
 
 </div>
