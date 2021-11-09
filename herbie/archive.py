@@ -245,6 +245,8 @@ class Herbie:
         if list(self.SOURCES)[0] == "local":
             # TODO: Experimental special case, not very elegant yet.
             self.idx = Path(str(self.grib) + self.IDX_SUFFIX)
+            if not self.idx.exists():
+                self.idx = Path(str(self.grib).replace(".grb2", self.IDX_SUFFIX))
             return None
 
         # If priority list is set, we want to search SOURCES in that
@@ -275,9 +277,12 @@ class Herbie:
                 found_grib = True
                 self.grib = url
                 self.grib_source = source
-            if self.idx is None and self._check_idx(url):
+            idx_exists, idx_url = self._check_idx(url)
+            print(url)
+            print(idx_url)
+            if idx_exists:
                 found_idx = True
-                self.idx = url + self.IDX_SUFFIX
+                self.idx = idx_url
                 self.idx_source = source
 
             if verbose:
@@ -381,7 +386,13 @@ class Herbie:
         """Check if an index file exist for the GRIB2 URL."""
         if not url.endswith(self.IDX_SUFFIX):
             url += self.IDX_SUFFIX
-        return requests.head(url).ok
+        url_exists = requests.head(url).ok
+        # Check for index files where .inv replaces grb2 rather than being appended 
+        url_rep = url
+        if not url_exists:
+            url_rep = url.replace(".grb2" + self.IDX_SUFFIX, self.IDX_SUFFIX)
+            url_exists = requests.head(url_rep).ok
+        return url_exists, url_rep
 
     @property
     def get_remoteFileName(self, source=None):
