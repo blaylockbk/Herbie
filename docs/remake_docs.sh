@@ -3,6 +3,13 @@
 ## Brian Blaylock
 ## December 31, 2020
 
+eval "$(conda shell.bash hook)"
+conda activate basic38
+
+# Commit everything before we make Docs
+git add -A
+git commit -m "updates"
+
 ## Make Sphinx documents for pyBKB_NRL
 
 # Load the conda environment
