@@ -39,14 +39,13 @@ LOCALFILE : str
     ``save_dir/model/YYYYmmdd/localFile.grib2``
     It is sometimes necessary to add details to maintain unique
     filenames (e.g., rrfs needs to have the member number in LOCALFILE).
-TODO
-EXPECT_IDX_FILE : {'remote', 'local', 'none'}
-    (Not implemented, but might be in the future)
-    Where to expect the inventory index file, on the 'remote' server,
-    on the 'local' disk, or 'none' for non-grib files.
-    Default will be set to 'remote'
-"""
 
+Optional
+--------
+IDX_SUFFIX : list
+    Default value is ["grib.idx"], which is pretty standard.
+    But for some, like RAP, the idx files are messy.
+"""
 
 class hrrr:
     def template(self):
