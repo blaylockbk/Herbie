@@ -387,7 +387,7 @@ class Herbie:
         if not url.endswith(self.IDX_SUFFIX):
             url += self.IDX_SUFFIX
         url_exists = requests.head(url).ok
-        # Check for index files where .inv replaces grb2 rather than being appended 
+        # Check for index files where .inv replaces grb2 rather than being appended
         url_rep = url
         if not url_exists:
             url_rep = url.replace(".grb2" + self.IDX_SUFFIX, self.IDX_SUFFIX)
@@ -492,6 +492,11 @@ class Herbie:
         df["valid_time"] = df["reference_time"] + pd.to_timedelta(f"{self.fxx}H")
         df["start_byte"] = df["start_byte"].astype(int)
         df["end_byte"] = df["start_byte"].shift(-1, fill_value="")
+        # TODO: Check this works: Assign the ending byte for the last row...
+        # TODO: df["end_byte"] = df["start_byte"].shift(-1, fill_value=requests.get(self.idx, stream=True).headers['Content-length'])
+        # TODO: From Karl Schnieder
+        # TODO: Get the actual end byte with requests
+        # TODO: df['byte_end'].values[-1] = requests.get(URL+url_ext, stream=True).headers['Content-length']
         df["range"] = df.start_byte.astype(str) + "-" + df.end_byte.astype(str)
         df = df.set_index("grib_message")
         df = df.reindex(

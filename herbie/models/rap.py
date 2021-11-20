@@ -49,9 +49,11 @@ class rap_ncei:
             "rap-130-13km/forecast": "RAP 13 km",  # very short archive
             "rap-252-20km/analysis": "RAP 20 km",
             "rap-252-20km/forecast": "RAP 20 km",
+            "historical/forecast": "RAP 20 km",
         }
         self.SOURCES = {
             "ncei": f"https://www.ncei.noaa.gov/data/rapid-refresh/access/{self.product}/{self.date:%Y%m/%Y%m%d}/rap_130_{self.date:%Y%m%d_%H%M}_{self.fxx:03d}.grb2",
+            "ncei_20km": f"https://www.ncei.noaa.gov/data/rapid-refresh/access/{self.product}/{self.date:%Y%m/%Y%m%d}/rap_252_{self.date:%Y%m%d_%H%M}_{self.fxx:03d}.grb2",
         }
         self.IDX_SUFFIX = ".inv"  # it is not .idx
         self.LOCALFILE = f"{self.get_remoteFileName}"

@@ -28,7 +28,7 @@ Here are some examples you can use for the ``searchString`` argument
 
 If you need help with regular expression, search the web
 or look at this `cheatsheet <https://www.petefreitag.com/cheatsheets/regex/>`_.
-
+Check regular expressions with `regexr <https://regexr.com/>`_ or `regex101 <https://regex101.com/>`_.
 
 The searchString method to subset a GRIB dataset by variable field is
 similar to what is explained here: https://www.cpc.ncep.noaa.gov/products/wesley/fast_downloading_grib.html
