@@ -55,5 +55,5 @@ class rap_ncei:
             "ncei": f"https://www.ncei.noaa.gov/data/rapid-refresh/access/{self.product}/{self.date:%Y%m/%Y%m%d}/rap_130_{self.date:%Y%m%d_%H%M}_{self.fxx:03d}.grb2",
             "ncei_20km": f"https://www.ncei.noaa.gov/data/rapid-refresh/access/{self.product}/{self.date:%Y%m/%Y%m%d}/rap_252_{self.date:%Y%m%d_%H%M}_{self.fxx:03d}.grb2",
         }
-        self.IDX_SUFFIX = ".inv"  # it is not .idx
+        self.IDX_SUFFIX = [".grb2.inv", ".inv"]
         self.LOCALFILE = f"{self.get_remoteFileName}"

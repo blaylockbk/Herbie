@@ -13,7 +13,7 @@ try:
 except:
     pass
 try:
-    # Brian's personal local special case.
+    # Brian's personal local special case (hidden).
     from .local_B import *
 except:
     pass
