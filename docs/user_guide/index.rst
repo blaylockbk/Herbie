@@ -17,4 +17,3 @@ User Guide
    notebooks/index
    examples
    notebooks
-   
