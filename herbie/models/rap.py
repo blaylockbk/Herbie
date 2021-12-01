@@ -71,6 +71,7 @@ class rap_historical:
             "rap_130": f"https://www.ncei.noaa.gov/data/rapid-refresh/access/historical/{self.product}/{self.date:%Y%m/%Y%m%d}/rap_130_{self.date:%Y%m%d_%H%M}_{self.fxx:03d}.grb2",
             "rap_252": f"https://www.ncei.noaa.gov/data/rapid-refresh/access/historical/{self.product}/{self.date:%Y%m/%Y%m%d}/rap_252_{self.date:%Y%m%d_%H%M}_{self.fxx:03d}.grb2",
             "ruc_252": f"https://www.ncei.noaa.gov/data/rapid-refresh/access/historical/{self.product}/{self.date:%Y%m/%Y%m%d}/ruc2_252_{self.date:%Y%m%d_%H%M}_{self.fxx:03d}.grb",
+            "ruc_anl_252": f"https://www.ncei.noaa.gov/data/rapid-refresh/access/historical/{self.product}/{self.date:%Y%m/%Y%m%d}/ruc2anl_252_{self.date:%Y%m%d_%H%M}_{self.fxx:03d}.grb",
             "ruc_236": f"https://www.ncei.noaa.gov/data/rapid-refresh/access/historical/{self.product}/{self.date:%Y%m/%Y%m%d}/ruc2_236_{self.date:%Y%m%d_%H%M}_{self.fxx:03d}.grb",
             "ruc_211": f"https://www.ncei.noaa.gov/data/rapid-refresh/access/historical/{self.product}/{self.date:%Y%m/%Y%m%d}/ruc_211_{self.date:%Y%m%d_%H%M}_{self.fxx:03d}.grb",
         }

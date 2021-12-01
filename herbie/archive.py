@@ -403,10 +403,12 @@ class Herbie:
                 print(f"🐜 {idx_exists=}")
             if idx_exists:
                 return idx_exists, idx_url
-        print(
-            f"⚠ Herbie didn't find any inventory files that",
-            f"exists from {self.IDX_SUFFIX}",
-        )
+
+        if verbose:
+            print(
+                f"⚠ Herbie didn't find any inventory files that",
+                f"exists from {self.IDX_SUFFIX}",
+            )
         return False, None
 
     @property
