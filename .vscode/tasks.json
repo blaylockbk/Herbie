@@ -18,5 +18,11 @@
             "type": "shell",
             "command": "conda env update -f environment.yml --prune"
         }
+        {
+            "label": "publish",
+            "type": "shell",
+            // TODO: use bumpversion
+            "command": "conda activate pypi && python setup.py sdist bdist_wheel && twine check dist/* && twine upload --skip-existing dist/*"
+        }
     ]
 }
