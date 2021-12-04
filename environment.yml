@@ -29,7 +29,6 @@ dependencies:
 
   # Formatter (I prefer Black at the moment)
   - black
-  - autopep8
 
   # Testing
   - pytest
