@@ -246,9 +246,9 @@ class Herbie:
 
         if list(self.SOURCES)[0] == "local":
             # TODO: Experimental special case, not very elegant yet.
-            self.idx = Path(str(self.grib) + self.IDX_SUFFIX)
+            self.idx = Path(str(self.grib) + self.IDX_SUFFIX[0])
             if not self.idx.exists():
-                self.idx = Path(str(self.grib).replace(".grb2", self.IDX_SUFFIX))
+                self.idx = Path(str(self.grib).replace(".grb2", self.IDX_SUFFIX[0]))
             return None
 
         # If priority list is set, we want to search SOURCES in that
