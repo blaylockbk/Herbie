@@ -6,6 +6,7 @@ dependencies:
   - pip
   - git
   - curl
+  #- wgrib2  # ONLY AVAILABLE ON LINUX. Comment if not using Linux.
 
   # Tools
   # -----
@@ -29,7 +30,6 @@ dependencies:
   - toml
   - xarray
   - zarr
-  #- wgrib2  # ONLY AVAILABLE ON LINUX. Comment if not using Linux.
 
   # Formatter
   # ---------
@@ -63,6 +63,3 @@ dependencies:
 
       # Borrow some tools from my garage
       - git+https://github.com/blaylockbk/Carpenter_Workshop.git
-
-    # Reading bufr files (beta)
-    #- pdbufr  # Sooo, eccodes does not support prepbufr format
