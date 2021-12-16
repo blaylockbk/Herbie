@@ -13,9 +13,6 @@ git commit -m "updates"
 # Make the html docs
 make html
 
-# Zip it up for easy download to local computer
-cd _build
-
 # Add these changes to GitHub
 git add -A
 git commit -m "Updated Sphinx Docs"
