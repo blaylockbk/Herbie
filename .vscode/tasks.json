@@ -11,7 +11,7 @@
         {
             "label": "build docs",
             "type": "shell",
-            "command": "eval \"$(conda shell.bash hook)\" && conda activate herbie && cd docs && ./remake_docs.sh"
+            "command": "cd docs && ./remake_docs.sh"
         },
         {
             "label": "update environment",
