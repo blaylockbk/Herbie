@@ -4,34 +4,56 @@ channels:
 dependencies:
   - python=3.9
   - pip
+  - git
   - curl
-  - toml
-  - requests
-  - numpy
-  - matplotlib
+
+  # Tools
+  # -----
   - cartopy
+  - cfgrib
+  - geopandas
+  - h5py
   - jupyter
   - jupyterlab
-  - netcdf4
-  - pandas
-  - geopandas
-  - scipy
+  - matplotlib
   - metpy
-  - xarray
-  - pyproj
-  - h5py
+  - netcdf4
+  - numpy
+  - pandas
   - pygrib
-  - cfgrib
   - pylint
+  - pyproj
+  - requests
   - s3fs
+  - scipy
+  - toml
+  - xarray
   - zarr
   #- wgrib2  # ONLY AVAILABLE ON LINUX. Comment if not using Linux.
 
-  # Formatter (I prefer Black at the moment)
+  # Formatter
+  # ---------
   - black
+  - jupyterlab_code_formatter
+  - isort
 
   # Testing
+  # -------
   - pytest
+
+  # Documentation
+  # -------------
+  - sphinx
+  - nbsphinx
+  - pydata-sphinx-theme # PyData Sphinx Theme (i.e, Numpy, Pandas, MetPy)
+  - sphinx-panels # Add bootstrap elements to Sphinx
+  - recommonmark
+  - sphinx-markdown-tables
+  - autodocsumm
+  - sphinx-autosummary-accessors # pandas and xarray accessor docs
+  - latexmk
+  - myst-parser
+  - linkify-it-py
 
   - pip:
       # Development Version from GitHub
