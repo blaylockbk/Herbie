@@ -44,6 +44,11 @@ extensions = [
     "myst_parser",
 ]
 
+# MyST Docs: https://myst-parser.readthedocs.io/en/latest/syntax/optional.html
+myst_enable_extensions = [
+    "linkify",  # Autodetects URL links in Markdown files
+]
+
 # Set up mapping for other projects' docs
 intersphinx_mapping = {
     "metpy": ("https://unidata.github.io/MetPy/latest/", None),
