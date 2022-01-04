@@ -11,7 +11,7 @@ via https.
 
 Requirements
 ------------
-1. Model must be available via https
+1. Model GRIB2 file must be available via https
 2. Preferably, an .idx file should be available.
 3. URL must be consistent across time and products.
 
@@ -19,21 +19,23 @@ Properties
 ----------
 DESCRIPTION : str
     A description of the model. Give the full name and the
-    domain, if relevant.
+    domain, if relevant. Just infor for the user.
 DETAILS : dict
     Some additional details about the model. Provide links
-    to web documentation.
+    to web documentation. Just info for the user.
 PRODUCTS : dict
     Models usually have different product types. The keys are
     used in building the GRIB2 source URL.
     ORDER MATTERS -- If product is None, then Herbie uses the first
     as default.
+    *ONLY ONE IS USED (FIRST IS USED IF NOT SET)*
 SOURCES : dict
     Build the URL for the GRIB2 file for different sources.
     The parameters are from arguments passed into the
     ``herbie.archive.Herbie()`` class.
     ORDER MATTERS -- If priority is None, then Herbie searches the
     sources in the order given here.
+    *LOOP THROUGH ALL SOURCES*
 LOCALFILE : str
     The local file to save the model output. The file will be saved in
     ``save_dir/model/YYYYmmdd/localFile.grib2``
@@ -44,7 +46,10 @@ Optional
 --------
 IDX_SUFFIX : list
     Default value is ["grib.idx"], which is pretty standard.
-    But for some, like RAP, the idx files are messy.
+    But for some, like RAP, the idx files are messy and could be a few
+    different styles.
+    self.IDX_SUFFIX = [".grb2.inv", ".inv", ".grb.inv"]
+    *LOOP THROUGH ALL SUFFIXES TO FIND AN INDEX FILE*
 """
 from datetime import datetime
 

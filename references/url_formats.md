@@ -1,4 +1,6 @@
-The purpose of this is to understand how the various URL structures are organized at the different sources. 
+# Model URL Structure
+
+The purpose of this document is to understand how the various URL structures are organized at the different sources. 
 
 > An idea, can Herbie help create a "map" of what files are available at each source?
 
