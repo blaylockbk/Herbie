@@ -4,40 +4,37 @@
 """
 Tests for downloading RAP model
 """
-from datetime import datetime
-
 from herbie.archive import Herbie
-
-now = datetime.now()
-today = datetime(now.year, now.month, now.day)
-today_str = today.strftime("%Y-%m-%d %H:%M")
+from datetime import datetime
+import pandas as pd
 
 
-def test_rap_aws_datetime():
+today = pd.to_datetime('today').floor('1D')
+
+def test_rap_aws():
+    # Test
+    H = Herbie(today, model="rap")
+    assert H.grib is not None
+
+    # Test downloading the file
     H = Herbie(today, model="rap", save_dir="$TMPDIR")
-
     H.download()
     assert H.get_localFilePath().exists()
 
     H.xarray("TMP:2 m", remove_grib=False)
     assert H.get_localFilePath("TMP:2 m").exists()
 
+def test_rap_historical():
+    """Search for RAP urls on NCEI that I know exist"""
 
-def test_rap_aws_strdate():
-    H = Herbie(today_str, model="rap", save_dir="$TMPDIR")
+    H = Herbie('2019-11-23', model='rap_historical', product='analysis')
+    assert H.grib is not None
 
-    H.download()
-    assert H.get_localFilePath().exists()
+    H = Herbie('2005-01-01', model='rap_historical', product='analysis')
+    assert H.grib is not None
 
-    H.xarray("TMP:2 m")
-    assert not H.get_localFilePath("TMP:2 m").exists()
+def test_rap_ncei():
+    H = Herbie('2020-03-15', model='rap_ncei', product="rap-130-13km")
+    assert H.grib is not None
 
 
-def test_rap_ncei_strdate():
-    H = Herbie(today_str, model="rap_ncei", save_dir="$TMPDIR")
-
-    H.download()
-    assert H.get_localFilePath().exists()
-
-    H.xarray("TMP:2 m")
-    assert not H.get_localFilePath("TMP:2 m").exists()

@@ -167,7 +167,6 @@ class Herbie:
         model=config["default"].get("model"),
         fxx=config["default"].get("fxx"),
         product=config["default"].get("product"),
-        member=config["default"].get("member", 1),
         priority=config["default"].get("priority"),
         save_dir=config["default"].get("save_dir"),
         overwrite=config["default"].get("overwrite", False),
@@ -190,28 +189,29 @@ class Herbie:
             self.date = self.valid_date - timedelta(hours=self.fxx)
 
         self.model = model.lower()
-        self.member = member
         self.product = product
 
         self.priority = priority
         self.save_dir = Path(save_dir).expand()
         self.overwrite = overwrite
 
-        # Some model templates may require kwargs not listed (e.g., "nest").
+        # Some model templates may require kwargs not listed (e.g., `nest=`, `member=`).
         for key, value in kwargs.items():
             # TODO: Check if the kwarg is a config default.
+            # TODO: e.g. if a user primarily works with RRFS, they may
+            # TODO: want to configure "member" as a default argument.
             setattr(self, key, value)
 
         # Get details from the template of the specified model.
         # This attaches the details from the `models.<model>.template`
         # class to this Herbie object.
         # This line is equivalent to `models_template.gfs.template(self)`.
-        # We do it this way because the model name is a variable.
+        # I do it this way because the model name is a variable.
         # (see https://stackoverflow.com/a/7936588/2383070 for what I'm doing here)
         getattr(models_template, self.model).template(self)
 
         if product is None:
-            # The user didn't specify a product, so lets use the first
+            # The user didn't specify a product, so let's use the first
             # product in the model template.
             self.product = list(self.PRODUCTS)[0]
             warnings.warn(f'`product` not specified. Will use ["{self.product}"].')
@@ -220,8 +220,10 @@ class Herbie:
 
         self.product_description = self.PRODUCTS[self.product]
 
-        # Default value is .idx, but some have weird suffix (.inv for NCEI files).
-        self.IDX_SUFFIX = getattr(self, "IDX_SUFFIX", ".idx")
+        # Specify the suffix for the inventory index files.
+        # Default value is `.grib2.idx`, but some have weird suffix,
+        # like archived RAP on NCEI are `.grb2.inv`.
+        self.IDX_SUFFIX = getattr(self, "IDX_SUFFIX", [".grib2.idx"])
 
         # Check the user input
         self._validate()
@@ -244,9 +246,9 @@ class Herbie:
 
         if list(self.SOURCES)[0] == "local":
             # TODO: Experimental special case, not very elegant yet.
-            self.idx = Path(str(self.grib) + self.IDX_SUFFIX)
+            self.idx = Path(str(self.grib) + self.IDX_SUFFIX[0])
             if not self.idx.exists():
-                self.idx = Path(str(self.grib).replace(".grb2", self.IDX_SUFFIX))
+                self.idx = Path(str(self.grib).replace(".grb2", self.IDX_SUFFIX[0]))
             return None
 
         # If priority list is set, we want to search SOURCES in that
@@ -278,8 +280,7 @@ class Herbie:
                 self.grib = url
                 self.grib_source = source
             idx_exists, idx_url = self._check_idx(url)
-            print(url)
-            print(idx_url)
+
             if idx_exists:
                 found_idx = True
                 self.idx = idx_url
@@ -299,14 +300,15 @@ class Herbie:
                 break
 
         # After searching each source, print some info about what we found...
+        # (ANSI color's added for style points)
         if verbose:
             if any([self.grib is not None, self.idx is not None]):
                 print(
                     f"🏋🏻‍♂️ Found",
                     f"\033[32m{self.date:%Y-%b-%d %H:%M UTC} F{self.fxx:02d}\033[m",
                     f"[{self.model.upper()}] [product={self.product}]",
-                    f"GRIB2 file from \033[38;5;202m{self.grib_source}\033[m and",
-                    f"index file from \033[38;5;202m{self.idx_source}\033[m.",
+                    f"GRIB2 file from \033[31m{self.grib_source}\033[m and",
+                    f"index file from \033[31m{self.idx_source}\033[m.",
                     f'{" ":150s}',
                 )
             else:
@@ -382,17 +384,32 @@ class Herbie:
         else:
             return False
 
-    def _check_idx(self, url):
+    def _check_idx(self, url, verbose=False):
         """Check if an index file exist for the GRIB2 URL."""
-        if not url.endswith(self.IDX_SUFFIX):
-            url += self.IDX_SUFFIX
-        url_exists = requests.head(url).ok
-        # Check for index files where .inv replaces grb2 rather than being appended
-        url_rep = url
-        if not url_exists:
-            url_rep = url.replace(".grb2" + self.IDX_SUFFIX, self.IDX_SUFFIX)
-            url_exists = requests.head(url_rep).ok
-        return url_exists, url_rep
+        # To check inventory files with slightly different URL structure
+        # we will loop through the IDX_SUFFIX.
+        if not isinstance(self.IDX_SUFFIX, list):
+            self.IDX_SUFFIX = [self.IDX_SUFFIX]
+
+        if verbose:
+            print(f"🐜 {self.IDX_SUFFIX=}")
+
+        # Loop through IDX_SUFFIX options until we find one that exists
+        for i in self.IDX_SUFFIX:
+            idx_url = url.rsplit(".", maxsplit=1)[0] + i
+            idx_exists = requests.head(idx_url).ok
+            if verbose:
+                print(f"🐜 {idx_url=}")
+                print(f"🐜 {idx_exists=}")
+            if idx_exists:
+                return idx_exists, idx_url
+
+        if verbose:
+            print(
+                f"⚠ Herbie didn't find any inventory files that",
+                f"exists from {self.IDX_SUFFIX}",
+            )
+        return False, None
 
     @property
     def get_remoteFileName(self, source=None):
@@ -409,7 +426,7 @@ class Herbie:
     def get_localFilePath(self, searchString=None):
         """Get path to local file"""
         if list(self.SOURCES)[0] == "local":
-            # TODO: An experimental special case
+            # TODO: An experimental special case for locally stored GRIB2.
             outFile = Path(self.SOURCES["local"]).expand()
         else:
             outFile = (
@@ -488,15 +505,14 @@ class Herbie:
         # Format the DataFrame
         df["grib_message"] = df["grib_message"].astype(float)
         # ^ float because RAP idx files have some decimal grib message numbers
+        # TODO: ^ how can I address issue #32?
         df["reference_time"] = pd.to_datetime(df.reference_time, format="d=%Y%m%d%H")
         df["valid_time"] = df["reference_time"] + pd.to_timedelta(f"{self.fxx}H")
         df["start_byte"] = df["start_byte"].astype(int)
         df["end_byte"] = df["start_byte"].shift(-1, fill_value="")
         # TODO: Check this works: Assign the ending byte for the last row...
-        # TODO: df["end_byte"] = df["start_byte"].shift(-1, fill_value=requests.get(self.idx, stream=True).headers['Content-length'])
-        # TODO: From Karl Schnieder
-        # TODO: Get the actual end byte with requests
-        # TODO: df['byte_end'].values[-1] = requests.get(URL+url_ext, stream=True).headers['Content-length']
+        # TODO: df["end_byte"] = df["start_byte"].shift(-1, fill_value=requests.get(self.grib, stream=True).headers['Content-Length'])
+        # TODO: Based on what Karl Schnieder did.
         df["range"] = df.start_byte.astype(str) + "-" + df.end_byte.astype(str)
         df = df.set_index("grib_message")
         df = df.reindex(
