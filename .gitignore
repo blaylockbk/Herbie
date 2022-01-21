@@ -7,6 +7,8 @@ env_pypi.yml
 condaenv*
 core.*
 
+.pytest_cache/
+
 *.idx
 *.grib2
 !sample_data/hrrr/20201214/subset_20201214_hrrr.t00z.wrfsfcf12.grib2
