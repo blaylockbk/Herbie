@@ -82,7 +82,7 @@ class hrrr:
         # ----------
 
         # Fix Issue #34 (not pretty, but gets the job done for now)
-        # TODO: Allow Hebie to specify the format of the SOURCE manually
+        # TODO: Allow Herbie to specify the format of the SOURCE manually
         if self.product == "subh" and self.date <= datetime(2018, 9, 16):
             # The subhourly filenames are different for older files.
             # prepend the self.SOURCES dict with the old filename format.
