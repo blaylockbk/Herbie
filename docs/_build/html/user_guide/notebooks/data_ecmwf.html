@@ -488,7 +488,7 @@ div.rendered_html tbody tr:hover {
 <p>This data is freely available from ECMWF in GRIB2 format (<a class="reference external" href="https://confluence.ecmwf.int/display/UDOC/ECMWF+Open+Data+-+Real+Time">read more 👀</a>).</p>
 <p>There following prodcuts are available: - <code class="docutils literal notranslate"><span class="pre">&quot;oper&quot;</span></code> - operational high-resolution forecast, atmospheric fields - <code class="docutils literal notranslate"><span class="pre">&quot;enfo&quot;</span></code> - ensemble forecast, atmospheric fields - <code class="docutils literal notranslate"><span class="pre">&quot;wave&quot;</span></code> - wave forecasts - <code class="docutils literal notranslate"><span class="pre">&quot;waef&quot;</span></code> - ensemble forecast, ocean wave fields</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[34]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -510,7 +510,7 @@ div.rendered_html tbody tr:hover {
 <h2>Retrieve a full file<a class="headerlink" href="#Retrieve-a-full-file" title="Permalink to this headline">¶</a></h2>
 <p>Download a full GRIB2 file to your local system.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[35]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -592,6 +592,37 @@ searchString (wave/waef) Messages that will be downloaded
 If you need help with regular expression, search the web or look at
 this cheatsheet: https://www.petefreitag.com/cheatsheets/regex/.
 
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[38]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="c1"># Look at the search_this column of the index DataFrame</span>
+<span class="n">H</span><span class="o">.</span><span class="n">read_idx</span><span class="p">()</span><span class="o">.</span><span class="n">search_this</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[38]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+grib_message
+1     :gh:925:pl:g:0001:od:fc:oper
+2        :st:sfc:g:0001:od:fc:oper
+3        :tp:sfc:g:0001:od:fc:oper
+4       :skt:sfc:g:0001:od:fc:oper
+5      :r:250:pl:g:0001:od:fc:oper
+                  ...
+78    :vo:200:pl:g:0001:od:fc:oper
+79    :vo:250:pl:g:0001:od:fc:oper
+80       :ro:sfc:g:0001:od:fc:oper
+81      :d:50:pl:g:0001:od:fc:oper
+82     :vo:50:pl:g:0001:od:fc:oper
+Name: search_this, Length: 82, dtype: object
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
@@ -1064,7 +1095,7 @@ Text(1.0, 1.0, &#39;2 metre temperature&#39;)
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../../_images/user_guide_notebooks_data_ecmwf_9_2.png" src="../../_images/user_guide_notebooks_data_ecmwf_9_2.png" />
+<img alt="../../_images/user_guide_notebooks_data_ecmwf_10_2.png" src="../../_images/user_guide_notebooks_data_ecmwf_10_2.png" />
 </div>
 </div>
 <div class="nbinput docutils container">
@@ -1568,7 +1599,7 @@ Text(1.0, 1.0, &#39;10 m Wind Speed&#39;)
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../../_images/user_guide_notebooks_data_ecmwf_11_2.png" src="../../_images/user_guide_notebooks_data_ecmwf_11_2.png" />
+<img alt="../../_images/user_guide_notebooks_data_ecmwf_12_2.png" src="../../_images/user_guide_notebooks_data_ecmwf_12_2.png" />
 </div>
 </div>
 <div class="nbinput docutils container">
@@ -2072,7 +2103,7 @@ Text(1.0, 1.0, &#39;500.0 hPa\nSpecific humidity/Geopotential Height&#39;)
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../../_images/user_guide_notebooks_data_ecmwf_13_1.png" src="../../_images/user_guide_notebooks_data_ecmwf_13_1.png" />
+<img alt="../../_images/user_guide_notebooks_data_ecmwf_14_1.png" src="../../_images/user_guide_notebooks_data_ecmwf_14_1.png" />
 </div>
 </div>
 </section>
@@ -2580,7 +2611,7 @@ Text(1.0, 1.0, &#39;Significant height of combined wind waves and swell&#39;)
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../../_images/user_guide_notebooks_data_ecmwf_18_2.png" src="../../_images/user_guide_notebooks_data_ecmwf_18_2.png" />
+<img alt="../../_images/user_guide_notebooks_data_ecmwf_19_2.png" src="../../_images/user_guide_notebooks_data_ecmwf_19_2.png" />
 </div>
 </div>
 </section>
