@@ -12,7 +12,8 @@ from datetime import datetime
 class ecmwf:
     def template(self):
 
-        version = '0p4-beta'  # this will need to be updated to 0p4 someday
+        # TODO: This will need to be updated someday
+        version = '0p4-beta'
         #version = '0p4'
 
         self.DESCRIPTION = "ECMWF open data"
