@@ -134,8 +134,9 @@ searchString (oper/enso) Messages that will be downloaded
 ":10u:"                  10-m u wind vector
 ":10v:"                  10-m v wind vector
 ":10(u|v):               **10m u and 10m v wind**
-":d:"                    Divergence
+":d:"                    Divergence (all levels)
 ":gh:"                   geopotential height (all levels)
+":gh:500"                geopotential height only at 500 hPa
 ":st:"                   soil temperature
 ":tp:"                   total precipitation
 ":msl:"                  mean sea level pressure
@@ -150,6 +151,7 @@ searchString (oper/enso) Messages that will be downloaded
 ":v:"                    v wind vector
 ":u:"                    u wind vector
 ":(t|u|v|r):"            Temp, u/v wind, RH (all levels)
+":500:"                  All variables on the 500 hPa level
 
 ======================== ==============================================
 searchString (wave/waef) Messages that will be downloaded
