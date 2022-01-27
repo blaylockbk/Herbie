@@ -44,6 +44,7 @@ For more details, see https://blaylockbk.github.io/Herbie/_build/html/user_guide
 
 """
 import hashlib
+import json
 import os
 import urllib.request
 import warnings
@@ -75,34 +76,95 @@ except:
     pass
 
 
-def _searchString_help():
-    """Help/Error Message for `searchString`"""
-    msg = [
-        "\nUse regular expression to search for lines in the .idx file",
-        "Here are some examples you can use for `searchString`",
-        "  ============================= ===============================================",
-        "  ``searchString``              Messages that will be downloaded",
-        "  ============================= ===============================================",
-        "  ':TMP:2 m'                    Temperature at 2 m.",
-        "  ':TMP:'                       Temperature fields at all levels.",
-        "  ':UGRD:.* mb'                 U Wind at all pressure levels.",
-        "  ':500 mb:'                    All variables on the 500 mb level.",
-        "  ':APCP:'                      All accumulated precipitation fields.",
-        "  ':APCP:surface:0-[1-9]*'      Accumulated precip since initialization time",
-        "  ':APCP:surface:[1-9]*-[1-9]*' Accumulated precip over last hour",
-        "  ':UGRD:10 m'                  U wind component at 10 meters.",
-        "  ':(U|V)GRD:(10|80) m'         U and V wind component at 10 and 80 m.",
-        "  ':(U|V)GRD:'                  U and V wind component at all levels.",
-        "  ':.GRD:'                      (Same as above)",
-        "  ':(TMP|DPT):'                 Temperature and Dew Point for all levels .",
-        "  ':(TMP|DPT|RH):'              TMP, DPT, and Relative Humidity for all levels.",
-        "  ':REFC:'                      Composite Reflectivity",
-        "  ':surface:'                   All variables at the surface.",
-        "  ============================= ===============================================",
-        "\nIf you need help with regular expression, search the web",
-        "  or look at this cheatsheet: https://www.petefreitag.com/cheatsheets/regex/.",
-    ]
-    return "\n".join(msg)
+def _searchString_help(kind="wgrib2"):
+    """
+    Help/Error Message for `searchString`
+
+    Parameters
+    ----------
+    kind : {"wgrib2", "grib_ls"}
+        There are two different utilities used to create index files and
+        they create different file output.
+
+        - **wgrib2** is the NCEP-style grib messages
+        - **grib_ls** is the ECMWF-style grib messages
+    """
+
+    if kind == "wgrib2":
+        msg = """
+Use regular expression to search for lines in the index file.
+Here are some examples you can use for the wgrib2-style `searchString`
+
+    ============================= ===============================================
+    ``searchString=``             Messages that will be downloaded
+    ============================= ===============================================
+    ":TMP:2 m"                    Temperature at 2 m.
+    ":TMP:"                       Temperature fields at all levels.
+    ":UGRD:.* mb"                 U Wind at all pressure levels.
+    ":500 mb:"                    All variables on the 500 mb level.
+    ":APCP:"                      All accumulated precipitation fields.
+    ":APCP:surface:0-[1-9]*"      Accumulated precip since initialization time
+    ":APCP:surface:[1-9]*-[1-9]*" Accumulated precip over last hour
+    ":UGRD:10 m"                  U wind component at 10 meters.
+    ":(U|V)GRD:(10|80) m"         U and V wind component at 10 and 80 m.
+    ":(U|V)GRD:"                  U and V wind component at all levels.
+    ":.GRD:"                      (Same as above)
+    ":(TMP|DPT):"                 Temperature and Dew Point for all levels .
+    ":(TMP|DPT|RH):"              TMP, DPT, and Relative Humidity for all levels.
+    ":REFC:"                      Composite Reflectivity
+    ":surface:"                   All variables at the surface.
+    ============================= ===============================================
+
+If you need help with regular expression, search the web or look at
+this cheatsheet: https://www.petefreitag.com/cheatsheets/regex/.
+"""
+
+    elif kind == "grib_ls":
+        msg = """
+Use regular expression to search for lines in the index file.
+Here are some examples you can use for the grib_ls-style `searchString`
+
+Look at the ECMWF GRIB Parameter Database
+https://apps.ecmwf.int/codes/grib/param-db
+
+======================== ==============================================
+searchString (oper/enso) Messages that will be downloaded
+======================== ==============================================
+":2t:"                   2-m temperature
+":10u:"                  10-m u wind vector
+":10v:"                  10-m v wind vector
+":10(u|v):               **10m u and 10m v wind**
+":d:"                    Divergence
+":gh:"                   geopotential height (all levels)
+":st:"                   soil temperature
+":tp:"                   total precipitation
+":msl:"                  mean sea level pressure
+":q:"                    Specific Humidity
+":r:"                    relative humidity
+":ro:"                   Runn-off
+":skt:"                  skin temperature
+":sp:"                   surface pressure
+":t:"                    temperature
+":tcwv:"                 Total column vertically integrated water vapor
+":vo:"                   Relative vorticity
+":v:"                    v wind vector
+":u:"                    u wind vector
+":(t|u|v|r):"            Temp, u/v wind, RH (all levels)
+
+======================== ==============================================
+searchString (wave/waef) Messages that will be downloaded
+======================== ==============================================
+":swh:"                  Significant height of wind waves + swell
+":mwp:"                  Mean wave period
+":mwd:"                  Mean wave direction
+":pp1d:"                 Peak wave period
+":mp2:"                  Mean zero-crossing wave period
+
+If you need help with regular expression, search the web or look at
+this cheatsheet: https://www.petefreitag.com/cheatsheets/regex/.
+"""
+
+    return msg
 
 
 class Herbie:
@@ -224,6 +286,13 @@ class Herbie:
         # Default value is `.grib2.idx`, but some have weird suffix,
         # like archived RAP on NCEI are `.grb2.inv`.
         self.IDX_SUFFIX = getattr(self, "IDX_SUFFIX", [".grib2.idx"])
+
+        # Specify the index file type. By default, Herbie assumes the
+        # index file was created with wgrib2.
+        # But for ecmwf files with index files created with grib_ls
+        # the index files are in a different style.
+        self.IDX_STYLE = getattr(self, "IDX_STYLE", "wgrib2")
+        self.searchString_help = _searchString_help(self.IDX_STYLE)
 
         # Check the user input
         self._validate()
@@ -457,6 +526,8 @@ class Herbie:
         """
         Inspect the GRIB2 file contents by reading the index file.
 
+        This reads index files created with the wgrib2 utility.
+
         Parameters
         ----------
         searchString : str
@@ -474,70 +545,133 @@ class Herbie:
         """
         assert self.idx is not None, f"No index file found for {self.grib}."
 
-        # Sometimes idx end in ':', other times it doesn't (in some Pando files).
-        # https://pando-rgw01.chpc.utah.edu/hrrr/sfc/20180101/hrrr.t00z.wrfsfcf00.grib2.idx
-        # https://noaa-hrrr-bdp-pds.s3.amazonaws.com/hrrr.20210101/conus/hrrr.t00z.wrfsfcf00.grib2.idx
-        # Sometimes idx has more than the standard messages
-        # https://noaa-nbm-grib2-pds.s3.amazonaws.com/blend.20210711/13/core/blend.t13z.core.f001.co.grib2.idx
+        if self.IDX_STYLE == "wgrib2":
+            # Sometimes idx end in ':', other times it doesn't (in some Pando files).
+            # https://pando-rgw01.chpc.utah.edu/hrrr/sfc/20180101/hrrr.t00z.wrfsfcf00.grib2.idx
+            # https://noaa-hrrr-bdp-pds.s3.amazonaws.com/hrrr.20210101/conus/hrrr.t00z.wrfsfcf00.grib2.idx
+            # Sometimes idx has more than the standard messages
+            # https://noaa-nbm-grib2-pds.s3.amazonaws.com/blend.20210711/13/core/blend.t13z.core.f001.co.grib2.idx
 
-        # TODO: Experimental special case when self.idx is a pathlib.Path
-        if not hasattr(self.idx, "exists"):
-            # If the self.idx is not a pathlib.Path, then we assume it needs to be downloaded
+            # TODO: Experimental special case when self.idx is a pathlib.Path
+            if not hasattr(self.idx, "exists"):
+                # If the self.idx is not a pathlib.Path, then we assume it needs to be downloaded
+                r = requests.get(self.idx)
+                assert r.ok, f"Index file does not exist: {self.idx}"
+
+            df = pd.read_csv(
+                self.idx,
+                sep=":",
+                names=[
+                    "grib_message",
+                    "start_byte",
+                    "reference_time",
+                    "variable",
+                    "level",
+                    "forecast_time",
+                    "?",
+                    "??",
+                    "???",
+                ],
+            )
+
+            # Format the DataFrame
+            df["grib_message"] = df["grib_message"].astype(float)
+            # ^ float because RAP idx files have some decimal grib message numbers
+            # TODO: ^ how can I address issue #32?
+            df["reference_time"] = pd.to_datetime(
+                df.reference_time, format="d=%Y%m%d%H"
+            )
+            df["valid_time"] = df["reference_time"] + pd.to_timedelta(f"{self.fxx}H")
+            df["start_byte"] = df["start_byte"].astype(int)
+            df["end_byte"] = df["start_byte"].shift(-1, fill_value="")
+            # TODO: Check this works: Assign the ending byte for the last row...
+            # TODO: df["end_byte"] = df["start_byte"].shift(-1, fill_value=requests.get(self.grib, stream=True).headers['Content-Length'])
+            # TODO: Based on what Karl Schnieder did.
+            df["range"] = df.start_byte.astype(str) + "-" + df.end_byte.astype(str)
+            df = df.set_index("grib_message")
+            df = df.reindex(
+                columns=[
+                    "start_byte",
+                    "end_byte",
+                    "range",
+                    "reference_time",
+                    "valid_time",
+                    "variable",
+                    "level",
+                    "forecast_time",
+                    "?",
+                    "??",
+                    "???",
+                ]
+            )
+
+            df = df.dropna(how="all", axis=1)
+            df = df.fillna("")
+
+            df["search_this"] = (
+                df.loc[:, "variable":]
+                .astype(str)
+                .apply(
+                    lambda x: ":" + ":".join(x).rstrip(":").replace(":nan:", ":"),
+                    axis=1,
+                )
+            )
+
+        if self.IDX_STYLE == "grib_ls":
+            # grib_ls keywords explained here:
+            # https://confluence.ecmwf.int/display/UDOC/Identification+keywords
+
             r = requests.get(self.idx)
-            assert r.ok, f"Index file does not exist: {self.idx}"
+            idxs = [json.loads(x) for x in r.text.split("\n") if x]
+            df = pd.DataFrame(idxs)
 
-        df = pd.read_csv(
-            self.idx,
-            sep=":",
-            names=[
-                "grib_message",
-                "start_byte",
-                "reference_time",
-                "variable",
-                "level",
-                "forecast_time",
-                "?",
-                "??",
-                "???",
-            ],
-        )
+            # Format the DataFrame
+            df.index = df.index.rename("grib_message")
+            df.index += 1
+            df["start_byte"] = df["_offset"]
+            df["end_byte"] = df["_offset"] + df["_length"]
+            df["range"] = df.start_byte.astype(str) + "-" + df.end_byte.astype(str)
+            df["reference_time"] = pd.to_datetime(
+                df.date + df.time, format="%Y%m%d%H%M"
+            )
+            df["step"] = pd.to_timedelta(df.step.astype(int), unit="H")
+            df["valid_time"] = df.reference_time + df.step
 
-        # Format the DataFrame
-        df["grib_message"] = df["grib_message"].astype(float)
-        # ^ float because RAP idx files have some decimal grib message numbers
-        # TODO: ^ how can I address issue #32?
-        df["reference_time"] = pd.to_datetime(df.reference_time, format="d=%Y%m%d%H")
-        df["valid_time"] = df["reference_time"] + pd.to_timedelta(f"{self.fxx}H")
-        df["start_byte"] = df["start_byte"].astype(int)
-        df["end_byte"] = df["start_byte"].shift(-1, fill_value="")
-        # TODO: Check this works: Assign the ending byte for the last row...
-        # TODO: df["end_byte"] = df["start_byte"].shift(-1, fill_value=requests.get(self.grib, stream=True).headers['Content-Length'])
-        # TODO: Based on what Karl Schnieder did.
-        df["range"] = df.start_byte.astype(str) + "-" + df.end_byte.astype(str)
-        df = df.set_index("grib_message")
-        df = df.reindex(
-            columns=[
-                "start_byte",
-                "end_byte",
-                "range",
-                "reference_time",
-                "valid_time",
-                "variable",
-                "level",
-                "forecast_time",
-                "?",
-                "??",
-                "???",
-            ]
-        )
+            df = df.reindex(
+                columns=[
+                    "start_byte",
+                    "end_byte",
+                    "range",
+                    "reference_time",
+                    "valid_time",
+                    "step",
+                    # --- Used for searchString ------------------------------------
+                    "param",  # parameter field (variable)
+                    "levelist",  # level
+                    "levtype",  # sfc=surface, pl=pressure level, pt=potential vorticity
+                    "number",  # model number (used in ensemble products)
+                    "domain",  # g=global
+                    "expver",  # experiment version
+                    "class",  # classification (od=routing operations, rd=research, )
+                    "type",  # fc=forecast, an=analysis,
+                    "stream",  # oper=operationa, wave=wave, ef/enfo=ensemble,
+                ]
+            )
 
-        df = df.dropna(how="all", axis=1)
-        df = df.fillna("")
+            df["search_this"] = (
+                df.loc[:, "param":]
+                .astype(str)
+                .apply(
+                    lambda x: ":" + ":".join(x).rstrip(":").replace(":nan:", ":"),
+                    axis=1,
+                )
+            )
 
+        # Attach some attributes
         df.attrs = dict(
             url=self.idx,
             source=self.idx_source,
-            description="Inventory index (.idx) file for the GRIB2 file.",
+            description="Inventory index file for the GRIB2 file.",
             model=self.model,
             product=self.product,
             lead_time=self.fxx,
@@ -546,15 +680,12 @@ class Herbie:
 
         # Filter DataFrame by searchString
         if searchString not in [None, ":"]:
-            columns_to_search = df.loc[:, "variable":].apply(
-                lambda x: ":".join(x).rstrip(":"), axis=1
-            )
-            logic = columns_to_search.str.contains(searchString)
+            logic = df.search_this.str.contains(searchString)
             if logic.sum() == 0:
                 print(
                     f"No GRIB messages found. There might be something wrong with {searchString=}"
                 )
-                print(_searchString_help(searchString))
+                print(_searchString_help(kind=self.IDX_STYLE))
             df = df.loc[logic]
         return df
 
@@ -632,7 +763,7 @@ class Herbie:
             for i, (grbmsg, row) in enumerate(self.idx_df.iterrows()):
                 if verbose:
                     print(
-                        f"{i+1:>4g}: GRIB_message={grbmsg:<3g} \033[34m{':'.join(row.values[5:]).rstrip(':')}\033[m"
+                        f"{i+1:>4g}: GRIB_message={grbmsg:<3g} \033[34m{row.search_this}\033[m"
                     )
                 if i == 0:
                     # If we are working on the first item, overwrite the existing file...
@@ -663,7 +794,10 @@ class Herbie:
 
         # Attach the index file to the object (how much overhead is this?)
         if self.idx is not None:
-            self.idx_df = self.read_idx(searchString)
+            try:
+                self.idx_df = self.read_idx(searchString)
+            except:
+                print("Note: Herbie could not read and attach index file.")
 
         # This overrides the save_dir specified in __init__
         if save_dir is not None:
@@ -711,7 +845,11 @@ class Herbie:
             subset(searchString, outFile)
 
     def xarray(
-        self, searchString, backend_kwargs={}, remove_grib=True, **download_kwargs
+        self,
+        searchString=None,
+        backend_kwargs={},
+        remove_grib=True,
+        **download_kwargs,
     ):
         """
         Open GRIB2 data as xarray DataSet
@@ -809,4 +947,7 @@ class Herbie:
         if len(Hxr) == 1:
             return Hxr[0]
         else:
+            print(
+                f"Note: Returning a list of [{len(ds)}] xarray.Datasets because of multiple hypercubes."
+            )
             return Hxr
