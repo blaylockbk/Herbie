@@ -287,11 +287,12 @@ If None, then must set <code class="docutils literal notranslate"><span class="p
 <li><p><strong>fxx</strong> (<em>int</em>) – Forecast lead time in hours. Available lead times depend on
 the model type and model version. Range is model and run
 dependant.</p></li>
-<li><p><strong>model</strong> (<em>{'hrrr'</em><em>, </em><em>'hrrrak'</em><em>, </em><em>'rap'</em><em>, </em><em>'gfs'</em><em>, </em><em>'gfs_wave'</em><em>, </em><em>'rrfs'</em><em>, </em><em>etc.}</em>) – Model name as defined in the models template folder. CASE INSENSITIVE
+<li><p><strong>model</strong> (<em>{'hrrr'</em><em>, </em><em>'hrrrak'</em><em>, </em><em>'rap'</em><em>, </em><em>'gfs'</em><em>, </em><em>'gfs_wave'</em><em>, </em><em>'ecmwf'</em><em>, </em><em>'rrfs'</em><em>, </em><em>etc.}</em>) – Model name as defined in the models template folder. CASE INSENSITIVE
 Some examples:
 - <code class="docutils literal notranslate"><span class="pre">'hrrr'</span></code> HRRR contiguous United States model
 - <code class="docutils literal notranslate"><span class="pre">'hrrrak'</span></code> HRRR Alaska model (alias <code class="docutils literal notranslate"><span class="pre">'alaska'</span></code>)
-- <code class="docutils literal notranslate"><span class="pre">'rap'</span></code> RAP model</p></li>
+- <code class="docutils literal notranslate"><span class="pre">'rap'</span></code> RAP model
+- <code class="docutils literal notranslate"><span class="pre">'ecmwf'</span></code> ECMWF open data forecat products</p></li>
 <li><p><strong>product</strong> (<em>{'sfc'</em><em>, </em><em>'prs'</em><em>, </em><em>'nat'</em><em>, </em><em>'subh'}</em>) – Output variable product file type. If not specified, will
 use first product in model template file. CASE SENSITIVE.
 For example, the HRRR model has these products:
