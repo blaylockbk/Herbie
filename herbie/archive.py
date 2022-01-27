@@ -184,12 +184,13 @@ class Herbie:
         Forecast lead time in hours. Available lead times depend on
         the model type and model version. Range is model and run
         dependant.
-    model : {'hrrr', 'hrrrak', 'rap', 'gfs', 'gfs_wave', 'rrfs', etc.}
+    model : {'hrrr', 'hrrrak', 'rap', 'gfs', 'gfs_wave', 'ecmwf', 'rrfs', etc.}
         Model name as defined in the models template folder. CASE INSENSITIVE
         Some examples:
         - ``'hrrr'`` HRRR contiguous United States model
         - ``'hrrrak'`` HRRR Alaska model (alias ``'alaska'``)
         - ``'rap'`` RAP model
+        - ``'ecmwf'`` ECMWF open data forecat products
     product : {'sfc', 'prs', 'nat', 'subh'}
         Output variable product file type. If not specified, will
         use first product in model template file. CASE SENSITIVE.
