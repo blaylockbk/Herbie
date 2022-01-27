@@ -6,7 +6,7 @@ README = (HERE / "README.md").read_text(encoding="utf8")
 
 setup(
     name="herbie-data",  # Unfortunately, "herbie" is already used.
-    version="0.0.7",
+    version="0.0.8",
     author="Brian K. Blaylock",
     author_email="blaylockbk@gmail.com",
     description="Download model data (HRRR, RAP, GFS, NBM, etc.) from NOMADS, NOAA's Big Data Program partners (Amazon, Google, Microsoft), and the University of Utah Pando Archive System.",
