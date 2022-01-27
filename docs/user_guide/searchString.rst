@@ -6,7 +6,7 @@ Use regular expression to search for lines in the index ``.idx`` file
 Here are some examples you can use for the ``searchString`` argument
 
 ================================= ========================================================
-``searchString=``                  GRIB messages that will be downloaded
+``searchString=``                 GRIB messages that will be downloaded
 ================================= ========================================================
 ``':TMP:2 m'``                    Temperature at 2 m.
 ``':TMP:'``                       Temperature fields at all levels.
