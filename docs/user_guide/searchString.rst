@@ -10,10 +10,9 @@ Herbie can subset a file by grib message by downloading a byte range of the file
 Herbie supports reading two different types of index files
 
 1. Index files output by the **wgrib2** command-line utility. These index files are common for forecast models provided by **NCEP**.
-2. Index files output by the **grib_ls** command-line utlity. These index files are common for forecast models provided by **ECMWF**.
+2. Index files output by the **ecCodes/grib_ls** command-line utlity. These index files are common for forecast models provided by **ECMWF**.
 
 You can use regular expression to search for lines in the index file. If ``H`` is a Herbie object, the regex search is performed on the ``H.read_idx().search_this`` column of the DataFrame
-
 
 If you need help with regular expression, search the web or look at this `cheatsheet <https://www.petefreitag.com/cheatsheets/regex/>`_. Check regular expressions with `regexr <https://regexr.com/>`_ or `regex101 <https://regex101.com/>`_.
 

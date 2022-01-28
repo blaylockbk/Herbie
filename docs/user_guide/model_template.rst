@@ -9,15 +9,20 @@ Herbie download capability can be extended to include additional models. The req
 - Subetting of a GRIB2 file requires an index or inventory file
 - A model template class must be created and added to ``herbie/models``
 
-As an example, look at the heavily commented `hrrr.py template <https://github.com/blaylockbk/Herbie/blob/master/herbie/models/hrrr.py>`_.
+As an example, look at the heavily-commented `hrrr.py template <https://github.com/blaylockbk/Herbie/blob/master/herbie/models/hrrr.py>`_.
 
 The model class template function must include the properties
 
-- ``DESCRIPTION``
-- ``DETAILS``
-- ``PRODUCTS``
-- ``SOURCES``
-- ``LOCALFILE``
+- ``DESCRIPTION`` String.
+- ``DETAILS`` Dictionary.
+- ``PRODUCTS`` Dictionary.
+- ``SOURCES`` Dictionary.
+- ``LOCALFILE`` Usually set to ``f"{self.get_remoteFileName}"``, but not always.
+
+The following are optional
+
+- ``IDX_SUFFIX`` List of strings. Default is [".grib2.idx"].
+- ``IDX_STYLE`` String. Default is "wgrib2". Options: "wgrib2" or "eccodes"
 
 
 HRRR Zarr
