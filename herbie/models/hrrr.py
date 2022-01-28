@@ -51,10 +51,10 @@ IDX_SUFFIX : list
     self.IDX_SUFFIX = [".grb2.inv", ".inv", ".grb.inv"]
     *LOOP THROUGH ALL SUFFIXES TO FIND AN INDEX FILE*
 
-IDX_STYLE : {'wgrib', 'grib_ls'}
+IDX_STYLE : {'wgrib2', 'eccodes'}
     This defines how the index will be interpreted.
-    - NCEP products use ``wgrib`` to create index files.
-    - ECMWF products use ``grib_ls`` to create index files.
+    - NCEP products use ``wgrib2`` to create index files.
+    - ECMWF products use ``eccodes`` to create index files.
 """
 from datetime import datetime
 

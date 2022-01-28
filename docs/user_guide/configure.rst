@@ -60,10 +60,11 @@ priority
     - ``'aws'`` Amazon Web Services (Big Data Program)
     - ``'nomads'`` NOAA NOMADS server
     - ``'google'`` Google Cloud Platform (Big Data Program)
-    - ``'azure'`` Microsoft Azure (Big Data Program)
+    - ``'azure'`` Microsoft Azure (Big Data Program and ECMWF open data)
     - ``'pando'`` University of Utah Pando Archive (gateway 1)
     - ``'pando2'`` University of Utah Pando Archive (gateway 2)
     - ``'aws-old'`` File name formats change. This is so Herbie can find old GFS filenames.
+    - ``'ecmwf'`` ECMWF open data products
 
     Look in the `herbie/models` model template files for all the SOURCES available for each model.
 

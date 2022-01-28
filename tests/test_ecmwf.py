@@ -28,4 +28,4 @@ def test_ecmwf():
 
     # Test partial file xarray
     H.xarray(":10(u|v):", remove_grib=False)
-    assert H.get_localFilePath(":10u:").exists()
+    assert H.get_localFilePath(":10(u|v):").exists()

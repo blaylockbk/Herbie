@@ -82,12 +82,12 @@ def _searchString_help(kind="wgrib2"):
 
     Parameters
     ----------
-    kind : {"wgrib2", "grib_ls"}
+    kind : {"wgrib2", "eccodes"}
         There are two different utilities used to create index files and
         they create different file output.
 
         - **wgrib2** is the NCEP-style grib messages
-        - **grib_ls** is the ECMWF-style grib messages
+        - **eccodes** is the ECMWF-style grib messages
     """
 
     if kind == "wgrib2":
@@ -119,10 +119,10 @@ If you need help with regular expression, search the web or look at
 this cheatsheet: https://www.petefreitag.com/cheatsheets/regex/.
 """
 
-    elif kind == "grib_ls":
+    elif kind == "eccodes":
         msg = """
 Use regular expression to search for lines in the index file.
-Here are some examples you can use for the grib_ls-style `searchString`
+Here are some examples you can use for the ecCodes-style `searchString`
 
 Look at the ECMWF GRIB Parameter Database
 https://apps.ecmwf.int/codes/grib/param-db
@@ -292,7 +292,7 @@ class Herbie:
 
         # Specify the index file type. By default, Herbie assumes the
         # index file was created with wgrib2.
-        # But for ecmwf files with index files created with grib_ls
+        # But for ecmwf files with index files created with eccodes
         # the index files are in a different style.
         self.IDX_STYLE = getattr(self, "IDX_STYLE", "wgrib2")
         self.searchString_help = _searchString_help(self.IDX_STYLE)
@@ -620,8 +620,8 @@ class Herbie:
                 )
             )
 
-        if self.IDX_STYLE == "grib_ls":
-            # grib_ls keywords explained here:
+        if self.IDX_STYLE == "eccodes":
+            # eccodes keywords explained here:
             # https://confluence.ecmwf.int/display/UDOC/Identification+keywords
 
             r = requests.get(self.idx)
@@ -937,6 +937,7 @@ class Herbie:
             Hxr = [ds.load() for ds in Hxr]
             # new = Hxr.copy()
 
+            # TODO: 
             # Close the files so it can be removed (this issue seems
             # to be WindowsOS specific).
             # for ds in Hxr:

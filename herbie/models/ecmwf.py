@@ -53,5 +53,5 @@ class ecmwf:
 
         }
         self.IDX_SUFFIX = [".index"]
-        self.IDX_STYLE = 'grib_ls'  # {'wgrib', 'grib_ls'}
+        self.IDX_STYLE = 'eccodes'  # 'wgrib2' or 'eccodes'
         self.LOCALFILE = f"{self.get_remoteFileName}"

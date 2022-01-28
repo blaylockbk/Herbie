@@ -44,7 +44,7 @@ Here are some examples you can use for the ``searchString`` argument for the **w
 ================================= ========================================================
 
 
-grib_ls-style index files
+ecCodes-style index files
 -------------------------
 
 Here are some examples you can use for the ``searchString`` argument for the **grib_ls**-style index files.
