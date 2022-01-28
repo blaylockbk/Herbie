@@ -360,8 +360,8 @@
 <h2>Command Line Tools<a class="headerlink" href="#command-line-tools" title="Permalink to this headline">¶</a></h2>
 <p>There are two command-line tools for looking at GRIB file contents.</p>
 <ol class="arabic simple">
-<li><p><em>wgrib2</em> is a product of NOAA and can be installed via conda-forge in your environment (linux only). | <a class="reference external" href="https://www.cpc.ncep.noaa.gov/products/wesley/wgrib2/">wrgib2 documentation</a> |</p></li>
-<li><p><em>grib_ls</em> is a product of ECMWF and is a dependency of cfgrib. This utility is included when you install cfgrib in your conda environment.</p></li>
+<li><p><em>wgrib2</em> is a product of NOAA/NCEP and can be installed via conda-forge in your environment (linux only). | <a class="reference external" href="https://www.cpc.ncep.noaa.gov/products/wesley/wgrib2/">wrgib2 documentation</a> |</p></li>
+<li><p><em>grib_ls</em> in the ecCodes package is a product of ECMWF. Since ecCodes is a dependency of cfgrib, this utility is included when you install cfgrib in your conda environment. | <a class="reference external" href="https://confluence.ecmwf.int/display/ECC/grib_ls">grib_ls documentation</a></p></li>
 </ol>
 <p>For a sample GRIB2 file with precipitation data, below is the output using both tools</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ wgrib2 subset_20201214_hrrr.t00z.wrfsfcf12.grib2
@@ -391,17 +391,17 @@ edition      centre       date         dataType     gridType     typeOfLevel  le
 </section>
 <section id="how-grib-subsetting-works-in-herbie">
 <h1>How GRIB subsetting works in Herbie<a class="headerlink" href="#how-grib-subsetting-works-in-herbie" title="Permalink to this headline">¶</a></h1>
-<p>GRIB files are gridded binary. GRIB _messages_ or _fields_ are stacked on top of each other in a file. Each field contains data for one variable at a specific level across the gridded model domain. Because the file is made up of individual “messages,” it is possible to download portions of GRIB2 file by retrieving just specific messages.</p>
-<p>Herbie supports <strong>subsetting GRIB2 files by GRIB message</strong>, provided that an _inventory_ or _index_ (.idx) file exists. The index file tells us the beginning byte of each GRIB message. To download a subset, Herbie uses the cURL command which allows you to download a range of bytes from a file. By repeating the cURL command and appending the messages you a file, you can subset a full file on the remote server and download only the fields you need. Keep in mind that a GRIB message represents the variable over the full grid. It is only possible to subset the file by GRIB message and not by geographical region (i.e., you cannot do a regional subset).</p>
-<p>Why would you want to subset GRIB2 files? Well, GRIB files provided by operational forecast centers are usually very large because they can contain hundred of model output variables, and each variable is its own GRIB message. For example, native grid HRRR files can be ~700 MB each! That adds up quick if you need a lot of days and forecasts. Often, you only need some of the data in the file. The size of a single HRRR message is about 1 MB. If you subset the data as you download it, you will save a lot of disk space and improve download time.</p>
+<p>GRIB files are gridded binary. GRIB _messages_ or _fields_ are stacked on top of each other in a file; I like to think of each message as a “layer” in the file. Each field contains data for one variable at a specific level across the gridded model domain. Because the file is made up of individual “messages,” it is possible to download portions of GRIB2 file by retrieving just specific messages using HTTP <a class="reference external" href="https://www.keycdn.com/support/byte-range-requests">Byte-Range request</a>.</p>
+<p>Herbie supports <strong>subsetting GRIB2 files by GRIB message</strong>, provided that an _inventory_ or _index_ (.idx) file exists. The index file tells us the beginning byte of each GRIB message. To download a subset, Herbie uses the <strong>cURL</strong> command which allows you to download a range of bytes from a file. By repeating the cURL command and appending the messages you a file, you can subset a full file on the remote server and download only the fields you need. Keep in mind that a GRIB message represents the variable over the full grid. It is only possible to subset the file by GRIB message and not by geographical region (i.e., you cannot do a regional subset).</p>
+<p>Why would you want to subset GRIB2 files? Well, GRIB files provided by operational forecast centers are usually very large because they can contain hundred of model output variables, and each variable is its own GRIB message. For example, native grid HRRR files can be ~700 MB each! That adds up quick if you need a lot of days and forecasts and all you are interested in surface temperature. Often, you only need some of the data in the file. The size of a single HRRR message is about 1 MB. If you subset the data as you download it, you will save a lot of disk space and improve your data aquisition time by reducing the download time.</p>
 <figure class="align-default" id="id1">
 <img alt="../_images/GRIB2_file_cURL.png" src="../_images/GRIB2_file_cURL.png" />
 <figcaption>
 <p><span class="caption-text">GRIB2 files are made up of messages or fields that can be extracted instead of downloading the full file.</span><a class="headerlink" href="#id1" title="Permalink to this image">¶</a></p>
 </figcaption>
 </figure>
-<p>The challenge to downloading parts of the full GRIB2 file finding the byte range for a variable you want. That is what Herbie does for you. It looks at the index file, identifies the variables you want and its byte range, and downloads each message you request with cURL.</p>
-<p>Each GRIB2 file has a unique index file and looks something like this example from the HRRR model</p>
+<p>The challenge to downloading parts of the full GRIB2 file finding the byte range for a variable you want, but that is what Herbie does for you. Herbie looks at the index file, identifies the variables you want and its byte range, and downloads each message you request with cURL.</p>
+<p>Each GRIB2 file has a unique index file and looks something like this example from the HRRR model. This is an example of the wgrib2-style index file and are provided for NCEP models:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mi">1</span><span class="p">:</span><span class="mi">0</span><span class="p">:</span><span class="n">d</span><span class="o">=</span><span class="mi">2021072701</span><span class="p">:</span><span class="n">REFC</span><span class="p">:</span><span class="n">entire</span> <span class="n">atmosphere</span><span class="p">:</span><span class="n">anl</span><span class="p">:</span>
 <span class="mi">2</span><span class="p">:</span><span class="mi">354859</span><span class="p">:</span><span class="n">d</span><span class="o">=</span><span class="mi">2021072701</span><span class="p">:</span><span class="n">RETOP</span><span class="p">:</span><span class="n">cloud</span> <span class="n">top</span><span class="p">:</span><span class="n">anl</span><span class="p">:</span>
 <span class="mi">3</span><span class="p">:</span><span class="mi">624897</span><span class="p">:</span><span class="n">d</span><span class="o">=</span><span class="mi">2021072701</span><span class="p">:</span><span class="n">var</span> <span class="n">discipline</span><span class="o">=</span><span class="mi">0</span> <span class="n">center</span><span class="o">=</span><span class="mi">7</span> <span class="n">local_table</span><span class="o">=</span><span class="mi">1</span> <span class="n">parmcat</span><span class="o">=</span><span class="mi">16</span> <span class="n">parm</span><span class="o">=</span><span class="mi">201</span><span class="p">:</span><span class="n">entire</span> <span class="n">atmosphere</span><span class="p">:</span><span class="n">anl</span><span class="p">:</span>
@@ -426,15 +426,25 @@ edition      centre       date         dataType     gridType     typeOfLevel  le
 <figure class="align-default">
 <img alt="../_images/index_file_description.png" src="../_images/index_file_description.png" />
 </figure>
-<p>For example, we can call the cURL command to download a valid GRIB2 file with only the 2 meter temperature variable.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl -o 20180101_00zf00_2mTemp.grib2 --range <span class="m">34884036</span>-36136433 https://pando-rgw01.chpc.utah.edu/hrrr/sfc/20180101/hrrr.t00z.wrfsfcf00.grib2
+<p>ECMWF products use a different pattern for their index files (I believe created with the ecCodes/grib_ls tool). The important thing here is that these also tell us what variable is in each GRIB message and the start and end byte. Here is an example of one of the ECMWF index files:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="s2">&quot;domain&quot;</span><span class="p">:</span> <span class="s2">&quot;g&quot;</span><span class="p">,</span> <span class="s2">&quot;date&quot;</span><span class="p">:</span> <span class="s2">&quot;20220125&quot;</span><span class="p">,</span> <span class="s2">&quot;time&quot;</span><span class="p">:</span> <span class="s2">&quot;1800&quot;</span><span class="p">,</span> <span class="s2">&quot;expver&quot;</span><span class="p">:</span> <span class="s2">&quot;0001&quot;</span><span class="p">,</span> <span class="s2">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;od&quot;</span><span class="p">,</span> <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;pf&quot;</span><span class="p">,</span> <span class="s2">&quot;stream&quot;</span><span class="p">:</span> <span class="s2">&quot;enfo&quot;</span><span class="p">,</span> <span class="s2">&quot;levtype&quot;</span><span class="p">:</span> <span class="s2">&quot;sfc&quot;</span><span class="p">,</span> <span class="s2">&quot;number&quot;</span><span class="p">:</span> <span class="s2">&quot;4&quot;</span><span class="p">,</span> <span class="s2">&quot;step&quot;</span><span class="p">:</span> <span class="s2">&quot;0&quot;</span><span class="p">,</span> <span class="s2">&quot;param&quot;</span><span class="p">:</span> <span class="s2">&quot;tp&quot;</span><span class="p">,</span> <span class="s2">&quot;_offset&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;_length&quot;</span><span class="p">:</span> <span class="mi">243</span><span class="p">}</span>
+</pre></div>
+</div>
+<p>{“domain”: “g”, “date”: “20220125”, “time”: “1800”, “expver”: “0001”, “class”: “od”, “type”: “pf”, “stream”: “enfo”, “levtype”: “sfc”, “number”: “2”, “step”: “0”, “param”: “tp”, “_offset”: 243, “_length”: 243}
+{“domain”: “g”, “date”: “20220125”, “time”: “1800”, “expver”: “0001”, “class”: “od”, “type”: “pf”, “stream”: “enfo”, “levtype”: “sfc”, “number”: “3”, “step”: “0”, “param”: “tp”, “_offset”: 486, “_length”: 243}
+{“domain”: “g”, “date”: “20220125”, “time”: “1800”, “expver”: “0001”, “class”: “od”, “type”: “pf”, “stream”: “enfo”, “step”: “0”, “levtype”: “sfc”, “number”: “8”, “param”: “2t”, “_offset”: 729, “_length”: 609069}
+{“domain”: “g”, “date”: “20220125”, “time”: “1800”, “expver”: “0001”, “class”: “od”, “type”: “pf”, “stream”: “enfo”, “levtype”: “sfc”, “number”: “33”, “step”: “0”, “param”: “tp”, “_offset”: 609798, “_length”: 243}
+{“domain”: “g”, “date”: “20220125”, “time”: “1800”, “expver”: “0001”, “class”: “od”, “type”: “pf”, “stream”: “enfo”, “levtype”: “sfc”, “number”: “34”, “step”: “0”, “param”: “tp”, “_offset”: 610041, “_length”: 243}
+{“domain”: “g”, “date”: “20220125”, “time”: “1800”, “expver”: “0001”, “class”: “od”, “type”: “pf”, “stream”: “enfo”, “levtype”: “sfc”, “number”: “23”, “step”: “0”, “param”: “tp”, “_offset”: 610284, “_length”: 243}</p>
+<p>From these index files, we know the byte range of specific GRIB messages. This enables us to do a byte-range request. For example, we can call the cURL command to download a valid GRIB2 file with only the 2 meter temperature variable.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl -o outFile.grib2 --range <span class="m">34884036</span>-36136433 https://pando-rgw01.chpc.utah.edu/hrrr/sfc/20180101/hrrr.t00z.wrfsfcf00.grib2
 </pre></div>
 </div>
 <p>You could repeat the cURL download for different ranges append several variables output to the same file.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl --range <span class="c1">######-###### &gt;&gt; outFile.grib2</span>
 </pre></div>
 </div>
-<p>For Herbie to download a subset of the file, this index file must exist on a remote server. Without the index file, it is impossible to know the byte range for each variable. If the index files do not exists, ask the data provider to generate the inventory files and host them on the remote server. The index files can be created using wgrib2.</p>
+<p>For Herbie to download a subset of the file, this index file must exist on a remote server. Without the index file, it is impossible to know the byte range for each variable. If the index files do not exists, ask the data provider to generate the inventory files and host them on the remote server. The wgrib2-style index files can be created using wgrib2 with the following command:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>wgrib2 -s file.grib2 &gt; file.grib2.idx
 </pre></div>
 </div>
@@ -445,7 +455,7 @@ edition      centre       date         dataType     gridType     typeOfLevel  le
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>This method is similar to that used in Wesley Ebisuzaki’s <a class="reference external" href="https://www.cpc.ncep.noaa.gov/products/wesley/fast_downloading_grib.html">Fast Downloading GRIB</a> script.</p>
+<p>This “partial-get/byte-range” method is similar to that used in Wesley Ebisuzaki’s <a class="reference external" href="https://www.cpc.ncep.noaa.gov/products/wesley/fast_downloading_grib.html">Fast Downloading GRIB</a> script. It is also described on ECMWF’s example script <a class="reference external" href="https://confluence.ecmwf.int/display/UDOC/ECMWF+Open+Data+-+Real+Time#ECMWFOpenDataRealTime-DownloadASingleFieldWithWgetDownloadasinglefieldwithwget">here</a>.</p>
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -459,6 +469,10 @@ count        offset       date         hour         level        typeOfLevel  na
 4            2.21452e+06  20210101     12           500          isobaricInhPa  U component of wind  6
 5            2.80253e+06  20210101     12           500          isobaricInhPa  V component of wind  6
 5 of 5 messages in file.grib2
+</pre></div>
+</div>
+<p>_I’m not sure how the ECMWF index files are generated, so if you know, please share._ This is close, but not exact.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>grib_ls someGRIBfile.grib2 -p domain,date,time,expver,class,type,stream,levtype,number,step,param,offset,length -j
 </pre></div>
 </div>
 </div>

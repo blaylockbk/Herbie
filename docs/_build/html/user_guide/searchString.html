@@ -305,8 +305,8 @@
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#grib-ls-style-index-files">
-   grib_ls-style index files
+  <a class="reference internal nav-link" href="#eccodes-style-index-files">
+   ecCodes-style index files
   </a>
  </li>
 </ul>
@@ -344,7 +344,7 @@
 <p>Herbie supports reading two different types of index files</p>
 <ol class="arabic simple">
 <li><p>Index files output by the <strong>wgrib2</strong> command-line utility. These index files are common for forecast models provided by <strong>NCEP</strong>.</p></li>
-<li><p>Index files output by the <strong>grib_ls</strong> command-line utlity. These index files are common for forecast models provided by <strong>ECMWF</strong>.</p></li>
+<li><p>Index files output by the <strong>ecCodes/grib_ls</strong> command-line utlity. These index files are common for forecast models provided by <strong>ECMWF</strong>.</p></li>
 </ol>
 <p>You can use regular expression to search for lines in the index file. If <code class="docutils literal notranslate"><span class="pre">H</span></code> is a Herbie object, the regex search is performed on the <code class="docutils literal notranslate"><span class="pre">H.read_idx().search_this</span></code> column of the DataFrame</p>
 <p>If you need help with regular expression, search the web or look at this <a class="reference external" href="https://www.petefreitag.com/cheatsheets/regex/">cheatsheet</a>. Check regular expressions with <a class="reference external" href="https://regexr.com/">regexr</a> or <a class="reference external" href="https://regex101.com/">regex101</a>.</p>
@@ -413,8 +413,8 @@
 </tbody>
 </table>
 </section>
-<section id="grib-ls-style-index-files">
-<h2>grib_ls-style index files<a class="headerlink" href="#grib-ls-style-index-files" title="Permalink to this headline">¶</a></h2>
+<section id="eccodes-style-index-files">
+<h2>ecCodes-style index files<a class="headerlink" href="#eccodes-style-index-files" title="Permalink to this headline">¶</a></h2>
 <p>Here are some examples you can use for the <code class="docutils literal notranslate"><span class="pre">searchString</span></code> argument for the <strong>grib_ls</strong>-style index files.</p>
 <p>Look at the ECMWF GRIB Parameter Database
 <a class="reference external" href="https://apps.ecmwf.int/codes/grib/param-db">https://apps.ecmwf.int/codes/grib/param-db</a></p>

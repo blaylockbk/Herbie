@@ -295,15 +295,16 @@ conda activate herbie
 <section id="create-a-herbie-object">
 <h3>Create a Herbie object<a class="headerlink" href="#create-a-herbie-object" title="Permalink to this headline">¶</a></h3>
 <p>Herbie looks for model data at different sources until the requested file is found.</p>
-<p>Some of the models Herbie looks for include:</p>
+<p>Herbie can discover data from the following models (click for example usage):</p>
 <ul class="simple">
-<li><p>High Resolution Rapid Refresh (HRRR)</p></li>
-<li><p>High Resolution Rapid Refresh - Alaska (HRRRAK)</p></li>
-<li><p>Rapid Refresh (RAP)</p></li>
-<li><p>Global Forecast System (GFS)</p></li>
-<li><p>Global Forecast System - Wave (GFS-Wave)</p></li>
-<li><p>Rapid Refresh Forecast System - Prototype (RRFS)</p></li>
-<li><p>National Blend of Models (NMB)</p></li>
+<li><p><a class="reference external" href="https://blaylockbk.github.io/Herbie/_build/html/user_guide/notebooks/data_hrrr.html">High Resolution Rapid Refresh (HRRR)</a></p></li>
+<li><p><a class="reference external" href="https://blaylockbk.github.io/Herbie/_build/html/user_guide/notebooks/data_hrrrak.html">High Resolution Rapid Refresh - Alaska (HRRRAK)</a></p></li>
+<li><p><a class="reference external" href="https://blaylockbk.github.io/Herbie/_build/html/user_guide/notebooks/data_rap.html">Rapid Refresh (RAP)</a></p></li>
+<li><p><a class="reference external" href="https://blaylockbk.github.io/Herbie/_build/html/user_guide/notebooks/data_gfs.html">Global Forecast System (GFS)</a></p></li>
+<li><p><a class="reference external" href="https://blaylockbk.github.io/Herbie/_build/html/user_guide/notebooks/data_gfs.html#Get-data-from-the-GFS-wave-output">Global Forecast System - Wave (GFS-Wave)</a></p></li>
+<li><p><a class="reference external" href="https://blaylockbk.github.io/Herbie/_build/html/user_guide/notebooks/data_ecmwf.html">ECMWF Open Data Forecast Products (ECMWF)</a></p></li>
+<li><p><a class="reference external" href="https://blaylockbk.github.io/Herbie/_build/html/user_guide/notebooks/data_nbm.html">National Blend of Models (NMB)</a></p></li>
+<li><p><a class="reference external" href="https://blaylockbk.github.io/Herbie/_build/html/user_guide/notebooks/data_rrfs.html">Rapid Refresh Forecast System - Prototype (RRFS)</a></p></li>
 </ul>
 <p>This Herbie object is for the HRRR model sfc product and 6 hour forecast. The file was found an Amazon Web Services.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">herbie.archive</span> <span class="kn">import</span> <span class="n">Herbie</span>
@@ -320,6 +321,7 @@ conda activate herbie
 <li><p><a class="reference external" href="https://console.cloud.google.com/marketplace/product/noaa-public/hrrr">Google Cloud Platform</a></p></li>
 <li><p><a class="reference external" href="https://github.com/microsoft/AIforEarthDataSets/blob/main/data/noaa-hrrr.md">Microsoft Azure</a></p></li>
 <li><p><a class="reference external" href="http://hrrr.chpc.utah.edu/">University of Utah Pando Archive</a></p></li>
+<li><p><a class="reference external" href="https://www.ecmwf.int/en/forecasts/datasets/open-data">ECMWF Open Data</a></p></li>
 </ul>
 </section>
 </section>

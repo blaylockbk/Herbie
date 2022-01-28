@@ -341,14 +341,19 @@
 <li><p>Subetting of a GRIB2 file requires an index or inventory file</p></li>
 <li><p>A model template class must be created and added to <code class="docutils literal notranslate"><span class="pre">herbie/models</span></code></p></li>
 </ul>
-<p>As an example, look at the heavily commented <a class="reference external" href="https://github.com/blaylockbk/Herbie/blob/master/herbie/models/hrrr.py">hrrr.py template</a>.</p>
+<p>As an example, look at the heavily-commented <a class="reference external" href="https://github.com/blaylockbk/Herbie/blob/master/herbie/models/hrrr.py">hrrr.py template</a>.</p>
 <p>The model class template function must include the properties</p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">DESCRIPTION</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">DETAILS</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">PRODUCTS</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">SOURCES</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">LOCALFILE</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">DESCRIPTION</span></code> String.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">DETAILS</span></code> Dictionary.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">PRODUCTS</span></code> Dictionary.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">SOURCES</span></code> Dictionary.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">LOCALFILE</span></code> Usually set to <code class="docutils literal notranslate"><span class="pre">f&quot;{self.get_remoteFileName}&quot;</span></code>, but not always.</p></li>
+</ul>
+<p>The following are optional</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">IDX_SUFFIX</span></code> List of strings. Default is [“.grib2.idx”].</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">IDX_STYLE</span></code> String. Default is “wgrib2”. Options: “wgrib2” or “eccodes”</p></li>
 </ul>
 <section id="hrrr-zarr">
 <h2>HRRR Zarr<a class="headerlink" href="#hrrr-zarr" title="Permalink to this headline">¶</a></h2>
