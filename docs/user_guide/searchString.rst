@@ -34,6 +34,8 @@ Here are some examples you can use for the ``searchString`` argument for the **w
 ``":UGRD:10 m"``                  U wind component at 10 meters.
 ``":(U|V)GRD:(10|80) m"``         U and V wind component at 10 and 80 m.
 ``":(U|V)GRD:"``                  U and V wind component at all levels.
+``":(?:U|V)GRD:[0-9]+ hybrid"``   U and V wind components at all hybrid levels
+``":(?:U|V)GRD:[0-9]+ mb"``       U and V wind components at all pressure levels
 ``":.GRD:"``                      (Same as above)
 ``":(TMP|DPT):"``                 Temperature and Dew Point for all levels .
 ``":(TMP|DPT|RH):"``              TMP, DPT, and Relative Humidity for all levels.
