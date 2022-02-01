@@ -753,7 +753,16 @@ class Herbie:
             )
 
         def subset(searchString, outFile):
-            """Download a subset specified by the regex searchString"""
+            """
+            Download a subset specified by the regex searchString
+            """
+            # TODO An alternative to downloadling subset with curl is
+            # TODO  to use the request module directly.
+            # TODO  >> headers = dict(Range=f"bytes={start_bytes}-{end_bytes}")
+            # TODO  >> r = requests.get(grib_url, headers=headers)
+            # TODO  Except does this allow multiple ranges??
+            # TODO  See example here: https://github.com/pangeo-forge/pangeo-forge-recipes/issues/267#issuecomment-1026934765
+
             grib_source = self.grib
             if hasattr(grib_source, "as_posix") and grib_source.exists():
                 # The GRIB source is local. Curl the local file

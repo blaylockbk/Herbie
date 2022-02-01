@@ -10,6 +10,8 @@
 [![](https://img.shields.io/pypi/v/herbie-data)](https://pypi.python.org/pypi/herbie-data/)
 ![](https://img.shields.io/github/license/blaylockbk/Herbie)
 [![DOI](https://zenodo.org/badge/275214142.svg)](https://zenodo.org/badge/latestdoi/275214142)
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+
 <!--[![Join the chat at https://gitter.im/blaylockbk/Herbie](https://badges.gitter.im/blaylockbk/Herbie.svg)](https://gitter.im/blaylockbk/Herbie?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)-->
 <!-- (Badges) -->
 
@@ -21,7 +23,7 @@ Herbie helps you discover and download data from:
 - [High Resolution Rapid Refresh (HRRR)](https://blaylockbk.github.io/Herbie/_build/html/user_guide/notebooks/data_hrrr.html) | [HRRR-Alaska](https://blaylockbk.github.io/Herbie/_build/html/user_guide/notebooks/data_hrrrak.html)
 - [Rapid Refresh (RAP)](https://blaylockbk.github.io/Herbie/_build/html/user_guide/notebooks/data_rap.html)
 - [Global Forecast System (GFS)](https://blaylockbk.github.io/Herbie/_build/html/user_guide/notebooks/data_gfs.html)
-- [ECMWF Open Data Forecast Prodducts](https://blaylockbk.github.io/Herbie/_build/html/user_guide/notebooks/data_ecmwf.html) (✨ new in Herbie 0.0.8)
+- [ECMWF Open Data Forecast Products](https://blaylockbk.github.io/Herbie/_build/html/user_guide/notebooks/data_ecmwf.html) (✨ new in Herbie 0.0.8)
 - [National Blend of Models (NBM)](https://blaylockbk.github.io/Herbie/_build/html/user_guide/notebooks/data_nbm.html)
 - [Rapid Refresh Forecast System - Prototype (RRFS)](https://blaylockbk.github.io/Herbie/_build/html/user_guide/notebooks/data_rrfs.html)
 
