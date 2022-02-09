@@ -267,6 +267,7 @@ class Herbie:
             # TODO: Check if the kwarg is a config default.
             # TODO: e.g. if a user primarily works with RRFS, they may
             # TODO: want to configure "member" as a default argument.
+            # You may also set IDX_SUFFIX as an argument.
             setattr(self, key, value)
 
         # Get details from the template of the specified model.
@@ -425,6 +426,9 @@ class Herbie:
         assert self.model in _models, f"`model` must be one of {_models}"
         assert self.product in _products, f"`product` must be one of {_products}"
 
+        if isinstance(self.IDX_SUFFIX, str):
+            self.IDX_SUFFIX = [self.IDX_SUFFIX]
+
         if isinstance(self.priority, str):
             self.priority = [self.priority]
 
@@ -462,15 +466,18 @@ class Herbie:
         """Check if an index file exist for the GRIB2 URL."""
         # To check inventory files with slightly different URL structure
         # we will loop through the IDX_SUFFIX.
-        if not isinstance(self.IDX_SUFFIX, list):
-            self.IDX_SUFFIX = [self.IDX_SUFFIX]
 
         if verbose:
             print(f"🐜 {self.IDX_SUFFIX=}")
 
         # Loop through IDX_SUFFIX options until we find one that exists
         for i in self.IDX_SUFFIX:
-            idx_url = url.rsplit(".", maxsplit=1)[0] + i
+
+            if Path(url).suffix in {'.grb', '.grib', '.grb2', '.grib2'}:
+                idx_url = url.rsplit(".", maxsplit=1)[0] + i
+            else:
+                idx_url = url + i
+
             idx_exists = requests.head(idx_url).ok
             if verbose:
                 print(f"🐜 {idx_url=}")
