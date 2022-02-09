@@ -898,7 +898,7 @@ class Herbie:
         # Use cfgrib.open_datasets, just in case there are multiple "hypercubes"
         # for what we requested.
         Hxr = cfgrib.open_datasets(
-            self.get_localFilePath(searchString=searchString),
+            str(self.get_localFilePath(searchString=searchString)),
             backend_kwargs=backend_kwargs,
         )
 
