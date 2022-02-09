@@ -11,7 +11,7 @@ dependencies:
   # Tools
   # -----
   - cartopy
-  - cfgrib
+  - cfgrib=0.9.9.1
   - geopandas
   - h5py
   - jupyter
