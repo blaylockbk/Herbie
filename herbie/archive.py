@@ -497,7 +497,7 @@ class Herbie:
         """Predict Local File Name"""
         return self.LOCALFILE
 
-    def get_localFilePath(self, searchString=None):
+    def get_localFilePath(self, searchString=None, datafileHash=None):
         """Get path to local file"""
         if list(self.SOURCES)[0] == "local":
             # TODO: An experimental special case for locally stored GRIB2.
@@ -510,17 +510,19 @@ class Herbie:
                 / self.get_localFileName
             )
 
-        if searchString is not None:
-            # Reassign the index DataFrame with the requested searchString
-            self.idx_df = self.read_idx(searchString)
+        if searchString is not None or datafileHash is not None:
+            hash_label = datafileHash
+            if hash_label is None:
+                # Reassign the index DataFrame with the requested searchString
+                self.idx_df = self.read_idx(searchString)
 
-            # Get a list of all GRIB message numbers. We will use this
-            # in the output file name as a unique identifier.
-            all_grib_msg = "-".join([f"{i:g}" for i in self.idx_df.index])
+                # Get a list of all GRIB message numbers. We will use this
+                # in the output file name as a unique identifier.
+                all_grib_msg = "-".join([f"{i:g}" for i in self.idx_df.index])
 
-            # To prevent "filename too long" error, create a hash to
-            # make unique filename.
-            hash_label = hashlib.sha1(all_grib_msg.encode()).hexdigest()
+                # To prevent "filename too long" error, create a hash to
+                # make unique filename.
+                hash_label = hashlib.sha1(all_grib_msg.encode()).hexdigest()
 
             # Append the filename to distinguish it from the full file.
             outFile = outFile.with_suffix(f".grib2.subset_{hash_label}")
@@ -697,6 +699,7 @@ class Herbie:
     def download(
         self,
         searchString=None,
+        datafileHash=None,
         *,
         source=None,
         save_dir=None,
@@ -791,7 +794,7 @@ class Herbie:
 
         # If the file exists in the localPath and we don't want to
         # overwrite, then we don't need to download it.
-        outFile = self.get_localFilePath(searchString=searchString)
+        outFile = self.get_localFilePath(searchString=searchString, datafileHash=datafileHash)
 
         # This overrides the overwrite specified in __init__
         if overwrite is not None:
@@ -861,6 +864,7 @@ class Herbie:
     def xarray(
         self,
         searchString=None,
+        datafileHash=None,
         backend_kwargs={},
         remove_grib=True,
         **download_kwargs,
@@ -880,7 +884,7 @@ class Herbie:
         download_kwargs = {**dict(overwrite=False), **download_kwargs}
 
         # Download file if local file does not exists
-        local_file = self.get_localFilePath(searchString=searchString)
+        local_file = self.get_localFilePath(searchString=searchString, datafileHash=datafileHash)
 
         # Only remove grib if it didn't exists before we download it
         remove_grib = not local_file.exists() and remove_grib
@@ -898,14 +902,14 @@ class Herbie:
         # Use cfgrib.open_datasets, just in case there are multiple "hypercubes"
         # for what we requested.
         Hxr = cfgrib.open_datasets(
-            self.get_localFilePath(searchString=searchString),
+            str(local_file),
             backend_kwargs=backend_kwargs,
         )
 
         # Get CF grid projection information with pygrib and pyproj because
         # this is something cfgrib doesn't do (https://github.com/ecmwf/cfgrib/issues/251)
         # NOTE: Assumes the projection is the same for all variables
-        grib = pygrib.open(str(self.get_localFilePath(searchString=searchString)))
+        grib = pygrib.open(str(local_file))
         msg = grib.message(1)
         cf_params = CRS(msg.projparams).to_cf()
 
@@ -924,7 +928,7 @@ class Herbie:
             ds.attrs["product"] = self.product
             ds.attrs["description"] = self.DESCRIPTION
             ds.attrs["remote_grib"] = self.grib
-            ds.attrs["local_grib"] = self.get_localFilePath(searchString=searchString)
+            ds.attrs["local_grib"] = local_file
 
             # Attach CF grid mapping
             # ----------------------
