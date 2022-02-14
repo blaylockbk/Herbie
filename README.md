@@ -50,7 +50,25 @@ or, create the provided **[conda environment](https://github.com/blaylockbk/Herb
 - Download full GRIB2 files
 - Download subset GRIB2 files (by grib field)
 - Read data with xarray
+- Read index file with Pandas
 - Plot data with Cartopy (very early development)
+
+
+```mermaid
+  graph TD;
+      d1[(HRRR)] -.-> H
+      d2[(RAP)] -.-> H
+      d3[(GFS)] -.-> H
+      d4[(ECMWF)] -.-> H
+      d5[(NBM)] -.-> H
+      d6[(RRFS)] -.-> H
+      H((Herbie))
+      H --- .download
+      H --- .xarray
+      H --- .read_idx
+
+      style H fill:#d8c89d,stroke:#0c3576,stroke-width:4px,color:#000000
+```
 
 ```python
 from herbie.archive import Herbie
@@ -116,3 +134,7 @@ P.S. If you like Herbie, check out my other repos:
 - [🔨 Carpenter Workshop](https://github.com/blaylockbk/Carpenter_Workshop): A python package with various tools I made that are useful (like easy funxtions to build Cartopy maps).
 - [💬 Bubble Print](https://github.com/blaylockbk/BubblePrint): A silly little python package that gives your print statement's personality.
 - [📜 MET Syntax](https://github.com/blaylockbk/vscode-met-syntax): An extension for Visual Studio Code that gives syntax highlighting for Model Evaluation Tools (MET) configuration files.
+
+
+
+
