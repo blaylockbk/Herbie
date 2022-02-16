@@ -2,7 +2,7 @@
 
 ## HRRR: High Resolution Rapid Refresh
 
-Website: https://rapidrefresh.noaa.gov/hrrr/
+ESRL: https://rapidrefresh.noaa.gov/hrrr/
 
 
 ``` mermaid
@@ -16,3 +16,23 @@ gantt
   RRFS :               after v4, 2026
 ```
 
+## RAP: Rapid Refresh
+
+> work in progress
+
+ESRL: https://rapidrefresh.noaa.gov/
+
+NCEI: https://www.ncei.noaa.gov/products/weather-climate-models/rapid-refresh-update
+
+AWS: https://registry.opendata.aws/noaa-rap/
+
+``` mermaid
+gantt
+  title RAP Model Sources
+  axisFormat %Y
+  section NCEI
+  RUC : 2005-01-01, 2012-05-01
+  RAP : 2012-05-01, 2022-05-01
+  section Big Data Program
+  RAP : 2021-02-22, 2022-02-22
+```

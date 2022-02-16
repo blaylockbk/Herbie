@@ -4,56 +4,34 @@ channels:
 dependencies:
   - python=3.9
   - pip
-  - git
   - curl
-  #- wgrib2  # ONLY AVAILABLE ON LINUX. Comment if not using Linux.
-
-  # Tools
-  # -----
+  - toml
+  - requests
+  - numpy
+  - matplotlib
   - cartopy
-  - cfgrib=0.9.9.1
-  - geopandas
-  - h5py
   - jupyter
   - jupyterlab
-  - matplotlib
-  - metpy
   - netcdf4
-  - numpy
   - pandas
-  - pygrib
-  - pylint
-  - pyproj
-  - requests
-  - s3fs
+  - geopandas
   - scipy
-  - toml
+  - metpy
   - xarray
+  - pyproj
+  - h5py
+  - pygrib
+  - cfgrib
+  - pylint
+  - s3fs
   - zarr
+  #- wgrib2  # ONLY AVAILABLE ON LINUX. Comment if not using Linux.
 
   # Formatter
-  # ---------
   - black
-  - jupyterlab_code_formatter
-  - isort
-
+  
   # Testing
-  # -------
   - pytest
-
-  # Documentation
-  # -------------
-  - sphinx
-  - nbsphinx
-  - pydata-sphinx-theme # PyData Sphinx Theme (i.e, Numpy, Pandas, MetPy)
-  - sphinx-panels # Add bootstrap elements to Sphinx
-  - recommonmark
-  - sphinx-markdown-tables
-  - autodocsumm
-  - sphinx-autosummary-accessors # pandas and xarray accessor docs
-  - latexmk
-  - myst-parser
-  - linkify-it-py
 
   - pip:
       # Development Version from GitHub
@@ -63,3 +41,6 @@ dependencies:
 
       # Borrow some tools from my garage
       - git+https://github.com/blaylockbk/Carpenter_Workshop.git
+
+    # Reading bufr files (beta)
+    #- pdbufr  # Sooo, eccodes does not support prepbufr format
