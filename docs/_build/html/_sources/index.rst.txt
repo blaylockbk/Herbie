@@ -4,7 +4,7 @@
 ===============================
 Herbie: Retrieve NWP Model Data
 ===============================
-**Herbie** is a python package that download recent and archived numerical weather prediction (NWP) model output from different cloud archive sources. This data is usually in GRIB2 format and can be read with xarray/cfgrib. Model data Herbie can retrieve includes the High Resolution Rapid Refresh (HRRR), Rapid Refresh (RAP), Global Forecast System (GFS), National Blend of Models (NBM), and Rapid Refresh Forecast System - Prototype (RRFS).
+**Herbie** is a python package that download recent and archived numerical weather prediction (NWP) model output from different cloud archive sources. This data is usually in GRIB2 format and can be read with xarray/cfgrib. Model data Herbie can retrieve includes the High Resolution Rapid Refresh (HRRR), Rapid Refresh (RAP), Global Forecast System (GFS), National Blend of Models (NBM), Rapid Refresh Forecast System - Prototype (RRFS), and  ECMWF open data forecast products (ECMWF).
 
 .. toctree::
    :maxdepth: 1
@@ -48,15 +48,16 @@ Create a Herbie object
 ^^^^^^^^^^^^^^^^^^^^^^
 Herbie looks for model data at different sources until the requested file is found.
 
-Some of the models Herbie looks for include:
+Herbie can discover data from the following models (click for example usage):
 
-- High Resolution Rapid Refresh (HRRR)
-- High Resolution Rapid Refresh - Alaska (HRRRAK)
-- Rapid Refresh (RAP)
-- Global Forecast System (GFS)
-- Global Forecast System - Wave (GFS-Wave)
-- Rapid Refresh Forecast System - Prototype (RRFS)
-- National Blend of Models (NMB)
+- `High Resolution Rapid Refresh (HRRR) <https://blaylockbk.github.io/Herbie/_build/html/user_guide/notebooks/data_hrrr.html>`_
+- `High Resolution Rapid Refresh - Alaska (HRRRAK) <https://blaylockbk.github.io/Herbie/_build/html/user_guide/notebooks/data_hrrrak.html>`_
+- `Rapid Refresh (RAP) <https://blaylockbk.github.io/Herbie/_build/html/user_guide/notebooks/data_rap.html>`_
+- `Global Forecast System (GFS) <https://blaylockbk.github.io/Herbie/_build/html/user_guide/notebooks/data_gfs.html>`_
+- `Global Forecast System - Wave (GFS-Wave) <https://blaylockbk.github.io/Herbie/_build/html/user_guide/notebooks/data_gfs.html#Get-data-from-the-GFS-wave-output>`_
+- `ECMWF Open Data Forecast Products (ECMWF) <https://blaylockbk.github.io/Herbie/_build/html/user_guide/notebooks/data_ecmwf.html>`_
+- `National Blend of Models (NMB) <https://blaylockbk.github.io/Herbie/_build/html/user_guide/notebooks/data_nbm.html>`_
+- `Rapid Refresh Forecast System - Prototype (RRFS) <https://blaylockbk.github.io/Herbie/_build/html/user_guide/notebooks/data_rrfs.html>`_
 
 This Herbie object is for the HRRR model sfc product and 6 hour forecast. The file was found an Amazon Web Services.
 
@@ -76,6 +77,7 @@ Thanks to the `NOAA Big Data Program <https://www.noaa.gov/information-technolog
 - `Google Cloud Platform <https://console.cloud.google.com/marketplace/product/noaa-public/hrrr>`_
 - `Microsoft Azure <https://github.com/microsoft/AIforEarthDataSets/blob/main/data/noaa-hrrr.md>`_
 - `University of Utah Pando Archive <http://hrrr.chpc.utah.edu/>`_
+- `ECMWF Open Data <https://www.ecmwf.int/en/forecasts/datasets/open-data>`_
 
 Download Model Data
 ^^^^^^^^^^^^^^^^^^^

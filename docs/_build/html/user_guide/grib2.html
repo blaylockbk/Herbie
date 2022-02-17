@@ -4,32 +4,33 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
     <title>🔢 What is GRIB2? &#8212; Herbie 0.0.5 documentation</title>
     
-  <link href="../_static/css/theme.css" rel="stylesheet" />
-  <link href="../_static/css/index.c5995385ac14fb8791e8eb36b4908be2.css" rel="stylesheet" />
-
+    <link href="../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+  
     
-  <link rel="stylesheet"
-    href="../_static/vendor/fontawesome/5.13.0/css/all.min.css">
-  <link rel="preload" as="font" type="font/woff2" crossorigin
-    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
-  <link rel="preload" as="font" type="font/woff2" crossorigin
-    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
-
+    <link rel="stylesheet"
+      href="../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+    <link rel="preload" as="font" type="font/woff2" crossorigin
+      href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+    <link rel="preload" as="font" type="font/woff2" crossorigin
+      href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+  
     
       
-
+  
     
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/basic.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/pydata-sphinx-theme.css" />
     <link rel="stylesheet" type="text/css" href="../_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css" />
     <link rel="stylesheet" type="text/css" href="../_static/panels-variables.06eb56fa6e07937060861dad626602ad.css" />
     <link rel="stylesheet" type="text/css" href="../_static/brian_style.css" />
     
-  <link rel="preload" as="script" href="../_static/js/index.1c5a1a01449ed65a7b51.js">
-
+    <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+  
     <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
@@ -40,34 +41,20 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="👨🏻‍💻 Tutorial: New herbie API" href="tutorial.html" />
-    <link rel="prev" title="🛠 Configure" href="configure.html" /> 
+    <link rel="prev" title="🛠 Configure" href="configure.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="docsearch:language" content="en" />
-      
-<style type="text/css">
-  ul.ablog-archive {
-    list-style: none;
-    overflow: auto;
-    margin-left: 0px;
-  }
-  ul.ablog-archive li {
-    float: left;
-    margin-right: 5px;
-    font-size: 80%;
-  }
-  ul.postlist a {
-    font-style: italic;
-  }
-  ul.postlist-style-disc {
-    list-style-type: disc;
-  }
-  ul.postlist-style-none {
-    list-style-type: none;
-  }
-  ul.postlist-style-circle {
-    list-style-type: circle;
-  }
-</style>
+    <meta name="docsearch:language" content="None">
+    
+
+    <!-- Google Analytics -->
+    
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-PT9LX1B7B8"></script>
+<script>
+                    window.dataLayer = window.dataLayer || [];
+                    function gtag(){ dataLayer.push(arguments); }
+                    gtag('js', new Date());
+                    gtag('config', 'G-PT9LX1B7B8');
+                </script>
 
   </head>
   <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
@@ -130,16 +117,12 @@
       <div class="navbar-end-item">
         <ul id="navbar-icon-links" class="navbar-nav" aria-label="Icon Links">
         <li class="nav-item">
-          <a class="nav-link" href="https://github.com/blaylockbk/Herbie" rel="noopener" target="_blank" title="GitHub">
-            <span><i class="fab fa-github-square"></i></span>
-            <label class="sr-only">GitHub</label>
-          </a>
+          <a class="nav-link" href="https://github.com/blaylockbk/Herbie" rel="noopener" target="_blank" title="GitHub"><span><i class="fab fa-github-square"></i></span>
+            <label class="sr-only">GitHub</label></a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="https://twitter.com/blaylockbk" rel="noopener" target="_blank" title="Twitter">
-            <span><i class="fab fa-twitter-square"></i></span>
-            <label class="sr-only">Twitter</label>
-          </a>
+          <a class="nav-link" href="https://twitter.com/blaylockbk" rel="noopener" target="_blank" title="Twitter"><span><i class="fab fa-twitter-square"></i></span>
+            <label class="sr-only">Twitter</label></a>
         </li>
       </ul>
       </div>
@@ -162,7 +145,8 @@
           
             
             <!-- Only show if we have sidebars configured, else just a small margin  -->
-            <div class="col-12 col-md-3 bd-sidebar"><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
+            <div class="col-12 col-md-3 bd-sidebar">
+              <div class="sidebar-start-items"><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
   <i class="icon fas fa-search"></i>
   <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
 </form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
@@ -255,18 +239,23 @@
     </a>
    </li>
    <li class="toctree-l2">
+    <a class="reference internal" href="notebooks/data_ecmwf.html">
+     ECMWF Open Data – Real Time
+    </a>
+   </li>
+   <li class="toctree-l2">
     <a class="reference internal" href="notebooks/data_nbm.html">
      National Blend of Models (NMB)
     </a>
    </li>
    <li class="toctree-l2">
     <a class="reference internal" href="notebooks/data_rrfs.html">
-     NAVGEM Data
+     RRFS Data
     </a>
    </li>
    <li class="toctree-l2">
     <a class="reference internal" href="notebooks/data_navgem.html">
-     RRFS Data
+     NAVGEM Data
     </a>
    </li>
   </ul>
@@ -282,67 +271,18 @@
    API
   </a>
  </li>
- <li class="toctree-l1 has-children">
+ <li class="toctree-l1">
   <a class="reference internal" href="notebooks.html">
    📝 Jupyter Notebooks
   </a>
-  <input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/>
-  <label for="toctree-checkbox-2">
-   <i class="fas fa-chevron-down">
-   </i>
-  </label>
-  <ul>
-   <li class="toctree-l2">
-    <a class="reference external" href="https://github.com/blaylockbk/Herbie/blob/master/notebooks/examples.ipynb">
-     Main Package Examples
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference external" href="https://github.com/blaylockbk/Herbie/blob/master/notebooks/demo_plot-on-map-with-common-features.ipynb">
-     Make Cartopy maps with HRRR data
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference external" href="https://github.com/taylorgowan/zarr">
-     Taylor Gowan: HRRR-Zarr examples
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference external" href="https://github.com/ktyle/python_pangeo_ams2021/blob/main/notebooks/03_Pangeo_HRRR.ipynb">
-     Kevin Tyle: HRRR-Zarr AMS Short Course
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference external" href="https://github.com/blaylockbk/Herbie/blob/master/notebooks/zarr_HRRR.ipynb">
-     Brian Blaylock: HRRR-Zarr sandbox
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference external" href="https://github.com/blaylockbk/Herbie/blob/master/notebooks/demo_download_hrrr_archive_part1.ipynb">
-     Part 1: How to download a bunch of HRRR grib2 files (full file)
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference external" href="https://github.com/blaylockbk/Herbie/blob/master/notebooks/demo_download_hrrr_archive_part2.ipynb">
-     Part 2: How to download a subset of variables from a HRRR file
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference external" href="https://github.com/blaylockbk/Herbie/blob/master/notebooks/demo_download_hrrr_archive_part3.ipynb">
-     Part 3: A function that can download many full files, or subset of files
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference external" href="https://github.com/blaylockbk/Herbie/blob/master/notebooks/demo_download_hrrr_archive_part4.ipynb">
-     Part 4: Opening GRIB2 files in Python with xarray and cfgrib
-    </a>
-   </li>
-  </ul>
  </li>
 </ul>
 
   </div>
 </nav>
+              </div>
+              <div class="sidebar-end-items">
+              </div>
             </div>
             
           
@@ -408,19 +348,20 @@
           <main class="col-12 col-md-9 col-xl-7 py-md-5 pl-md-5 pr-md-4 bd-content" role="main">
               
               <div>
-                 <div class="section" id="what-is-grib2">
+                
+  <section id="what-is-grib2">
 <span id="grib2-faq"></span><h1>🔢 What is GRIB2?<a class="headerlink" href="#what-is-grib2" title="Permalink to this headline">¶</a></h1>
 <p>GRIB stands for “gridded binary” and is an international standard for meteorological data. There is an old standard GRIB, and a new standard GRIB2. In these documents, when I refer to GRIB I really mean the new GRIB2 standard.</p>
 <p>Yes, GRIB is notoriously difficult to work with and has a steep learning curve for those unfamiliar with the format. I won’t discuss here the good, bad, and ugly of GRIB frankly because I’m not an expert and probably will say something wrong. However, even seasoned meteorologists complain about GRIB. Since complaining won’t fix the problem, I choose to embrace it because, for now, NWP data is widely distributed as GRIB2.</p>
 <ul class="simple">
 <li><p><a class="reference external" href="https://en.wikipedia.org/wiki/GRIB">Wikipedia: GRIB</a></p></li>
 </ul>
-<div class="section" id="command-line-tools">
+<section id="command-line-tools">
 <h2>Command Line Tools<a class="headerlink" href="#command-line-tools" title="Permalink to this headline">¶</a></h2>
 <p>There are two command-line tools for looking at GRIB file contents.</p>
 <ol class="arabic simple">
-<li><p><em>wgrib2</em> is a product of NOAA and can be installed via conda-forge in your environment (linux only). | <a class="reference external" href="https://www.cpc.ncep.noaa.gov/products/wesley/wgrib2/">wrgib2 documentation</a> |</p></li>
-<li><p><em>grib_ls</em> is a product of ECMWF and is a dependency of cfgrib. This utility is included when you install cfgrib in your conda environment.</p></li>
+<li><p><em>wgrib2</em> is a product of NOAA/NCEP and can be installed via conda-forge in your environment (linux only). | <a class="reference external" href="https://www.cpc.ncep.noaa.gov/products/wesley/wgrib2/">wrgib2 documentation</a> |</p></li>
+<li><p><em>grib_ls</em> in the ecCodes package is a product of ECMWF. Since ecCodes is a dependency of cfgrib, this utility is included when you install cfgrib in your conda environment. | <a class="reference external" href="https://confluence.ecmwf.int/display/ECC/grib_ls">grib_ls documentation</a></p></li>
 </ol>
 <p>For a sample GRIB2 file with precipitation data, below is the output using both tools</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ wgrib2 subset_20201214_hrrr.t00z.wrfsfcf12.grib2
@@ -438,27 +379,29 @@ edition      centre       date         dataType     gridType     typeOfLevel  le
 <span class="m">2</span> of <span class="m">2</span> total messages <span class="k">in</span> <span class="m">1</span> files
 </pre></div>
 </div>
-</div>
-<div class="section" id="python-tools">
+</section>
+<section id="python-tools">
 <h2>Python Tools<a class="headerlink" href="#python-tools" title="Permalink to this headline">¶</a></h2>
 <p>There are two key python packages for reading GRIB2 files. Both can be installed via conda-forge.</p>
 <ul class="simple">
 <li><p><strong>pygrib</strong> is what I started to learn and still use sometimes. | <a class="reference external" href="https://youtu.be/yLoudFv3hAY">Video Demo</a> |  <a class="reference external" href="https://github.com/jswhit/pygrib">pygrib GitHub</a> |</p></li>
 <li><p><strong>cfgrib</strong> works well reading GRIB2 data as xarray datasets. Make sure you have the latest version (&gt;0.9.8) |  <a class="reference external" href="https://github.com/ecmwf/cfgrib">cfgrib GitHub</a></p></li>
 </ul>
-</div>
-</div>
-<div class="section" id="how-grib-subsetting-works-in-herbie">
+</section>
+</section>
+<section id="how-grib-subsetting-works-in-herbie">
 <h1>How GRIB subsetting works in Herbie<a class="headerlink" href="#how-grib-subsetting-works-in-herbie" title="Permalink to this headline">¶</a></h1>
-<p>GRIB files are gridded binary. GRIB _messages_ or _fields_ are stacked on top of each other in a file. Each field contains data for one variable at a specific level across the gridded model domain. Because the file is made up of individual “messages,” it is possible to download portions of GRIB2 file by retrieving just specific messages.</p>
-<p>Herbie supports <strong>subsetting GRIB2 files by GRIB message</strong>, provided that an _inventory_ or _index_ (.idx) file exists. The index file tells us the beginning byte of each GRIB message. To download a subset, Herbie uses the cURL command which allows you to download a range of bytes from a file. By repeating the cURL command and appending the messages you a file, you can subset a full file on the remote server and download only the fields you need. Keep in mind that a GRIB message represents the variable over the full grid. It is only possible to subset the file by GRIB message and not by geographical region (i.e., you cannot do a regional subset).</p>
-<p>Why would you want to subset GRIB2 files? Well, GRIB files provided by operational forecast centers are usually very large because they can contain hundred of model output variables, and each variable is its own GRIB message. For example, native grid HRRR files can be ~700 MB each! That adds up quick if you need a lot of days and forecasts. Often, you only need some of the data in the file. The size of a single HRRR message is about 1 MB. If you subset the data as you download it, you will save a lot of disk space and improve download time.</p>
-<div class="figure align-default" id="id1">
+<p>GRIB files are gridded binary. GRIB _messages_ or _fields_ are stacked on top of each other in a file; I like to think of each message as a “layer” in the file. Each field contains data for one variable at a specific level across the gridded model domain. Because the file is made up of individual “messages,” it is possible to download portions of GRIB2 file by retrieving just specific messages using HTTP <a class="reference external" href="https://www.keycdn.com/support/byte-range-requests">Byte-Range request</a>.</p>
+<p>Herbie supports <strong>subsetting GRIB2 files by GRIB message</strong>, provided that an _inventory_ or _index_ (.idx) file exists. The index file tells us the beginning byte of each GRIB message. To download a subset, Herbie uses the <strong>cURL</strong> command which allows you to download a range of bytes from a file. By repeating the cURL command and appending the messages you a file, you can subset a full file on the remote server and download only the fields you need. Keep in mind that a GRIB message represents the variable over the full grid. It is only possible to subset the file by GRIB message and not by geographical region (i.e., you cannot do a regional subset).</p>
+<p>Why would you want to subset GRIB2 files? Well, GRIB files provided by operational forecast centers are usually very large because they can contain hundred of model output variables, and each variable is its own GRIB message. For example, native grid HRRR files can be ~700 MB each! That adds up quick if you need a lot of days and forecasts and all you are interested in surface temperature. Often, you only need some of the data in the file. The size of a single HRRR message is about 1 MB. If you subset the data as you download it, you will save a lot of disk space and improve your data aquisition time by reducing the download time.</p>
+<figure class="align-default" id="id1">
 <img alt="../_images/GRIB2_file_cURL.png" src="../_images/GRIB2_file_cURL.png" />
-<p class="caption"><span class="caption-text">GRIB2 files are made up of messages or fields that can be extracted instead of downloading the full file.</span><a class="headerlink" href="#id1" title="Permalink to this image">¶</a></p>
-</div>
-<p>The challenge to downloading parts of the full GRIB2 file finding the byte range for a variable you want. That is what Herbie does for you. It looks at the index file, identifies the variables you want and its byte range, and downloads each message you request with cURL.</p>
-<p>Each GRIB2 file has a unique index file and looks something like this example from the HRRR model</p>
+<figcaption>
+<p><span class="caption-text">GRIB2 files are made up of messages or fields that can be extracted instead of downloading the full file.</span><a class="headerlink" href="#id1" title="Permalink to this image">¶</a></p>
+</figcaption>
+</figure>
+<p>The challenge to downloading parts of the full GRIB2 file finding the byte range for a variable you want, but that is what Herbie does for you. Herbie looks at the index file, identifies the variables you want and its byte range, and downloads each message you request with cURL.</p>
+<p>Each GRIB2 file has a unique index file and looks something like this example from the HRRR model. This is an example of the wgrib2-style index file and are provided for NCEP models:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mi">1</span><span class="p">:</span><span class="mi">0</span><span class="p">:</span><span class="n">d</span><span class="o">=</span><span class="mi">2021072701</span><span class="p">:</span><span class="n">REFC</span><span class="p">:</span><span class="n">entire</span> <span class="n">atmosphere</span><span class="p">:</span><span class="n">anl</span><span class="p">:</span>
 <span class="mi">2</span><span class="p">:</span><span class="mi">354859</span><span class="p">:</span><span class="n">d</span><span class="o">=</span><span class="mi">2021072701</span><span class="p">:</span><span class="n">RETOP</span><span class="p">:</span><span class="n">cloud</span> <span class="n">top</span><span class="p">:</span><span class="n">anl</span><span class="p">:</span>
 <span class="mi">3</span><span class="p">:</span><span class="mi">624897</span><span class="p">:</span><span class="n">d</span><span class="o">=</span><span class="mi">2021072701</span><span class="p">:</span><span class="n">var</span> <span class="n">discipline</span><span class="o">=</span><span class="mi">0</span> <span class="n">center</span><span class="o">=</span><span class="mi">7</span> <span class="n">local_table</span><span class="o">=</span><span class="mi">1</span> <span class="n">parmcat</span><span class="o">=</span><span class="mi">16</span> <span class="n">parm</span><span class="o">=</span><span class="mi">201</span><span class="p">:</span><span class="n">entire</span> <span class="n">atmosphere</span><span class="p">:</span><span class="n">anl</span><span class="p">:</span>
@@ -480,18 +423,28 @@ edition      centre       date         dataType     gridType     typeOfLevel  le
 </pre></div>
 </div>
 <p>Each part has meaning as described in the figure</p>
-<div class="figure align-default">
+<figure class="align-default">
 <img alt="../_images/index_file_description.png" src="../_images/index_file_description.png" />
+</figure>
+<p>ECMWF products use a different pattern for their index files (I believe created with the ecCodes/grib_ls tool). The important thing here is that these also tell us what variable is in each GRIB message and the start and end byte. Here is an example of one of the ECMWF index files:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="s2">&quot;domain&quot;</span><span class="p">:</span> <span class="s2">&quot;g&quot;</span><span class="p">,</span> <span class="s2">&quot;date&quot;</span><span class="p">:</span> <span class="s2">&quot;20220125&quot;</span><span class="p">,</span> <span class="s2">&quot;time&quot;</span><span class="p">:</span> <span class="s2">&quot;1800&quot;</span><span class="p">,</span> <span class="s2">&quot;expver&quot;</span><span class="p">:</span> <span class="s2">&quot;0001&quot;</span><span class="p">,</span> <span class="s2">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;od&quot;</span><span class="p">,</span> <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;pf&quot;</span><span class="p">,</span> <span class="s2">&quot;stream&quot;</span><span class="p">:</span> <span class="s2">&quot;enfo&quot;</span><span class="p">,</span> <span class="s2">&quot;levtype&quot;</span><span class="p">:</span> <span class="s2">&quot;sfc&quot;</span><span class="p">,</span> <span class="s2">&quot;number&quot;</span><span class="p">:</span> <span class="s2">&quot;4&quot;</span><span class="p">,</span> <span class="s2">&quot;step&quot;</span><span class="p">:</span> <span class="s2">&quot;0&quot;</span><span class="p">,</span> <span class="s2">&quot;param&quot;</span><span class="p">:</span> <span class="s2">&quot;tp&quot;</span><span class="p">,</span> <span class="s2">&quot;_offset&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;_length&quot;</span><span class="p">:</span> <span class="mi">243</span><span class="p">}</span>
+</pre></div>
 </div>
-<p>For example, we can call the cURL command to download a valid GRIB2 file with only the 2 meter temperature variable.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl -o 20180101_00zf00_2mTemp.grib2 --range <span class="m">34884036</span>-36136433 https://pando-rgw01.chpc.utah.edu/hrrr/sfc/20180101/hrrr.t00z.wrfsfcf00.grib2
+<p>{“domain”: “g”, “date”: “20220125”, “time”: “1800”, “expver”: “0001”, “class”: “od”, “type”: “pf”, “stream”: “enfo”, “levtype”: “sfc”, “number”: “2”, “step”: “0”, “param”: “tp”, “_offset”: 243, “_length”: 243}
+{“domain”: “g”, “date”: “20220125”, “time”: “1800”, “expver”: “0001”, “class”: “od”, “type”: “pf”, “stream”: “enfo”, “levtype”: “sfc”, “number”: “3”, “step”: “0”, “param”: “tp”, “_offset”: 486, “_length”: 243}
+{“domain”: “g”, “date”: “20220125”, “time”: “1800”, “expver”: “0001”, “class”: “od”, “type”: “pf”, “stream”: “enfo”, “step”: “0”, “levtype”: “sfc”, “number”: “8”, “param”: “2t”, “_offset”: 729, “_length”: 609069}
+{“domain”: “g”, “date”: “20220125”, “time”: “1800”, “expver”: “0001”, “class”: “od”, “type”: “pf”, “stream”: “enfo”, “levtype”: “sfc”, “number”: “33”, “step”: “0”, “param”: “tp”, “_offset”: 609798, “_length”: 243}
+{“domain”: “g”, “date”: “20220125”, “time”: “1800”, “expver”: “0001”, “class”: “od”, “type”: “pf”, “stream”: “enfo”, “levtype”: “sfc”, “number”: “34”, “step”: “0”, “param”: “tp”, “_offset”: 610041, “_length”: 243}
+{“domain”: “g”, “date”: “20220125”, “time”: “1800”, “expver”: “0001”, “class”: “od”, “type”: “pf”, “stream”: “enfo”, “levtype”: “sfc”, “number”: “23”, “step”: “0”, “param”: “tp”, “_offset”: 610284, “_length”: 243}</p>
+<p>From these index files, we know the byte range of specific GRIB messages. This enables us to do a byte-range request. For example, we can call the cURL command to download a valid GRIB2 file with only the 2 meter temperature variable.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl -o outFile.grib2 --range <span class="m">34884036</span>-36136433 https://pando-rgw01.chpc.utah.edu/hrrr/sfc/20180101/hrrr.t00z.wrfsfcf00.grib2
 </pre></div>
 </div>
 <p>You could repeat the cURL download for different ranges append several variables output to the same file.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl --range <span class="c1">######-###### &gt;&gt; outFile.grib2</span>
 </pre></div>
 </div>
-<p>For Herbie to download a subset of the file, this index file must exist on a remote server. Without the index file, it is impossible to know the byte range for each variable. If the index files do not exists, ask the data provider to generate the inventory files and host them on the remote server. The index files can be created using wgrib2.</p>
+<p>For Herbie to download a subset of the file, this index file must exist on a remote server. Without the index file, it is impossible to know the byte range for each variable. If the index files do not exists, ask the data provider to generate the inventory files and host them on the remote server. The wgrib2-style index files can be created using wgrib2 with the following command:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>wgrib2 -s file.grib2 &gt; file.grib2.idx
 </pre></div>
 </div>
@@ -502,7 +455,7 @@ edition      centre       date         dataType     gridType     typeOfLevel  le
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>This method is similar to that used in Wesley Ebisuzaki’s <a class="reference external" href="https://www.cpc.ncep.noaa.gov/products/wesley/fast_downloading_grib.html">Fast Downloading GRIB</a> script.</p>
+<p>This “partial-get/byte-range” method is similar to that used in Wesley Ebisuzaki’s <a class="reference external" href="https://www.cpc.ncep.noaa.gov/products/wesley/fast_downloading_grib.html">Fast Downloading GRIB</a> script. It is also described on ECMWF’s example script <a class="reference external" href="https://confluence.ecmwf.int/display/UDOC/ECMWF+Open+Data+-+Real+Time#ECMWFOpenDataRealTime-DownloadASingleFieldWithWgetDownloadasinglefieldwithwget">here</a>.</p>
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -518,22 +471,34 @@ count        offset       date         hour         level        typeOfLevel  na
 5 of 5 messages in file.grib2
 </pre></div>
 </div>
+<p>_I’m not sure how the ECMWF index files are generated, so if you know, please share._ This is close, but not exact.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>grib_ls someGRIBfile.grib2 -p domain,date,time,expver,class,type,stream,levtype,number,step,param,offset,length -j
+</pre></div>
 </div>
 </div>
+</section>
 
-<div class="section">
-   
-</div>
 
               </div>
               
               
-              <div class='prev-next-bottom'>
-                
-    <a class='left-prev' id="prev-link" href="configure.html" title="previous page">🛠 Configure</a>
-    <a class='right-next' id="next-link" href="tutorial.html" title="next page">👨🏻‍💻 Tutorial: New <code class="docutils literal notranslate"><span class="pre">herbie</span></code> API</a>
-
-              </div>
+              <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+    <a class='left-prev' id="prev-link" href="configure.html" title="previous page">
+        <i class="fas fa-angle-left"></i>
+        <div class="prev-next-info">
+            <p class="prev-next-subtitle">previous</p>
+            <p class="prev-next-title">🛠 Configure</p>
+        </div>
+    </a>
+    <a class='right-next' id="next-link" href="tutorial.html" title="next page">
+    <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">👨🏻‍💻 Tutorial: New <code class="docutils literal notranslate"><span class="pre">herbie</span></code> API</p>
+    </div>
+    <i class="fas fa-angle-right"></i>
+    </a>
+</div>
               
           </main>
           
@@ -541,27 +506,19 @@ count        offset       date         hour         level        typeOfLevel  na
       </div>
     </div>
   
-  <script src="../_static/js/index.1c5a1a01449ed65a7b51.js"></script>
-
-  
-<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-PT9LX1B7B8"></script>
-<script>
-                    window.dataLayer = window.dataLayer || [];
-                    function gtag(){ dataLayer.push(arguments); }
-                    gtag('config', 'G-PT9LX1B7B8');
-                </script>
-<footer class="footer mt-5 mt-md-0">
+    <script src="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+  <footer class="footer mt-5 mt-md-0">
   <div class="container">
     
     <div class="footer-item">
       <p class="copyright">
-    &copy; Copyright 2021, Brian K. Blaylock.<br/>
+    &copy; Copyright 2022, Brian K. Blaylock.<br>
 </p>
     </div>
     
     <div class="footer-item">
       <p class="sphinx-version">
-Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.0.3.<br/>
+Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.4.0.<br>
 </p>
     </div>
     

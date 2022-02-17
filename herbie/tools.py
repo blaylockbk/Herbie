@@ -60,21 +60,31 @@ def bulk_download(
     print("👨🏻‍🔬 Check which requested files exists")
     grib_sources = [Herbie(d, fxx=f, **kw) for d in DATES for f in fxx]
 
+    # Keep a list of successful and failed Herbie objects
+    success = []
+    failed = []
+
     loop_time = timedelta()
     n = len(grib_sources)
 
     print("\n🌧 Download requested data")
-    for i, g in enumerate(grib_sources):
-        timer = datetime.now()
-        g.download(searchString=searchString)
+    for i, H in enumerate(grib_sources):
+        try:
+            timer = datetime.now()
+            H.download(searchString=searchString)
 
-        # ---------------------------------------------------------
-        # Time keeping: *crude* method to estimate remaining time.
-        # ---------------------------------------------------------
-        loop_time += datetime.now() - timer
-        mean_dt_per_loop = loop_time / (i + 1)
-        remaining_loops = n - i - 1
-        est_rem_time = mean_dt_per_loop * remaining_loops
+            # ---------------------------------------------------------
+            # Time keeping: *crude* method to estimate remaining time.
+            # ---------------------------------------------------------
+            loop_time += datetime.now() - timer
+            mean_dt_per_loop = loop_time / (i + 1)
+            remaining_loops = n - i - 1
+            est_rem_time = mean_dt_per_loop * remaining_loops
+
+            success.append(H)
+        except Exception as e:
+            print(f"WARNING: {e}")
+            failed.append(H)
         if verbose:
             print(
                 f"🚛💨 Download Progress: [{i+1}/{n} completed] >> Est. Time Remaining {str(est_rem_time):16}\n"
@@ -85,7 +95,7 @@ def bulk_download(
     completed = sum([i.grib is None for i in grib_sources])
     print(f"🍦 Done! Downloaded [{completed}/{requested}] files. Timer={loop_time}")
 
-    return grib_sources
+    return dict(success=success, failed=failed)
 
 
 def xr_concat_sameRun(DATE, searchString, fxx=range(0, 18), **kwargs):
@@ -159,7 +169,7 @@ def nearest_points(ds, points, names=None, verbose=True):
     """
     # Check if MetPy has already parsed the CF metadata grid projection.
     # Do that if it hasn't been done yet.
-    if 'metpy_crs' not in ds:
+    if "metpy_crs" not in ds:
         ds = ds.metpy.parse_cf()
 
     # Apply the MetPy method `assign_y_x` to the dataset
@@ -178,28 +188,30 @@ def nearest_points(ds, points, names=None, verbose=True):
     if not isinstance(points, np.ndarray):
         # Points must be a 2D numpy array
         points = np.array(points)
-    lons = points[:,0]
-    lats = points[:,1]
+    lons = points[:, 0]
+    lats = points[:, 1]
     transformed_data = crs.transform_points(ccrs.PlateCarree(), lons, lats)
-    xs = transformed_data[:,0]
-    ys = transformed_data[:,1]
+    xs = transformed_data[:, 0]
+    ys = transformed_data[:, 1]
 
     # Select the nearest points from the projection coordinates.
     # TODO: Is there a better way?
     # There doesn't seem to be a way to get just the points like this
-    #ds = ds.sel(x=xs, y=ys, method='nearest')
+    # ds = ds.sel(x=xs, y=ys, method='nearest')
     # because it gives a 2D array, and not a point-by-point index.
     # Instead, I have too loop the ds.sel method
-    new_ds = xr.concat([ds.sel(x=xi, y=yi, method='nearest') for xi, yi in zip(xs, ys)], dim='point')
+    new_ds = xr.concat(
+        [ds.sel(x=xi, y=yi, method="nearest") for xi, yi in zip(xs, ys)], dim="point"
+    )
 
     # Add list of names as a coordinate
     if names is not None:
         # Assign the point dimension as the names.
-        assert len(points) == len(names), '`points` and `names` must be same length.'
-        new_ds['point'] = names
+        assert len(points) == len(names), "`points` and `names` must be same length."
+        new_ds["point"] = names
 
     return new_ds
 
 
-#TODO: I like the idea in Salem to mask data by a geographic region
-#TODO: Maybe can use that in Herbie. https://github.com/fmaussion/salem
+# TODO: I like the idea in Salem to mask data by a geographic region
+# TODO: Maybe can use that in Herbie. https://github.com/fmaussion/salem

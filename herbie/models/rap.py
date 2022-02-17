@@ -3,8 +3,12 @@
 
 
 class rap:
+    """
+    For NOMADS and Big Data Program RAP archive
+    """
+
     def template(self):
-        self.DESCRIPTION = "Rapid Refresh"
+        self.DESCRIPTION = "Rapid Refresh (RAP) from NOMADS and Big Data Program"
         self.DETAILS = {
             "nomads product description": "https://www.nco.ncep.noaa.gov/pmb/products/rap",
         }
@@ -31,29 +35,76 @@ class rap:
         self.LOCALFILE = f"{self.get_remoteFileName}"
 
 
-class rap_ncei:
-    """
-    The RAP record at NCEI is very different than other sources.
+########################################################################
+# The RAP record at NCEI is very different than the Big Data Program.
+# Files are separated into historical/, rap-130-13km/, rap-252-20km/,
+# analysis/, and forecast/ directories. These are inconsistent in years
+# that are archived and have incomplete archived datetime groups.
+# In a nutshell, NCEI's archive is very messy. Why anyone would want to
+# use historical RAP is beyond me. Because the NCEI archive is so messy,
+# Herbie may not be configured to find all possible file names in each
+# year.
+########################################################################
 
-    This isn't implemented super well.
+# TODO: Set LOCALFILE name to match modern filename structure.
+
+class rap_historical:
+    """
+    The RAP and RUC historical record at NCEI. (files older than 2020)
+
+    Grid 130 = 13 km
+    Grid 252 = 20 km
+    Grid 236 = ?? km
+    Grid 211 = ?? km
     """
 
     def template(self):
-        self.DESCRIPTION = "Rapid Refresh"
+        self.DESCRIPTION = "Rapid Refresh - NCEI Historical"
         self.DETAILS = {
             "nomads product description": "https://www.ncei.noaa.gov/products/weather-climate-models/rapid-refresh-update",
         }
         self.PRODUCTS = {
-            "historical/analysis": "RAP 13 km",
-            "rap-130-13km/analysis": "RAP 13 km",  # longer archive
-            "rap-130-13km/forecast": "RAP 13 km",  # very short archive
-            "rap-252-20km/analysis": "RAP 20 km",
-            "rap-252-20km/forecast": "RAP 20 km",
-            "historical/forecast": "RAP 20 km",
+            "analysis": "RAP",
+            "forecast": "RAP",
         }
         self.SOURCES = {
-            "ncei": f"https://www.ncei.noaa.gov/data/rapid-refresh/access/{self.product}/{self.date:%Y%m/%Y%m%d}/rap_130_{self.date:%Y%m%d_%H%M}_{self.fxx:03d}.grb2",
-            "ncei_20km": f"https://www.ncei.noaa.gov/data/rapid-refresh/access/{self.product}/{self.date:%Y%m/%Y%m%d}/rap_252_{self.date:%Y%m%d_%H%M}_{self.fxx:03d}.grb2",
+            "rap_130": f"https://www.ncei.noaa.gov/data/rapid-refresh/access/historical/{self.product}/{self.date:%Y%m/%Y%m%d}/rap_130_{self.date:%Y%m%d_%H%M}_{self.fxx:03d}.grb2",
+            "rap_252": f"https://www.ncei.noaa.gov/data/rapid-refresh/access/historical/{self.product}/{self.date:%Y%m/%Y%m%d}/rap_252_{self.date:%Y%m%d_%H%M}_{self.fxx:03d}.grb2",
+            "ruc_252": f"https://www.ncei.noaa.gov/data/rapid-refresh/access/historical/{self.product}/{self.date:%Y%m/%Y%m%d}/ruc2_252_{self.date:%Y%m%d_%H%M}_{self.fxx:03d}.grb",
+            "ruc_anl_252": f"https://www.ncei.noaa.gov/data/rapid-refresh/access/historical/{self.product}/{self.date:%Y%m/%Y%m%d}/ruc2anl_252_{self.date:%Y%m%d_%H%M}_{self.fxx:03d}.grb",
+            "ruc_236": f"https://www.ncei.noaa.gov/data/rapid-refresh/access/historical/{self.product}/{self.date:%Y%m/%Y%m%d}/ruc2_236_{self.date:%Y%m%d_%H%M}_{self.fxx:03d}.grb",
+            "ruc_211": f"https://www.ncei.noaa.gov/data/rapid-refresh/access/historical/{self.product}/{self.date:%Y%m/%Y%m%d}/ruc_211_{self.date:%Y%m%d_%H%M}_{self.fxx:03d}.grb",
         }
-        self.IDX_SUFFIX = ".inv"  # it is not .idx
+        self.IDX_SUFFIX = [".inv", ".grb2.inv", "grb.inv"]
+        self.LOCALFILE = f"{self.get_remoteFileName}"
+
+
+class rap_ncei:
+    """
+    The RAP record at NCEI.
+
+    Analysis: longer archive; May 2012 through a few days ago
+    Forecast: short archive; 2021 through a few days ago
+    """
+
+    def template(self):
+        self.DESCRIPTION = "Rapid Refresh 13 km - NCEI"
+        self.DETAILS = {
+            "nomads product description": "https://www.ncei.noaa.gov/products/weather-climate-models/rapid-refresh-update",
+        }
+        self.PRODUCTS = {
+            "rap-130-13km": "RAP 13 km",
+            "rap-252-20km": "RAP 20 km",
+        }
+        # Well, it's either loop through the two sources and look for
+        # files or create a separate class. I elected to just loop
+        # through different URL's. Might not be the fastest, but it'll
+        # work. The user can always specify the priority order.
+        self.SOURCES = {
+            "ncei_13km_analysis": f"https://www.ncei.noaa.gov/data/rapid-refresh/access/{self.product}/analysis/{self.date:%Y%m/%Y%m%d}/rap_130_{self.date:%Y%m%d_%H%M}_{self.fxx:03d}.grb2",
+            "ncei_13km_forecast": f"https://www.ncei.noaa.gov/data/rapid-refresh/access/{self.product}/forecast/{self.date:%Y%m/%Y%m%d}/rap_130_{self.date:%Y%m%d_%H%M}_{self.fxx:03d}.grb2",
+            "ncei_20km_analysis": f"https://www.ncei.noaa.gov/data/rapid-refresh/access/{self.product}/analysis/{self.date:%Y%m/%Y%m%d}/rap_252_{self.date:%Y%m%d_%H%M}_{self.fxx:03d}.grb2",
+            "ncei_20km_forecast": f"https://www.ncei.noaa.gov/data/rapid-refresh/access/{self.product}/forecast/{self.date:%Y%m/%Y%m%d}/rap_252_{self.date:%Y%m%d_%H%M}_{self.fxx:03d}.grb2",
+        }
+        self.IDX_SUFFIX = [".grb2.inv", ".inv", ".grb.inv"]
         self.LOCALFILE = f"{self.get_remoteFileName}"

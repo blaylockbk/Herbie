@@ -6,6 +6,7 @@ Tests for downloading HRRR model
 """
 from datetime import datetime
 from os import remove
+import matplotlib.pyplot as plt
 
 from herbie.archive import Herbie
 

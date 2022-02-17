@@ -4,32 +4,33 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
     <title>🛠 Configure &#8212; Herbie 0.0.5 documentation</title>
     
-  <link href="../_static/css/theme.css" rel="stylesheet" />
-  <link href="../_static/css/index.c5995385ac14fb8791e8eb36b4908be2.css" rel="stylesheet" />
-
+    <link href="../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+  
     
-  <link rel="stylesheet"
-    href="../_static/vendor/fontawesome/5.13.0/css/all.min.css">
-  <link rel="preload" as="font" type="font/woff2" crossorigin
-    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
-  <link rel="preload" as="font" type="font/woff2" crossorigin
-    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
-
+    <link rel="stylesheet"
+      href="../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+    <link rel="preload" as="font" type="font/woff2" crossorigin
+      href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+    <link rel="preload" as="font" type="font/woff2" crossorigin
+      href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+  
     
       
-
+  
     
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/basic.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/pydata-sphinx-theme.css" />
     <link rel="stylesheet" type="text/css" href="../_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css" />
     <link rel="stylesheet" type="text/css" href="../_static/panels-variables.06eb56fa6e07937060861dad626602ad.css" />
     <link rel="stylesheet" type="text/css" href="../_static/brian_style.css" />
     
-  <link rel="preload" as="script" href="../_static/js/index.1c5a1a01449ed65a7b51.js">
-
+    <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+  
     <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
@@ -40,34 +41,20 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="🔢 What is GRIB2?" href="grib2.html" />
-    <link rel="prev" title="☁ Data Sources" href="data_sources.html" /> 
+    <link rel="prev" title="☁ Data Sources" href="data_sources.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="docsearch:language" content="en" />
-      
-<style type="text/css">
-  ul.ablog-archive {
-    list-style: none;
-    overflow: auto;
-    margin-left: 0px;
-  }
-  ul.ablog-archive li {
-    float: left;
-    margin-right: 5px;
-    font-size: 80%;
-  }
-  ul.postlist a {
-    font-style: italic;
-  }
-  ul.postlist-style-disc {
-    list-style-type: disc;
-  }
-  ul.postlist-style-none {
-    list-style-type: none;
-  }
-  ul.postlist-style-circle {
-    list-style-type: circle;
-  }
-</style>
+    <meta name="docsearch:language" content="None">
+    
+
+    <!-- Google Analytics -->
+    
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-PT9LX1B7B8"></script>
+<script>
+                    window.dataLayer = window.dataLayer || [];
+                    function gtag(){ dataLayer.push(arguments); }
+                    gtag('js', new Date());
+                    gtag('config', 'G-PT9LX1B7B8');
+                </script>
 
   </head>
   <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
@@ -130,16 +117,12 @@
       <div class="navbar-end-item">
         <ul id="navbar-icon-links" class="navbar-nav" aria-label="Icon Links">
         <li class="nav-item">
-          <a class="nav-link" href="https://github.com/blaylockbk/Herbie" rel="noopener" target="_blank" title="GitHub">
-            <span><i class="fab fa-github-square"></i></span>
-            <label class="sr-only">GitHub</label>
-          </a>
+          <a class="nav-link" href="https://github.com/blaylockbk/Herbie" rel="noopener" target="_blank" title="GitHub"><span><i class="fab fa-github-square"></i></span>
+            <label class="sr-only">GitHub</label></a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="https://twitter.com/blaylockbk" rel="noopener" target="_blank" title="Twitter">
-            <span><i class="fab fa-twitter-square"></i></span>
-            <label class="sr-only">Twitter</label>
-          </a>
+          <a class="nav-link" href="https://twitter.com/blaylockbk" rel="noopener" target="_blank" title="Twitter"><span><i class="fab fa-twitter-square"></i></span>
+            <label class="sr-only">Twitter</label></a>
         </li>
       </ul>
       </div>
@@ -162,7 +145,8 @@
           
             
             <!-- Only show if we have sidebars configured, else just a small margin  -->
-            <div class="col-12 col-md-3 bd-sidebar"><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
+            <div class="col-12 col-md-3 bd-sidebar">
+              <div class="sidebar-start-items"><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
   <i class="icon fas fa-search"></i>
   <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
 </form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
@@ -255,18 +239,23 @@
     </a>
    </li>
    <li class="toctree-l2">
+    <a class="reference internal" href="notebooks/data_ecmwf.html">
+     ECMWF Open Data – Real Time
+    </a>
+   </li>
+   <li class="toctree-l2">
     <a class="reference internal" href="notebooks/data_nbm.html">
      National Blend of Models (NMB)
     </a>
    </li>
    <li class="toctree-l2">
     <a class="reference internal" href="notebooks/data_rrfs.html">
-     NAVGEM Data
+     RRFS Data
     </a>
    </li>
    <li class="toctree-l2">
     <a class="reference internal" href="notebooks/data_navgem.html">
-     RRFS Data
+     NAVGEM Data
     </a>
    </li>
   </ul>
@@ -282,67 +271,18 @@
    API
   </a>
  </li>
- <li class="toctree-l1 has-children">
+ <li class="toctree-l1">
   <a class="reference internal" href="notebooks.html">
    📝 Jupyter Notebooks
   </a>
-  <input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/>
-  <label for="toctree-checkbox-2">
-   <i class="fas fa-chevron-down">
-   </i>
-  </label>
-  <ul>
-   <li class="toctree-l2">
-    <a class="reference external" href="https://github.com/blaylockbk/Herbie/blob/master/notebooks/examples.ipynb">
-     Main Package Examples
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference external" href="https://github.com/blaylockbk/Herbie/blob/master/notebooks/demo_plot-on-map-with-common-features.ipynb">
-     Make Cartopy maps with HRRR data
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference external" href="https://github.com/taylorgowan/zarr">
-     Taylor Gowan: HRRR-Zarr examples
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference external" href="https://github.com/ktyle/python_pangeo_ams2021/blob/main/notebooks/03_Pangeo_HRRR.ipynb">
-     Kevin Tyle: HRRR-Zarr AMS Short Course
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference external" href="https://github.com/blaylockbk/Herbie/blob/master/notebooks/zarr_HRRR.ipynb">
-     Brian Blaylock: HRRR-Zarr sandbox
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference external" href="https://github.com/blaylockbk/Herbie/blob/master/notebooks/demo_download_hrrr_archive_part1.ipynb">
-     Part 1: How to download a bunch of HRRR grib2 files (full file)
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference external" href="https://github.com/blaylockbk/Herbie/blob/master/notebooks/demo_download_hrrr_archive_part2.ipynb">
-     Part 2: How to download a subset of variables from a HRRR file
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference external" href="https://github.com/blaylockbk/Herbie/blob/master/notebooks/demo_download_hrrr_archive_part3.ipynb">
-     Part 3: A function that can download many full files, or subset of files
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference external" href="https://github.com/blaylockbk/Herbie/blob/master/notebooks/demo_download_hrrr_archive_part4.ipynb">
-     Part 4: Opening GRIB2 files in Python with xarray and cfgrib
-    </a>
-   </li>
-  </ul>
  </li>
 </ul>
 
   </div>
 </nav>
+              </div>
+              <div class="sidebar-end-items">
+              </div>
             </div>
             
           
@@ -391,7 +331,8 @@
           <main class="col-12 col-md-9 col-xl-7 py-md-5 pl-md-5 pr-md-4 bd-content" role="main">
               
               <div>
-                 <div class="section" id="configure">
+                
+  <section id="configure">
 <h1>🛠 Configure<a class="headerlink" href="#configure" title="Permalink to this headline">¶</a></h1>
 <p>Some default settings are set in the <code class="docutils literal notranslate"><span class="pre">config.toml</span></code> file. This file is automatically created the first time you import a Herbie module and is located at <code class="docutils literal notranslate"><span class="pre">${HOME}/.config/herbie/config.toml</span></code>. The configuration file is written in <a class="reference external" href="https://toml.io/en/">TOML format</a>.</p>
 <p>The default settings are</p>
@@ -441,10 +382,11 @@ specify an ensemble member.</p>
 <li><p><code class="docutils literal notranslate"><span class="pre">'aws'</span></code> Amazon Web Services (Big Data Program)</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">'nomads'</span></code> NOAA NOMADS server</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">'google'</span></code> Google Cloud Platform (Big Data Program)</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">'azure'</span></code> Microsoft Azure (Big Data Program)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'azure'</span></code> Microsoft Azure (Big Data Program and ECMWF open data)</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">'pando'</span></code> University of Utah Pando Archive (gateway 1)</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">'pando2'</span></code> University of Utah Pando Archive (gateway 2)</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">'aws-old'</span></code> File name formats change. This is so Herbie can find old GFS filenames.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'ecmwf'</span></code> ECMWF open data products</p></li>
 </ul>
 <p>Look in the <cite>herbie/models</cite> model template files for all the SOURCES available for each model.</p>
 </dd>
@@ -457,28 +399,36 @@ If false, use the local copy (still need to find the idx file).</p>
 If false, do not print extra info to screen.</p>
 </dd>
 </dl>
-<div class="section" id="default-download-priority-rational">
+<section id="default-download-priority-rational">
 <h2>Default Download Priority Rational<a class="headerlink" href="#default-download-priority-rational" title="Permalink to this headline">¶</a></h2>
 <p>The default download priority is controled by the order of the SOURCES listed in each model’s template file. Take a look at the order of the <a class="reference external" href="https://github.com/blaylockbk/Herbie/blob/master/herbie/models/hrrr.py">HRRR data sources</a>: <code class="docutils literal notranslate"><span class="pre">['aws',</span> <span class="pre">'nomads',</span> <span class="pre">'google',</span> <span class="pre">'azure',</span> <span class="pre">'pando',</span> <span class="pre">'pando2']</span></code>. The reason for this default order is that I anticipate most often a user will request model output from the recent past or earlier rather than relying on Herbie for operational, real-time needs.</p>
 <p>Much of the past data and near real-time data is archived at one of NOAA’s Big Data partners. Amazon AWS in particular hosts many of these datasets. While, NOMADS is the official operational source of model output data and has the most recent model output available, NOMADS only retains data for a few days, they throttle the download speed, and will block users who violate their usage agreement and download too much data within an hour.</p>
 <p>To prevent being blocked by NOMADS, the default is to first look for data on AWS. If the data requested is within the last few hours and was not found on AWS, then Herbie will look for the data at NOMADS. If the data is still not found on NOMADS, the file may be on google, azure, or pando.</p>
 <p>If you _really_ want to download the real-time data from NOMADS first and not a Big Data Project partner, you may change the priority order in the herbie config file or set the priority argument when creating the Herbie object (e.g., <code class="docutils literal notranslate"><span class="pre">priority=['nomads',</span> <span class="pre">...]</span></code>).</p>
-</div>
-</div>
+</section>
+</section>
 
-<div class="section">
-   
-</div>
 
               </div>
               
               
-              <div class='prev-next-bottom'>
-                
-    <a class='left-prev' id="prev-link" href="data_sources.html" title="previous page">☁ Data Sources</a>
-    <a class='right-next' id="next-link" href="grib2.html" title="next page">🔢 What is GRIB2?</a>
-
-              </div>
+              <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+    <a class='left-prev' id="prev-link" href="data_sources.html" title="previous page">
+        <i class="fas fa-angle-left"></i>
+        <div class="prev-next-info">
+            <p class="prev-next-subtitle">previous</p>
+            <p class="prev-next-title">☁ Data Sources</p>
+        </div>
+    </a>
+    <a class='right-next' id="next-link" href="grib2.html" title="next page">
+    <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">🔢 What is GRIB2?</p>
+    </div>
+    <i class="fas fa-angle-right"></i>
+    </a>
+</div>
               
           </main>
           
@@ -486,27 +436,19 @@ If false, do not print extra info to screen.</p>
       </div>
     </div>
   
-  <script src="../_static/js/index.1c5a1a01449ed65a7b51.js"></script>
-
-  
-<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-PT9LX1B7B8"></script>
-<script>
-                    window.dataLayer = window.dataLayer || [];
-                    function gtag(){ dataLayer.push(arguments); }
-                    gtag('config', 'G-PT9LX1B7B8');
-                </script>
-<footer class="footer mt-5 mt-md-0">
+    <script src="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+  <footer class="footer mt-5 mt-md-0">
   <div class="container">
     
     <div class="footer-item">
       <p class="copyright">
-    &copy; Copyright 2021, Brian K. Blaylock.<br/>
+    &copy; Copyright 2022, Brian K. Blaylock.<br>
 </p>
     </div>
     
     <div class="footer-item">
       <p class="sphinx-version">
-Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.0.3.<br/>
+Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.4.0.<br>
 </p>
     </div>
     

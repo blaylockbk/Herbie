@@ -26,6 +26,7 @@ class gfs:
             "google": f"https://storage.googleapis.com/global-forecast-system/gfs.{self.date:%Y%m%d/%H}/atmos/gfs.t{self.date:%H}z.{self.product}.f{self.fxx:03d}",
             "azure": f"https://noaagfs.blob.core.windows.net/gfs/gfs.{self.date:%Y%m%d/%H}/atmos/gfs.t{self.date:%H}z.{self.product}.f{self.fxx:03d}",
         }
+        self.IDX_SUFFIX = [".idx"]
         self.LOCALFILE = f"{self.get_remoteFileName}"
 
 
