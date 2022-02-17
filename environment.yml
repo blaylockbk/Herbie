@@ -40,6 +40,7 @@ dependencies:
   # Testing
   # -------
   - pytest
+  #- line_profiler
 
   # Documentation
   # -------------

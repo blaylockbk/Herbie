@@ -6,7 +6,7 @@
         {
             "label": "echo",
             "type": "shell",
-            "command": "echo Hello"
+            "command": "echo Hello, my name is Herbie. I love to race and have a mind of my own.🏎️🏁"
         },
         {
             "label": "build docs",
@@ -14,10 +14,15 @@
             "command": "cd docs && ./remake_docs.sh"
         },
         {
-            "label": "update environment",
+            "label": "create conda environment",
+            "type": "shell",
+            "command": "conda env create -f environment.yml"
+        },
+        {
+            "label": "update conda environment",
             "type": "shell",
             "command": "conda env update -f environment.yml --prune"
-        }
+        },
         {
             "label": "publish",
             "type": "shell",
