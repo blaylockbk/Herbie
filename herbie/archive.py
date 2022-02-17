@@ -49,6 +49,7 @@ import os
 import urllib.request
 import warnings
 from datetime import datetime, timedelta
+import sys
 
 import cfgrib
 import pandas as pd
@@ -473,7 +474,7 @@ class Herbie:
         # Loop through IDX_SUFFIX options until we find one that exists
         for i in self.IDX_SUFFIX:
 
-            if Path(url).suffix in {'.grb', '.grib', '.grb2', '.grib2'}:
+            if Path(url).suffix in {".grb", ".grib", ".grb2", ".grib2"}:
                 idx_url = url.rsplit(".", maxsplit=1)[0] + i
             else:
                 idx_url = url + i
@@ -932,6 +933,7 @@ class Herbie:
             ds.attrs["description"] = self.DESCRIPTION
             ds.attrs["remote_grib"] = self.grib
             ds.attrs["local_grib"] = local_file
+            ds.attrs["searchString"] = searchString
 
             # Attach CF grid mapping
             # ----------------------
@@ -949,22 +951,28 @@ class Herbie:
                 ds[var].attrs["grid_mapping"] = "gribfile_projection"
 
         if remove_grib:
-            # Only remove grib if it didn't exists before
-
-            # Load the data to memory before removing the file
+            # Load the datasets into memory before removing the file
             Hxr = [ds.load() for ds in Hxr]
-            # new = Hxr.copy()
+            _ = [ds.close() for ds in Hxr]
 
             # TODO:
-            # Close the files so it can be removed (this issue seems
-            # to be WindowsOS specific).
-            # for ds in Hxr:
-            #    ds.close()
-
-            # Removes file
-            local_file.unlink()
-
-            # Hxr = new
+            # Forcefully close the files so it can be removed
+            # (this is a WindowsOS specific requirement).
+            # os.close(?WHAT IS THE FILE HANDLER?)
+            """
+            https://docs.python.org/3/library/os.html#os.remove
+            On Windows, attempting to remove a file that is in use
+            causes an exception to be raised; on Unix, the directory
+            entry is removed but the storage allocated to the file is
+            not made available until the original file is no longer in
+            use.
+            >> HOW DO I COMPLETELY CLOSE THE FILE OPENED BY CFGRIB??
+            """
+            if not sys.platform == "win32":
+                # Removes file
+                local_file.unlink()
+            else:
+                warnings.warn("sorry, on windows I couldn't remove the file.")
 
         if len(Hxr) == 1:
             return Hxr[0]
