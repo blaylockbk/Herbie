@@ -905,14 +905,14 @@ class Herbie:
         # Use cfgrib.open_datasets, just in case there are multiple "hypercubes"
         # for what we requested.
         Hxr = cfgrib.open_datasets(
-            self.get_localFilePath(searchString=searchString),
+            local_file,
             backend_kwargs=backend_kwargs,
         )
 
         # Get CF grid projection information with pygrib and pyproj because
         # this is something cfgrib doesn't do (https://github.com/ecmwf/cfgrib/issues/251)
         # NOTE: Assumes the projection is the same for all variables
-        grib = pygrib.open(str(self.get_localFilePath(searchString=searchString)))
+        grib = pygrib.open(str(local_file))
         msg = grib.message(1)
         cf_params = CRS(msg.projparams).to_cf()
 
@@ -931,7 +931,7 @@ class Herbie:
             ds.attrs["product"] = self.product
             ds.attrs["description"] = self.DESCRIPTION
             ds.attrs["remote_grib"] = self.grib
-            ds.attrs["local_grib"] = self.get_localFilePath(searchString=searchString)
+            ds.attrs["local_grib"] = local_file
 
             # Attach CF grid mapping
             # ----------------------
