@@ -1,6 +1,6 @@
-================================
+===================================
 🪂 Subset with ``searchString``
-================================
+===================================
 
 Subsetting is done using the GRIB2 index files. Index files define the grib variables/parameters of each message (sometimes it is useful to think of a grib message as a "layer" of the file) and define the byte range of the message.
 
@@ -44,7 +44,7 @@ Here are some examples you can use for the ``searchString`` argument for the **w
 ``"^TMP:2 m.*fcst$"``             Beginning of string (^), end of string ($) wildcard (.*)
 ================================= ========================================================
 
-.. hint:: The NCEP `Parameters & Units Table <https://www.nco.ncep.noaa.gov/pmb/docs/on388/table2.html>`_ is a useful resource to help you identify GRIB variable abbreviations and their meanings.
+.. hint:: The NCEP `Parameters & Units Table <https://www.nco.ncep.noaa.gov/pmb/docs/on388/table2.html>`_ is a useful resource to help you identify wgrib2-style GRIB variable abbreviations and their meanings.
 
 ecCodes-style index files
 -------------------------
@@ -94,3 +94,5 @@ searchString (wave/waef) Messages that will be downloaded
 ":pp1d:"                 Peak wave period
 ":mp2:"                  Mean zero-crossing wave period
 ======================== ==============================================
+
+.. hint:: The ECMWF `Parameter Database <https://apps.ecmwf.int/codes/grib/param-db?filter=grib2>`_ is a useful resource to help you identify ecCodes-style GRIB variable abbreviations and their meanings.
