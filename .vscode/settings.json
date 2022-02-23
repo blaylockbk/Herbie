@@ -42,5 +42,8 @@
   "python.testing.pytestArgs": ["tests"],
   "python.testing.unittestEnabled": false,
   "python.testing.pytestEnabled": true,
-  "cSpell.words": ["NCEI"]
+  "cSpell.words": [
+    "NCEI"
+  ],
+  "restructuredtext.confPath": "${workspaceFolder}/docs"
 }
