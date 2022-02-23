@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>Reference Guide &#8212; Herbie 0.0.5 documentation</title>
+    <title>Model Info &#8212; Herbie 0.0.5 documentation</title>
     
     <link href="../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
 <link href="../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -40,8 +40,6 @@
     <link rel="shortcut icon" href="../_static/wxicon.png"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Herbie API" href="herbie_api.html" />
-    <link rel="prev" title="Herbie Logo" href="../user_guide/Logo_Style_Guide.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="None">
     
@@ -87,13 +85,13 @@
       <div class="navbar-center-item">
         <ul id="navbar-main-elements" class="navbar-nav">
     <li class="toctree-l1 nav-item">
- <a class="reference internal nav-link" href="../user_guide/index.html">
+ <a class="reference internal nav-link" href="index.html">
   User Guide
  </a>
 </li>
 
-<li class="toctree-l1 current active nav-item">
- <a class="current reference internal nav-link" href="#">
+<li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="../reference_guide/index.html">
   Reference Guide
  </a>
 </li>
@@ -151,19 +149,7 @@
   <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
 </form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
   <div class="bd-toc-item active">
-    <ul class="nav bd-sidenav">
- <li class="toctree-l1">
-  <a class="reference internal" href="herbie_api.html">
-   Herbie API
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="hrrrb_api.html">
-   HRRR-B API
-  </a>
- </li>
-</ul>
-
+    
   </div>
 </nav>
               </div>
@@ -179,9 +165,24 @@
               
               <div class="toc-item">
                 
+<div class="tocsection onthispage pt-5 pb-3">
+    <i class="fas fa-list"></i> On this page
+</div>
 
 <nav id="bd-toc-nav">
-    
+    <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#hrrr-high-resolution-rapid-refresh">
+   HRRR: High Resolution Rapid Refresh
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#rap-rapid-refresh">
+   RAP: Rapid Refresh
+  </a>
+ </li>
+</ul>
+
 </nav>
               </div>
               
@@ -189,7 +190,7 @@
                 
 
 <div class="tocsection editthispage">
-    <a href="https://github.com/blaylockbk/Herbie/edit/master/docs/reference_guide/index.rst">
+    <a href="https://github.com/blaylockbk/Herbie/edit/master/docs/user_guide/model_info.md">
         <i class="fas fa-pencil-alt"></i> Edit this page
     </a>
 </div>
@@ -208,29 +209,41 @@
               
               <div>
                 
-  <section id="reference-guide">
-<h1>Reference Guide<a class="headerlink" href="#reference-guide" title="Permalink to this headline">¶</a></h1>
-<p>There are currently two APIs. The old HRRR-B API still exists, but is not receiving any attention. The Herbie API is new and most likely to be developed in the future. I’ve learned a few things about Python classes and xarray accessors that I am using in Herbie that I didn’t know when I wrote HRRR-B.</p>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="herbie_api.html">Herbie API</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="herbie_api.html#herbie-retrieve-nwp-model-data">Herbie: Retrieve NWP Model Data</a></li>
-<li class="toctree-l2"><a class="reference internal" href="herbie_api.html#herbie-extension-xarray-accessors">Herbie Extension: xarray accessors</a></li>
-<li class="toctree-l2"><a class="reference internal" href="herbie_api.html#herbie-tools">Herbie Tools</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="hrrrb_api.html">HRRR-B API</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="hrrrb_api.html#retrieve-hrrr-grib2-files-from-archives">Retrieve HRRR GRIB2 files from archives</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="hrrrb_api.html#default-hrrr-data-source-priority">Default HRRR Data Source Priority</a></li>
-<li class="toctree-l3"><a class="reference internal" href="hrrrb_api.html#main-functions">Main Functions</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="hrrrb_api.html#tools-for-the-hrrr-archive">Tools for the HRRR Archive</a></li>
-<li class="toctree-l2"><a class="reference internal" href="hrrrb_api.html#hrrr-plots">HRRR Plots</a></li>
-</ul>
-</li>
-</ul>
+  <section class="tex2jax_ignore mathjax_ignore" id="model-info">
+<h1>Model Info<a class="headerlink" href="#model-info" title="Permalink to this headline">¶</a></h1>
+<section id="hrrr-high-resolution-rapid-refresh">
+<h2>HRRR: High Resolution Rapid Refresh<a class="headerlink" href="#hrrr-high-resolution-rapid-refresh" title="Permalink to this headline">¶</a></h2>
+<p>ESRL: <a class="reference external" href="https://rapidrefresh.noaa.gov/hrrr/">https://rapidrefresh.noaa.gov/hrrr/</a></p>
+<div class="highlight-mermaid notranslate"><div class="highlight"><pre><span></span>gantt
+  title HRRR Version History
+  axisFormat %b-%Y
+  HRRR v1 :        v1, 2014-09-30, 2016-8-23 
+  HRRR v2 :        v2, after v1, 2018-7-12
+  HRRR v3 :        v3, after v2, 2020-12-2
+  HRRR v4 :active, v4, after v3 2020-12-2, 2024
+  RRFS :               after v4, 2026
+</pre></div>
 </div>
+</section>
+<section id="rap-rapid-refresh">
+<h2>RAP: Rapid Refresh<a class="headerlink" href="#rap-rapid-refresh" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><p>work in progress</p>
+</div></blockquote>
+<p>ESRL: <a class="reference external" href="https://rapidrefresh.noaa.gov/">https://rapidrefresh.noaa.gov/</a></p>
+<p>NCEI: <a class="reference external" href="https://www.ncei.noaa.gov/products/weather-climate-models/rapid-refresh-update">https://www.ncei.noaa.gov/products/weather-climate-models/rapid-refresh-update</a></p>
+<p>AWS: <a class="reference external" href="https://registry.opendata.aws/noaa-rap/">https://registry.opendata.aws/noaa-rap/</a></p>
+<div class="highlight-mermaid notranslate"><div class="highlight"><pre><span></span>gantt
+  title RAP Model Sources
+  axisFormat %Y
+  section NCEI
+  RUC : 2005-01-01, 2012-05-01
+  RAP : 2012-05-01, 2022-05-01
+  section Big Data Program
+  RAP : 2021-02-22, 2022-02-22
+</pre></div>
+</div>
+</section>
 </section>
 
 
@@ -239,20 +252,6 @@
               
               <!-- Previous / next buttons -->
 <div class='prev-next-area'>
-    <a class='left-prev' id="prev-link" href="../user_guide/Logo_Style_Guide.html" title="previous page">
-        <i class="fas fa-angle-left"></i>
-        <div class="prev-next-info">
-            <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title">Herbie Logo</p>
-        </div>
-    </a>
-    <a class='right-next' id="next-link" href="herbie_api.html" title="next page">
-    <div class="prev-next-info">
-        <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Herbie API</p>
-    </div>
-    <i class="fas fa-angle-right"></i>
-    </a>
 </div>
               
           </main>

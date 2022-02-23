@@ -6,7 +6,6 @@ Subsetting is done using the GRIB2 index files. Index files define the grib vari
 
 Herbie can subset a file by grib message by downloading a byte range of the file. This way, instead of downloading the full file, you can download just the "layer" of the file you want. The searchString method implemented in Herbie to do a partial download is similar to what is explained here: https://www.cpc.ncep.noaa.gov/products/wesley/fast_downloading_grib.html
 
-
 Herbie supports reading two different types of index files
 
 1. Index files output by the **wgrib2** command-line utility. These index files are common for forecast models provided by **NCEP**.
@@ -14,11 +13,12 @@ Herbie supports reading two different types of index files
 
 You can use regular expression to search for lines in the index file. If ``H`` is a Herbie object, the regex search is performed on the ``H.read_idx().search_this`` column of the DataFrame
 
-If you need help with regular expression, search the web or look at this `cheatsheet <https://www.petefreitag.com/cheatsheets/regex/>`_. Check regular expressions with `regexr <https://regexr.com/>`_ or `regex101 <https://regex101.com/>`_.
+.. tip:: If you need help with regular expression, search the web or look at this `cheatsheet <https://www.petefreitag.com/cheatsheets/regex/>`_. Check regular expressions with `regexr <https://regexr.com/>`_ or `regex101 <https://regex101.com/>`_.
 
 
 wgrib2-style index files
 ------------------------
+
 Here are some examples you can use for the ``searchString`` argument for the **wgrib2**-style index files.
 
 ================================= ========================================================
@@ -44,6 +44,7 @@ Here are some examples you can use for the ``searchString`` argument for the **w
 ``"^TMP:2 m.*fcst$"``             Beginning of string (^), end of string ($) wildcard (.*)
 ================================= ========================================================
 
+.. hint:: The NCEP `Parameters & Units Table <https://www.nco.ncep.noaa.gov/pmb/docs/on388/table2.html>`_ is a useful resource to help you identify GRIB variable abbreviations and their meanings.
 
 ecCodes-style index files
 -------------------------
