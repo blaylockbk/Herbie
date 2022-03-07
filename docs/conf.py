@@ -36,8 +36,10 @@ release = "0.0.5"
 extensions = [
     "nbsphinx",
     "sphinx.ext.autodoc",
+    "sphinx.ext.autosummary",
     "sphinx.ext.autosectionlabel",
     "sphinx.ext.napoleon",
+    "sphinx.ext.viewcode",
     "sphinx_panels",
     "autodocsumm",
     "sphinx_markdown_tables",
