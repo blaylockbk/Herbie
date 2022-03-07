@@ -1,11 +1,10 @@
-================================
+===================================
 🪂 Subset with ``searchString``
-================================
+===================================
 
 Subsetting is done using the GRIB2 index files. Index files define the grib variables/parameters of each message (sometimes it is useful to think of a grib message as a "layer" of the file) and define the byte range of the message.
 
 Herbie can subset a file by grib message by downloading a byte range of the file. This way, instead of downloading the full file, you can download just the "layer" of the file you want. The searchString method implemented in Herbie to do a partial download is similar to what is explained here: https://www.cpc.ncep.noaa.gov/products/wesley/fast_downloading_grib.html
-
 
 Herbie supports reading two different types of index files
 
@@ -14,11 +13,12 @@ Herbie supports reading two different types of index files
 
 You can use regular expression to search for lines in the index file. If ``H`` is a Herbie object, the regex search is performed on the ``H.read_idx().search_this`` column of the DataFrame
 
-If you need help with regular expression, search the web or look at this `cheatsheet <https://www.petefreitag.com/cheatsheets/regex/>`_. Check regular expressions with `regexr <https://regexr.com/>`_ or `regex101 <https://regex101.com/>`_.
+.. tip:: If you need help with regular expression, search the web or look at this `cheatsheet <https://www.petefreitag.com/cheatsheets/regex/>`_. Check regular expressions with `regexr <https://regexr.com/>`_ or `regex101 <https://regex101.com/>`_.
 
 
 wgrib2-style index files
 ------------------------
+
 Here are some examples you can use for the ``searchString`` argument for the **wgrib2**-style index files.
 
 ================================= ========================================================
@@ -44,6 +44,7 @@ Here are some examples you can use for the ``searchString`` argument for the **w
 ``"^TMP:2 m.*fcst$"``             Beginning of string (^), end of string ($) wildcard (.*)
 ================================= ========================================================
 
+.. hint:: The NCEP `Parameters & Units Table <https://www.nco.ncep.noaa.gov/pmb/docs/on388/table2.html>`_ is a useful resource to help you identify wgrib2-style GRIB variable abbreviations and their meanings.
 
 ecCodes-style index files
 -------------------------
@@ -93,3 +94,5 @@ searchString (wave/waef) Messages that will be downloaded
 ":pp1d:"                 Peak wave period
 ":mp2:"                  Mean zero-crossing wave period
 ======================== ==============================================
+
+.. hint:: The ECMWF `Parameter Database <https://apps.ecmwf.int/codes/grib/param-db?filter=grib2>`_ is a useful resource to help you identify ecCodes-style GRIB variable abbreviations and their meanings.

@@ -276,6 +276,11 @@
    📝 Jupyter Notebooks
   </a>
  </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="Logo_Style_Guide.html">
+   Herbie Logo
+  </a>
+ </li>
 </ul>
 
   </div>
@@ -347,7 +352,10 @@
 <li><p>Index files output by the <strong>ecCodes/grib_ls</strong> command-line utlity. These index files are common for forecast models provided by <strong>ECMWF</strong>.</p></li>
 </ol>
 <p>You can use regular expression to search for lines in the index file. If <code class="docutils literal notranslate"><span class="pre">H</span></code> is a Herbie object, the regex search is performed on the <code class="docutils literal notranslate"><span class="pre">H.read_idx().search_this</span></code> column of the DataFrame</p>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
 <p>If you need help with regular expression, search the web or look at this <a class="reference external" href="https://www.petefreitag.com/cheatsheets/regex/">cheatsheet</a>. Check regular expressions with <a class="reference external" href="https://regexr.com/">regexr</a> or <a class="reference external" href="https://regex101.com/">regex101</a>.</p>
+</div>
 <section id="wgrib2-style-index-files">
 <h2>wgrib2-style index files<a class="headerlink" href="#wgrib2-style-index-files" title="Permalink to this headline">¶</a></h2>
 <p>Here are some examples you can use for the <code class="docutils literal notranslate"><span class="pre">searchString</span></code> argument for the <strong>wgrib2</strong>-style index files.</p>
@@ -418,6 +426,10 @@
 </tr>
 </tbody>
 </table>
+<div class="admonition hint">
+<p class="admonition-title">Hint</p>
+<p>The NCEP <a class="reference external" href="https://www.nco.ncep.noaa.gov/pmb/docs/on388/table2.html">Parameters &amp; Units Table</a> is a useful resource to help you identify wgrib2-style GRIB variable abbreviations and their meanings.</p>
+</div>
 </section>
 <section id="eccodes-style-index-files">
 <h2>ecCodes-style index files<a class="headerlink" href="#eccodes-style-index-files" title="Permalink to this headline">¶</a></h2>
@@ -533,6 +545,10 @@
 </tr>
 </tbody>
 </table>
+<div class="admonition hint">
+<p class="admonition-title">Hint</p>
+<p>The ECMWF <a class="reference external" href="https://apps.ecmwf.int/codes/grib/param-db?filter=grib2">Parameter Database</a> is a useful resource to help you identify ecCodes-style GRIB variable abbreviations and their meanings.</p>
+</div>
 </section>
 </section>
 

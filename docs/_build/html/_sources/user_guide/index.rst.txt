@@ -17,3 +17,4 @@ User Guide
    notebooks/index
    examples
    notebooks
+   Logo_Style_Guide
