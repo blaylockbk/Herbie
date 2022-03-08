@@ -11,9 +11,8 @@ User Guide
    data_sources
    configure
    grib2
-   tutorial.ipynb
-   searchString
    notebooks/index
+   searchString
    model_template
    model_info
-   Logo_Style_Guide
+   style_guide

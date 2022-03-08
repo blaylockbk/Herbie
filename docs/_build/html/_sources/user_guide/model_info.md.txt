@@ -1,4 +1,4 @@
-# Model Info
+# ℹ Model Info
 
 > This is a work in progress.
 
