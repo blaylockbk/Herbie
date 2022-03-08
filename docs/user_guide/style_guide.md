@@ -1,6 +1,6 @@
 ![](https://github.com/blaylockbk/Herbie/blob/master/docs/_static/HerbieLogo2_tan_transparent.png?raw=true)
 
-# Herbie Logo
+# 🎨 Style Guide
 
 ## Font
 DejaVu Sans Bold
