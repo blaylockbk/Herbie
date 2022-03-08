@@ -142,7 +142,7 @@ html_js_files = [
 # Set autodoc defaults
 autodoc_default_options = {
     "autosummary": True,  # Include a members "table of contents"
-    # "members": True,  # Document all functions/members
+    "members": True,  # Document all functions/members
     "special-members": "__init__",
 }
 
