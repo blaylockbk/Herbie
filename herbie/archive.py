@@ -319,11 +319,11 @@ class Herbie:
             self.grib = local_copy
             self.grib_source = "local"
             # NOTE: We will still get the idx files from a remote
-            #       because they aren't stored locally, or are they?
+            #       because they aren't stored locally, or are they?   # TODO: If the idx file is local, then use that
 
         if list(self.SOURCES)[0] == "local":
             # TODO: Experimental special case, not very elegant yet.
-            self.idx = Path(str(self.grib) + self.IDX_SUFFIX[0])
+            self.idx = self.grib.with_suffix(self.IDX_SUFFIX[0])
             if not self.idx.exists():
                 self.idx = Path(str(self.grib).replace(".grb2", self.IDX_SUFFIX[0]))
             return None
