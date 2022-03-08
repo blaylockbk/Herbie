@@ -1,6 +1,6 @@
-============
-herbie.tools
-============
+===========
+herbie.mics
+===========
 
 .. toctree::
     :maxdepth: 2
