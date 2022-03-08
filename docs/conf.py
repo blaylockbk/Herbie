@@ -97,6 +97,7 @@ html_theme_options = {
     "github_url": "https://github.com/blaylockbk/Herbie",
     "twitter_url": "https://twitter.com/blaylockbk",
     "navbar_end": ["navbar-icon-links.html", "search-field.html"],
+    "footer_items": ["copyright", "sphinx-version", "last-updated"],
     "use_edit_page_button": True,
     "google_analytics_id": "G-PT9LX1B7B8",
     "show_toc_level": 1,
@@ -141,7 +142,7 @@ html_js_files = [
 # Set autodoc defaults
 autodoc_default_options = {
     "autosummary": True,  # Include a members "table of contents"
-    "members": True,  # Document all functions/members
+    # "members": True,  # Document all functions/members
     "special-members": "__init__",
 }
 
