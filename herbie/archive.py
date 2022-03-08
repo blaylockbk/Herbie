@@ -551,7 +551,7 @@ class Herbie:
             Execute ``_searchString_help()`` for examples of a good
             searchString.
 
-            .. include:: ../user_guide/searchString.rst
+            .. include:: ../../user_guide/searchString.rst
 
         Returns
         -------
