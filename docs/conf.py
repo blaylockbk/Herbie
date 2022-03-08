@@ -23,8 +23,8 @@ from datetime import datetime
 utc_now = datetime.utcnow().strftime("%H:%M UTC %d %b %Y")
 
 project = "Herbie"
-copyright = f"{datetime.utcnow():%Y}, Brian K. Blaylock"
-author = f"Brian K. Blaylock.   ♻ Updated: {utc_now}"
+copyright = f"{datetime.utcnow():%Y}, Brian K. Blaylock.    ♻ Updated: {utc_now}"
+author = f"Brian K. Blaylock"
 
 
 # The full version, including alpha/beta/rc tags
