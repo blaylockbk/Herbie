@@ -314,7 +314,7 @@
 <tr class="row-odd"><td><p><a class="reference internal" href="#id0" title="herbie.accessors.HerbieAccessor.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>(xarray_obj)</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot</span></code>([ax, common_features_kw])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#herbie.accessors.HerbieAccessor.plot" title="herbie.accessors.HerbieAccessor.plot"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot</span></code></a>([ax, common_features_kw])</p></td>
 <td><p>Plot data on a map.</p></td>
 </tr>
 </tbody>
@@ -326,10 +326,10 @@
 <col style="width: 90%" />
 </colgroup>
 <tbody>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">center</span></code></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#herbie.accessors.HerbieAccessor.center" title="herbie.accessors.HerbieAccessor.center"><code class="xref py py-obj docutils literal notranslate"><span class="pre">center</span></code></a></p></td>
 <td><p>Return the geographic center point of this dataset.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">crs</span></code></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#herbie.accessors.HerbieAccessor.crs" title="herbie.accessors.HerbieAccessor.crs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">crs</span></code></a></p></td>
 <td><p>Cartopy coordinate reference system (crs) from a cfgrib Dataset.</p></td>
 </tr>
 </tbody>
@@ -344,12 +344,54 @@
 <tr class="row-odd"><td><p><a class="reference internal" href="#id0" title="herbie.accessors.HerbieAccessor.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>(xarray_obj)</p></td>
 <td><p></p></td>
 </tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#herbie.accessors.HerbieAccessor.plot" title="herbie.accessors.HerbieAccessor.plot"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot</span></code></a>([ax, common_features_kw])</p></td>
+<td><p>Plot data on a map.</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Attributes:</strong></p>
+<table class="longtable table autosummary">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#herbie.accessors.HerbieAccessor.center" title="herbie.accessors.HerbieAccessor.center"><code class="xref py py-obj docutils literal notranslate"><span class="pre">center</span></code></a></p></td>
+<td><p>Return the geographic center point of this dataset.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#herbie.accessors.HerbieAccessor.crs" title="herbie.accessors.HerbieAccessor.crs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">crs</span></code></a></p></td>
+<td><p>Cartopy coordinate reference system (crs) from a cfgrib Dataset.</p></td>
+</tr>
 </tbody>
 </table>
 <dl class="py method">
 <dt class="sig sig-object py" id="id0">
 <span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">xarray_obj</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/herbie/accessors.html#HerbieAccessor.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#id0" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="herbie.accessors.HerbieAccessor.center">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">center</span></span><a class="headerlink" href="#herbie.accessors.HerbieAccessor.center" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the geographic center point of this dataset.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="herbie.accessors.HerbieAccessor.crs">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">crs</span></span><a class="headerlink" href="#herbie.accessors.HerbieAccessor.crs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Cartopy coordinate reference system (crs) from a cfgrib Dataset.</p>
+<p>Projection information is from the grib2 message for each variable.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>ds</strong> (<em>xarray.Dataset</em>) – An xarray.Dataset from a GRIB2 file opened by the cfgrib engine.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="herbie.accessors.HerbieAccessor.plot">
+<span class="sig-name descname"><span class="pre">plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">common_features_kw</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/herbie/accessors.html#HerbieAccessor.plot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#herbie.accessors.HerbieAccessor.plot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot data on a map.</p>
+</dd></dl>
 
 </dd></dl>
 

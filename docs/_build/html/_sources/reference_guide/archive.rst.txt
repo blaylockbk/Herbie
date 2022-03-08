@@ -12,6 +12,7 @@ I recommend importing the Herbie class with
    import herbie.archive import Herbie
 
 .. automodule:: herbie.archive
+   :members: None
 
 .. toctree::
     :maxdepth: 2
