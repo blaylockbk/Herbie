@@ -13,8 +13,6 @@ User Guide
    grib2
    tutorial.ipynb
    searchString
-   model_template
    notebooks/index
-   examples
-   notebooks
+   model_template
    Logo_Style_Guide

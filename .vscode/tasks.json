@@ -9,19 +9,24 @@
             "command": "echo Hello, my name is Herbie. I love to race and have a mind of my own.🏎️🏁"
         },
         {
-            "label": "build docs",
+            "label": "🌐 build docs",
             "type": "shell",
             "command": "cd docs && ./remake_docs.sh"
         },
         {
-            "label": "create conda environment",
+            "label": "🐍 create conda environment",
             "type": "shell",
             "command": "conda env create -f environment.yml"
         },
         {
-            "label": "update conda environment",
+            "label": "🥇 update conda environment",
             "type": "shell",
             "command": "conda env update -f environment.yml --prune"
+        },
+        {
+            "label": "🚀 launch JupyterLab",
+            "type": "shell",
+            "command": "eval \"$(conda shell.bash hook)\" && conda activate herbie && jupyter lab --no-browser --port=7793"
         },
         {
             "label": "publish",
