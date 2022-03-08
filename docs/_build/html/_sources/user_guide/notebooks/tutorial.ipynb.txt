@@ -5,7 +5,7 @@
    "id": "788a509b-3a11-4c62-a3bb-e6f3338084a4",
    "metadata": {},
    "source": [
-    "# 👨🏻‍💻 Quick Tutorial\n",
+    "# Quick Tutorial\n",
     "\n",
     "For inidividual files, you will mainly use the `Herbie` class imported from `herbie.archive`\n",
     "\n",
