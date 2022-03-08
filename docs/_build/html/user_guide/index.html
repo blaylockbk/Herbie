@@ -36,6 +36,8 @@
     <script src="../_static/underscore.js"></script>
     <script src="../_static/doctools.js"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+    <script>mermaid.initialize({startOnLoad:true});</script>
     <script src="https://kit.fontawesome.com/f6cc126dcc.js"></script>
     <link rel="shortcut icon" href="../_static/wxicon.png"/>
     <link rel="index" title="Index" href="../genindex.html" />
@@ -184,13 +186,7 @@
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="tutorial.html">
-   👨🏻‍💻 Tutorial: New
-   <code class="docutils literal notranslate">
-    <span class="pre">
-     herbie
-    </span>
-   </code>
-   API
+   👨🏻‍💻 Quick Tutorial
   </a>
  </li>
  <li class="toctree-l1">
@@ -201,11 +197,6 @@
      searchString
     </span>
    </code>
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="model_template.html">
-   👷🏻‍♂️ Extending Herbie
   </a>
  </li>
  <li class="toctree-l1 has-children">
@@ -261,19 +252,13 @@
   </ul>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="examples.html">
-   👨🏻‍💻 Examples: Old
-   <code class="docutils literal notranslate">
-    <span class="pre">
-     HRRR-B
-    </span>
-   </code>
-   API
+  <a class="reference internal" href="model_template.html">
+   👷🏻‍♂️ Extending Herbie
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="notebooks.html">
-   📝 Jupyter Notebooks
+  <a class="reference internal" href="model_info.html">
+   Model Info
   </a>
  </li>
  <li class="toctree-l1">
@@ -354,7 +339,7 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="grib2.html#how-grib-subsetting-works-in-herbie">How GRIB subsetting works in Herbie</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tutorial.html">👨🏻‍💻 Tutorial: New <code class="docutils literal notranslate"><span class="pre">herbie</span></code> API</a><ul>
+<li class="toctree-l1"><a class="reference internal" href="tutorial.html">👨🏻‍💻 Quick Tutorial</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="tutorial.html#Initialize-a-Herbie-object.">Initialize a Herbie object.</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tutorial.html#Download-a-Full-File">Download a Full File</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tutorial.html#Download-a-Subset-File">Download a Subset File</a></li>
@@ -370,10 +355,6 @@
 <li class="toctree-l1"><a class="reference internal" href="searchString.html">🪂 Subset with <code class="docutils literal notranslate"><span class="pre">searchString</span></code></a><ul>
 <li class="toctree-l2"><a class="reference internal" href="searchString.html#wgrib2-style-index-files">wgrib2-style index files</a></li>
 <li class="toctree-l2"><a class="reference internal" href="searchString.html#eccodes-style-index-files">ecCodes-style index files</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="model_template.html">👷🏻‍♂️ Extending Herbie</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="model_template.html#hrrr-zarr">HRRR Zarr</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="notebooks/index.html">👨🏻‍🔬 Model Examples</a><ul>
@@ -403,15 +384,21 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="notebooks/data_rrfs.html#Grid-Mapping">Grid Mapping</a></li>
 <li class="toctree-l2"><a class="reference internal" href="notebooks/data_navgem.html">NAVGEM Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/index.html#other-notebooks">Other notebooks</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="notebooks/index.html#hrrr-zarr">HRRR Zarr</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="examples.html">👨🏻‍💻 Examples: Old <code class="docutils literal notranslate"><span class="pre">HRRR-B</span></code> API</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="examples.html#click-here-for-some-examples">👉 Click Here For Some Examples</a></li>
-<li class="toctree-l2"><a class="reference internal" href="examples.html#function-arguments">Function arguments</a></li>
-<li class="toctree-l2"><a class="reference internal" href="examples.html#the-searchstring-argument">The <strong><code class="docutils literal notranslate"><span class="pre">searchString</span></code></strong> argument</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="notebooks.html">📝 Jupyter Notebooks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="model_template.html">👷🏻‍♂️ Extending Herbie</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="model_template.html#hrrr-in-zarr-format">HRRR in Zarr format</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="model_info.html">Model Info</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="model_info.html#hrrr-high-resolution-rapid-refresh">HRRR: High Resolution Rapid Refresh</a></li>
+<li class="toctree-l2"><a class="reference internal" href="model_info.html#rap-rapid-refresh">RAP: Rapid Refresh</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="Logo_Style_Guide.html">Herbie Logo</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="Logo_Style_Guide.html#font">Font</a></li>
 <li class="toctree-l2"><a class="reference internal" href="Logo_Style_Guide.html#colors">Colors</a><ul>

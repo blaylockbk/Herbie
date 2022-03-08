@@ -347,7 +347,7 @@
     <span class="k">return</span> <span class="n">msg</span>
 
 
-<div class="viewcode-block" id="Herbie"><a class="viewcode-back" href="../../reference_guide/herbie_api.html#herbie.archive.Herbie">[docs]</a><span class="k">class</span> <span class="nc">Herbie</span><span class="p">:</span>
+<div class="viewcode-block" id="Herbie"><a class="viewcode-back" href="../../reference_guide/_autosummary/herbie.archive.Herbie.html#herbie.archive.Herbie">[docs]</a><span class="k">class</span> <span class="nc">Herbie</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Locate GRIB2 file at one of the archive sources.</span>
 
@@ -400,9 +400,10 @@
 <span class="sd">    **kwargs</span>
 <span class="sd">        Any other paremeter needed to satisfy the conditions in the</span>
 <span class="sd">        model template file (e.g., nest=2, other_label=&#39;run2&#39;)</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
 
-<div class="viewcode-block" id="Herbie.__init__"><a class="viewcode-back" href="../../reference_guide/herbie_api.html#herbie.archive.Herbie.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+<div class="viewcode-block" id="Herbie.__init__"><a class="viewcode-back" href="../../reference_guide/_autosummary/herbie.archive.Herbie.html#herbie.archive.Herbie.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">date</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
@@ -680,7 +681,7 @@
         <span class="sd">&quot;&quot;&quot;Predict Local File Name&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">LOCALFILE</span>
 
-<div class="viewcode-block" id="Herbie.get_localFilePath"><a class="viewcode-back" href="../../reference_guide/herbie_api.html#herbie.archive.Herbie.get_localFilePath">[docs]</a>    <span class="k">def</span> <span class="nf">get_localFilePath</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">searchString</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="Herbie.get_localFilePath"><a class="viewcode-back" href="../../reference_guide/_autosummary/herbie.archive.Herbie.html#herbie.archive.Herbie.get_localFilePath">[docs]</a>    <span class="k">def</span> <span class="nf">get_localFilePath</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">searchString</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Get path to local file&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">SOURCES</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;local&quot;</span><span class="p">:</span>
             <span class="c1"># TODO: An experimental special case for locally stored GRIB2.</span>
@@ -710,7 +711,7 @@
 
         <span class="k">return</span> <span class="n">outFile</span></div>
 
-<div class="viewcode-block" id="Herbie.read_idx"><a class="viewcode-back" href="../../reference_guide/herbie_api.html#herbie.archive.Herbie.read_idx">[docs]</a>    <span class="k">def</span> <span class="nf">read_idx</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">searchString</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="Herbie.read_idx"><a class="viewcode-back" href="../../reference_guide/_autosummary/herbie.archive.Herbie.html#herbie.archive.Herbie.read_idx">[docs]</a>    <span class="k">def</span> <span class="nf">read_idx</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">searchString</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Inspect the GRIB2 file contents by reading the index file.</span>
 
@@ -877,7 +878,7 @@
             <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">logic</span><span class="p">]</span>
         <span class="k">return</span> <span class="n">df</span></div>
 
-<div class="viewcode-block" id="Herbie.download"><a class="viewcode-back" href="../../reference_guide/herbie_api.html#herbie.archive.Herbie.download">[docs]</a>    <span class="k">def</span> <span class="nf">download</span><span class="p">(</span>
+<div class="viewcode-block" id="Herbie.download"><a class="viewcode-back" href="../../reference_guide/_autosummary/herbie.archive.Herbie.html#herbie.archive.Herbie.download">[docs]</a>    <span class="k">def</span> <span class="nf">download</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">searchString</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
@@ -1041,7 +1042,7 @@
             <span class="c1"># Download a subset of the file</span>
             <span class="n">subset</span><span class="p">(</span><span class="n">searchString</span><span class="p">,</span> <span class="n">outFile</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Herbie.xarray"><a class="viewcode-back" href="../../reference_guide/herbie_api.html#herbie.archive.Herbie.xarray">[docs]</a>    <span class="k">def</span> <span class="nf">xarray</span><span class="p">(</span>
+<div class="viewcode-block" id="Herbie.xarray"><a class="viewcode-back" href="../../reference_guide/_autosummary/herbie.archive.Herbie.html#herbie.archive.Herbie.xarray">[docs]</a>    <span class="k">def</span> <span class="nf">xarray</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">searchString</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">backend_kwargs</span><span class="o">=</span><span class="p">{},</span>

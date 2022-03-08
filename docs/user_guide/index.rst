@@ -15,4 +15,5 @@ User Guide
    searchString
    notebooks/index
    model_template
+   model_info
    Logo_Style_Guide

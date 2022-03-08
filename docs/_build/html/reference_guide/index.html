@@ -36,11 +36,13 @@
     <script src="../_static/underscore.js"></script>
     <script src="../_static/doctools.js"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+    <script>mermaid.initialize({startOnLoad:true});</script>
     <script src="https://kit.fontawesome.com/f6cc126dcc.js"></script>
     <link rel="shortcut icon" href="../_static/wxicon.png"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Herbie API" href="herbie_api.html" />
+    <link rel="next" title="herbie.archive" href="archive.html" />
     <link rel="prev" title="Herbie Logo" href="../user_guide/Logo_Style_Guide.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="None">
@@ -152,15 +154,98 @@
 </form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
   <div class="bd-toc-item active">
     <ul class="nav bd-sidenav">
- <li class="toctree-l1">
-  <a class="reference internal" href="herbie_api.html">
-   Herbie API
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="archive.html">
+   herbie.archive
   </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/>
+  <label for="toctree-checkbox-1">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="_autosummary/herbie.archive.Herbie.html">
+     herbie.archive.Herbie
+    </a>
+   </li>
+  </ul>
  </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="hrrrb_api.html">
-   HRRR-B API
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="accessors.html">
+   herbie.accessors
   </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/>
+  <label for="toctree-checkbox-2">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="_autosummary/herbie.accessors.HerbieAccessor.html">
+     herbie.accessors.HerbieAccessor
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="tools.html">
+   herbie.tools
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/>
+  <label for="toctree-checkbox-3">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="_autosummary/herbie.tools.bulk_download.html">
+     herbie.tools.bulk_download
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="_autosummary/herbie.tools.xr_concat_sameRun.html">
+     herbie.tools.xr_concat_sameRun
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="_autosummary/herbie.tools.xr_concat_sameLead.html">
+     herbie.tools.xr_concat_sameLead
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="_autosummary/herbie.tools.nearest_points.html">
+     herbie.tools.nearest_points
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="misc.html">
+   herbie.tools
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/>
+  <label for="toctree-checkbox-4">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="_autosummary/herbie.misc.HerbieColors.html">
+     herbie.misc.HerbieColors
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="_autosummary/herbie.misc.HerbieLogo.html">
+     herbie.misc.HerbieLogo
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="_autosummary/herbie.misc.HerbieLogo2.html">
+     herbie.misc.HerbieLogo2
+    </a>
+   </li>
+  </ul>
  </li>
 </ul>
 
@@ -210,23 +295,28 @@
                 
   <section id="reference-guide">
 <h1>Reference Guide<a class="headerlink" href="#reference-guide" title="Permalink to this headline">¶</a></h1>
-<p>There are currently two APIs. The old HRRR-B API still exists, but is not receiving any attention. The Herbie API is new and most likely to be developed in the future. I’ve learned a few things about Python classes and xarray accessors that I am using in Herbie that I didn’t know when I wrote HRRR-B.</p>
+<p>Docstring reference for the <code class="docutils literal notranslate"><span class="pre">herbie</span></code> module</p>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="herbie_api.html">Herbie API</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="herbie_api.html#herbie-retrieve-nwp-model-data">Herbie: Retrieve NWP Model Data</a></li>
-<li class="toctree-l2"><a class="reference internal" href="herbie_api.html#herbie-extension-xarray-accessors">Herbie Extension: xarray accessors</a></li>
-<li class="toctree-l2"><a class="reference internal" href="herbie_api.html#herbie-tools">Herbie Tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="archive.html">herbie.archive</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="_autosummary/herbie.archive.Herbie.html">herbie.archive.Herbie</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="hrrrb_api.html">HRRR-B API</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="hrrrb_api.html#retrieve-hrrr-grib2-files-from-archives">Retrieve HRRR GRIB2 files from archives</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="hrrrb_api.html#default-hrrr-data-source-priority">Default HRRR Data Source Priority</a></li>
-<li class="toctree-l3"><a class="reference internal" href="hrrrb_api.html#main-functions">Main Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="accessors.html">herbie.accessors</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="_autosummary/herbie.accessors.HerbieAccessor.html">herbie.accessors.HerbieAccessor</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="hrrrb_api.html#tools-for-the-hrrr-archive">Tools for the HRRR Archive</a></li>
-<li class="toctree-l2"><a class="reference internal" href="hrrrb_api.html#hrrr-plots">HRRR Plots</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tools.html">herbie.tools</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="_autosummary/herbie.tools.bulk_download.html">herbie.tools.bulk_download</a></li>
+<li class="toctree-l2"><a class="reference internal" href="_autosummary/herbie.tools.xr_concat_sameRun.html">herbie.tools.xr_concat_sameRun</a></li>
+<li class="toctree-l2"><a class="reference internal" href="_autosummary/herbie.tools.xr_concat_sameLead.html">herbie.tools.xr_concat_sameLead</a></li>
+<li class="toctree-l2"><a class="reference internal" href="_autosummary/herbie.tools.nearest_points.html">herbie.tools.nearest_points</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="misc.html">herbie.tools</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="_autosummary/herbie.misc.HerbieColors.html">herbie.misc.HerbieColors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="_autosummary/herbie.misc.HerbieLogo.html">herbie.misc.HerbieLogo</a></li>
+<li class="toctree-l2"><a class="reference internal" href="_autosummary/herbie.misc.HerbieLogo2.html">herbie.misc.HerbieLogo2</a></li>
 </ul>
 </li>
 </ul>
@@ -246,10 +336,10 @@
             <p class="prev-next-title">Herbie Logo</p>
         </div>
     </a>
-    <a class='right-next' id="next-link" href="herbie_api.html" title="next page">
+    <a class='right-next' id="next-link" href="archive.html" title="next page">
     <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Herbie API</p>
+        <p class="prev-next-title">herbie.archive</p>
     </div>
     <i class="fas fa-angle-right"></i>
     </a>

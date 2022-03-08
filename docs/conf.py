@@ -44,7 +44,10 @@ extensions = [
     "autodocsumm",
     "sphinx_markdown_tables",
     "myst_parser",
+    "sphinxcontrib.mermaid",
 ]
+
+autosummary_generate = True  # Turn on sphinx.ext.autosummary
 
 # MyST Docs: https://myst-parser.readthedocs.io/en/latest/syntax/optional.html
 myst_enable_extensions = [

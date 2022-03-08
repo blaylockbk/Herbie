@@ -36,10 +36,14 @@
     <script src="../_static/underscore.js"></script>
     <script src="../_static/doctools.js"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+    <script>mermaid.initialize({startOnLoad:true});</script>
     <script src="https://kit.fontawesome.com/f6cc126dcc.js"></script>
     <link rel="shortcut icon" href="../_static/wxicon.png"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Herbie Logo" href="Logo_Style_Guide.html" />
+    <link rel="prev" title="👷🏻‍♂️ Extending Herbie" href="model_template.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="None">
     
@@ -84,7 +88,7 @@
       
       <div class="navbar-center-item">
         <ul id="navbar-main-elements" class="navbar-nav">
-    <li class="toctree-l1 nav-item">
+    <li class="toctree-l1 current active nav-item">
  <a class="reference internal nav-link" href="index.html">
   User Guide
  </a>
@@ -149,7 +153,121 @@
   <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
 </form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
   <div class="bd-toc-item active">
-    
+    <ul class="current nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="contribute.html">
+   👨🏻‍🏭 Disclaimer and Contributing Guidelines
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="history.html">
+   📜 History
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="install.html">
+   🐍 Installation and Conda Environment
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="data_sources.html">
+   ☁ Data Sources
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="configure.html">
+   🛠 Configure
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="grib2.html">
+   🔢 What is GRIB2?
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="tutorial.html">
+   👨🏻‍💻 Quick Tutorial
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="searchString.html">
+   🪂 Subset with
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     searchString
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="notebooks/index.html">
+   👨🏻‍🔬 Model Examples
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/>
+  <label for="toctree-checkbox-1">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="notebooks/data_hrrr.html">
+     HRRR Data
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="notebooks/data_hrrrak.html">
+     HRRR-Alaska Data
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="notebooks/data_rap.html">
+     RAP Data
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="notebooks/data_gfs.html">
+     GFS Data
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="notebooks/data_ecmwf.html">
+     ECMWF Open Data – Real Time
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="notebooks/data_nbm.html">
+     National Blend of Models (NMB)
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="notebooks/data_rrfs.html">
+     RRFS Data
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="notebooks/data_navgem.html">
+     NAVGEM Data
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="model_template.html">
+   👷🏻‍♂️ Extending Herbie
+  </a>
+ </li>
+ <li class="toctree-l1 current active">
+  <a class="current reference internal" href="#">
+   Model Info
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="Logo_Style_Guide.html">
+   Herbie Logo
+  </a>
+ </li>
+</ul>
+
   </div>
 </nav>
               </div>
@@ -211,10 +329,14 @@
                 
   <section class="tex2jax_ignore mathjax_ignore" id="model-info">
 <h1>Model Info<a class="headerlink" href="#model-info" title="Permalink to this headline">¶</a></h1>
+<blockquote>
+<div><p>This is a work in progress.</p>
+</div></blockquote>
 <section id="hrrr-high-resolution-rapid-refresh">
 <h2>HRRR: High Resolution Rapid Refresh<a class="headerlink" href="#hrrr-high-resolution-rapid-refresh" title="Permalink to this headline">¶</a></h2>
 <p>ESRL: <a class="reference external" href="https://rapidrefresh.noaa.gov/hrrr/">https://rapidrefresh.noaa.gov/hrrr/</a></p>
-<div class="highlight-mermaid notranslate"><div class="highlight"><pre><span></span>gantt
+<div class="mermaid">
+            gantt
   title HRRR Version History
   axisFormat %b-%Y
   HRRR v1 :        v1, 2014-09-30, 2016-8-23 
@@ -222,9 +344,7 @@
   HRRR v3 :        v3, after v2, 2020-12-2
   HRRR v4 :active, v4, after v3 2020-12-2, 2024
   RRFS :               after v4, 2026
-</pre></div>
-</div>
-</section>
+        </div></section>
 <section id="rap-rapid-refresh">
 <h2>RAP: Rapid Refresh<a class="headerlink" href="#rap-rapid-refresh" title="Permalink to this headline">¶</a></h2>
 <blockquote>
@@ -233,7 +353,8 @@
 <p>ESRL: <a class="reference external" href="https://rapidrefresh.noaa.gov/">https://rapidrefresh.noaa.gov/</a></p>
 <p>NCEI: <a class="reference external" href="https://www.ncei.noaa.gov/products/weather-climate-models/rapid-refresh-update">https://www.ncei.noaa.gov/products/weather-climate-models/rapid-refresh-update</a></p>
 <p>AWS: <a class="reference external" href="https://registry.opendata.aws/noaa-rap/">https://registry.opendata.aws/noaa-rap/</a></p>
-<div class="highlight-mermaid notranslate"><div class="highlight"><pre><span></span>gantt
+<div class="mermaid">
+            gantt
   title RAP Model Sources
   axisFormat %Y
   section NCEI
@@ -241,9 +362,7 @@
   RAP : 2012-05-01, 2022-05-01
   section Big Data Program
   RAP : 2021-02-22, 2022-02-22
-</pre></div>
-</div>
-</section>
+        </div></section>
 </section>
 
 
@@ -252,6 +371,20 @@
               
               <!-- Previous / next buttons -->
 <div class='prev-next-area'>
+    <a class='left-prev' id="prev-link" href="model_template.html" title="previous page">
+        <i class="fas fa-angle-left"></i>
+        <div class="prev-next-info">
+            <p class="prev-next-subtitle">previous</p>
+            <p class="prev-next-title">👷🏻‍♂️ Extending Herbie</p>
+        </div>
+    </a>
+    <a class='right-next' id="next-link" href="Logo_Style_Guide.html" title="next page">
+    <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Herbie Logo</p>
+    </div>
+    <i class="fas fa-angle-right"></i>
+    </a>
 </div>
               
           </main>

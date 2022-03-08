@@ -36,12 +36,14 @@
     <script src="../../_static/underscore.js"></script>
     <script src="../../_static/doctools.js"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+    <script>mermaid.initialize({startOnLoad:true});</script>
     <script src="https://kit.fontawesome.com/f6cc126dcc.js"></script>
     <link rel="shortcut icon" href="../../_static/wxicon.png"/>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="HRRR Data" href="data_hrrr.html" />
-    <link rel="prev" title="👷🏻‍♂️ Extending Herbie" href="../model_template.html" />
+    <link rel="prev" title="🪂 Subset with searchString" href="../searchString.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="None">
     
@@ -184,13 +186,7 @@
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../tutorial.html">
-   👨🏻‍💻 Tutorial: New
-   <code class="docutils literal notranslate">
-    <span class="pre">
-     herbie
-    </span>
-   </code>
-   API
+   👨🏻‍💻 Quick Tutorial
   </a>
  </li>
  <li class="toctree-l1">
@@ -201,11 +197,6 @@
      searchString
     </span>
    </code>
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../model_template.html">
-   👷🏻‍♂️ Extending Herbie
   </a>
  </li>
  <li class="toctree-l1 current active has-children">
@@ -261,19 +252,13 @@
   </ul>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="../examples.html">
-   👨🏻‍💻 Examples: Old
-   <code class="docutils literal notranslate">
-    <span class="pre">
-     HRRR-B
-    </span>
-   </code>
-   API
+  <a class="reference internal" href="../model_template.html">
+   👷🏻‍♂️ Extending Herbie
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="../notebooks.html">
-   📝 Jupyter Notebooks
+  <a class="reference internal" href="../model_info.html">
+   Model Info
   </a>
  </li>
  <li class="toctree-l1">
@@ -298,9 +283,26 @@
               
               <div class="toc-item">
                 
+<div class="tocsection onthispage pt-5 pb-3">
+    <i class="fas fa-list"></i> On this page
+</div>
 
 <nav id="bd-toc-nav">
-    
+    <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#other-notebooks">
+   Other notebooks
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#hrrr-zarr">
+     HRRR Zarr
+    </a>
+   </li>
+  </ul>
+ </li>
+</ul>
+
 </nav>
               </div>
               
@@ -359,6 +361,23 @@
 <li class="toctree-l1"><a class="reference internal" href="data_navgem.html">NAVGEM Data</a></li>
 </ul>
 </div>
+<section id="other-notebooks">
+<h2>Other notebooks<a class="headerlink" href="#other-notebooks" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>[Brian’s Cartopy Tools](<a class="reference external" href="https://github.com/blaylockbk/Carpenter_Workshop/blob/main/notebooks/demo_cartopy_tools.ipynb">https://github.com/blaylockbk/Carpenter_Workshop/blob/main/notebooks/demo_cartopy_tools.ipynb</a>)</p></li>
+<li><p>[Make Cartopy maps with HRRR data (needs updating)](<a class="reference external" href="https://github.com/blaylockbk/Herbie/blob/master/notebooks/demo_plot-on-map-with-common-features.ipynb">https://github.com/blaylockbk/Herbie/blob/master/notebooks/demo_plot-on-map-with-common-features.ipynb</a>)</p></li>
+</ul>
+<section id="hrrr-zarr">
+<h3>HRRR Zarr<a class="headerlink" href="#hrrr-zarr" title="Permalink to this headline">¶</a></h3>
+<p>Select parts of the HRRR archive are available in [Zarr](<a class="reference external" href="https://zarr.readthedocs.io/en/stable/">https://zarr.readthedocs.io/en/stable/</a>) format in the <cite>s3://hrrrzarr</cite> bucket on AWS developed by [Taylor Gowan](<a class="reference external" href="https://twitter.com/tayloragowan">https://twitter.com/tayloragowan</a>) and managed by the MesoWest group at the University of Utah. To get started check out these notebooks:</p>
+<ul class="simple">
+<li><p>[Taylor Gowan: HRRR-Zarr examples](<a class="reference external" href="https://github.com/taylorgowan/zarr">https://github.com/taylorgowan/zarr</a>)</p></li>
+<li><p>[Kevin Tyle: HRRR-Zarr AMS Short Course](<a class="reference external" href="https://github.com/ktyle/python_pangeo_ams2021/blob/main/notebooks/03_Pangeo_HRRR.ipynb">https://github.com/ktyle/python_pangeo_ams2021/blob/main/notebooks/03_Pangeo_HRRR.ipynb</a>)</p></li>
+</ul>
+<p>I haven’t added Zarr functionality into <cite>Herbie</cite>, but I started to explore the capability. Here is my sandbox notebook…
+- [Brian Blaylock: HRRR-Zarr sandbox](<a class="reference external" href="https://github.com/blaylockbk/Herbie/blob/master/notebooks/zarr_HRRR.ipynb">https://github.com/blaylockbk/Herbie/blob/master/notebooks/zarr_HRRR.ipynb</a>)</p>
+</section>
+</section>
 </section>
 
 
@@ -367,11 +386,11 @@
               
               <!-- Previous / next buttons -->
 <div class='prev-next-area'>
-    <a class='left-prev' id="prev-link" href="../model_template.html" title="previous page">
+    <a class='left-prev' id="prev-link" href="../searchString.html" title="previous page">
         <i class="fas fa-angle-left"></i>
         <div class="prev-next-info">
             <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title">👷🏻‍♂️ Extending Herbie</p>
+            <p class="prev-next-title">🪂 Subset with <code class="docutils literal notranslate"><span class="pre">searchString</span></code></p>
         </div>
     </a>
     <a class='right-next' id="next-link" href="data_hrrr.html" title="next page">
