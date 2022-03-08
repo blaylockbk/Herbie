@@ -31,16 +31,14 @@ dependencies:
   - xarray
   - zarr
 
-  # Formatter
-  # ---------
+  # Formatter & Testing
+  # -------------------
   - black
   - jupyterlab_code_formatter
   - isort
-
-  # Testing
-  # -------
+  - pylint
   - pytest
-  #- line_profiler
+  - line_profiler
 
   # Documentation
   # -------------
