@@ -20,13 +20,15 @@ import pydata_sphinx_theme
 from datetime import datetime
 
 # --- Project information -----------------------------------------------------
+utc_now = datetime.utcnow().strftime("%H:%M UTC %d %b %Y")
 
 project = "Herbie"
 copyright = f"{datetime.utcnow():%Y}, Brian K. Blaylock"
-author = "Brian K. Blaylock"
+author = f"Brian K. Blaylock.   ♻ Updated: {utc_now}"
+
 
 # The full version, including alpha/beta/rc tags
-release = "0.0.5"
+release = "0.0.9"
 
 # --- General configuration ---------------------------------------------------
 
@@ -97,7 +99,6 @@ html_theme_options = {
     "github_url": "https://github.com/blaylockbk/Herbie",
     "twitter_url": "https://twitter.com/blaylockbk",
     "navbar_end": ["navbar-icon-links.html", "search-field.html"],
-    "footer_items": ["copyright", "sphinx-version", "last-updated"],
     "use_edit_page_button": True,
     "google_analytics_id": "G-PT9LX1B7B8",
     "show_toc_level": 1,

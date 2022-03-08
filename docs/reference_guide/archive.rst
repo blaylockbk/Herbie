@@ -2,7 +2,6 @@
 herbie.archive
 ==============
 
-.. TODO: how do I use autodoc to get the docstring from herbie.archive (just the initial docstring at the top of that file)?
 
 I recommend importing the Herbie class with
 
@@ -11,8 +10,14 @@ I recommend importing the Herbie class with
 
    import herbie.archive import Herbie
 
+.. ============================================================================
+.. Use autodoc to get just the initial docstring from
+
 .. automodule:: herbie.archive
    :members: None
+
+.. ============================================================================
+.. Now use autosummary to create a new page for each class/method/function
 
 .. toctree::
     :maxdepth: 2
