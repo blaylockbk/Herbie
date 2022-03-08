@@ -724,7 +724,7 @@ class Herbie:
         searchString : str
             If None, download the full file. Else, use regex to subset
             the file by specific variables and levels.
-            .. include:: ../user_guide/searchString.rst
+            .. include:: ../../user_guide/searchString.rst
         source : {'nomads', 'aws', 'google', 'azure', 'pando', 'pando2'}
             If None, download GRIB2 file from self.grib2 which is
             the first location the GRIB2 file was found from the
