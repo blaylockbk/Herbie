@@ -20,7 +20,7 @@ dependencies:
   - h5py
   - jupyter
   - jupyterlab
-  - matplotlib
+  - matplotlib>=3.4.3
   - metpy
   - netcdf4
   - numpy>=1.22.3
@@ -28,11 +28,11 @@ dependencies:
   - pygrib
   - pylint
   - pyproj
-  - requests
+  - requests>=2.27.1
   - s3fs
   - scipy
   - toml
-  - xarray
+  - xarray>=2022.3.0
   - zarr
 
   # Formatter & Testing
