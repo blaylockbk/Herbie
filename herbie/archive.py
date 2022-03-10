@@ -34,7 +34,7 @@ file in the ``herbie/models`` directory and make a pull-request.
 
 For more details, see https://blaylockbk.github.io/Herbie/_build/html/user_guide/data_sources.html
 
-.. note:: Updates since the ``Herbie 0.0.5`` release
+.. note:: Updates since the ``Herbie 0.0.9`` release
 
     - TODO: Rename 'searchString' to 'subset' (and rename subset function)
     - TODO: Create .idx file if wgrib2 is installed (linux only) when index file doesn't exist
