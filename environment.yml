@@ -1,3 +1,7 @@
+# Note:
+# More specific versions *may* help speed up conda creating/updating environments
+# https://www.anaconda.com/blog/understanding-and-improving-condas-performance
+
 name: herbie
 channels:
   - conda-forge
@@ -19,8 +23,8 @@ dependencies:
   - matplotlib
   - metpy
   - netcdf4
-  - numpy
-  - pandas
+  - numpy>=1.22.3
+  - pandas>=1.4.1
   - pygrib
   - pylint
   - pyproj
@@ -42,7 +46,7 @@ dependencies:
 
   # Documentation
   # -------------
-  - sphinx
+  - sphinx>=4.4.0
   - nbsphinx
   - pydata-sphinx-theme # PyData Sphinx Theme (i.e, Numpy, Pandas, MetPy)
   - sphinx-panels # Add bootstrap elements to Sphinx

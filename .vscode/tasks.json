@@ -24,6 +24,11 @@
             "command": "conda env update -f environment.yml --prune"
         },
         {
+            "label": "💣 destroy conda environment",
+            "type": "shell",
+            "command": "conda activate base && conda env remove --name herbie"
+        },
+        {
             "label": "🚀 launch JupyterLab",
             "type": "shell",
             "command": "eval \"$(conda shell.bash hook)\" && conda activate herbie && jupyter lab --no-browser --port=7793"
