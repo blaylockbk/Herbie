@@ -22,7 +22,6 @@ def HerbieLogo(white_line=False):
     plt.figure(figsize=[5, 5], facecolor=colors["body"])
 
     plt.axis([-10, 10, -10, 10])
-
     if white_line:
         plt.axvline(4, lw=40, color=colors["white"])
     plt.axvline(2.5, lw=20, color=colors["red"])

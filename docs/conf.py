@@ -20,13 +20,15 @@ import pydata_sphinx_theme
 from datetime import datetime
 
 # --- Project information -----------------------------------------------------
+utc_now = datetime.utcnow().strftime("%H:%M UTC %d %b %Y")
 
 project = "Herbie"
-copyright = f"{datetime.utcnow():%Y}, Brian K. Blaylock"
-author = "Brian K. Blaylock"
+copyright = f"{datetime.utcnow():%Y}, Brian K. Blaylock.    ♻ Updated: {utc_now}"
+author = f"Brian K. Blaylock"
+
 
 # The full version, including alpha/beta/rc tags
-release = "0.0.5"
+release = "0.0.9"
 
 # --- General configuration ---------------------------------------------------
 
@@ -36,13 +38,18 @@ release = "0.0.5"
 extensions = [
     "nbsphinx",
     "sphinx.ext.autodoc",
+    "sphinx.ext.autosummary",
     "sphinx.ext.autosectionlabel",
     "sphinx.ext.napoleon",
+    "sphinx.ext.viewcode",
     "sphinx_panels",
     "autodocsumm",
     "sphinx_markdown_tables",
     "myst_parser",
+    "sphinxcontrib.mermaid",
 ]
+
+autosummary_generate = True  # Turn on sphinx.ext.autosummary
 
 # MyST Docs: https://myst-parser.readthedocs.io/en/latest/syntax/optional.html
 myst_enable_extensions = [

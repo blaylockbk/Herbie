@@ -39,6 +39,10 @@ from toolbox.cartopy_tools import common_features, pc
 
 @xr.register_dataset_accessor("herbie")
 class HerbieAccessor:
+    """
+    Accessor for xarray Datasets opened with Herbie
+    
+    """
     def __init__(self, xarray_obj):
         self._obj = xarray_obj
         self._center = None

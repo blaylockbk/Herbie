@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>User Guide &#8212; Herbie 0.0.5 documentation</title>
+    <title>User Guide &#8212; Herbie 0.0.9 documentation</title>
     
     <link href="../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
 <link href="../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -36,6 +36,8 @@
     <script src="../_static/underscore.js"></script>
     <script src="../_static/doctools.js"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+    <script>mermaid.initialize({startOnLoad:true});</script>
     <script src="https://kit.fontawesome.com/f6cc126dcc.js"></script>
     <link rel="shortcut icon" href="../_static/wxicon.png"/>
     <link rel="index" title="Index" href="../genindex.html" />
@@ -182,35 +184,9 @@
    🔢 What is GRIB2?
   </a>
  </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="tutorial.html">
-   👨🏻‍💻 Tutorial: New
-   <code class="docutils literal notranslate">
-    <span class="pre">
-     herbie
-    </span>
-   </code>
-   API
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="searchString.html">
-   🪂 Subset with
-   <code class="docutils literal notranslate">
-    <span class="pre">
-     searchString
-    </span>
-   </code>
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="model_template.html">
-   👷🏻‍♂️ Extending Herbie
-  </a>
- </li>
  <li class="toctree-l1 has-children">
   <a class="reference internal" href="notebooks/index.html">
-   👨🏻‍🔬 Model Examples
+   👨🏻‍💻 Tutorials
   </a>
   <input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/>
   <label for="toctree-checkbox-1">
@@ -218,6 +194,11 @@
    </i>
   </label>
   <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="notebooks/tutorial.html">
+     Quick Tutorial
+    </a>
+   </li>
    <li class="toctree-l2">
     <a class="reference internal" href="notebooks/data_hrrr.html">
      HRRR Data
@@ -261,19 +242,28 @@
   </ul>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="examples.html">
-   👨🏻‍💻 Examples: Old
+  <a class="reference internal" href="searchString.html">
+   🪂 Subset with
    <code class="docutils literal notranslate">
     <span class="pre">
-     HRRR-B
+     searchString
     </span>
    </code>
-   API
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="notebooks.html">
-   📝 Jupyter Notebooks
+  <a class="reference internal" href="model_template.html">
+   👷🏻‍♂️ Extending Herbie
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="model_info.html">
+   ℹ Model Info
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="style_guide.html">
+   🎨 Style Guide
   </a>
  </li>
 </ul>
@@ -349,17 +339,51 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="grib2.html#how-grib-subsetting-works-in-herbie">How GRIB subsetting works in Herbie</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tutorial.html">👨🏻‍💻 Tutorial: New <code class="docutils literal notranslate"><span class="pre">herbie</span></code> API</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="tutorial.html#Initialize-a-Herbie-object.">Initialize a Herbie object.</a></li>
-<li class="toctree-l2"><a class="reference internal" href="tutorial.html#Download-a-Full-File">Download a Full File</a></li>
-<li class="toctree-l2"><a class="reference internal" href="tutorial.html#Download-a-Subset-File">Download a Subset File</a></li>
-<li class="toctree-l2"><a class="reference internal" href="tutorial.html#Subset-Search-String">Subset Search String</a></li>
-<li class="toctree-l2"><a class="reference internal" href="tutorial.html#Read-GRIB2-file-with-xarray">Read GRIB2 file with xarray</a></li>
-<li class="toctree-l2"><a class="reference internal" href="tutorial.html#Index-File-DataFrame-if-it-exists">Index File DataFrame if it exists</a></li>
-<li class="toctree-l2"><a class="reference internal" href="tutorial.html#Bulk-Download">Bulk Download</a></li>
-<li class="toctree-l2"><a class="reference internal" href="tutorial.html#Concatenante-xarray-DataSets">Concatenante xarray DataSets</a></li>
-<li class="toctree-l2"><a class="reference internal" href="tutorial.html#Plot-with-herbie-xarray-custom-accessor">Plot with <code class="docutils literal notranslate"><span class="pre">herbie</span></code> xarray custom accessor</a></li>
-<li class="toctree-l2"><a class="reference internal" href="tutorial.html#Herbie-Logo">Herbie Logo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notebooks/index.html">👨🏻‍💻 Tutorials</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/tutorial.html">Quick Tutorial</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="notebooks/tutorial.html#Initialize-a-Herbie-object.">Initialize a Herbie object.</a></li>
+<li class="toctree-l3"><a class="reference internal" href="notebooks/tutorial.html#Download-a-Full-File">Download a Full File</a></li>
+<li class="toctree-l3"><a class="reference internal" href="notebooks/tutorial.html#Download-a-Subset-File">Download a Subset File</a></li>
+<li class="toctree-l3"><a class="reference internal" href="notebooks/tutorial.html#Subset-Search-String">Subset Search String</a></li>
+<li class="toctree-l3"><a class="reference internal" href="notebooks/tutorial.html#Read-GRIB2-file-with-xarray">Read GRIB2 file with xarray</a></li>
+<li class="toctree-l3"><a class="reference internal" href="notebooks/tutorial.html#Index-File-DataFrame-if-it-exists">Index File DataFrame if it exists</a></li>
+<li class="toctree-l3"><a class="reference internal" href="notebooks/tutorial.html#Bulk-Download">Bulk Download</a></li>
+<li class="toctree-l3"><a class="reference internal" href="notebooks/tutorial.html#Concatenante-xarray-DataSets">Concatenante xarray DataSets</a></li>
+<li class="toctree-l3"><a class="reference internal" href="notebooks/tutorial.html#Plot-with-herbie-xarray-custom-accessor">Plot with <code class="docutils literal notranslate"><span class="pre">herbie</span></code> xarray custom accessor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="notebooks/tutorial.html#Herbie-Logo">Herbie Logo</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/index.html#model-examples">👨🏻‍🔬 Model Examples</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="notebooks/data_hrrr.html">HRRR Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="notebooks/data_hrrrak.html">HRRR-Alaska Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="notebooks/data_rap.html">RAP Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="notebooks/data_rap.html#RAP-record-on-NCEI">RAP record on NCEI</a></li>
+<li class="toctree-l3"><a class="reference internal" href="notebooks/data_rap.html#List-files-that-are-found-in-Historical-NCEI">List files that are found in Historical NCEI</a></li>
+<li class="toctree-l3"><a class="reference internal" href="notebooks/data_gfs.html">GFS Data</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="notebooks/data_gfs.html#Can-also-use-metpy-to-parse-GFS-grid_mapping">Can also use metpy to parse GFS grid_mapping</a></li>
+<li class="toctree-l4"><a class="reference internal" href="notebooks/data_gfs.html#Get-data-from-the-GFS-wave-output">Get data from the GFS wave output</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="notebooks/data_ecmwf.html">ECMWF Open Data – Real Time</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="notebooks/data_ecmwf.html#Retrieve-a-full-file">Retrieve a full file</a></li>
+<li class="toctree-l4"><a class="reference internal" href="notebooks/data_ecmwf.html#Download/Retrieve-a-subset">Download/Retrieve a subset</a></li>
+<li class="toctree-l4"><a class="reference internal" href="notebooks/data_ecmwf.html#Plots">Plots</a></li>
+<li class="toctree-l4"><a class="reference internal" href="notebooks/data_ecmwf.html#ECMWF-Wave-Output">ECMWF Wave Output</a></li>
+<li class="toctree-l4"><a class="reference internal" href="notebooks/data_ecmwf.html#Ensemble-Forecast-Products">Ensemble Forecast Products</a></li>
+<li class="toctree-l4"><a class="reference internal" href="notebooks/data_ecmwf.html#Ensemble-Wave-Products">Ensemble Wave Products</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="notebooks/data_nbm.html">National Blend of Models (NMB)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="notebooks/data_rrfs.html">RRFS Data</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="notebooks/data_rrfs.html#What-about-when-there-isn’t-an-index-file-available?">What about when there isn’t an index file available?</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="notebooks/data_rrfs.html#Grid-Mapping">Grid Mapping</a></li>
+<li class="toctree-l3"><a class="reference internal" href="notebooks/data_navgem.html">NAVGEM Data</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/index.html#other-notebooks">Other notebooks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/index.html#hrrr-in-zarr-format">HRRR in Zarr Format</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="searchString.html">🪂 Subset with <code class="docutils literal notranslate"><span class="pre">searchString</span></code></a><ul>
@@ -367,46 +391,29 @@
 <li class="toctree-l2"><a class="reference internal" href="searchString.html#eccodes-style-index-files">ecCodes-style index files</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="model_template.html">👷🏻‍♂️ Extending Herbie</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="model_template.html#hrrr-zarr">HRRR Zarr</a></li>
+<li class="toctree-l1"><a class="reference internal" href="model_template.html">👷🏻‍♂️ Extending Herbie</a></li>
+<li class="toctree-l1"><a class="reference internal" href="model_info.html">ℹ Model Info</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="model_info.html#hrrr-high-resolution-rapid-refresh">HRRR: High Resolution Rapid Refresh</a></li>
+<li class="toctree-l2"><a class="reference internal" href="model_info.html#rap-rapid-refresh">RAP: Rapid Refresh</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="notebooks/index.html">👨🏻‍🔬 Model Examples</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="notebooks/data_hrrr.html">HRRR Data</a></li>
-<li class="toctree-l2"><a class="reference internal" href="notebooks/data_hrrrak.html">HRRR-Alaska Data</a></li>
-<li class="toctree-l2"><a class="reference internal" href="notebooks/data_rap.html">RAP Data</a></li>
-<li class="toctree-l2"><a class="reference internal" href="notebooks/data_rap.html#RAP-record-on-NCEI">RAP record on NCEI</a></li>
-<li class="toctree-l2"><a class="reference internal" href="notebooks/data_rap.html#List-files-that-are-found-in-Historical-NCEI">List files that are found in Historical NCEI</a></li>
-<li class="toctree-l2"><a class="reference internal" href="notebooks/data_gfs.html">GFS Data</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="notebooks/data_gfs.html#Can-also-use-metpy-to-parse-GFS-grid_mapping">Can also use metpy to parse GFS grid_mapping</a></li>
-<li class="toctree-l3"><a class="reference internal" href="notebooks/data_gfs.html#Get-data-from-the-GFS-wave-output">Get data from the GFS wave output</a></li>
+<li class="toctree-l1"><a class="reference internal" href="style_guide.html">🎨 Style Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="style_guide.html#font">Font</a></li>
+<li class="toctree-l2"><a class="reference internal" href="style_guide.html#colors">Colors</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="style_guide.html#red-88211b">Red : #88211b</a></li>
+<li class="toctree-l3"><a class="reference internal" href="style_guide.html#white-ffffff">White : #ffffff</a></li>
+<li class="toctree-l3"><a class="reference internal" href="style_guide.html#blue-0c3576">Blue: #0c3576</a></li>
+<li class="toctree-l3"><a class="reference internal" href="style_guide.html#tan-d8c89d">Tan: #d8c89d</a></li>
+<li class="toctree-l3"><a class="reference internal" href="style_guide.html#black-000000">Black: #000000</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="notebooks/data_ecmwf.html">ECMWF Open Data – Real Time</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="notebooks/data_ecmwf.html#Retrieve-a-full-file">Retrieve a full file</a></li>
-<li class="toctree-l3"><a class="reference internal" href="notebooks/data_ecmwf.html#Download/Retrieve-a-subset">Download/Retrieve a subset</a></li>
-<li class="toctree-l3"><a class="reference internal" href="notebooks/data_ecmwf.html#Plots">Plots</a></li>
-<li class="toctree-l3"><a class="reference internal" href="notebooks/data_ecmwf.html#ECMWF-Wave-Output">ECMWF Wave Output</a></li>
-<li class="toctree-l3"><a class="reference internal" href="notebooks/data_ecmwf.html#Ensemble-Forecast-Products">Ensemble Forecast Products</a></li>
-<li class="toctree-l3"><a class="reference internal" href="notebooks/data_ecmwf.html#Ensemble-Wave-Products">Ensemble Wave Products</a></li>
+<li class="toctree-l2"><a class="reference internal" href="style_guide.html#samples">Samples</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="style_guide.html#transparent-background">Transparent Background</a></li>
+<li class="toctree-l3"><a class="reference internal" href="style_guide.html#tan-background">Tan Background</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="notebooks/data_nbm.html">National Blend of Models (NMB)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="notebooks/data_rrfs.html">RRFS Data</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="notebooks/data_rrfs.html#What-about-when-there-isn’t-an-index-file-available?">What about when there isn’t an index file available?</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="notebooks/data_rrfs.html#Grid-Mapping">Grid Mapping</a></li>
-<li class="toctree-l2"><a class="reference internal" href="notebooks/data_navgem.html">NAVGEM Data</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="examples.html">👨🏻‍💻 Examples: Old <code class="docutils literal notranslate"><span class="pre">HRRR-B</span></code> API</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="examples.html#click-here-for-some-examples">👉 Click Here For Some Examples</a></li>
-<li class="toctree-l2"><a class="reference internal" href="examples.html#function-arguments">Function arguments</a></li>
-<li class="toctree-l2"><a class="reference internal" href="examples.html#the-searchstring-argument">The <strong><code class="docutils literal notranslate"><span class="pre">searchString</span></code></strong> argument</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="notebooks.html">📝 Jupyter Notebooks</a></li>
 </ul>
 </div>
 </section>
@@ -445,7 +452,7 @@
     
     <div class="footer-item">
       <p class="copyright">
-    &copy; Copyright 2022, Brian K. Blaylock.<br>
+    &copy; Copyright 2022, Brian K. Blaylock.    ♻ Updated: 20:41 UTC 08 Mar 2022.<br>
 </p>
     </div>
     

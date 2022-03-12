@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>👷🏻‍♂️ Extending Herbie &#8212; Herbie 0.0.5 documentation</title>
+    <title>👷🏻‍♂️ Extending Herbie &#8212; Herbie 0.0.9 documentation</title>
     
     <link href="../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
 <link href="../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -36,11 +36,13 @@
     <script src="../_static/underscore.js"></script>
     <script src="../_static/doctools.js"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+    <script>mermaid.initialize({startOnLoad:true});</script>
     <script src="https://kit.fontawesome.com/f6cc126dcc.js"></script>
     <link rel="shortcut icon" href="../_static/wxicon.png"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="👨🏻‍🔬 Model Examples" href="notebooks/index.html" />
+    <link rel="next" title="ℹ Model Info" href="model_info.html" />
     <link rel="prev" title="🪂 Subset with searchString" href="searchString.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="None">
@@ -182,35 +184,9 @@
    🔢 What is GRIB2?
   </a>
  </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="tutorial.html">
-   👨🏻‍💻 Tutorial: New
-   <code class="docutils literal notranslate">
-    <span class="pre">
-     herbie
-    </span>
-   </code>
-   API
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="searchString.html">
-   🪂 Subset with
-   <code class="docutils literal notranslate">
-    <span class="pre">
-     searchString
-    </span>
-   </code>
-  </a>
- </li>
- <li class="toctree-l1 current active">
-  <a class="current reference internal" href="#">
-   👷🏻‍♂️ Extending Herbie
-  </a>
- </li>
  <li class="toctree-l1 has-children">
   <a class="reference internal" href="notebooks/index.html">
-   👨🏻‍🔬 Model Examples
+   👨🏻‍💻 Tutorials
   </a>
   <input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/>
   <label for="toctree-checkbox-1">
@@ -218,6 +194,11 @@
    </i>
   </label>
   <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="notebooks/tutorial.html">
+     Quick Tutorial
+    </a>
+   </li>
    <li class="toctree-l2">
     <a class="reference internal" href="notebooks/data_hrrr.html">
      HRRR Data
@@ -261,19 +242,28 @@
   </ul>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="examples.html">
-   👨🏻‍💻 Examples: Old
+  <a class="reference internal" href="searchString.html">
+   🪂 Subset with
    <code class="docutils literal notranslate">
     <span class="pre">
-     HRRR-B
+     searchString
     </span>
    </code>
-   API
+  </a>
+ </li>
+ <li class="toctree-l1 current active">
+  <a class="current reference internal" href="#">
+   👷🏻‍♂️ Extending Herbie
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="notebooks.html">
-   📝 Jupyter Notebooks
+  <a class="reference internal" href="model_info.html">
+   ℹ Model Info
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="style_guide.html">
+   🎨 Style Guide
   </a>
  </li>
 </ul>
@@ -293,19 +283,9 @@
               
               <div class="toc-item">
                 
-<div class="tocsection onthispage pt-5 pb-3">
-    <i class="fas fa-list"></i> On this page
-</div>
 
 <nav id="bd-toc-nav">
-    <ul class="visible nav section-nav flex-column">
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#hrrr-zarr">
-   HRRR Zarr
-  </a>
- </li>
-</ul>
-
+    
 </nav>
               </div>
               
@@ -355,11 +335,6 @@
 <li><p><code class="docutils literal notranslate"><span class="pre">IDX_SUFFIX</span></code> List of strings. Default is [“.grib2.idx”].</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">IDX_STYLE</span></code> String. Default is “wgrib2”. Options: “wgrib2” or “eccodes”</p></li>
 </ul>
-<section id="hrrr-zarr">
-<h2>HRRR Zarr<a class="headerlink" href="#hrrr-zarr" title="Permalink to this headline">¶</a></h2>
-<p>The HRRR model is available in <a class="reference external" href="https://hrrrzarr.s3.amazonaws.com/index.html">Zarr format on AWS</a>. Herbie doesn’t download this type of data yet, but might in the future.</p>
-<p>For more information about HRRR-Zarr, read the <a class="reference external" href="https://mesowest.utah.edu/html/hrrr/">documentation</a>.</p>
-</section>
 </section>
 
 
@@ -375,10 +350,10 @@
             <p class="prev-next-title">🪂 Subset with <code class="docutils literal notranslate"><span class="pre">searchString</span></code></p>
         </div>
     </a>
-    <a class='right-next' id="next-link" href="notebooks/index.html" title="next page">
+    <a class='right-next' id="next-link" href="model_info.html" title="next page">
     <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">👨🏻‍🔬 Model Examples</p>
+        <p class="prev-next-title">ℹ Model Info</p>
     </div>
     <i class="fas fa-angle-right"></i>
     </a>
@@ -396,7 +371,7 @@
     
     <div class="footer-item">
       <p class="copyright">
-    &copy; Copyright 2022, Brian K. Blaylock.<br>
+    &copy; Copyright 2022, Brian K. Blaylock.    ♻ Updated: 20:41 UTC 08 Mar 2022.<br>
 </p>
     </div>
     

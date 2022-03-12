@@ -17,6 +17,7 @@
     "statusBarItem.remoteBackground": "#0c3576"
   },
   "python.formatting.provider": "black",
+<<<<<<< HEAD
   "actionButtons": {
     "reloadButton": null,
     "commands": [
@@ -38,6 +39,8 @@
       }
     ]
   },
+=======
+>>>>>>> 5bd08651663e442adcaddc0a6c69a7ce955e9831
   "python.testing.pytestArgs": [
     "tests"
   ],
@@ -46,5 +49,11 @@
   "cSpell.words": [
     "NCEI"
   ],
+<<<<<<< HEAD
   "restructuredtext.languageServer.disabled": true
+=======
+  "restructuredtext.confPath": "${workspaceFolder}/docs",
+  "esbonio.sphinx.confDir": "/p/home/blaylock/BB_python/Herbie/docs",
+  "esbonio.server.enabled": true
+>>>>>>> 5bd08651663e442adcaddc0a6c69a7ce955e9831
 }

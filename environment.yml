@@ -1,3 +1,7 @@
+# Note:
+# More specific versions *may* help speed up conda creating/updating environments
+# https://www.anaconda.com/blog/understanding-and-improving-condas-performance
+
 name: herbie
 channels:
   - conda-forge
@@ -16,35 +20,33 @@ dependencies:
   - h5py
   - jupyter
   - jupyterlab
-  - matplotlib
+  - matplotlib>=3.4.3
   - metpy
   - netcdf4
-  - numpy
-  - pandas
+  - numpy>=1.22.3
+  - pandas>=1.4.1
   - pygrib
   - pylint
   - pyproj
-  - requests
+  - requests>=2.27.1
   - s3fs
   - scipy
   - toml
-  - xarray
+  - xarray>=2022.3.0
   - zarr
 
-  # Formatter
-  # ---------
+  # Formatter & Testing
+  # -------------------
   - black
   - jupyterlab_code_formatter
   - isort
-
-  # Testing
-  # -------
+  - pylint
   - pytest
-  #- line_profiler
+  - line_profiler
 
   # Documentation
   # -------------
-  - sphinx
+  - sphinx>=4.4.0
   - nbsphinx
   - pydata-sphinx-theme # PyData Sphinx Theme (i.e, Numpy, Pandas, MetPy)
   - sphinx-panels # Add bootstrap elements to Sphinx

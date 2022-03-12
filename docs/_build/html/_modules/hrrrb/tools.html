@@ -1,0 +1,458 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>hrrrb.tools &#8212; Herbie 0.0.5 documentation</title>
+    
+    <link href="../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+  
+    
+    <link rel="stylesheet"
+      href="../../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+    <link rel="preload" as="font" type="font/woff2" crossorigin
+      href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+    <link rel="preload" as="font" type="font/woff2" crossorigin
+      href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+  
+    
+      
+  
+    
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/pydata-sphinx-theme.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/panels-variables.06eb56fa6e07937060861dad626602ad.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/brian_style.css" />
+    
+    <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+  
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="https://kit.fontawesome.com/f6cc126dcc.js"></script>
+    <link rel="shortcut icon" href="../../_static/wxicon.png"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="None">
+    
+
+    <!-- Google Analytics -->
+    
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-PT9LX1B7B8"></script>
+<script>
+                    window.dataLayer = window.dataLayer || [];
+                    function gtag(){ dataLayer.push(arguments); }
+                    gtag('js', new Date());
+                    gtag('config', 'G-PT9LX1B7B8');
+                </script>
+
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+    <nav class="navbar navbar-light navbar-expand-lg bg-light fixed-top bd-navbar" id="navbar-main"><div class="container-xl">
+
+  <div id="navbar-start">
+    
+    
+
+<a class="navbar-brand" href="../../index.html">
+  <img src="../../_static/HerbieLogo2_white_transparent.png" class="logo" alt="logo">
+</a>
+
+
+    
+  </div>
+
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-collapsible" aria-controls="navbar-collapsible" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  
+  <div id="navbar-collapsible" class="col-lg-9 collapse navbar-collapse">
+    <div id="navbar-center" class="mr-auto">
+      
+      <div class="navbar-center-item">
+        <ul id="navbar-main-elements" class="navbar-nav">
+    <li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="../../user_guide/index.html">
+  User Guide
+ </a>
+</li>
+
+<li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="../../reference_guide/index.html">
+  Reference Guide
+ </a>
+</li>
+
+    
+    <li class="nav-item">
+        <a class="nav-link nav-external" href="https://blaylockbk.github.io/SynopticPy/_build/html/">SynopticPy<i class="fas fa-external-link-alt"></i></a>
+    </li>
+    
+    <li class="nav-item">
+        <a class="nav-link nav-external" href="https://blaylockbk.github.io/goes2go/_build/html/">GOES-2-go<i class="fas fa-external-link-alt"></i></a>
+    </li>
+    
+</ul>
+      </div>
+      
+    </div>
+
+    <div id="navbar-end">
+      
+      <div class="navbar-end-item">
+        <ul id="navbar-icon-links" class="navbar-nav" aria-label="Icon Links">
+        <li class="nav-item">
+          <a class="nav-link" href="https://github.com/blaylockbk/Herbie" rel="noopener" target="_blank" title="GitHub"><span><i class="fab fa-github-square"></i></span>
+            <label class="sr-only">GitHub</label></a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="https://twitter.com/blaylockbk" rel="noopener" target="_blank" title="Twitter"><span><i class="fab fa-twitter-square"></i></span>
+            <label class="sr-only">Twitter</label></a>
+        </li>
+      </ul>
+      </div>
+      
+      <div class="navbar-end-item">
+        <form class="bd-search d-flex align-items-center" action="../../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
+</form>
+      </div>
+      
+    </div>
+  </div>
+</div>
+    </nav>
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+            
+            <!-- Only show if we have sidebars configured, else just a small margin  -->
+            <div class="col-12 col-md-3 bd-sidebar">
+              <div class="sidebar-start-items"><form class="bd-search d-flex align-items-center" action="../../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
+  <div class="bd-toc-item active">
+    
+  </div>
+</nav>
+              </div>
+              <div class="sidebar-end-items">
+              </div>
+            </div>
+            
+          
+
+          
+          <div class="d-none d-xl-block col-xl-2 bd-toc">
+            
+          </div>
+          
+
+          
+          
+            
+          
+          <main class="col-12 col-md-9 col-xl-7 py-md-5 pl-md-5 pr-md-4 bd-content" role="main">
+              
+              <div>
+                
+  <h1>Source code for hrrrb.tools</h1><div class="highlight"><pre>
+<span></span><span class="c1">## Brian Blaylock</span>
+<span class="c1">## September 28, 2020</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">==========================</span>
+<span class="sd">Tools for the HRRR Archive</span>
+<span class="sd">==========================</span>
+
+<span class="sd">to_180</span>
+<span class="sd">    For longitude values to be from -180 W to 180 E (not 0-360 E).</span>
+<span class="sd">get_crs</span>
+<span class="sd">    Get cartopy projection object from xarray.Dataset</span>
+<span class="sd">pluck_points</span>
+<span class="sd">    Pluck values at specific latitude/longitude points.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">multiprocessing</span>
+
+<span class="kn">import</span> <span class="nn">cartopy.crs</span> <span class="k">as</span> <span class="nn">ccrs</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">xarray</span> <span class="k">as</span> <span class="nn">xr</span>
+
+<span class="kn">import</span> <span class="nn">hrrrb.archive</span> <span class="k">as</span> <span class="nn">ha</span>
+
+
+<div class="viewcode-block" id="to_180"><a class="viewcode-back" href="../../reference_guide/hrrrb_api.html#hrrrb.tools.to_180">[docs]</a><span class="k">def</span> <span class="nf">to_180</span><span class="p">(</span><span class="n">lon</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Wrap longitude from degrees [0, 360] to degrees [-180, 180].</span>
+
+<span class="sd">    An alternative method is</span>
+<span class="sd">        lon[lon&gt;180] -= 360</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    lon : array_like</span>
+<span class="sd">        Longitude values</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">lon</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">lon</span><span class="p">)</span>
+    <span class="n">lon</span> <span class="o">=</span> <span class="p">(</span><span class="n">lon</span> <span class="o">+</span> <span class="mi">180</span><span class="p">)</span> <span class="o">%</span> <span class="mi">360</span> <span class="o">-</span> <span class="mi">180</span>
+    <span class="k">return</span> <span class="n">lon</span></div>
+
+<div class="viewcode-block" id="get_crs"><a class="viewcode-back" href="../../reference_guide/hrrrb_api.html#hrrrb.tools.get_crs">[docs]</a><span class="k">def</span> <span class="nf">get_crs</span><span class="p">(</span><span class="n">ds</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get the cartopy coordinate reference system (crs) from a cfgrib xarray Dataset</span>
+
+<span class="sd">    Projection in formation is from the grib2 message for each variable.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    ds : xarray.Dataset</span>
+<span class="sd">        An xarray.Dataset from a GRIB2 file opened by the cfgrib engine.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Get projection from the attributes of HRRR xr.Dataset</span>
+    <span class="c1"># CF 1.8 map projection information for the HRRR model</span>
+    <span class="c1"># http://cfconventions.org/Data/cf-conventions/cf-conventions-1.8/cf-conventions.html#_lambert_conformal</span>
+
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+        <span class="c1"># The case when get_hrrr returns a list of xr.Datasets</span>
+        <span class="k">return</span> <span class="n">get_crs</span><span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="n">xr</span><span class="o">.</span><span class="n">Dataset</span><span class="p">):</span>
+        <span class="n">attrs</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="nb">list</span><span class="p">(</span><span class="n">ds</span><span class="p">)[</span><span class="mi">0</span><span class="p">]]</span><span class="o">.</span><span class="n">attrs</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">):</span>
+        <span class="n">attrs</span> <span class="o">=</span> <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span>
+    <span class="k">if</span> <span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;GRIB_gridType&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;lambert&#39;</span><span class="p">:</span>
+        <span class="n">lc_hrrr_kwargs</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;globe&#39;</span><span class="p">:</span> <span class="n">ccrs</span><span class="o">.</span><span class="n">Globe</span><span class="p">(</span><span class="n">ellipse</span><span class="o">=</span><span class="s1">&#39;sphere&#39;</span><span class="p">),</span>
+            <span class="s1">&#39;central_latitude&#39;</span><span class="p">:</span> <span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;GRIB_LaDInDegrees&#39;</span><span class="p">],</span>
+            <span class="s1">&#39;central_longitude&#39;</span><span class="p">:</span> <span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;GRIB_LoVInDegrees&#39;</span><span class="p">],</span>
+            <span class="s1">&#39;standard_parallels&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;GRIB_Latin1InDegrees&#39;</span><span class="p">],</span>\
+                                   <span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;GRIB_Latin2InDegrees&#39;</span><span class="p">])}</span>
+        <span class="n">lc</span> <span class="o">=</span> <span class="n">ccrs</span><span class="o">.</span><span class="n">LambertConformal</span><span class="p">(</span><span class="o">**</span><span class="n">lc_hrrr_kwargs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">lc</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s1">&#39;GRIB_gridType is not &quot;lambert&quot;.&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+<div class="viewcode-block" id="pluck_points"><a class="viewcode-back" href="../../reference_guide/hrrrb_api.html#hrrrb.tools.pluck_points">[docs]</a><span class="k">def</span> <span class="nf">pluck_points</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="n">points</span><span class="p">,</span> <span class="n">names</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dist_thresh</span><span class="o">=</span><span class="mi">10_000</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Pluck values at point nearest a give list of latitudes and longitudes pairs.</span>
+
+<span class="sd">    Uses a nearest neighbor approach to get the values. The general</span>
+<span class="sd">    methodology is illustrated in this</span>
+<span class="sd">    `GitHub Notebook &lt;https://github.com/blaylockbk/pyBKB_v3/blob/master/demo/Nearest_lat-lon_Grid.ipynb&gt;`_.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    ds : xarray.Dataset</span>
+<span class="sd">        The Dataset should include coordinates for both &#39;latitude&#39; and</span>
+<span class="sd">        &#39;longitude&#39;.</span>
+<span class="sd">    points : tuple or list of tuples</span>
+<span class="sd">        The latitude and longitude (lat, lon) coordinate pair (as a tuple)</span>
+<span class="sd">        for the points you want to pluck from the gridded Dataset.</span>
+<span class="sd">        A list of tuples may be given to return the values from multiple points.</span>
+<span class="sd">    names : list</span>
+<span class="sd">        A list of names for each point location (i.e., station name).</span>
+<span class="sd">        None will not append any names. names should be the same</span>
+<span class="sd">        length as points.</span>
+<span class="sd">    dist_thresh: int or float</span>
+<span class="sd">        The maximum distance (m) between a plucked point and a matched point.</span>
+<span class="sd">        Default is 10,000 m. If the distance is larger than this, the point</span>
+<span class="sd">        is disregarded.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    The Dataset values at the points nearest the requested lat/lon points.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="s1">&#39;lat&#39;</span> <span class="ow">in</span> <span class="n">ds</span><span class="p">:</span>
+        <span class="n">ds</span> <span class="o">=</span> <span class="n">ds</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="n">lat</span><span class="o">=</span><span class="s1">&#39;latitude&#39;</span><span class="p">,</span> <span class="n">lon</span><span class="o">=</span><span class="s1">&#39;longitude&#39;</span><span class="p">))</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
+        <span class="c1"># If a tuple is give, turn into a one-item list.</span>
+        <span class="n">points</span> <span class="o">=</span> <span class="p">[</span><span class="n">points</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="n">names</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">points</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">names</span><span class="p">),</span> <span class="s1">&#39;`points` and `names` must be same length.&#39;</span>
+
+    <span class="c1"># Find the index for the nearest points</span>
+    <span class="n">xs</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># x index values</span>
+    <span class="n">ys</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># y index values</span>
+    <span class="k">for</span> <span class="n">point</span> <span class="ow">in</span> <span class="n">points</span><span class="p">:</span>
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">point</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;``points`` should be a tuple or list of tuples (lat, lon)&quot;</span>
+
+        <span class="n">p_lat</span><span class="p">,</span> <span class="n">p_lon</span> <span class="o">=</span> <span class="n">point</span>
+
+        <span class="c1"># Force longitude values to range from -180 to 180 degrees.</span>
+        <span class="n">p_lon</span> <span class="o">=</span> <span class="n">to_180</span><span class="p">(</span><span class="n">p_lon</span><span class="p">)</span>
+        <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;longitude&#39;</span><span class="p">][:]</span> <span class="o">=</span> <span class="n">to_180</span><span class="p">(</span><span class="n">ds</span><span class="o">.</span><span class="n">longitude</span><span class="p">)</span>
+
+        <span class="c1"># Find absolute difference between requested point and the grid coordinates.</span>
+        <span class="n">abslat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">ds</span><span class="o">.</span><span class="n">latitude</span> <span class="o">-</span> <span class="n">p_lat</span><span class="p">)</span>
+        <span class="n">abslon</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">ds</span><span class="o">.</span><span class="n">longitude</span> <span class="o">-</span> <span class="n">p_lon</span><span class="p">)</span>
+
+        <span class="c1"># Create grid of the maximum values of the two absolute grids</span>
+        <span class="n">c</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">abslon</span><span class="p">,</span> <span class="n">abslat</span><span class="p">)</span>
+
+        <span class="c1"># Find location where lat/lon minimum absolute value intersects</span>
+        <span class="k">if</span> <span class="n">ds</span><span class="o">.</span><span class="n">latitude</span><span class="o">.</span><span class="n">dims</span> <span class="o">==</span> <span class="p">(</span><span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="s1">&#39;x&#39;</span><span class="p">):</span>
+            <span class="n">y</span><span class="p">,</span> <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">c</span> <span class="o">==</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">c</span><span class="p">))</span>
+        <span class="k">elif</span> <span class="n">ds</span><span class="o">.</span><span class="n">latitude</span><span class="o">.</span><span class="n">dims</span> <span class="o">==</span> <span class="p">(</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">):</span>
+            <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">c</span> <span class="o">==</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">c</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Sorry, I do not understand dimensions </span><span class="si">{</span><span class="n">ds</span><span class="o">.</span><span class="n">latitude</span><span class="o">.</span><span class="n">dims</span><span class="si">}</span><span class="s2">. Expected (&#39;y&#39;, &#39;x&#39;)&quot;</span> <span class="p">)</span>
+        <span class="n">xs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">ys</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+    <span class="c1">#===================================================================</span>
+    <span class="c1"># Select Method 1:</span>
+    <span class="c1"># This method works, but returns more data than you ask for.</span>
+    <span class="c1"># It returns an NxN matrix where N is the number of points,</span>
+    <span class="c1"># and matches each point with each point (not just the coordinate</span>
+    <span class="c1"># pairs). The points you want will be along the diagonal.</span>
+    <span class="c1"># I leave this here so I remember not to do this.</span>
+    <span class="c1">#</span>
+    <span class="c1">#ds = ds.isel(x=xs, y=ys)</span>
+    <span class="c1">#</span>
+    <span class="c1">#===================================================================</span>
+
+    <span class="c1">#===================================================================</span>
+    <span class="c1"># Select Method 2:</span>
+    <span class="c1"># This is only *slightly* slower, but returns just the data at the</span>
+    <span class="c1"># points you requested. Creates a new dimension, called &#39;point&#39;</span>
+    <span class="n">ds</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">ds</span><span class="o">.</span><span class="n">isel</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">i</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">j</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">ys</span><span class="p">)],</span> <span class="n">dim</span><span class="o">=</span><span class="s1">&#39;point&#39;</span><span class="p">)</span>
+    <span class="c1">#===================================================================</span>
+
+    <span class="c1">#-------------------------------------------------------------------</span>
+    <span class="c1"># 📐Approximate the Great Circle distance between matched point and</span>
+    <span class="c1"># requested point.</span>
+    <span class="c1"># Based on https://andrew.hedges.name/experiments/haversine/</span>
+    <span class="c1">#-------------------------------------------------------------------</span>
+    <span class="n">lat1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">deg2rad</span><span class="p">([</span><span class="n">i</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">points</span><span class="p">])</span>
+    <span class="n">lon1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">deg2rad</span><span class="p">([</span><span class="n">i</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">points</span><span class="p">])</span>
+
+    <span class="n">lat2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">deg2rad</span><span class="p">(</span><span class="n">ds</span><span class="o">.</span><span class="n">latitude</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+    <span class="n">lon2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">deg2rad</span><span class="p">(</span><span class="n">ds</span><span class="o">.</span><span class="n">longitude</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+
+    <span class="n">R</span> <span class="o">=</span> <span class="mf">6373.0</span> <span class="c1"># approximate radius of earth in km</span>
+
+    <span class="n">dlon</span> <span class="o">=</span> <span class="n">lon2</span> <span class="o">-</span> <span class="n">lon1</span>
+    <span class="n">dlat</span> <span class="o">=</span> <span class="n">lat2</span> <span class="o">-</span> <span class="n">lat1</span>
+
+    <span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">dlat</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">lat1</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">lat2</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">dlon</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
+    <span class="n">c</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">arctan2</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">a</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">a</span><span class="p">))</span>
+
+    <span class="n">distance</span> <span class="o">=</span> <span class="n">R</span> <span class="o">*</span> <span class="n">c</span> <span class="o">*</span> <span class="mi">1000</span>  <span class="c1"># converted to meters</span>
+
+    <span class="c1"># Add the distance values as a coordinate</span>
+    <span class="n">ds</span><span class="o">.</span><span class="n">coords</span><span class="p">[</span><span class="s1">&#39;distance&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;point&#39;</span><span class="p">,</span> <span class="n">distance</span><span class="p">)</span>
+    <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;distance&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">long_name</span><span class="o">=</span><span class="s1">&#39;Distance between requested point and matched grid point&#39;</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="s1">&#39;m&#39;</span><span class="p">)</span>
+
+    <span class="c1">#-------------------------------------------------------------------</span>
+    <span class="c1">#-------------------------------------------------------------------</span>
+
+    <span class="c1"># Add list of names as a coordinate</span>
+    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">names</span><span class="p">,</span> <span class="s1">&#39;__len__&#39;</span><span class="p">):</span>
+        <span class="c1"># Assign the point dimension as the names.</span>
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">ds</span><span class="o">.</span><span class="n">point</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">names</span><span class="p">),</span> <span class="sa">f</span><span class="s1">&#39;`names` must be same length as `points` pairs.&#39;</span>
+        <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;point&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">names</span>
+
+    <span class="c1">## Print some info about each point:</span>
+    <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+        <span class="n">zipped</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">([</span><span class="n">i</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">points</span><span class="p">],</span> <span class="p">[</span><span class="n">i</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">points</span><span class="p">],</span>
+                     <span class="n">ds</span><span class="o">.</span><span class="n">latitude</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">ds</span><span class="o">.</span><span class="n">longitude</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">ds</span><span class="o">.</span><span class="n">distance</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">ds</span><span class="o">.</span><span class="n">point</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">plat</span><span class="p">,</span> <span class="n">plon</span><span class="p">,</span> <span class="n">glat</span><span class="p">,</span> <span class="n">glon</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">zipped</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;🔎 Matched requested point [</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">] (</span><span class="si">{</span><span class="n">plat</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">plon</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">) to grid point (</span><span class="si">{</span><span class="n">glat</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">glon</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">)...distance of </span><span class="si">{</span><span class="n">d</span><span class="o">/</span><span class="mi">1000</span><span class="si">:</span><span class="s2">,.2f</span><span class="si">}</span><span class="s2"> km.&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">d</span> <span class="o">&gt;</span> <span class="n">dist_thresh</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;   💀 Point [</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s1">] Failed distance threshold&#39;</span><span class="p">)</span>
+
+    <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;x_index&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">xs</span>
+    <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;y_index&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ys</span>
+
+    <span class="c1"># Drop points that do not meet the dist_thresh criteria</span>
+    <span class="n">failed</span> <span class="o">=</span> <span class="n">ds</span><span class="o">.</span><span class="n">distance</span> <span class="o">&lt;</span> <span class="n">dist_thresh</span>
+    <span class="nb">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">failed</span><span class="p">),</span> <span class="n">failed</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+    <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39; 💀 Dropped </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">failed</span><span class="p">)</span><span class="o">.</span><span class="n">data</span><span class="si">}</span><span class="s1"> point(s) that exceeded dist_thresh.&#39;</span><span class="p">)</span>
+    <span class="n">ds</span> <span class="o">=</span> <span class="n">ds</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">failed</span><span class="p">,</span> <span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">ds</span></div>
+
+<span class="c1">#=======================================================================</span>
+<span class="c1">#=======================================================================</span>
+
+<span class="c1">## WORK IN PROGRESS 🏗</span>
+
+<span class="c1"># A method to download multiple forecasts and read into xarray</span>
+<span class="k">def</span> <span class="nf">_concat_hrrr</span><span class="p">(</span><span class="n">inputs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Multiprocessing Helper&quot;&quot;&quot;</span>
+    <span class="n">DATE</span><span class="p">,</span> <span class="n">searchString</span><span class="p">,</span> <span class="n">fxx</span><span class="p">,</span> <span class="n">kwargs</span> <span class="o">=</span> <span class="n">inputs</span>
+    <span class="k">return</span> <span class="n">ha</span><span class="o">.</span><span class="n">xhrrr</span><span class="p">(</span><span class="n">DATE</span><span class="p">,</span> <span class="n">searchString</span><span class="p">,</span> <span class="n">fxx</span><span class="o">=</span><span class="n">fxx</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+<div class="viewcode-block" id="concat_hrrr"><a class="viewcode-back" href="../../reference_guide/hrrrb_api.html#hrrrb.tools.concat_hrrr">[docs]</a><span class="k">def</span> <span class="nf">concat_hrrr</span><span class="p">(</span><span class="n">DATES</span><span class="p">,</span> <span class="n">searchString</span><span class="p">,</span> <span class="n">fxxs</span><span class="o">=</span><span class="nb">range</span><span class="p">(</span><span class="mi">19</span><span class="p">),</span> <span class="o">**</span><span class="n">get_hrrr_kwargs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Download variables</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">inputs</span> <span class="o">=</span> <span class="p">[(</span><span class="n">DATE</span><span class="p">,</span> <span class="n">searchString</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">get_hrrr_kwargs</span><span class="p">)</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">fxxs</span><span class="p">]</span>
+
+    <span class="n">cores</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">minimum</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">inputs</span><span class="p">),</span> <span class="n">multiprocessing</span><span class="o">.</span><span class="n">cpu_count</span><span class="p">())</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;cores=&#39;</span><span class="p">,</span> <span class="n">cores</span><span class="p">)</span>
+
+    <span class="k">with</span> <span class="n">multiprocessing</span><span class="o">.</span><span class="n">Pool</span><span class="p">(</span><span class="n">cores</span><span class="p">)</span> <span class="k">as</span> <span class="n">p</span><span class="p">:</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">_concat_hrrr</span><span class="p">,</span> <span class="n">inputs</span><span class="p">)</span>
+        <span class="n">p</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="n">p</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">xr</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="s1">&#39;lead&#39;</span><span class="p">)</span></div>
+
+</pre></div>
+
+              </div>
+              
+              
+              <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+</div>
+              
+          </main>
+          
+
+      </div>
+    </div>
+  
+    <script src="../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+  <footer class="footer mt-5 mt-md-0">
+  <div class="container">
+    
+    <div class="footer-item">
+      <p class="copyright">
+    &copy; Copyright 2022, Brian K. Blaylock.<br>
+</p>
+    </div>
+    
+    <div class="footer-item">
+      <p class="sphinx-version">
+Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.4.0.<br>
+</p>
+    </div>
+    
+  </div>
+</footer>
+  </body>
+</html>

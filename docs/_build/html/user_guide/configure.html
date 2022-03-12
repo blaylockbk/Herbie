@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>🛠 Configure &#8212; Herbie 0.0.5 documentation</title>
+    <title>🛠 Configure &#8212; Herbie 0.0.9 documentation</title>
     
     <link href="../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
 <link href="../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -36,6 +36,8 @@
     <script src="../_static/underscore.js"></script>
     <script src="../_static/doctools.js"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+    <script>mermaid.initialize({startOnLoad:true});</script>
     <script src="https://kit.fontawesome.com/f6cc126dcc.js"></script>
     <link rel="shortcut icon" href="../_static/wxicon.png"/>
     <link rel="index" title="Index" href="../genindex.html" />
@@ -182,35 +184,9 @@
    🔢 What is GRIB2?
   </a>
  </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="tutorial.html">
-   👨🏻‍💻 Tutorial: New
-   <code class="docutils literal notranslate">
-    <span class="pre">
-     herbie
-    </span>
-   </code>
-   API
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="searchString.html">
-   🪂 Subset with
-   <code class="docutils literal notranslate">
-    <span class="pre">
-     searchString
-    </span>
-   </code>
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="model_template.html">
-   👷🏻‍♂️ Extending Herbie
-  </a>
- </li>
  <li class="toctree-l1 has-children">
   <a class="reference internal" href="notebooks/index.html">
-   👨🏻‍🔬 Model Examples
+   👨🏻‍💻 Tutorials
   </a>
   <input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/>
   <label for="toctree-checkbox-1">
@@ -218,6 +194,11 @@
    </i>
   </label>
   <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="notebooks/tutorial.html">
+     Quick Tutorial
+    </a>
+   </li>
    <li class="toctree-l2">
     <a class="reference internal" href="notebooks/data_hrrr.html">
      HRRR Data
@@ -261,19 +242,28 @@
   </ul>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="examples.html">
-   👨🏻‍💻 Examples: Old
+  <a class="reference internal" href="searchString.html">
+   🪂 Subset with
    <code class="docutils literal notranslate">
     <span class="pre">
-     HRRR-B
+     searchString
     </span>
    </code>
-   API
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="notebooks.html">
-   📝 Jupyter Notebooks
+  <a class="reference internal" href="model_template.html">
+   👷🏻‍♂️ Extending Herbie
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="model_info.html">
+   ℹ Model Info
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="style_guide.html">
+   🎨 Style Guide
   </a>
  </li>
 </ul>
@@ -442,7 +432,7 @@ If false, do not print extra info to screen.</p>
     
     <div class="footer-item">
       <p class="copyright">
-    &copy; Copyright 2022, Brian K. Blaylock.<br>
+    &copy; Copyright 2022, Brian K. Blaylock.    ♻ Updated: 20:41 UTC 08 Mar 2022.<br>
 </p>
     </div>
     

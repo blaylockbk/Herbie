@@ -32,7 +32,7 @@ For example, the following are the most popular data sources:
     - ECMWF open data forecast and wave products
 
 5. `Pando: The University of Utah HRRR archive <http://hrrr.chpc.utah.edu/>`_
-    - Herbie string, ``'pando'`` and ``'pando2'`.
+    - Herbie string, ``'pando'`` and ``'pando2'``.
     - Research archive. Older files being removed.
 
 6. `ECMWF Open Data <https://confluence.ecmwf.int/display/UDOC/ECMWF+Open+Data+-+Real+Time>`_

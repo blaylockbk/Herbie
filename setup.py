@@ -6,7 +6,7 @@ README = (HERE / "README.md").read_text(encoding="utf8")
 
 setup(
     name="herbie-data",  # Unfortunately, "herbie" is already used.
-    version="0.0.8",
+    version="0.0.9",
     author="Brian K. Blaylock",
     author_email="blaylockbk@gmail.com",
     description="Download model data (HRRR, RAP, GFS, NBM, etc.) from NOMADS, NOAA's Big Data Program partners (Amazon, Google, Microsoft), and the University of Utah Pando Archive System.",
@@ -51,6 +51,8 @@ setup(
 # Created a new conda environment with twine
 # conda create -n pypi python=3 twine pip -c conda-forge
 """
+conda update env -f Cartpenter_Workshop/environments/pypi.yml
+
 conda activate pypi
 cd Herbie
 python setup.py sdist bdist_wheel

@@ -88,12 +88,12 @@ ECMWF products use a different pattern for their index files (I believe created 
 .. code-block::
 
    {"domain": "g", "date": "20220125", "time": "1800", "expver": "0001", "class": "od", "type": "pf", "stream": "enfo", "levtype": "sfc", "number": "4", "step": "0", "param": "tp", "_offset": 0, "_length": 243}
-{"domain": "g", "date": "20220125", "time": "1800", "expver": "0001", "class": "od", "type": "pf", "stream": "enfo", "levtype": "sfc", "number": "2", "step": "0", "param": "tp", "_offset": 243, "_length": 243}
-{"domain": "g", "date": "20220125", "time": "1800", "expver": "0001", "class": "od", "type": "pf", "stream": "enfo", "levtype": "sfc", "number": "3", "step": "0", "param": "tp", "_offset": 486, "_length": 243}
-{"domain": "g", "date": "20220125", "time": "1800", "expver": "0001", "class": "od", "type": "pf", "stream": "enfo", "step": "0", "levtype": "sfc", "number": "8", "param": "2t", "_offset": 729, "_length": 609069}
-{"domain": "g", "date": "20220125", "time": "1800", "expver": "0001", "class": "od", "type": "pf", "stream": "enfo", "levtype": "sfc", "number": "33", "step": "0", "param": "tp", "_offset": 609798, "_length": 243}
-{"domain": "g", "date": "20220125", "time": "1800", "expver": "0001", "class": "od", "type": "pf", "stream": "enfo", "levtype": "sfc", "number": "34", "step": "0", "param": "tp", "_offset": 610041, "_length": 243}
-{"domain": "g", "date": "20220125", "time": "1800", "expver": "0001", "class": "od", "type": "pf", "stream": "enfo", "levtype": "sfc", "number": "23", "step": "0", "param": "tp", "_offset": 610284, "_length": 243}
+   {"domain": "g", "date": "20220125", "time": "1800", "expver": "0001", "class": "od", "type": "pf", "stream": "enfo", "levtype": "sfc", "number": "2", "step": "0", "param": "tp", "_offset": 243, "_length": 243}
+   {"domain": "g", "date": "20220125", "time": "1800", "expver": "0001", "class": "od", "type": "pf", "stream": "enfo", "levtype": "sfc", "number": "3", "step": "0", "param": "tp", "_offset": 486, "_length": 243}
+   {"domain": "g", "date": "20220125", "time": "1800", "expver": "0001", "class": "od", "type": "pf", "stream": "enfo", "step": "0", "levtype": "sfc", "number": "8", "param": "2t", "_offset": 729, "_length": 609069}
+   {"domain": "g", "date": "20220125", "time": "1800", "expver": "0001", "class": "od", "type": "pf", "stream": "enfo", "levtype": "sfc", "number": "33", "step": "0", "param": "tp", "_offset": 609798, "_length": 243}
+   {"domain": "g", "date": "20220125", "time": "1800", "expver": "0001", "class": "od", "type": "pf", "stream": "enfo", "levtype": "sfc", "number": "34", "step": "0", "param": "tp", "_offset": 610041, "_length": 243}
+   {"domain": "g", "date": "20220125", "time": "1800", "expver": "0001", "class": "od", "type": "pf", "stream": "enfo", "levtype": "sfc", "number": "23", "step": "0", "param": "tp", "_offset": 610284, "_length": 243}
 
 
 
