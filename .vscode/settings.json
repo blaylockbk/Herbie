@@ -17,7 +17,6 @@
     "statusBarItem.remoteBackground": "#0c3576"
   },
   "python.formatting.provider": "black",
-
   "actionButtons": {
     "reloadButton": null,
     "commands": [
@@ -39,8 +38,13 @@
       }
     ]
   },
-  "python.testing.pytestArgs": ["tests"],
+  "python.testing.pytestArgs": [
+    "tests"
+  ],
   "python.testing.unittestEnabled": false,
   "python.testing.pytestEnabled": true,
-  "cSpell.words": ["NCEI"]
+  "cSpell.words": [
+    "NCEI"
+  ],
+  "restructuredtext.languageServer.disabled": true
 }
