@@ -57,7 +57,7 @@ import pygrib
 import requests
 from pyproj import CRS
 
-import herbie.models as models_template
+import herbie.models as model_templates
 
 # NOTE: These config dict values are retrieved from __init__ and read
 # from the file ${HOME}/.config/herbie/config.toml
@@ -275,10 +275,10 @@ class Herbie:
         # Get details from the template of the specified model.
         # This attaches the details from the `models.<model>.template`
         # class to this Herbie object.
-        # This line is equivalent to `models_template.gfs.template(self)`.
+        # This line is equivalent to `model_templates.gfs.template(self)`.
         # I do it this way because the model name is a variable.
         # (see https://stackoverflow.com/a/7936588/2383070 for what I'm doing here)
-        getattr(models_template, self.model).template(self)
+        getattr(model_templates, self.model).template(self)
 
         if product is None:
             # The user didn't specify a product, so let's use the first
@@ -286,7 +286,7 @@ class Herbie:
             self.product = list(self.PRODUCTS)[0]
             warnings.warn(f'`product` not specified. Will use ["{self.product}"].')
             # We need to rerun this so the sources have the new product value.
-            getattr(models_template, self.model).template(self)
+            getattr(model_templates, self.model).template(self)
 
         self.product_description = self.PRODUCTS[self.product]
 
@@ -421,7 +421,7 @@ class Herbie:
         if self.model.lower() == "alaska":
             self.model = "hrrrak"
 
-        _models = {m for m in dir(models_template) if not m.startswith("__")}
+        _models = {m for m in dir(model_templates) if not m.startswith("__")}
         _products = set(self.PRODUCTS)
 
         assert self.date < datetime.utcnow(), "🔮 `date` cannot be in the future."
