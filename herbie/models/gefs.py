@@ -15,10 +15,19 @@ you will still need to give a value for "fxx" to tell Herbie which
 directory to look for. Yeah, it's a little different paradigm for Herbie,
 but we can work with it.
 """
-from datetime import datetime
 
 
 class gefs:
+    """Template for GEFS data
+
+    Provide arguments for
+
+    - date (2000-2019)
+    - member {1,2,3,4}
+    - fxx (0-384)
+    - variable_level (e.g., tmp_2m, acpc_sfc, ugrd_10m, etc.)
+    """
+
     def template(self):
 
         self.DESCRIPTION = "Global Ensemble Forecast System (GEFS)"
@@ -31,12 +40,13 @@ class gefs:
 
         # Adjust "member" argument
         # - Member 0 is the control member
-        # - Members 1-4 are the pertebation members
-        print(self.member)
+        # - Members 1-4 are the perturbation members
         if self.member == 0:
             member = f"c{self.member:02d}"
-        else:
+        elif self.member > 5:
             member = f"p{self.member:02d}"
+        else:
+            raise ValueError("GEFS 'member' must be one of {0,1,2,3,4}.")
 
         # Adjust "fxx" argument (given in hours)
         # This is used to define the directory to enter rather than the filename.
@@ -45,7 +55,7 @@ class gefs:
         else:
             fxx = "Days:10-16"
 
-        post_root = f"{self.product}/{self.date:%Y/%Y%m%d%H}/{member}/{fxx}/{self.variable}_sfc_{self.date:%Y%m%d%H}_{member}.grib2"
+        post_root = f"GEFSv12/reforecast/{self.date:%Y/%Y%m%d%H}/{member}/{fxx}/{self.variable_level}_{self.date:%Y%m%d%H}_{member}.grib2"
 
         self.SOURCES = {
             "aws": f"https://noaa-gefs-retrospective.s3.amazonaws.com/{post_root}",
