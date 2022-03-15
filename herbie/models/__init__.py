@@ -7,6 +7,7 @@ from .nexrad import *
 from .rap import *
 from .rrfs import *
 from .ecmwf import *
+from .gefs import *
 
 try:
     # An experimental special case for locally stored files.
