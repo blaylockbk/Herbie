@@ -59,7 +59,7 @@ or, create the provided **[conda environment](https://github.com/blaylockbk/Herb
       d1[(HRRR)] -.-> H
       d2[(RAP)] -.-> H
       d3[(GFS)] -.-> H
-      d3[(GEFS)] -.-> H
+      d33[(GEFS)] -.-> H
       d4[(ECMWF)] -.-> H
       d5[(NBM)] -.-> H
       d6[(RRFS)] -.-> H
