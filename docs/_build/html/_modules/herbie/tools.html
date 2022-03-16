@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>herbie.tools &#8212; Herbie 0.0.5 documentation</title>
+    <title>herbie.tools &#8212; Herbie 0.0.9 documentation</title>
     
     <link href="../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
 <link href="../../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -35,6 +35,8 @@
     <script src="../../_static/underscore.js"></script>
     <script src="../../_static/doctools.js"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+    <script>mermaid.initialize({startOnLoad:true});</script>
     <script src="https://kit.fontawesome.com/f6cc126dcc.js"></script>
     <link rel="shortcut icon" href="../../_static/wxicon.png"/>
     <link rel="index" title="Index" href="../../genindex.html" />
@@ -192,7 +194,7 @@
 <span class="kn">from</span> <span class="nn">herbie.archive</span> <span class="kn">import</span> <span class="n">Herbie</span>
 
 
-<div class="viewcode-block" id="bulk_download"><a class="viewcode-back" href="../../reference_guide/herbie_api.html#herbie.tools.bulk_download">[docs]</a><span class="k">def</span> <span class="nf">bulk_download</span><span class="p">(</span>
+<div class="viewcode-block" id="bulk_download"><a class="viewcode-back" href="../../reference_guide/_autosummary/herbie.tools.bulk_download.html#herbie.tools.bulk_download">[docs]</a><span class="k">def</span> <span class="nf">bulk_download</span><span class="p">(</span>
     <span class="n">DATES</span><span class="p">,</span>
     <span class="n">searchString</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="o">*</span><span class="p">,</span>
@@ -273,7 +275,7 @@
     <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="n">success</span><span class="o">=</span><span class="n">success</span><span class="p">,</span> <span class="n">failed</span><span class="o">=</span><span class="n">failed</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="xr_concat_sameRun"><a class="viewcode-back" href="../../reference_guide/herbie_api.html#herbie.tools.xr_concat_sameRun">[docs]</a><span class="k">def</span> <span class="nf">xr_concat_sameRun</span><span class="p">(</span><span class="n">DATE</span><span class="p">,</span> <span class="n">searchString</span><span class="p">,</span> <span class="n">fxx</span><span class="o">=</span><span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">18</span><span class="p">),</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="xr_concat_sameRun"><a class="viewcode-back" href="../../reference_guide/_autosummary/herbie.tools.xr_concat_sameRun.html#herbie.tools.xr_concat_sameRun">[docs]</a><span class="k">def</span> <span class="nf">xr_concat_sameRun</span><span class="p">(</span><span class="n">DATE</span><span class="p">,</span> <span class="n">searchString</span><span class="p">,</span> <span class="n">fxx</span><span class="o">=</span><span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">18</span><span class="p">),</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Load and concatenate xarray objects by forecast lead time for the same run.</span>
 
@@ -287,11 +289,11 @@
 <span class="sd">    fxx : list of int</span>
 <span class="sd">        List of forecast lead times, in hours, to concat together.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">Hs_to_cat</span> <span class="o">=</span> <span class="p">[</span><span class="n">Herbie</span><span class="p">(</span><span class="n">DATE</span><span class="p">,</span> <span class="n">fxx</span><span class="o">=</span><span class="n">f</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span><span class="o">.</span><span class="n">xarray</span><span class="p">(</span><span class="n">searchString</span><span class="p">)</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">fxx</span><span class="p">]</span>
+    <span class="n">Hs_to_cat</span> <span class="o">=</span> <span class="p">[</span><span class="n">Herbie</span><span class="p">(</span><span class="n">DATE</span><span class="p">,</span> <span class="n">fxx</span><span class="o">=</span><span class="n">f</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span><span class="o">.</span><span class="n">xarray</span><span class="p">(</span><span class="n">searchString</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">fxx</span><span class="p">]</span>
     <span class="k">return</span> <span class="n">xr</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">Hs_to_cat</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="s2">&quot;f&quot;</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="xr_concat_sameLead"><a class="viewcode-back" href="../../reference_guide/herbie_api.html#herbie.tools.xr_concat_sameLead">[docs]</a><span class="k">def</span> <span class="nf">xr_concat_sameLead</span><span class="p">(</span><span class="n">DATES</span><span class="p">,</span> <span class="n">searchString</span><span class="p">,</span> <span class="n">fxx</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">DATE_is_valid_time</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="xr_concat_sameLead"><a class="viewcode-back" href="../../reference_guide/_autosummary/herbie.tools.xr_concat_sameLead.html#herbie.tools.xr_concat_sameLead">[docs]</a><span class="k">def</span> <span class="nf">xr_concat_sameLead</span><span class="p">(</span><span class="n">DATES</span><span class="p">,</span> <span class="n">searchString</span><span class="p">,</span> <span class="n">fxx</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">DATE_is_valid_time</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Load and concatenate xarray objects by model initialization date for the same lead time.</span>
 
@@ -307,7 +309,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">Hs_to_cat</span> <span class="o">=</span> <span class="p">[</span>
         <span class="n">Herbie</span><span class="p">(</span><span class="n">DATE</span><span class="p">,</span> <span class="n">fxx</span><span class="o">=</span><span class="n">fxx</span><span class="p">,</span> <span class="n">DATE_is_valid_time</span><span class="o">=</span><span class="n">DATE_is_valid_time</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span><span class="o">.</span><span class="n">xarray</span><span class="p">(</span>
-            <span class="n">searchString</span>
+            <span class="n">searchString</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span>
         <span class="p">)</span>
         <span class="k">for</span> <span class="n">DATE</span> <span class="ow">in</span> <span class="n">DATES</span>
     <span class="p">]</span>
@@ -315,7 +317,7 @@
 
 
 <span class="c1"># TODO: Probably should implement this as an accessor instead of a &quot;tool&quot;.</span>
-<div class="viewcode-block" id="nearest_points"><a class="viewcode-back" href="../../reference_guide/herbie_api.html#herbie.tools.nearest_points">[docs]</a><span class="k">def</span> <span class="nf">nearest_points</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="n">points</span><span class="p">,</span> <span class="n">names</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="nearest_points"><a class="viewcode-back" href="../../reference_guide/_autosummary/herbie.tools.nearest_points.html#herbie.tools.nearest_points">[docs]</a><span class="k">def</span> <span class="nf">nearest_points</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="n">points</span><span class="p">,</span> <span class="n">names</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Get the nearest latitude/longitude points from a xarray Dataset.</span>
 
@@ -411,7 +413,7 @@
     
     <div class="footer-item">
       <p class="copyright">
-    &copy; Copyright 2022, Brian K. Blaylock.<br>
+    &copy; Copyright 2022, Brian K. Blaylock.    ♻ Updated: 17:35 UTC 16 Mar 2022.<br>
 </p>
     </div>
     

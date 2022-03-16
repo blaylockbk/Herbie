@@ -18,6 +18,7 @@
    data_hrrrak.ipynb
    data_rap.ipynb
    data_gfs.ipynb
+   data_gefs.ipynb
    data_ecmwf.ipynb
    data_nbm.ipynb
    data_rrfs.ipynb

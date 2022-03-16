@@ -211,7 +211,7 @@
 
 <span class="sd">For more details, see https://blaylockbk.github.io/Herbie/_build/html/user_guide/data_sources.html</span>
 
-<span class="sd">.. note:: Updates since the ``Herbie 0.0.5`` release</span>
+<span class="sd">.. note:: Updates since the ``Herbie 0.0.9`` release</span>
 
 <span class="sd">    - TODO: Rename &#39;searchString&#39; to &#39;subset&#39; (and rename subset function)</span>
 <span class="sd">    - TODO: Create .idx file if wgrib2 is installed (linux only) when index file doesn&#39;t exist</span>
@@ -349,7 +349,7 @@
     <span class="k">return</span> <span class="n">msg</span>
 
 
-<div class="viewcode-block" id="Herbie"><a class="viewcode-back" href="../../reference_guide/archive.html#herbie.archive.Herbie">[docs]</a><span class="k">class</span> <span class="nc">Herbie</span><span class="p">:</span>
+<div class="viewcode-block" id="Herbie"><a class="viewcode-back" href="../../reference_guide/_autosummary/herbie.archive.Herbie.html#herbie.archive.Herbie">[docs]</a><span class="k">class</span> <span class="nc">Herbie</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Locate GRIB2 file at one of the archive sources.</span>
 
@@ -405,7 +405,7 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-<div class="viewcode-block" id="Herbie.__init__"><a class="viewcode-back" href="../../reference_guide/archive.html#herbie.archive.Herbie.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+<div class="viewcode-block" id="Herbie.__init__"><a class="viewcode-back" href="../../reference_guide/_autosummary/herbie.archive.Herbie.html#herbie.archive.Herbie.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">date</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
@@ -496,11 +496,11 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">grib</span> <span class="o">=</span> <span class="n">local_copy</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">grib_source</span> <span class="o">=</span> <span class="s2">&quot;local&quot;</span>
             <span class="c1"># NOTE: We will still get the idx files from a remote</span>
-            <span class="c1">#       because they aren&#39;t stored locally, or are they?</span>
+            <span class="c1">#       because they aren&#39;t stored locally, or are they?   # TODO: If the idx file is local, then use that</span>
 
         <span class="k">if</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">SOURCES</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;local&quot;</span><span class="p">:</span>
             <span class="c1"># TODO: Experimental special case, not very elegant yet.</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">idx</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">grib</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">IDX_SUFFIX</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">idx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">grib</span><span class="o">.</span><span class="n">with_suffix</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">IDX_SUFFIX</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">idx</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">idx</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">grib</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;.grb2&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">IDX_SUFFIX</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
             <span class="k">return</span> <span class="kc">None</span>
@@ -683,7 +683,7 @@
         <span class="sd">&quot;&quot;&quot;Predict Local File Name&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">LOCALFILE</span>
 
-<div class="viewcode-block" id="Herbie.get_localFilePath"><a class="viewcode-back" href="../../reference_guide/archive.html#herbie.archive.Herbie.get_localFilePath">[docs]</a>    <span class="k">def</span> <span class="nf">get_localFilePath</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">searchString</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="Herbie.get_localFilePath"><a class="viewcode-back" href="../../reference_guide/_autosummary/herbie.archive.Herbie.html#herbie.archive.Herbie.get_localFilePath">[docs]</a>    <span class="k">def</span> <span class="nf">get_localFilePath</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">searchString</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Get path to local file&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">SOURCES</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;local&quot;</span><span class="p">:</span>
             <span class="c1"># TODO: An experimental special case for locally stored GRIB2.</span>
@@ -713,7 +713,7 @@
 
         <span class="k">return</span> <span class="n">outFile</span></div>
 
-<div class="viewcode-block" id="Herbie.read_idx"><a class="viewcode-back" href="../../reference_guide/archive.html#herbie.archive.Herbie.read_idx">[docs]</a>    <span class="k">def</span> <span class="nf">read_idx</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">searchString</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="Herbie.read_idx"><a class="viewcode-back" href="../../reference_guide/_autosummary/herbie.archive.Herbie.html#herbie.archive.Herbie.read_idx">[docs]</a>    <span class="k">def</span> <span class="nf">read_idx</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">searchString</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Inspect the GRIB2 file contents by reading the index file.</span>
 
@@ -880,7 +880,7 @@
             <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">logic</span><span class="p">]</span>
         <span class="k">return</span> <span class="n">df</span></div>
 
-<div class="viewcode-block" id="Herbie.download"><a class="viewcode-back" href="../../reference_guide/archive.html#herbie.archive.Herbie.download">[docs]</a>    <span class="k">def</span> <span class="nf">download</span><span class="p">(</span>
+<div class="viewcode-block" id="Herbie.download"><a class="viewcode-back" href="../../reference_guide/_autosummary/herbie.archive.Herbie.html#herbie.archive.Herbie.download">[docs]</a>    <span class="k">def</span> <span class="nf">download</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">searchString</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
@@ -1044,7 +1044,7 @@
             <span class="c1"># Download a subset of the file</span>
             <span class="n">subset</span><span class="p">(</span><span class="n">searchString</span><span class="p">,</span> <span class="n">outFile</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Herbie.xarray"><a class="viewcode-back" href="../../reference_guide/archive.html#herbie.archive.Herbie.xarray">[docs]</a>    <span class="k">def</span> <span class="nf">xarray</span><span class="p">(</span>
+<div class="viewcode-block" id="Herbie.xarray"><a class="viewcode-back" href="../../reference_guide/_autosummary/herbie.archive.Herbie.html#herbie.archive.Herbie.xarray">[docs]</a>    <span class="k">def</span> <span class="nf">xarray</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">searchString</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">backend_kwargs</span><span class="o">=</span><span class="p">{},</span>
@@ -1180,7 +1180,7 @@
     
     <div class="footer-item">
       <p class="copyright">
-    &copy; Copyright 2022, Brian K. Blaylock.    ♻ Updated: 20:38 UTC 08 Mar 2022.<br>
+    &copy; Copyright 2022, Brian K. Blaylock.    ♻ Updated: 17:35 UTC 16 Mar 2022.<br>
 </p>
     </div>
     
