@@ -21,8 +21,8 @@ from .rap import *
 from .rrfs import *
 from .ecmwf import *
 
-# ! Th local.py file is only left for demonstration.
-# ! You should copy the local template to a private template.
+# ! This local.py file is only left for demonstration.
+# ! You should copy the local template to a private template (see below).
 # from .local import *
 
 
