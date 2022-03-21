@@ -148,6 +148,9 @@ def xr_concat_sameLead(
 def create_index_files(path, overwrite=False):
     """Create an index file for all GRIB2 files in a directory.
 
+    # TODO: use Path().expand()
+    # TODO: after changing subset naming, use rglob("*.grib2")
+
     Parameters
     ----------
     path : str or pathlib.Path
@@ -172,7 +175,7 @@ def create_index_files(path, overwrite=False):
 
     if len(files) > 0:
         for f in files:
-            f_idx = Path(str(f)+'.idx')
+            f_idx = Path(str(f) + ".idx")
             if not f_idx.exists() or overwrite:
                 # Create an index using wgrib2's simple inventory option
                 # if it doesn't already exist or if overwrite is True.
