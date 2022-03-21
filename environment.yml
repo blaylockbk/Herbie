@@ -1,7 +1,3 @@
-# Note:
-# More specific versions *may* help speed up conda creating/updating environments
-# https://www.anaconda.com/blog/understanding-and-improving-condas-performance
-
 name: herbie
 channels:
   - conda-forge
@@ -10,6 +6,7 @@ dependencies:
   - pip
   - git
   - curl
+  - rclone  # Not required by Herbie, but is an awesome alternative https://rclone.org/
   #- wgrib2  # ONLY AVAILABLE ON LINUX. Comment if not using Linux.
 
   # Tools
@@ -67,3 +64,26 @@ dependencies:
 
       # Borrow some tools from my garage
       - git+https://github.com/blaylockbk/Carpenter_Workshop.git
+
+###############################################################################
+#
+# Note: Being more specific with versions *may* help speed up conda
+# creating/updating environments
+# https://www.anaconda.com/blog/understanding-and-improving-condas-performance
+#
+###############################################################################
+#
+# To create this environment
+#
+#     wget https://github.com/blaylockbk/Herbie/raw/master/environment.yml
+#     conda env create -f environment.yml
+#
+# To update this environment
+#
+#     conda env update -f environment.yml --prune
+#
+# To remove this environment
+#
+#     conda env remove --name environment
+#
+###############################################################################
