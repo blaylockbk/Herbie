@@ -382,16 +382,16 @@ class Herbie:
             if any([self.grib is not None, self.idx is not None]):
                 print(
                     f"🏋🏻‍♂️ Found",
-                    f"\033[32m{self.date:%Y-%b-%d %H:%M UTC} F{self.fxx:02d}\033[m",
+                    f"\033[32m{self.date:%Y-%b-%d %H:%M UTC} F{self.fxx:02d}\033[0m",
                     f"[{self.model.upper()}] [product={self.product}]",
-                    f"GRIB2 file from \033[31m{self.grib_source}\033[m and",
-                    f"index file from \033[31m{self.idx_source}\033[m.",
+                    f"GRIB2 file from \033[31m{self.grib_source}\033[0m and",
+                    f"index file from \033[31m{self.idx_source}\033[0m.",
                     f'{" ":150s}',
                 )
             else:
                 print(
                     f"💔 Did not find a GRIB2 or Index File for",
-                    f"\033[32m{self.date:%Y-%b-%d %H:%M UTC} F{self.fxx:02d}\033[m",
+                    f"\033[32m{self.date:%Y-%b-%d %H:%M UTC} F{self.fxx:02d}\033[0m",
                     f"{self.model.upper()}",
                     f'{" ":100s}',
                 )
@@ -401,7 +401,7 @@ class Herbie:
         msg = (
             f"[{self.model.upper()}] model [{self.product}] product",
             f"run at \033[32m{self.date:%Y-%b-%d %H:%M UTC}",
-            f"F{self.fxx:02d}\033[m",
+            f"F{self.fxx:02d}\033[0m",
         )
         return " ".join(msg)
 
@@ -589,9 +589,6 @@ class Herbie:
             )
 
             # Format the DataFrame
-            df["grib_message"] = df["grib_message"].astype(float)
-            # ^ float because RAP idx files have some decimal grib message numbers
-            # TODO: ^ how can I address issue #32?
             df["reference_time"] = pd.to_datetime(
                 df.reference_time, format="d=%Y%m%d%H"
             )
@@ -602,9 +599,9 @@ class Herbie:
             # TODO: df["end_byte"] = df["start_byte"].shift(-1, fill_value=requests.get(self.grib, stream=True).headers['Content-Length'])
             # TODO: Based on what Karl Schnieder did.
             df["range"] = df.start_byte.astype(str) + "-" + df.end_byte.astype(str)
-            df = df.set_index("grib_message")
             df = df.reindex(
                 columns=[
+                    "grib_message",
                     "start_byte",
                     "end_byte",
                     "range",
@@ -642,6 +639,7 @@ class Herbie:
             # Format the DataFrame
             df.index = df.index.rename("grib_message")
             df.index += 1
+            df = df.reset_index()
             df["start_byte"] = df["_offset"]
             df["end_byte"] = df["_offset"] + df["_length"]
             df["range"] = df.start_byte.astype(str) + "-" + df.end_byte.astype(str)
@@ -783,19 +781,43 @@ class Herbie:
                 )
 
             # Download subsets of the file by byte range with cURL.
-            for i, (grbmsg, row) in enumerate(self.idx_df.iterrows()):
+            # > Instead of using a single curl command for each row,
+            # > group adjacent messages in the same curl command.
+
+            # Find index groupings
+            # TODO: Improve this for readability
+            # https://stackoverflow.com/a/32199363/2383070
+            li = self.idx_df.index
+            inds = (
+                [0]
+                + [ind for ind, (i, j) in enumerate(zip(li, li[1:]), 1) if j - i > 1]
+                + [len(li) + 1]
+            )
+            curl_groups = [li[i:j] for i, j in zip(inds, inds[1:])]
+
+            curl_ranges = []
+            group_dfs = []
+            for i, group in enumerate(curl_groups):
+                _df = self.idx_df.loc[group]
+                curl_ranges.append(f"{_df.iloc[0].start_byte}-{_df.iloc[-1].end_byte}")
+                group_dfs.append(_df)
+
+            for i, (range, _df) in enumerate(zip(curl_ranges, group_dfs)):
                 if verbose:
-                    print(
-                        f"{i+1:>4g}: GRIB_message={grbmsg:<3g} \033[34m{row.search_this}\033[m"
-                    )
+                    for i, row in _df.iterrows():
+                        print(
+                            f"  {row.grib_message:<3g} \033[34m{row.search_this}\033[0m"
+                        )
+
                 if i == 0:
                     # If we are working on the first item, overwrite the existing file...
-                    curl = f"curl -s --range {row.range} {grib_source} > {outFile}"
+                    curl = f"curl -s --range {range} {grib_source} > {outFile}"
                 else:
                     # ...all other messages are appended to the subset file.
-                    curl = f"curl -s --range {row.range} {grib_source} >> {outFile}"
+                    curl = f"curl -s --range {range} {grib_source} >> {outFile}"
                 os.system(curl)
 
+            if verbose: print(f"💾 Saved the above subset to {outFile}")
             self.local_grib_subset = outFile
 
         # If the file exists in the localPath and we don't want to
@@ -860,7 +882,7 @@ class Herbie:
             urllib.request.urlretrieve(self.grib, outFile, _reporthook)
             if verbose:
                 print(
-                    f"✅ Success! Downloaded {self.model.upper()} from \033[38;5;202m{self.grib_source:20s}\033[m\n\tsrc: {self.grib}\n\tdst: {outFile}"
+                    f"✅ Success! Downloaded {self.model.upper()} from \033[38;5;202m{self.grib_source:20s}\033[0m\n\tsrc: {self.grib}\n\tdst: {outFile}"
                 )
             self.local_grib = outFile
         else:
