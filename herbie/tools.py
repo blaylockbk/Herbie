@@ -8,11 +8,13 @@ Herbie Tools
 """
 from datetime import datetime, timedelta
 
+import os
 import cartopy.crs as ccrs
 import metpy
 import numpy as np
 import pandas as pd
 import xarray as xr
+from pathlib import Path
 
 from herbie.archive import Herbie
 
@@ -112,11 +114,15 @@ def xr_concat_sameRun(DATE, searchString, fxx=range(0, 18), verbose=False, **kwa
     fxx : list of int
         List of forecast lead times, in hours, to concat together.
     """
-    Hs_to_cat = [Herbie(DATE, fxx=f, **kwargs).xarray(searchString, verbose=verbose) for f in fxx]
+    Hs_to_cat = [
+        Herbie(DATE, fxx=f, **kwargs).xarray(searchString, verbose=verbose) for f in fxx
+    ]
     return xr.concat(Hs_to_cat, dim="f")
 
 
-def xr_concat_sameLead(DATES, searchString, fxx=0, DATE_is_valid_time=True, verbose=False, **kwargs):
+def xr_concat_sameLead(
+    DATES, searchString, fxx=0, DATE_is_valid_time=True, verbose=False, **kwargs
+):
     """
     Load and concatenate xarray objects by model initialization date for the same lead time.
 
@@ -137,6 +143,43 @@ def xr_concat_sameLead(DATES, searchString, fxx=0, DATE_is_valid_time=True, verb
         for DATE in DATES
     ]
     return xr.concat(Hs_to_cat, dim="t")
+
+
+def create_index_files(path, overwrite=False):
+    """Create an index file for all GRIB2 files in a directory.
+
+    Parameters
+    ----------
+    path : str or pathlib.Path
+        Path to directory or file.
+    overwrite : bool
+        Overwrite index file if it exists.
+    """
+
+    from shutil import which
+
+    if which("wgrib2") is None:
+        raise RuntimeError("wgrib2 command was not found.")
+
+    path = Path(path)
+
+    if path.is_dir():
+        # List all GRIB2 files in the directory
+        files = list(path.rglob("*.grib2*"))
+    elif path.is_file():
+        # The path is a single file
+        files = [path]
+
+    if len(files) > 0:
+        for f in files:
+            f_idx = Path(str(f)+'.idx')
+            if not f_idx.exists() or overwrite:
+                # Create an index using wgrib2's simple inventory option
+                # if it doesn't already exist or if overwrite is True.
+                cmd = f"wgrib2 -s {f} > {f_idx}"
+                os.system(cmd)
+    else:
+        raise ValueError(f"No grib2 files were found in {path}")
 
 
 # TODO: Probably should implement this as an accessor instead of a "tool".
