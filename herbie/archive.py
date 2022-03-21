@@ -651,6 +651,7 @@ class Herbie:
 
             df = df.reindex(
                 columns=[
+                    "grib_message",
                     "start_byte",
                     "end_byte",
                     "range",
@@ -817,7 +818,8 @@ class Herbie:
                     curl = f"curl -s --range {range} {grib_source} >> {outFile}"
                 os.system(curl)
 
-            if verbose: print(f"💾 Saved the above subset to {outFile}")
+            if verbose:
+                print(f"💾 Saved the above subset to {outFile}")
             self.local_grib_subset = outFile
 
         # If the file exists in the localPath and we don't want to
