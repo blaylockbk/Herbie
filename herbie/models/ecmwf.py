@@ -19,8 +19,8 @@ class ecmwf:
     def template(self):
 
         # TODO: This will need to be updated someday
-        version = '0p4-beta'
-        #version = '0p4'
+        version = "0p4-beta"
+        # version = '0p4'
 
         self.DESCRIPTION = "ECMWF open data"
         self.DETAILS = {
@@ -31,27 +31,26 @@ class ecmwf:
             "enfo": "ensemble forecast, atmospheric fields",
             "wave": "wave forecasts",
             "waef": "ensemble forecast, ocean wave fields,",
-            #"scda": "short cut-off high-resolution forecast, atmospheric fields (also known as high-frequency products)",
-            #"scwv": "short cut-off high-resolution forecast, ocean wave fields (also known as high-frequency products)",
-            #"mmsf": "multi-model seasonal forecasts fields from the ECMWF model only.",
+            # "scda": "short cut-off high-resolution forecast, atmospheric fields (also known as high-frequency products)",
+            # "scwv": "short cut-off high-resolution forecast, ocean wave fields (also known as high-frequency products)",
+            # "mmsf": "multi-model seasonal forecasts fields from the ECMWF model only.",
         }
 
         # example file
         # https://data.ecmwf.int/forecasts/20220126/00z/0p4-beta/oper/20220126000000-0h-oper-fc.grib2
 
         # product suffix
-        if self.product in ['enfo', 'waef']:
-            product_suffix = 'ef'
+        if self.product in ["enfo", "waef"]:
+            product_suffix = "ef"
         else:
-            product_suffix = 'fc'
+            product_suffix = "fc"
 
-        post_root = f'{self.date:%Y%m%d/%Hz}/{version}/{self.product}/{self.date:%Y%m%d%H%M%S}-{self.fxx}h-{self.product}-{product_suffix}.grib2'
+        post_root = f"{self.date:%Y%m%d/%Hz}/{version}/{self.product}/{self.date:%Y%m%d%H%M%S}-{self.fxx}h-{self.product}-{product_suffix}.grib2"
 
         self.SOURCES = {
             "azure": f"https://ai4edataeuwest.blob.core.windows.net/ecmwf/{post_root}",
             "ecmwf": f"https://data.ecmwf.int/forecasts/{post_root}",
-
         }
         self.IDX_SUFFIX = [".index"]
-        self.IDX_STYLE = 'eccodes'  # 'wgrib2' or 'eccodes'
+        self.IDX_STYLE = "eccodes"  # 'wgrib2' or 'eccodes'
         self.LOCALFILE = f"{self.get_remoteFileName}"
