@@ -15,11 +15,10 @@
 	// 	],
 	// 	"description": "Log output to console"
 	// }
-	"herbie": {
+	"herbie_import": {
 		"scope": "python",
 		"prefix": [
-			"herbie",
-			"import herbie"
+			"import"
 		],
 		"body": [
 			"from herbie.archive import Herbie",
@@ -33,7 +32,12 @@
 			"H = "
 		],
 		"body": [
-			"H = Herbie('${CURRENT_YEAR}-${CURRENT_MONTH}-${CURRENT_DATE} ${1:00}:00', model='${2:hrrr}', product='${3:sfc}', fxx=${4:0})",
+			"H = Herbie(",
+			"    date=\"${1:${CURRENT_YEAR}}-${2:${CURRENT_MONTH}}-${3:${CURRENT_DATE}} ${4:00}:00\",",
+			"    model=\"${5:hrrr}\",",
+			"    product=\"${6:sfc}\",",
+			"    fxx=${7:0}",
+			")",
 		],
 		"description": "Create a Herbie object"
 	},
