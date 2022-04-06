@@ -7,6 +7,18 @@ from pathlib import Path
 
 import toml
 
+"""
+
+█ ██  _   _                 _       _
+█ ██ | | | |   ___   _ __  | |__   (_)   ___
+█ ██ | |_| |  / _ \ | '__| | '_ \  | |  / _ \
+█ ██ |  _  | |  __/ | |    | |_) | | | |  __/
+█ ██ |_| |_|  \___| |_|    |_.__/  |_|  \___|
+█ ██
+           Retrieve NWP Model Data
+
+"""
+
 
 ########################################################################
 # Append Path object with my custom expand method so user can use
