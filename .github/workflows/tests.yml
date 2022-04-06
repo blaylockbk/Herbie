@@ -1,0 +1,51 @@
+name: Run Python Tests for Herbie
+
+# I HAVE NO IDEA WHAT I"M DOING HERE
+# I JUST COPIED THIS FROM METPY AND ALIVE
+
+on:
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  #
+  # Run all tests on Conda on both Windows and macOS
+  #
+  CondaTests:
+    name: ${{ matrix.os }} ${{ matrix.python-version }}
+    runs-on: ${{ matrix.os }}-latest
+    defaults:
+      run:
+        shell: bash -l {0}
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: [3.8, 3.9, '3.10']
+        os: [macOS, Windows, linux]
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Install from Conda
+        uses: environment.yml
+        with:
+          type: 'test'
+          auto-update-conda: true
+          channels: conda-forge
+          activate-environment: herbie
+          python-version: ${{ matrix.python-version }}
+
+      - name: Set up conda envrionment
+        run: |
+          conda env update -f environment.yml
+
+      - name: Conda info
+        run: conda info
+
+      - name: Conda list
+        run: conda list
+
+      - name: Run tests
+        run: |
+          pytest --verbose
