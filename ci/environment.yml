@@ -1,0 +1,16 @@
+name: herbie
+channels:
+  - conda-forge
+dependencies:
+  - curl
+  - cfgrib>=0.9.9.1
+  - eccodes
+  - matplotlib>=3.4.3
+  - metpy
+  - numpy>=1.22.3
+  - pandas>=1.4.1
+  - pygrib
+  - pytest
+  - requests>=2.27.1
+  - toml
+  - xarray>=2022.3.0
