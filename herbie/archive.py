@@ -43,13 +43,14 @@ For more details, see https://blaylockbk.github.io/Herbie/_build/html/user_guide
     - TODO: Allow for searching of locally stored model data.
 
 """
+import functools
 import hashlib
 import json
 import os
+import sys
 import urllib.request
 import warnings
 from datetime import datetime, timedelta
-import sys
 
 import cfgrib
 import pandas as pd
@@ -535,6 +536,149 @@ class Herbie:
             outFile = outFile.with_suffix(f".grib2.subset_{hash_label}")
 
         return outFile
+
+    @functools.cached_property
+    def index_as_dataframe(self):
+        """
+        Read and cache the full index file
+
+        TODO: This is work in progress.
+        """
+        assert self.idx is not None, f"No index file found for {self.grib}."
+
+        if self.IDX_STYLE == "wgrib2":
+            # Sometimes idx end in ':', other times it doesn't (in some Pando files).
+            # https://pando-rgw01.chpc.utah.edu/hrrr/sfc/20180101/hrrr.t00z.wrfsfcf00.grib2.idx
+            # https://noaa-hrrr-bdp-pds.s3.amazonaws.com/hrrr.20210101/conus/hrrr.t00z.wrfsfcf00.grib2.idx
+            # Sometimes idx has more than the standard messages
+            # https://noaa-nbm-grib2-pds.s3.amazonaws.com/blend.20210711/13/core/blend.t13z.core.f001.co.grib2.idx
+
+            # TODO: Experimental special case when self.idx is a pathlib.Path
+            if not hasattr(self.idx, "exists"):
+                # If the self.idx is not a pathlib.Path, then we assume it needs to be downloaded
+                r = requests.get(self.idx)
+                assert r.ok, f"Index file does not exist: {self.idx}"
+
+            df = pd.read_csv(
+                self.idx,
+                sep=":",
+                names=[
+                    "grib_message",
+                    "start_byte",
+                    "reference_time",
+                    "variable",
+                    "level",
+                    "forecast_time",
+                    "?",
+                    "??",
+                    "???",
+                ],
+            )
+
+            # Format the DataFrame
+            df["reference_time"] = pd.to_datetime(
+                df.reference_time, format="d=%Y%m%d%H"
+            )
+            df["valid_time"] = df["reference_time"] + pd.to_timedelta(f"{self.fxx}H")
+            df["start_byte"] = df["start_byte"].astype(int)
+            df["end_byte"] = df["start_byte"].shift(-1, fill_value="")
+            # TODO: Check this works: Assign the ending byte for the last row...
+            # TODO: df["end_byte"] = df["start_byte"].shift(-1, fill_value=requests.get(self.grib, stream=True).headers['Content-Length'])
+            # TODO: Based on what Karl Schnieder did.
+            df["range"] = df.start_byte.astype(str) + "-" + df.end_byte.astype(str)
+            df = df.reindex(
+                columns=[
+                    "grib_message",
+                    "start_byte",
+                    "end_byte",
+                    "range",
+                    "reference_time",
+                    "valid_time",
+                    "variable",
+                    "level",
+                    "forecast_time",
+                    "?",
+                    "??",
+                    "???",
+                ]
+            )
+
+            df = df.dropna(how="all", axis=1)
+            df = df.fillna("")
+
+            df["search_this"] = (
+                df.loc[:, "variable":]
+                .astype(str)
+                .apply(
+                    lambda x: ":" + ":".join(x).rstrip(":").replace(":nan:", ":"),
+                    axis=1,
+                )
+            )
+
+        if self.IDX_STYLE == "eccodes":
+            # eccodes keywords explained here:
+            # https://confluence.ecmwf.int/display/UDOC/Identification+keywords
+
+            r = requests.get(self.idx)
+            idxs = [json.loads(x) for x in r.text.split("\n") if x]
+            df = pd.DataFrame(idxs)
+
+            # Format the DataFrame
+            df.index = df.index.rename("grib_message")
+            df.index += 1
+            df = df.reset_index()
+            df["start_byte"] = df["_offset"]
+            df["end_byte"] = df["_offset"] + df["_length"]
+            df["range"] = df.start_byte.astype(str) + "-" + df.end_byte.astype(str)
+            df["reference_time"] = pd.to_datetime(
+                df.date + df.time, format="%Y%m%d%H%M"
+            )
+            df["step"] = pd.to_timedelta(df.step.astype(int), unit="H")
+            df["valid_time"] = df.reference_time + df.step
+
+            df = df.reindex(
+                columns=[
+                    "grib_message",
+                    "start_byte",
+                    "end_byte",
+                    "range",
+                    "reference_time",
+                    "valid_time",
+                    "step",
+                    # --- Used for searchString ------------------------------------
+                    "param",  # parameter field (variable)
+                    "levelist",  # level
+                    "levtype",  # sfc=surface, pl=pressure level, pt=potential vorticity
+                    "number",  # model number (used in ensemble products)
+                    "domain",  # g=global
+                    "expver",  # experiment version
+                    "class",  # classification (od=routing operations, rd=research, )
+                    "type",  # fc=forecast, an=analysis,
+                    "stream",  # oper=operationa, wave=wave, ef/enfo=ensemble,
+                ]
+            )
+
+            df["search_this"] = (
+                df.loc[:, "param":]
+                .astype(str)
+                .apply(
+                    lambda x: ":" + ":".join(x).rstrip(":").replace(":nan:", ":"),
+                    axis=1,
+                )
+            )
+
+        # Attach some attributes
+        df.attrs = dict(
+            url=self.idx,
+            source=self.idx_source,
+            description="Inventory index file for the GRIB2 file.",
+            model=self.model,
+            product=self.product,
+            lead_time=self.fxx,
+            datetime=self.date,
+        )
+
+        return df
 
     def read_idx(self, searchString=None):
         """

@@ -10,7 +10,7 @@ from datetime import datetime, timedelta
 
 import os
 import cartopy.crs as ccrs
-import metpy
+import metpy  # accessor needed to parse crs
 import numpy as np
 import pandas as pd
 import xarray as xr
