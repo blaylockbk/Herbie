@@ -19,6 +19,7 @@ To use the herbie xarray accessor, do this...
     ds.herbie.plot
 
 """
+import functools
 import warnings
 
 import cartopy.crs as ccrs
@@ -30,6 +31,7 @@ import xarray as xr
 from paint.radar import cm_reflectivity
 from paint.radar2 import cm_reflectivity
 from paint.standard2 import cm_dpt, cm_pcp, cm_rh, cm_tmp, cm_wind
+from shapely.geometry import Polygon
 
 # From Carpenter_Workshop:
 # https://github.com/blaylockbk/Carpenter_Workshop
@@ -59,7 +61,7 @@ class HerbieAccessor:
             self._center = (float(lon.mean()), float(lat.mean()))
         return self._center
 
-    @property
+    @functools.cached_property
     def crs(self):
         """
         Cartopy coordinate reference system (crs) from a cfgrib Dataset.
@@ -73,9 +75,52 @@ class HerbieAccessor:
         """
 
         ds = self._obj
-        ds = ds.metpy.parse_cf()
+
+        # Get variables that have dimensions
+        # (this filters out the gribfile_projection variable)
+        variables = [i for i in list(ds) if len(ds[i].dims) > 0]
+
+        ds = ds.metpy.parse_cf(varname=variables)
         crs = ds.metpy_crs.item().to_cartopy()
         return crs
+
+    @functools.cached_property
+    def polygon(self):
+        """
+        Get a polygon of the domain boundary.
+        """
+        ds = self._obj
+
+        LON = ds.longitude.data
+        LAT = ds.latitude.data
+
+        # Path of array outside border starting from the lower left corner
+        # and going around the array counter-clockwise.
+        outside = (
+            list(zip(LON[0, :], LAT[0, :]))
+            + list(zip(LON[:, -1], LAT[:, -1]))
+            + list(zip(LON[-1, ::-1], LAT[-1, ::-1]))
+            + list(zip(LON[::-1, 0], LAT[::-1, 0]))
+        )
+        outside = np.array(outside)
+
+        ###############################
+        # Polygon in Lat/Lon coordinates
+        x = outside[:, 0]
+        y = outside[:, 1]
+        domain_polygon_latlon = Polygon(zip(x, y))
+
+        ###################################
+        # Polygon in projection coordinates
+        transform = self.crs.transform_points(pc, x, y)
+
+        # Remove any points that run off the projection map (i.e., point's value is `inf`).
+        transform = transform[~np.isinf(transform).any(axis=1)]
+        x = transform[:, 0]
+        y = transform[:, 1]
+        domain_polygon = Polygon(zip(x, y))
+
+        return domain_polygon, domain_polygon_latlon
 
     def plot(self, ax=None, common_features_kw={}, **kwargs):
         """Plot data on a map."""
