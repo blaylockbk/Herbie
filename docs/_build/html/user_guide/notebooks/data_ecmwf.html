@@ -8,29 +8,26 @@
 
     <title>ECMWF Open Data – Real Time &#8212; Herbie 0.0.9 documentation</title>
     
-    <link href="../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
 <link href="../../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
-  
+
     
-    <link rel="stylesheet"
-      href="../../_static/vendor/fontawesome/5.13.0/css/all.min.css">
-    <link rel="preload" as="font" type="font/woff2" crossorigin
-      href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
-    <link rel="preload" as="font" type="font/woff2" crossorigin
-      href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
-  
-    
-      
-  
-    
+  <link rel="stylesheet"
+    href="../../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/styles/pydata-sphinx-theme.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/panels-variables.06eb56fa6e07937060861dad626602ad.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/brian_style.css" />
     
-    <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
-  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+
     <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
     <script src="../../_static/jquery.js"></script>
     <script src="../../_static/underscore.js"></script>
@@ -61,7 +58,7 @@
                 </script>
 
   </head>
-  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
     
     <div class="container-fluid" id="banner"></div>
 
@@ -259,7 +256,7 @@
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="../model_template.html">
+  <a class="reference internal" href="../custom_template.html">
    👷🏻‍♂️ Extending Herbie
   </a>
  </li>
@@ -290,7 +287,7 @@
               
               <div class="toc-item">
                 
-<div class="tocsection onthispage pt-5 pb-3">
+<div class="tocsection onthispage mt-5 pt-1 pb-3">
     <i class="fas fa-list"></i> On this page
 </div>
 
@@ -607,7 +604,7 @@ div.rendered_html tbody tr:hover {
 <div class="line"><em>January 27, 2022</em></div>
 </div>
 <section id="ECMWF-Open-Data-–-Real-Time">
-<h1>ECMWF Open Data – Real Time<a class="headerlink" href="#ECMWF-Open-Data-–-Real-Time" title="Permalink to this headline">¶</a></h1>
+<h1>ECMWF Open Data – Real Time<a class="headerlink" href="#ECMWF-Open-Data-–-Real-Time" title="Permalink to this headline">#</a></h1>
 <blockquote>
 <div><p><a class="reference external" href="https://www.ecmwf.int/en/about/media-centre/news/2022/ecmwf-makes-wide-range-data-openly-available">Media Statement</a></p>
 <p>The data that are becoming available are based on a range of high-resolution forecasts (HRES – 9 km horizontal resolution) and ensemble forecasts (ENS – 18 km horizontal resolution). <strong>They will be made accessible at a resolution of 0.4 x 0.4 degrees</strong>.</p>
@@ -632,7 +629,7 @@ div.rendered_html tbody tr:hover {
 </div>
 </div>
 <section id="Retrieve-a-full-file">
-<h2>Retrieve a full file<a class="headerlink" href="#Retrieve-a-full-file" title="Permalink to this headline">¶</a></h2>
+<h2>Retrieve a full file<a class="headerlink" href="#Retrieve-a-full-file" title="Permalink to this headline">#</a></h2>
 <p>Download a full GRIB2 file to your local system.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[39]:
@@ -656,7 +653,7 @@ div.rendered_html tbody tr:hover {
 </div>
 </section>
 <section id="Download/Retrieve-a-subset">
-<h2>Download/Retrieve a subset<a class="headerlink" href="#Download/Retrieve-a-subset" title="Permalink to this headline">¶</a></h2>
+<h2>Download/Retrieve a subset<a class="headerlink" href="#Download/Retrieve-a-subset" title="Permalink to this headline">#</a></h2>
 <p>This relys on the <code class="docutils literal notranslate"><span class="pre">searchString</span></code> argument to parse out information from the GRIB2’s index file. The ECMWF index files are different than the wgrib2-style index files, so pay close attention to how you should select the field you want.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[40]:
@@ -1168,7 +1165,7 @@ Attributes:
 </div>
 </section>
 <section id="Plots">
-<h2>Plots<a class="headerlink" href="#Plots" title="Permalink to this headline">¶</a></h2>
+<h2>Plots<a class="headerlink" href="#Plots" title="Permalink to this headline">#</a></h2>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[44]:
 </pre></div>
@@ -2216,7 +2213,7 @@ Text(1.0, 1.0, &#39;500.0 hPa\nSpecific humidity/Geopotential Height&#39;)
 </div>
 </section>
 <section id="ECMWF-Wave-Output">
-<h2>ECMWF Wave Output<a class="headerlink" href="#ECMWF-Wave-Output" title="Permalink to this headline">¶</a></h2>
+<h2>ECMWF Wave Output<a class="headerlink" href="#ECMWF-Wave-Output" title="Permalink to this headline">#</a></h2>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
 </pre></div>
@@ -2719,7 +2716,7 @@ Text(1.0, 1.0, &#39;Significant height of combined wind waves and swell&#39;)
 </div>
 </section>
 <section id="Ensemble-Forecast-Products">
-<h2>Ensemble Forecast Products<a class="headerlink" href="#Ensemble-Forecast-Products" title="Permalink to this headline">¶</a></h2>
+<h2>Ensemble Forecast Products<a class="headerlink" href="#Ensemble-Forecast-Products" title="Permalink to this headline">#</a></h2>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
 </pre></div>
@@ -3705,7 +3702,7 @@ Attributes:
 </div>
 </section>
 <section id="Ensemble-Wave-Products">
-<h2>Ensemble Wave Products<a class="headerlink" href="#Ensemble-Wave-Products" title="Permalink to this headline">¶</a></h2>
+<h2>Ensemble Wave Products<a class="headerlink" href="#Ensemble-Wave-Products" title="Permalink to this headline">#</a></h2>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
 </pre></div>
@@ -5677,19 +5674,20 @@ Attributes:
       </div>
     </div>
   
-    <script src="../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
-  <footer class="footer mt-5 mt-md-0">
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+<footer class="footer mt-5 mt-md-0">
   <div class="container">
     
     <div class="footer-item">
       <p class="copyright">
-    &copy; Copyright 2022, Brian K. Blaylock.    ♻ Updated: 17:35 UTC 16 Mar 2022.<br>
+    &copy; Copyright 2022, Brian K. Blaylock.    ♻ Updated: 15:51 UTC 13 Apr 2022.<br>
 </p>
     </div>
     
     <div class="footer-item">
       <p class="sphinx-version">
-Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.4.0.<br>
+Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.5.0.<br>
 </p>
     </div>
     

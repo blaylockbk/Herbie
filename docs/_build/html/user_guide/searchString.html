@@ -8,29 +8,26 @@
 
     <title>🪂 Subset with searchString &#8212; Herbie 0.0.9 documentation</title>
     
-    <link href="../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
 <link href="../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
-  
+
     
-    <link rel="stylesheet"
-      href="../_static/vendor/fontawesome/5.13.0/css/all.min.css">
-    <link rel="preload" as="font" type="font/woff2" crossorigin
-      href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
-    <link rel="preload" as="font" type="font/woff2" crossorigin
-      href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
-  
-    
-      
-  
-    
+  <link rel="stylesheet"
+    href="../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/styles/pydata-sphinx-theme.css" />
     <link rel="stylesheet" type="text/css" href="../_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css" />
     <link rel="stylesheet" type="text/css" href="../_static/panels-variables.06eb56fa6e07937060861dad626602ad.css" />
     <link rel="stylesheet" type="text/css" href="../_static/brian_style.css" />
     
-    <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
-  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+
     <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
@@ -42,7 +39,7 @@
     <link rel="shortcut icon" href="../_static/wxicon.png"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="👷🏻‍♂️ Extending Herbie" href="model_template.html" />
+    <link rel="next" title="👷🏻‍♂️ Extending Herbie" href="custom_template.html" />
     <link rel="prev" title="NAVGEM Data" href="notebooks/data_navgem.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="None">
@@ -59,7 +56,7 @@
                 </script>
 
   </head>
-  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
     
     <div class="container-fluid" id="banner"></div>
 
@@ -257,7 +254,7 @@
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="model_template.html">
+  <a class="reference internal" href="custom_template.html">
    👷🏻‍♂️ Extending Herbie
   </a>
  </li>
@@ -288,7 +285,7 @@
               
               <div class="toc-item">
                 
-<div class="tocsection onthispage pt-5 pb-3">
+<div class="tocsection onthispage mt-5 pt-1 pb-3">
     <i class="fas fa-list"></i> On this page
 </div>
 
@@ -333,7 +330,7 @@
               <div>
                 
   <section id="subset-with-searchstring">
-<h1>🪂 Subset with <code class="docutils literal notranslate"><span class="pre">searchString</span></code><a class="headerlink" href="#subset-with-searchstring" title="Permalink to this headline">¶</a></h1>
+<h1>🪂 Subset with <code class="docutils literal notranslate"><span class="pre">searchString</span></code><a class="headerlink" href="#subset-with-searchstring" title="Permalink to this headline">#</a></h1>
 <p>Subsetting is done using the GRIB2 index files. Index files define the grib variables/parameters of each message (sometimes it is useful to think of a grib message as a “layer” of the file) and define the byte range of the message.</p>
 <p>Herbie can subset a file by grib message by downloading a byte range of the file. This way, instead of downloading the full file, you can download just the “layer” of the file you want. The searchString method implemented in Herbie to do a partial download is similar to what is explained here: <a class="reference external" href="https://www.cpc.ncep.noaa.gov/products/wesley/fast_downloading_grib.html">https://www.cpc.ncep.noaa.gov/products/wesley/fast_downloading_grib.html</a></p>
 <p>Herbie supports reading two different types of index files</p>
@@ -347,7 +344,7 @@
 <p>If you need help with regular expression, search the web or look at this <a class="reference external" href="https://www.petefreitag.com/cheatsheets/regex/">cheatsheet</a>. Check regular expressions with <a class="reference external" href="https://regexr.com/">regexr</a> or <a class="reference external" href="https://regex101.com/">regex101</a>.</p>
 </div>
 <section id="wgrib2-style-index-files">
-<h2>wgrib2-style index files<a class="headerlink" href="#wgrib2-style-index-files" title="Permalink to this headline">¶</a></h2>
+<h2>wgrib2-style index files<a class="headerlink" href="#wgrib2-style-index-files" title="Permalink to this headline">#</a></h2>
 <p>Here are some examples you can use for the <code class="docutils literal notranslate"><span class="pre">searchString</span></code> argument for the <strong>wgrib2</strong>-style index files.</p>
 <table class="table">
 <colgroup>
@@ -422,7 +419,7 @@
 </div>
 </section>
 <section id="eccodes-style-index-files">
-<h2>ecCodes-style index files<a class="headerlink" href="#eccodes-style-index-files" title="Permalink to this headline">¶</a></h2>
+<h2>ecCodes-style index files<a class="headerlink" href="#eccodes-style-index-files" title="Permalink to this headline">#</a></h2>
 <p>Here are some examples you can use for the <code class="docutils literal notranslate"><span class="pre">searchString</span></code> argument for the <strong>grib_ls</strong>-style index files.</p>
 <p>Look at the ECMWF GRIB Parameter Database
 <a class="reference external" href="https://apps.ecmwf.int/codes/grib/param-db">https://apps.ecmwf.int/codes/grib/param-db</a></p>
@@ -555,7 +552,7 @@
             <p class="prev-next-title">NAVGEM Data</p>
         </div>
     </a>
-    <a class='right-next' id="next-link" href="model_template.html" title="next page">
+    <a class='right-next' id="next-link" href="custom_template.html" title="next page">
     <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
         <p class="prev-next-title">👷🏻‍♂️ Extending Herbie</p>
@@ -570,19 +567,20 @@
       </div>
     </div>
   
-    <script src="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
-  <footer class="footer mt-5 mt-md-0">
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+<footer class="footer mt-5 mt-md-0">
   <div class="container">
     
     <div class="footer-item">
       <p class="copyright">
-    &copy; Copyright 2022, Brian K. Blaylock.    ♻ Updated: 17:35 UTC 16 Mar 2022.<br>
+    &copy; Copyright 2022, Brian K. Blaylock.    ♻ Updated: 15:51 UTC 13 Apr 2022.<br>
 </p>
     </div>
     
     <div class="footer-item">
       <p class="sphinx-version">
-Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.4.0.<br>
+Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.5.0.<br>
 </p>
     </div>
     

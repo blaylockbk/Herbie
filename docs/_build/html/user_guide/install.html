@@ -8,29 +8,26 @@
 
     <title>🐍 Installation and Conda Environment &#8212; Herbie 0.0.9 documentation</title>
     
-    <link href="../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
 <link href="../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
-  
+
     
-    <link rel="stylesheet"
-      href="../_static/vendor/fontawesome/5.13.0/css/all.min.css">
-    <link rel="preload" as="font" type="font/woff2" crossorigin
-      href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
-    <link rel="preload" as="font" type="font/woff2" crossorigin
-      href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
-  
-    
-      
-  
-    
+  <link rel="stylesheet"
+    href="../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/styles/pydata-sphinx-theme.css" />
     <link rel="stylesheet" type="text/css" href="../_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css" />
     <link rel="stylesheet" type="text/css" href="../_static/panels-variables.06eb56fa6e07937060861dad626602ad.css" />
     <link rel="stylesheet" type="text/css" href="../_static/brian_style.css" />
     
-    <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
-  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+
     <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
@@ -59,7 +56,7 @@
                 </script>
 
   </head>
-  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
     
     <div class="container-fluid" id="banner"></div>
 
@@ -257,7 +254,7 @@
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="model_template.html">
+  <a class="reference internal" href="custom_template.html">
    👷🏻‍♂️ Extending Herbie
   </a>
  </li>
@@ -288,7 +285,7 @@
               
               <div class="toc-item">
                 
-<div class="tocsection onthispage pt-5 pb-3">
+<div class="tocsection onthispage mt-5 pt-1 pb-3">
     <i class="fas fa-list"></i> On this page
 </div>
 
@@ -337,11 +334,11 @@
               
               <div>
                 
-  <section id="installation-and-conda-environment">
-<h1>🐍 Installation and Conda Environment<a class="headerlink" href="#installation-and-conda-environment" title="Permalink to this headline">¶</a></h1>
+  <section class="tex2jax_ignore mathjax_ignore" id="installation-and-conda-environment">
+<h1>🐍 Installation and Conda Environment<a class="headerlink" href="#installation-and-conda-environment" title="Permalink to this headline">#</a></h1>
 <p>Herbie requires <code class="docutils literal notranslate"><span class="pre">curl</span></code> and <strong>Python 3.8+</strong> with the following packages: <code class="docutils literal notranslate"><span class="pre">requests</span></code>, <code class="docutils literal notranslate"><span class="pre">pandas</span></code>, <code class="docutils literal notranslate"><span class="pre">xarray</span></code>, and <code class="docutils literal notranslate"><span class="pre">cfgrib</span></code>. Optional packages are <code class="docutils literal notranslate"><span class="pre">matplotlib</span></code>, <code class="docutils literal notranslate"><span class="pre">cartopy</span></code>, and<a class="reference external" href="https://github.com/blaylockbk/Carpenter_Workshop"><code class="docutils literal notranslate"><span class="pre">Carpenter_Workshop</span></code></a>.</p>
 <section id="option-1-pip">
-<h2>Option 1: pip<a class="headerlink" href="#option-1-pip" title="Permalink to this headline">¶</a></h2>
+<h2>Option 1: pip<a class="headerlink" href="#option-1-pip" title="Permalink to this headline">#</a></h2>
 <blockquote>
 <div><p>Note: “herbie” is already registered on PyPI, so I continue to use the “hrrrb” package to publish for now. This may change in version 0.1.0</p>
 </div></blockquote>
@@ -355,7 +352,7 @@
 </div>
 </section>
 <section id="option-2-conda">
-<h2>Option 2: conda<a class="headerlink" href="#option-2-conda" title="Permalink to this headline">¶</a></h2>
+<h2>Option 2: conda<a class="headerlink" href="#option-2-conda" title="Permalink to this headline">#</a></h2>
 <p>If conda environments are new to you, I suggest you become familiar with <a class="reference external" href="https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html">managing conda environments</a>.</p>
 <p>I have provided a sample Anaconda <a class="reference external" href="https://github.com/blaylockbk/Herbie/blob/master/environment.yml">environment.yml</a> file that lists the minimum packages required plus some extras that I find useful. Look at the bottom lines of that yaml file…there are two ways to install <code class="docutils literal notranslate"><span class="pre">hrrrb</span></code> with pip within the environment file. Comment out the line you don’t want.</p>
 <p>For the latest development code:</p>
@@ -369,7 +366,8 @@
 </pre></div>
 </div>
 <p>First, create the virtual environment with</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda env create -f environment.yml
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>wget https://github.com/blaylockbk/Herbie/raw/master/environment.yml
+conda env create -f environment.yml
 </pre></div>
 </div>
 <p>Then, activate the <code class="docutils literal notranslate"><span class="pre">herbie</span></code> environment. Don’t confuse this conda <em>environment</em> name with the <em>package</em> name.</p>
@@ -382,7 +380,7 @@
 </div>
 </section>
 <section id="alternative-install-method">
-<h2>Alternative “Install” Method<a class="headerlink" href="#alternative-install-method" title="Permalink to this headline">¶</a></h2>
+<h2>Alternative “Install” Method<a class="headerlink" href="#alternative-install-method" title="Permalink to this headline">#</a></h2>
 <p>There are several other ways to “install” a python package so you can import them. One alternatively is you can clone the repository and put it in your PATH or PYTHONPATH.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git clone https://github.com/blaylockbk/Herbie.git
 </pre></div>
@@ -419,19 +417,20 @@
       </div>
     </div>
   
-    <script src="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
-  <footer class="footer mt-5 mt-md-0">
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+<footer class="footer mt-5 mt-md-0">
   <div class="container">
     
     <div class="footer-item">
       <p class="copyright">
-    &copy; Copyright 2022, Brian K. Blaylock.    ♻ Updated: 17:35 UTC 16 Mar 2022.<br>
+    &copy; Copyright 2022, Brian K. Blaylock.    ♻ Updated: 15:51 UTC 13 Apr 2022.<br>
 </p>
     </div>
     
     <div class="footer-item">
       <p class="sphinx-version">
-Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.4.0.<br>
+Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.5.0.<br>
 </p>
     </div>
     

@@ -8,29 +8,26 @@
 
     <title>Herbie: Retrieve NWP Model Data &#8212; Herbie 0.0.9 documentation</title>
     
-    <link href="_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
 <link href="_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
-  
+
     
-    <link rel="stylesheet"
-      href="_static/vendor/fontawesome/5.13.0/css/all.min.css">
-    <link rel="preload" as="font" type="font/woff2" crossorigin
-      href="_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
-    <link rel="preload" as="font" type="font/woff2" crossorigin
-      href="_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
-  
-    
-      
-  
-    
+  <link rel="stylesheet"
+    href="_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="_static/styles/pydata-sphinx-theme.css" />
     <link rel="stylesheet" type="text/css" href="_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css" />
     <link rel="stylesheet" type="text/css" href="_static/panels-variables.06eb56fa6e07937060861dad626602ad.css" />
     <link rel="stylesheet" type="text/css" href="_static/brian_style.css" />
     
-    <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
-  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
@@ -58,7 +55,7 @@
                 </script>
 
   </head>
-  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
     
     <div class="container-fluid" id="banner"></div>
 
@@ -168,7 +165,7 @@
               
               <div class="toc-item">
                 
-<div class="tocsection onthispage pt-5 pb-3">
+<div class="tocsection onthispage mt-5 pt-1 pb-3">
     <i class="fas fa-list"></i> On this page
 </div>
 
@@ -260,7 +257,7 @@
                 
   <img alt="_images/HerbieLogo2_tan_transparent.png" src="_images/HerbieLogo2_tan_transparent.png" />
 <section id="herbie-retrieve-nwp-model-data">
-<h1>Herbie: Retrieve NWP Model Data<a class="headerlink" href="#herbie-retrieve-nwp-model-data" title="Permalink to this headline">¶</a></h1>
+<h1>Herbie: Retrieve NWP Model Data<a class="headerlink" href="#herbie-retrieve-nwp-model-data" title="Permalink to this headline">#</a></h1>
 <p><strong>Herbie</strong> is a python package that download recent and archived numerical weather prediction (NWP) model output from different cloud archive sources. This data is usually in GRIB2 format and can be read with xarray/cfgrib. Model data Herbie can retrieve includes the High Resolution Rapid Refresh (HRRR), Rapid Refresh (RAP), Global Forecast System (GFS), National Blend of Models (NBM), Rapid Refresh Forecast System - Prototype (RRFS), and  ECMWF open data forecast products (ECMWF).</p>
 <div class="toctree-wrapper compound">
 <ul>
@@ -269,7 +266,7 @@
 </ul>
 </div>
 <section id="install">
-<h2>Install<a class="headerlink" href="#install" title="Permalink to this headline">¶</a></h2>
+<h2>Install<a class="headerlink" href="#install" title="Permalink to this headline">#</a></h2>
 <p>Herbie requires <strong>Python 3.8+</strong></p>
 <p>Install with pip</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip install herbie-data
@@ -293,9 +290,9 @@ conda activate herbie
 </div>
 </section>
 <section id="capabilities">
-<h2>Capabilities<a class="headerlink" href="#capabilities" title="Permalink to this headline">¶</a></h2>
+<h2>Capabilities<a class="headerlink" href="#capabilities" title="Permalink to this headline">#</a></h2>
 <section id="create-a-herbie-object">
-<h3>Create a Herbie object<a class="headerlink" href="#create-a-herbie-object" title="Permalink to this headline">¶</a></h3>
+<h3>Create a Herbie object<a class="headerlink" href="#create-a-herbie-object" title="Permalink to this headline">#</a></h3>
 <p>Herbie looks for model data at different sources until the requested file is found.</p>
 <p>Herbie can discover data from the following models (click for example usage):</p>
 <ul class="simple">
@@ -315,7 +312,7 @@ conda activate herbie
 </div>
 <img alt="_images/usage_1.png" src="_images/usage_1.png" />
 <section id="data-sources">
-<h4>Data Sources<a class="headerlink" href="#data-sources" title="Permalink to this headline">¶</a></h4>
+<h4>Data Sources<a class="headerlink" href="#data-sources" title="Permalink to this headline">#</a></h4>
 <p>Thanks to the <a class="reference external" href="https://www.noaa.gov/information-technology/big-data">NOAA Big Data Program</a> weather data is more easily accessible than ever before. Common data sources include</p>
 <ul class="simple">
 <li><p><a class="reference external" href="https://nomads.ncep.noaa.gov/">NOAA NOMADS Server</a> (most recent data, but not archived)</p></li>
@@ -328,14 +325,14 @@ conda activate herbie
 </section>
 </section>
 <section id="download-model-data">
-<h3>Download Model Data<a class="headerlink" href="#download-model-data" title="Permalink to this headline">¶</a></h3>
+<h3>Download Model Data<a class="headerlink" href="#download-model-data" title="Permalink to this headline">#</a></h3>
 <p>Using the Herbie object we created above, this downloads the full GRIB2 file to your local machine.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">H</span><span class="o">.</span><span class="n">download</span><span class="p">()</span>
 </pre></div>
 </div>
 <img alt="_images/usage_2.png" src="_images/usage_2.png" />
 <section id="download-a-subset">
-<h4>Download a subset<a class="headerlink" href="#download-a-subset" title="Permalink to this headline">¶</a></h4>
+<h4>Download a subset<a class="headerlink" href="#download-a-subset" title="Permalink to this headline">#</a></h4>
 <p><strong>Subsetting GRIB files by GRIB message</strong> is also supported, provided that an index (.idx) file exists. For more information about subsetting, read <a class="reference internal" href="user_guide/grib2.html#grib2-faq"><span class="std std-ref">What is GRIB2?</span></a>.</p>
 <p>Using the Herbie object we created above, we can retrieve all fields at 500 mb.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Download all fields at 500 mb level</span>
@@ -346,7 +343,7 @@ conda activate herbie
 </section>
 </section>
 <section id="read-grib2-data">
-<h3>Read GRIB2 Data<a class="headerlink" href="#read-grib2-data" title="Permalink to this headline">¶</a></h3>
+<h3>Read GRIB2 Data<a class="headerlink" href="#read-grib2-data" title="Permalink to this headline">#</a></h3>
 <p>Herbie can help you read these files with <a class="reference external" href="http://xarray.pydata.org/en/stable/">xarray</a> via <a class="reference external" href="https://github.com/ecmwf/cfgrib">cfgrib</a>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Open 2-m Temperature field</span>
 <span class="n">H</span><span class="o">.</span><span class="n">xarray</span><span class="p">(</span><span class="s1">&#39;TMP:2 m&#39;</span><span class="p">)</span>
@@ -355,11 +352,11 @@ conda activate herbie
 <img alt="_images/usage_4.png" src="_images/usage_4.png" />
 </section>
 <section id="plot-fields">
-<h3>Plot Fields<a class="headerlink" href="#plot-fields" title="Permalink to this headline">¶</a></h3>
+<h3>Plot Fields<a class="headerlink" href="#plot-fields" title="Permalink to this headline">#</a></h3>
 <p>🏗 Under construction. I want to make some useful xarray accessors for plotting the GRIB2 fields. This will use tools I am developing in my <a class="reference external" href="https://github.com/blaylockbk/Carpenter_Workshop">Carpenter Workshop</a> package to plot the data on a Cartopy map or pluck points nearest specific latitudes and longitudes.</p>
 </section>
 <section id="bulk-download">
-<h3>Bulk Download<a class="headerlink" href="#bulk-download" title="Permalink to this headline">¶</a></h3>
+<h3>Bulk Download<a class="headerlink" href="#bulk-download" title="Permalink to this headline">#</a></h3>
 <p>Sometimes you need lots of data. Herbie can help download many files for a range of dates and forecast lead times. For example,</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">herbie.tools</span> <span class="kn">import</span> <span class="n">bulk_download</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
@@ -373,7 +370,7 @@ conda activate herbie
 </section>
 </section>
 <section id="other-tools">
-<h2>Other Tools<a class="headerlink" href="#other-tools" title="Permalink to this headline">¶</a></h2>
+<h2>Other Tools<a class="headerlink" href="#other-tools" title="Permalink to this headline">#</a></h2>
 <p><strong>🛰 GOES ABI and GLM</strong> data can be downloaded from AWS with my <a class="reference external" href="https://github.com/blaylockbk/goes2go">goes-2-go</a> package. This package was also originally developed during grad school and has been updated.</p>
 <p><strong>🌡 Synoptic API (MesoWest)</strong> data can be retrieved with my <a class="reference external" href="https://github.com/blaylockbk/SynopticPy">SynopticPy</a> package, also originally developed during grad school and has been updated.</p>
 <ul class="simple">
@@ -405,19 +402,20 @@ conda activate herbie
       </div>
     </div>
   
-    <script src="_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
-  <footer class="footer mt-5 mt-md-0">
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+<footer class="footer mt-5 mt-md-0">
   <div class="container">
     
     <div class="footer-item">
       <p class="copyright">
-    &copy; Copyright 2022, Brian K. Blaylock.    ♻ Updated: 17:35 UTC 16 Mar 2022.<br>
+    &copy; Copyright 2022, Brian K. Blaylock.    ♻ Updated: 15:51 UTC 13 Apr 2022.<br>
 </p>
     </div>
     
     <div class="footer-item">
       <p class="sphinx-version">
-Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.4.0.<br>
+Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.5.0.<br>
 </p>
     </div>
     
