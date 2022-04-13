@@ -1,8 +1,8 @@
 name: Python Package using Conda
 
 on:
-  push:
-    branches: [master]
+  #push:
+  #  branches: [master]
   pull_request:
     branches: [master]
 
