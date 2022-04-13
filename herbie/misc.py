@@ -5,6 +5,28 @@ import matplotlib.patheffects as path_effects
 import matplotlib.pyplot as plt
 
 
+def Herbie_ascii(body='tan'):
+    red = '\033[38;2;136;33;27m'
+    blue = '\033[38;2;12;53;118m'
+    if body == 'tan':
+        body = '\033[38;2;240;234;210m'
+    else:
+        body = '\033[0m'
+    escape = '\033[0m'
+    a = f"""
+
+{red}█{escape} {blue}██{escape}  {body} _   _                 _       _{escape}
+{red}█{escape} {blue}██{escape}  {body}| | | |   ___   _ __  | |__   (_)   ___{escape}
+{red}█{escape} {blue}██{escape}  {body}| |_| |  / _ \ | '__| | '_ \  | |  / _ \\{escape}
+{red}█{escape} {blue}██{escape}  {body}|  _  | |  __/ | |    | |_) | | | |  __/{escape}
+{red}█{escape} {blue}██{escape}  {body}|_| |_|  \___| |_|    |_.__/  |_|  \___|{escape}
+{red}█{escape} {blue}██{escape}
+            {body}Retrieve NWP Model Data{escape}
+
+    """
+    return a
+
+
 def HerbieColors():
     return dict(
         body="#f0ead2",

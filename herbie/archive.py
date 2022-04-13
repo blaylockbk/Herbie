@@ -222,9 +222,8 @@ class Herbie:
         self.grib, self.grib_source = self.find_grib()
         self.idx, self.idx_source = self.find_idx()
 
-        # After searching each source, print some info about what we found...
-        # (ANSI color's added for style points)
         if verbose:
+            # ANSI color's added for style points
             if any([self.grib is not None, self.idx is not None]):
                 print(
                     f"🏋🏻‍♂️ Found",
