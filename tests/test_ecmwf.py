@@ -9,10 +9,8 @@ from datetime import datetime
 from herbie.archive import Herbie
 
 now = datetime.now()
-yesterday = datetime(now.year, now.month, now.day-1)
+yesterday = datetime(now.year, now.month, now.day - 1)
 today_str = yesterday.strftime("%Y-%m-%d %H:%M")
-
-
 
 
 def test_ecmwf():

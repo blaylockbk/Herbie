@@ -5,14 +5,14 @@ import matplotlib.patheffects as path_effects
 import matplotlib.pyplot as plt
 
 
-def Herbie_ascii(body='tan'):
-    red = '\033[38;2;136;33;27m'
-    blue = '\033[38;2;12;53;118m'
-    if body == 'tan':
-        body = '\033[38;2;240;234;210m'
+def Herbie_ascii(body="tan"):
+    red = "\033[38;2;136;33;27m"
+    blue = "\033[38;2;12;53;118m"
+    if body == "tan":
+        body = "\033[38;2;240;234;210m"
     else:
-        body = '\033[0m'
-    escape = '\033[0m'
+        body = "\033[0m"
+    escape = "\033[0m"
     a = f"""
 
 {red}█{escape} {blue}██{escape}  {body} _   _                 _       _{escape}
