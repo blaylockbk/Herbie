@@ -27,6 +27,8 @@ from pathlib import Path
 import toml
 
 __author__ = "Brian K. Blaylock"
+__meet_Herbie__ = "https://en.wikipedia.org/wiki/Herbie"
+__movie_clips__ = "https://youtube.com/playlist?list=PLrSOkJxBTv53gvwbw9pVlMm-1C2PUHJx7"
 
 ########################################################################
 # Append Path object with my custom expand method so user can use
