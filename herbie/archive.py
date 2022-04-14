@@ -61,6 +61,7 @@ from pyproj import CRS
 
 import herbie.models as model_templates
 from herbie.help import _searchString_help
+from herbie.misc import Herbie_ascii
 
 # NOTE: These config dict values are retrieved from __init__ and read
 # from the file ${HOME}/.config/herbie/config.toml
@@ -258,6 +259,11 @@ class Herbie:
                 if not i.startswith("__"):
                     msg.append(f"self.{i}={getattr(self, i)}")
         return "\n".join(msg)
+
+    @property
+    def __logo__(self):
+        """For Fun, show the Herbie Logo"""
+        print(Herbie_ascii())
 
     def _validate(self):
         """Validate the Herbie class input arguments"""
