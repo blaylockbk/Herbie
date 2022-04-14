@@ -4,7 +4,7 @@
 
 ![](https://github.com/blaylockbk/Herbie/blob/master/docs/_static/HerbieLogo2_tan_transparent.png?raw=true)
 
-# Herbie: Retrieve NWP Model Data
+# Herbie: Retrieve NWP Model Data 🏎🏁
 
 <!-- Badges -->
 [![](https://img.shields.io/pypi/v/herbie-data)](https://pypi.python.org/pypi/herbie-data/)
