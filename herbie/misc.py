@@ -34,7 +34,7 @@ def Herbie_ascii(body="tan"):
     """
     red = "\033[38;2;136;33;27m"
     blue = "\033[38;2;12;53;118m"
-    black = "\033[38;2;0;0;0m" # black
+    black = "\033[38;2;0;0;0m"  # black
     escape = "\033[0m"
     background = "\033[48;2;240;234;210m"  # Tan
     a = f"""
