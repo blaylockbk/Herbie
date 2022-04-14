@@ -26,6 +26,7 @@ import os
 from pathlib import Path
 import toml
 
+__author__ = "Brian K. Blaylock"
 
 ########################################################################
 # Append Path object with my custom expand method so user can use
