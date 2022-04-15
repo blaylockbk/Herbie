@@ -115,7 +115,7 @@ def xr_concat_sameRun(DATE, searchString, fxx=range(0, 18), verbose=False, **kwa
         List of forecast lead times, in hours, to concat together.
     """
     Hs_to_cat = [
-        Herbie(DATE, fxx=f, **kwargs).xarray(searchString, verbose=verbose) for f in fxx
+        Herbie(DATE, fxx=f, verbose=verbose, **kwargs).xarray(searchString, verbose=verbose) for f in fxx
     ]
     return xr.concat(Hs_to_cat, dim="f")
 
@@ -137,7 +137,7 @@ def xr_concat_sameLead(
         The forecast lead time, in hours.
     """
     Hs_to_cat = [
-        Herbie(DATE, fxx=fxx, DATE_is_valid_time=DATE_is_valid_time, **kwargs).xarray(
+        Herbie(DATE, fxx=fxx, DATE_is_valid_time=DATE_is_valid_time, verbose=verbose, **kwargs).xarray(
             searchString, verbose=verbose
         )
         for DATE in DATES
