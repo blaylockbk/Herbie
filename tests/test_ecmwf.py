@@ -5,17 +5,16 @@
 Tests for downloading ECMWF model
 """
 from datetime import datetime
-from os import remove
 
 from herbie.archive import Herbie
 
 now = datetime.now()
-today = datetime(now.year, now.month, now.day)
-today_str = today.strftime("%Y-%m-%d %H:%M")
+yesterday = datetime(now.year, now.month, now.day - 1)
+today_str = yesterday.strftime("%Y-%m-%d %H:%M")
 
 
 def test_ecmwf():
-    H = Herbie(today, model="ecmwf", product="oper", save_dir="$TMPDIR")
+    H = Herbie(yesterday, model="ecmwf", product="oper", save_dir="$TMPDIR")
 
     # Test full file download
     H.download()
@@ -27,5 +26,5 @@ def test_ecmwf():
     assert H.get_localFilePath(":t:").exists()
 
     # Test partial file xarray
-    H.xarray(":10(u|v):", remove_grib=False)
-    assert H.get_localFilePath(":10(u|v):").exists()
+    H.xarray(":10(?:u|v):", remove_grib=False)
+    assert H.get_localFilePath(":10(?:u|v):").exists()

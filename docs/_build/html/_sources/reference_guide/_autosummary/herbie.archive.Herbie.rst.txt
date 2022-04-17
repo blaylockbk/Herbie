@@ -15,6 +15,8 @@
    
       ~Herbie.__init__
       ~Herbie.download
+      ~Herbie.find_grib
+      ~Herbie.find_idx
       ~Herbie.get_localFilePath
       ~Herbie.read_idx
       ~Herbie.xarray
@@ -29,5 +31,6 @@
    
       ~Herbie.get_localFileName
       ~Herbie.get_remoteFileName
+      ~Herbie.index_as_dataframe
    
    

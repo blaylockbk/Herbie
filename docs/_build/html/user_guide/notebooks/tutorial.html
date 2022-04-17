@@ -8,29 +8,26 @@
 
     <title>Quick Tutorial &#8212; Herbie 0.0.9 documentation</title>
     
-    <link href="../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
 <link href="../../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
-  
+
     
-    <link rel="stylesheet"
-      href="../../_static/vendor/fontawesome/5.13.0/css/all.min.css">
-    <link rel="preload" as="font" type="font/woff2" crossorigin
-      href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
-    <link rel="preload" as="font" type="font/woff2" crossorigin
-      href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
-  
-    
-      
-  
-    
+  <link rel="stylesheet"
+    href="../../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/styles/pydata-sphinx-theme.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/panels-variables.06eb56fa6e07937060861dad626602ad.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/brian_style.css" />
     
-    <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
-  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+
     <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
     <script src="../../_static/jquery.js"></script>
     <script src="../../_static/underscore.js"></script>
@@ -61,7 +58,7 @@
                 </script>
 
   </head>
-  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
     
     <div class="container-fluid" id="banner"></div>
 
@@ -222,6 +219,11 @@
     </a>
    </li>
    <li class="toctree-l2">
+    <a class="reference internal" href="data_gefs.html">
+     Global Ensembele Forecast System (GEFS) reanalysis: 2000-2019
+    </a>
+   </li>
+   <li class="toctree-l2">
     <a class="reference internal" href="data_ecmwf.html">
      ECMWF Open Data – Real Time
     </a>
@@ -254,7 +256,7 @@
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="../model_template.html">
+  <a class="reference internal" href="../custom_template.html">
    👷🏻‍♂️ Extending Herbie
   </a>
  </li>
@@ -285,7 +287,7 @@
               
               <div class="toc-item">
                 
-<div class="tocsection onthispage pt-5 pb-3">
+<div class="tocsection onthispage mt-5 pt-1 pb-3">
     <i class="fas fa-list"></i> On this page
 </div>
 
@@ -624,7 +626,7 @@ div.rendered_html tbody tr:hover {
 }
 </style>
 <section id="Quick-Tutorial">
-<h1>Quick Tutorial<a class="headerlink" href="#Quick-Tutorial" title="Permalink to this headline">¶</a></h1>
+<h1>Quick Tutorial<a class="headerlink" href="#Quick-Tutorial" title="Permalink to this headline">#</a></h1>
 <p>For inidividual files, you will mainly use the <code class="docutils literal notranslate"><span class="pre">Herbie</span></code> class imported from <code class="docutils literal notranslate"><span class="pre">herbie.archive</span></code></p>
 <blockquote>
 <div><p><a class="reference external" href="https://blaylockbk.github.io/Herbie/_build/html/user_guide/notebooks/index.html">More examples</a></p>
@@ -704,7 +706,7 @@ __init__(self, date=None, *, valid_date=None, model=&#39;hrrr&#39;, fxx=0, produ
 </pre></div></div>
 </div>
 <section id="Initialize-a-Herbie-object.">
-<h2>Initialize a Herbie object.<a class="headerlink" href="#Initialize-a-Herbie-object." title="Permalink to this headline">¶</a></h2>
+<h2>Initialize a Herbie object.<a class="headerlink" href="#Initialize-a-Herbie-object." title="Permalink to this headline">#</a></h2>
 <p>What does this class do? When you specify a datetime, model type, and forecast lead time, Herbie will search the sources for the file you are requesting. By default, it searches for the HRRR model surface fields <code class="docutils literal notranslate"><span class="pre">sfc</span></code> output files.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
@@ -856,7 +858,7 @@ https://noaa-hrrr-bdp-pds.s3.amazonaws.com/hrrr.20210505/conus/hrrr.t00z.wrfsfcf
 </div>
 </section>
 <section id="Download-a-Full-File">
-<h2>Download a Full File<a class="headerlink" href="#Download-a-Full-File" title="Permalink to this headline">¶</a></h2>
+<h2>Download a Full File<a class="headerlink" href="#Download-a-Full-File" title="Permalink to this headline">#</a></h2>
 <p>If the file is found on one of the source locations, Herbie can download the full file to your local drive.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
@@ -898,7 +900,7 @@ https://noaa-hrrr-bdp-pds.s3.amazonaws.com/hrrr.20210505/conus/hrrr.t00z.wrfsfcf
 </div>
 </section>
 <section id="Download-a-Subset-File">
-<h2>Download a Subset File<a class="headerlink" href="#Download-a-Subset-File" title="Permalink to this headline">¶</a></h2>
+<h2>Download a Subset File<a class="headerlink" href="#Download-a-Subset-File" title="Permalink to this headline">#</a></h2>
 <p>Often you don’t need the full file, just a few variables. Because the index files tell us the byte range of each variable or GRIB message, we can download that portion of the file. Thus, files can be subsetted by variable. (Note that Herbie cannot subset the file by geographic area).</p>
 <p>In this example, we will download all variables for the 1-h forecast for variables that are 2 m above ground.</p>
 <div class="nbinput docutils container">
@@ -968,7 +970,7 @@ https://noaa-hrrr-bdp-pds.s3.amazonaws.com/hrrr.20210505/conus/hrrr.t00z.wrfsfcf
 </div>
 </section>
 <section id="Subset-Search-String">
-<h2>Subset Search String<a class="headerlink" href="#Subset-Search-String" title="Permalink to this headline">¶</a></h2>
+<h2>Subset Search String<a class="headerlink" href="#Subset-Search-String" title="Permalink to this headline">#</a></h2>
 <p>The magic trick for subsetting the data for what you want comes down to the search string. Herbie uses regular expression to search for lines in the index file to match which grib messages to download. Some examples are as follows.</p>
 <table class="table">
 <colgroup>
@@ -1641,7 +1643,7 @@ PosixPath(&#39;/p/cwfs/blaylock/data/hrrr/20210505/hrrr.t00z.wrfsfcf00.grib2.sub
 </div>
 </section>
 <section id="Read-GRIB2-file-with-xarray">
-<h2>Read GRIB2 file with xarray<a class="headerlink" href="#Read-GRIB2-file-with-xarray" title="Permalink to this headline">¶</a></h2>
+<h2>Read GRIB2 file with xarray<a class="headerlink" href="#Read-GRIB2-file-with-xarray" title="Permalink to this headline">#</a></h2>
 <p>Herbie can read files with xarray via cfgrib. By default, if the file requested does not already exist on local disk, Herbie will delete the file after it is loaded into memory.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[42]:
@@ -2617,7 +2619,7 @@ True
 </div>
 </section>
 <section id="Index-File-DataFrame-if-it-exists">
-<h2>Index File DataFrame if it exists<a class="headerlink" href="#Index-File-DataFrame-if-it-exists" title="Permalink to this headline">¶</a></h2>
+<h2>Index File DataFrame if it exists<a class="headerlink" href="#Index-File-DataFrame-if-it-exists" title="Permalink to this headline">#</a></h2>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[47]:
 </pre></div>
@@ -2913,7 +2915,7 @@ True
 </div>
 </section>
 <section id="Bulk-Download">
-<h2>Bulk Download<a class="headerlink" href="#Bulk-Download" title="Permalink to this headline">¶</a></h2>
+<h2>Bulk Download<a class="headerlink" href="#Bulk-Download" title="Permalink to this headline">#</a></h2>
 <p>You may use the <code class="docutils literal notranslate"><span class="pre">bulk_download</span></code> tool to download many model output files by date and forecast lead time.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[49]:
@@ -3086,7 +3088,7 @@ DatetimeIndex([&#39;2020-01-01 00:00:00&#39;, &#39;2020-01-01 03:00:00&#39;,
 </div>
 </section>
 <section id="Concatenante-xarray-DataSets">
-<h2>Concatenante xarray DataSets<a class="headerlink" href="#Concatenante-xarray-DataSets" title="Permalink to this headline">¶</a></h2>
+<h2>Concatenante xarray DataSets<a class="headerlink" href="#Concatenante-xarray-DataSets" title="Permalink to this headline">#</a></h2>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[34]:
 </pre></div>
@@ -4189,7 +4191,7 @@ Attributes:
 </div>
 </section>
 <section id="Plot-with-herbie-xarray-custom-accessor">
-<h2>Plot with <code class="docutils literal notranslate"><span class="pre">herbie</span></code> xarray custom accessor<a class="headerlink" href="#Plot-with-herbie-xarray-custom-accessor" title="Permalink to this headline">¶</a></h2>
+<h2>Plot with <code class="docutils literal notranslate"><span class="pre">herbie</span></code> xarray custom accessor<a class="headerlink" href="#Plot-with-herbie-xarray-custom-accessor" title="Permalink to this headline">#</a></h2>
 <p>This requires my <a class="reference external" href="https://github.com/blaylockbk/Carpenter_Workshop">Carpenter Workshop</a> functions.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[24]:
@@ -4303,7 +4305,7 @@ GRIB_typeOfLevel isobaricInhPa
 </div>
 </section>
 <section id="Herbie-Logo">
-<h2>Herbie Logo<a class="headerlink" href="#Herbie-Logo" title="Permalink to this headline">¶</a></h2>
+<h2>Herbie Logo<a class="headerlink" href="#Herbie-Logo" title="Permalink to this headline">#</a></h2>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[27]:
 </pre></div>
@@ -4368,19 +4370,20 @@ GRIB_typeOfLevel isobaricInhPa
       </div>
     </div>
   
-    <script src="../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
-  <footer class="footer mt-5 mt-md-0">
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+<footer class="footer mt-5 mt-md-0">
   <div class="container">
     
     <div class="footer-item">
       <p class="copyright">
-    &copy; Copyright 2022, Brian K. Blaylock.    ♻ Updated: 20:41 UTC 08 Mar 2022.<br>
+    &copy; Copyright 2022, Brian K. Blaylock.    ♻ Updated: 15:51 UTC 13 Apr 2022.<br>
 </p>
     </div>
     
     <div class="footer-item">
       <p class="sphinx-version">
-Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.4.0.<br>
+Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.5.0.<br>
 </p>
     </div>
     

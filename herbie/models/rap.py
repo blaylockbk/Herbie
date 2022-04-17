@@ -48,6 +48,7 @@ class rap:
 
 # TODO: Set LOCALFILE name to match modern filename structure.
 
+
 class rap_historical:
     """
     The RAP and RUC historical record at NCEI. (files older than 2020)

@@ -17,6 +17,7 @@ you might want to use `nexradaws`
 👉🏻 https://nexradaws.readthedocs.io/en/latest/index.html
 """
 
+
 class nexrad:
     def template(self):
         self.DESCRIPTION = "NEXRAD Radar "
@@ -30,5 +31,5 @@ class nexrad:
             "aws": f"https://noaa-nexrad-{self.product}.s3.amazonaws.com/{self.date:%Y/%m/%d}/{self.station}/{self.station}{self.date:%Y%m%d_%H%M%S}_V06",
             "aws-old": f"https://noaa-nexrad-{self.product}.s3.amazonaws.com/{self.date:%Y/%m/%d}/{self.station}/{self.station}{self.date:%Y%m%d_%H%M%S}",
         }
-        self.EXPECT_IDX_FILE = 'none'
+        self.EXPECT_IDX_FILE = "none"
         self.LOCALFILE = f"{self.get_remoteFileName}"

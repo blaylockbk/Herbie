@@ -26,5 +26,6 @@
    
       ~HerbieAccessor.center
       ~HerbieAccessor.crs
+      ~HerbieAccessor.polygon
    
    

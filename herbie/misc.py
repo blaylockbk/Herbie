@@ -1,8 +1,57 @@
 ## Brian Blaylock
 ## May 13, 2021
 
-import matplotlib.patheffects as path_effects
-import matplotlib.pyplot as plt
+"""
+██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██
+  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██
+██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██
+  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██
+
+                █ ██
+                █ ██ ┏━┓ ┏━┓            ┏━┓   ┏━┓
+                █ ██ ┃ ┃ ┃ ┃┏━━━━┓┏━┓┏━┓┃ ┃   ┏━┓┏━━━━┓
+                █ ██ ┃ ┗━┛ ┃┃ ━━ ┃┃ ┏━━┛┃ ┗━━┓┃ ┃┃ ━━ ┃
+                █ ██ ┃ ┏━┓ ┃┃ ━━━┓┃ ┃   ┃ ━━ ┃┃ ┃┃ ━━━┓
+                █ ██ ┗━┛ ┗━┛┗━━━━┛┗━┛   ┗━━━━┛┗━┛┗━━━━┛
+                █ ██
+                        Retrieve NWP Model Data 🏎🏁
+
+██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██
+  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██
+██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██
+  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██
+"""
+
+
+def Herbie_ascii(body="tan"):
+    """
+    Display the Herbie logo in ASCII characters and colors.
+
+    Usage
+    -----
+    Command Line
+    >>> python -c "from herbie.misc import Herbie_ascii; print(Herbie_ascii())"
+    """
+    red = "\033[38;2;136;33;27m"
+    blue = "\033[38;2;12;53;118m"
+    black = "\033[38;2;0;0;0m"  # black
+    escape = "\033[0m"
+    background = "\033[48;2;240;234;210m"  # Tan
+    a = f"""
+
+{background}{' ':45}{escape}
+{background}   {red}█ {blue}██ {black}                                    {escape}
+{background}   {red}█ {blue}██ {black}┏━┓ ┏━┓            ┏━┓   ┏━┓        {escape}
+{background}   {red}█ {blue}██ {black}┃ ┃ ┃ ┃┏━━━━┓┏━┓┏━┓┃ ┃   ┏━┓┏━━━━┓  {escape}
+{background}   {red}█ {blue}██ {black}┃ ┗━┛ ┃┃ ━━ ┃┃ ┏━━┛┃ ┗━━┓┃ ┃┃ ━━ ┃  {escape}
+{background}   {red}█ {blue}██ {black}┃ ┏━┓ ┃┃ ━━━┓┃ ┃   ┃ ━━ ┃┃ ┃┃ ━━━┓  {escape}
+{background}   {red}█ {blue}██ {black}┗━┛ ┗━┛┗━━━━┛┗━┛   ┗━━━━┛┗━┛┗━━━━┛  {escape}
+{background}   {red}█ {blue}██ {black}                                    {escape}
+{background}{' ':4}{black}       🏁 Retrieve NWP Model Data 🏁     {escape}
+{background}{' ':45}{escape}
+
+    """
+    return a
 
 
 def HerbieColors():
@@ -17,6 +66,9 @@ def HerbieColors():
 
 def HerbieLogo(white_line=False):
     """Logo of Herbie The Love Bug"""
+    import matplotlib.patheffects as path_effects
+    import matplotlib.pyplot as plt
+
     colors = HerbieColors()
 
     plt.figure(figsize=[5, 5], facecolor=colors["body"])
@@ -57,6 +109,9 @@ def HerbieLogo(white_line=False):
 
 def HerbieLogo2(white_line=False, text_color="body", text_stroke="black"):
     """Logo of Herbie The Love Bug"""
+    import matplotlib.patheffects as path_effects
+    import matplotlib.pyplot as plt
+
     colors = HerbieColors()
 
     plt.figure(figsize=[5, 3], facecolor=colors["body"])

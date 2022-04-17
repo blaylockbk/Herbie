@@ -58,6 +58,7 @@ IDX_STYLE : {'wgrib2', 'eccodes'}
 """
 from datetime import datetime
 
+
 class hrrr:
     def template(self):
         self.DESCRIPTION = "High-Resolution Rapid Refresh - CONUS"
@@ -94,7 +95,7 @@ class hrrr:
             # This requires an additional arg for `fxx_subh` when calling Herbie
             self.SOURCES = {
                 "aws_old_subh": f"https://noaa-hrrr-bdp-pds.s3.amazonaws.com/hrrr.{self.date:%Y%m%d}/conus/hrrr.t{self.date:%H}z.wrf{self.product}f{self.fxx:02d}{self.fxx_subh:02d}.grib2",
-                **self.SOURCES
+                **self.SOURCES,
             }
 
 

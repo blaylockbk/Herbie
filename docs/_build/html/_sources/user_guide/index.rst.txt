@@ -13,6 +13,6 @@ User Guide
    grib2
    notebooks/index
    searchString
-   model_template
+   custom_template
    model_info
    style_guide

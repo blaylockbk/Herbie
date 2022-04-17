@@ -43,13 +43,15 @@ For more details, see https://blaylockbk.github.io/Herbie/_build/html/user_guide
     - TODO: Allow for searching of locally stored model data.
 
 """
+import functools
 import hashlib
 import json
 import os
+import sys
 import urllib.request
 import warnings
 from datetime import datetime, timedelta
-import sys
+import logging
 
 import cfgrib
 import pandas as pd
@@ -57,7 +59,9 @@ import pygrib
 import requests
 from pyproj import CRS
 
-import herbie.models as models_template
+import herbie.models as model_templates
+from herbie.help import _searchString_help
+from herbie.misc import Herbie_ascii
 
 # NOTE: These config dict values are retrieved from __init__ and read
 # from the file ${HOME}/.config/herbie/config.toml
@@ -76,100 +80,7 @@ except:
     )
     pass
 
-
-def _searchString_help(kind="wgrib2"):
-    """
-    Help/Error Message for `searchString`
-
-    Parameters
-    ----------
-    kind : {"wgrib2", "eccodes"}
-        There are two different utilities used to create index files and
-        they create different file output.
-
-        - **wgrib2** is the NCEP-style grib messages
-        - **eccodes** is the ECMWF-style grib messages
-    """
-
-    if kind == "wgrib2":
-        msg = """
-Use regular expression to search for lines in the index file.
-Here are some examples you can use for the wgrib2-style `searchString`
-
-    ============================= ===============================================
-    ``searchString=``             Messages that will be downloaded
-    ============================= ===============================================
-    ":TMP:2 m"                    Temperature at 2 m.
-    ":TMP:"                       Temperature fields at all levels.
-    ":UGRD:.* mb"                 U Wind at all pressure levels.
-    ":500 mb:"                    All variables on the 500 mb level.
-    ":APCP:"                      All accumulated precipitation fields.
-    ":APCP:surface:0-[1-9]*"      Accumulated precip since initialization time
-    ":APCP:surface:[1-9]*-[1-9]*" Accumulated precip over last hour
-    ":UGRD:10 m"                  U wind component at 10 meters.
-    ":(U|V)GRD:(10|80) m"         U and V wind component at 10 and 80 m.
-    ":(U|V)GRD:"                  U and V wind component at all levels.
-    ":(?:U|V)GRD:[0-9]+ hybrid"   U and V wind components at all hybrid levels
-    ":(?:U|V)GRD:[0-9]+ mb"        U and V wind components at all pressure levels
-    ":.GRD:"                      (Same as above)
-    ":(TMP|DPT):"                 Temperature and Dew Point for all levels .
-    ":(TMP|DPT|RH):"              TMP, DPT, and Relative Humidity for all levels.
-    ":REFC:"                      Composite Reflectivity
-    ":surface:"                   All variables at the surface.
-    ============================= ===============================================
-
-If you need help with regular expression, search the web or look at
-this cheatsheet: https://www.petefreitag.com/cheatsheets/regex/.
-"""
-
-    elif kind == "eccodes":
-        msg = """
-Use regular expression to search for lines in the index file.
-Here are some examples you can use for the ecCodes-style `searchString`
-
-Look at the ECMWF GRIB Parameter Database
-https://apps.ecmwf.int/codes/grib/param-db
-
-======================== ==============================================
-searchString (oper/enso) Messages that will be downloaded
-======================== ==============================================
-":2t:"                   2-m temperature
-":10u:"                  10-m u wind vector
-":10v:"                  10-m v wind vector
-":10(u|v):               **10m u and 10m v wind**
-":d:"                    Divergence (all levels)
-":gh:"                   geopotential height (all levels)
-":gh:500"                geopotential height only at 500 hPa
-":st:"                   soil temperature
-":tp:"                   total precipitation
-":msl:"                  mean sea level pressure
-":q:"                    Specific Humidity
-":r:"                    relative humidity
-":ro:"                   Runn-off
-":skt:"                  skin temperature
-":sp:"                   surface pressure
-":t:"                    temperature
-":tcwv:"                 Total column vertically integrated water vapor
-":vo:"                   Relative vorticity
-":v:"                    v wind vector
-":u:"                    u wind vector
-":(t|u|v|r):"            Temp, u/v wind, RH (all levels)
-":500:"                  All variables on the 500 hPa level
-
-======================== ==============================================
-searchString (wave/waef) Messages that will be downloaded
-======================== ==============================================
-":swh:"                  Significant height of wind waves + swell
-":mwp:"                  Mean wave period
-":mwd:"                  Mean wave direction
-":pp1d:"                 Peak wave period
-":mp2:"                  Mean zero-crossing wave period
-
-If you need help with regular expression, search the web or look at
-this cheatsheet: https://www.petefreitag.com/cheatsheets/regex/.
-"""
-
-    return msg
+log = logging.getLogger(__name__)
 
 
 class Herbie:
@@ -275,18 +186,18 @@ class Herbie:
         # Get details from the template of the specified model.
         # This attaches the details from the `models.<model>.template`
         # class to this Herbie object.
-        # This line is equivalent to `models_template.gfs.template(self)`.
+        # This line is equivalent to `model_templates.gfs.template(self)`.
         # I do it this way because the model name is a variable.
         # (see https://stackoverflow.com/a/7936588/2383070 for what I'm doing here)
-        getattr(models_template, self.model).template(self)
+        getattr(model_templates, self.model).template(self)
 
         if product is None:
             # The user didn't specify a product, so let's use the first
             # product in the model template.
             self.product = list(self.PRODUCTS)[0]
-            warnings.warn(f'`product` not specified. Will use ["{self.product}"].')
+            log.info(f'`product` not specified. Will use "{self.product}".')
             # We need to rerun this so the sources have the new product value.
-            getattr(models_template, self.model).template(self)
+            getattr(model_templates, self.model).template(self)
 
         self.product_description = self.PRODUCTS[self.product]
 
@@ -300,6 +211,7 @@ class Herbie:
         # But for ecmwf files with index files created with eccodes
         # the index files are in a different style.
         self.IDX_STYLE = getattr(self, "IDX_STYLE", "wgrib2")
+
         self.searchString_help = _searchString_help(self.IDX_STYLE)
 
         # Check the user input
@@ -308,90 +220,24 @@ class Herbie:
         # Ok, now we are ready to look for the GRIB2 file at each of the remote sources.
         # self.grib is the first existing GRIB2 file discovered.
         # self.idx is the first existing index file discovered.
-        self.grib = None
-        self.grib_source = None
-        self.idx = None
-        self.idx_source = None
+        self.grib, self.grib_source = self.find_grib()
+        self.idx, self.idx_source = self.find_idx()
 
-        # But first, check if the GRIB2 file exists locally.
-        local_copy = self.get_localFilePath()
-        if local_copy.exists() and not overwrite:
-            self.grib = local_copy
-            self.grib_source = "local"
-            # NOTE: We will still get the idx files from a remote
-            #       because they aren't stored locally, or are they?   # TODO: If the idx file is local, then use that
-
-        if list(self.SOURCES)[0] == "local":
-            # TODO: Experimental special case, not very elegant yet.
-            self.idx = self.grib.with_suffix(self.IDX_SUFFIX[0])
-            if not self.idx.exists():
-                self.idx = Path(str(self.grib).replace(".grb2", self.IDX_SUFFIX[0]))
-            return None
-
-        # If priority list is set, we want to search SOURCES in that
-        # priority order. If priority is None, then search all SOURCES
-        # in the order given by the model template file.
-        # NOTE: A source from the template will not be used if it is not
-        # included in the priority list.
-        if self.priority is not None:
-            self.SOURCES = {
-                key: self.SOURCES[key] for key in self.priority if key in self.SOURCES
-            }
-
-        # Ok, NOW we are ready to search for the remote GRIB2 files...
-        for source in self.SOURCES:
-            if "pando" in source:
-                # Sometimes pando returns a bad handshake. Pinging
-                # pando first can help prevent that.
-                self._ping_pando()
-
-            # Get the file URL for the source and determine if the
-            # GRIB2 file and the index file exist. If found, store the
-            # URL for the GRIB2 file and the .idx file.
-            url = self.SOURCES[source]
-
-            found_grib = False
-            found_idx = False
-            if self.grib is None and self._check_grib(url):
-                found_grib = True
-                self.grib = url
-                self.grib_source = source
-            idx_exists, idx_url = self._check_idx(url)
-
-            if idx_exists:
-                found_idx = True
-                self.idx = idx_url
-                self.idx_source = source
-
-            if verbose:
-                msg = (
-                    f"Looked in [{source:^10s}] for {self.model.upper()} "
-                    f"{self.date:%H:%M UTC %d %b %Y} F{self.fxx:02d} "
-                    f"--> ({found_grib=}) ({found_idx=}) {' ':5s}"
-                )
-                if verbose:
-                    print(msg, end="\r", flush=True)
-
-            if all([self.grib is not None, self.idx is not None]):
-                # Exit loop early if we found both GRIB2 and idx file.
-                break
-
-        # After searching each source, print some info about what we found...
-        # (ANSI color's added for style points)
         if verbose:
+            # ANSI color's added for style points
             if any([self.grib is not None, self.idx is not None]):
                 print(
                     f"🏋🏻‍♂️ Found",
-                    f"\033[32m{self.date:%Y-%b-%d %H:%M UTC} F{self.fxx:02d}\033[m",
+                    f"\033[32m{self.date:%Y-%b-%d %H:%M UTC} F{self.fxx:02d}\033[0m",
                     f"[{self.model.upper()}] [product={self.product}]",
-                    f"GRIB2 file from \033[31m{self.grib_source}\033[m and",
-                    f"index file from \033[31m{self.idx_source}\033[m.",
+                    f"GRIB2 file from \033[31m{self.grib_source}\033[0m and",
+                    f"index file from \033[31m{self.idx_source}\033[0m.",
                     f'{" ":150s}',
                 )
             else:
                 print(
                     f"💔 Did not find a GRIB2 or Index File for",
-                    f"\033[32m{self.date:%Y-%b-%d %H:%M UTC} F{self.fxx:02d}\033[m",
+                    f"\033[32m{self.date:%Y-%b-%d %H:%M UTC} F{self.fxx:02d}\033[0m",
                     f"{self.model.upper()}",
                     f'{" ":100s}',
                 )
@@ -401,7 +247,7 @@ class Herbie:
         msg = (
             f"[{self.model.upper()}] model [{self.product}] product",
             f"run at \033[32m{self.date:%Y-%b-%d %H:%M UTC}",
-            f"F{self.fxx:02d}\033[m",
+            f"F{self.fxx:02d}\033[0m",
         )
         return " ".join(msg)
 
@@ -414,6 +260,11 @@ class Herbie:
                     msg.append(f"self.{i}={getattr(self, i)}")
         return "\n".join(msg)
 
+    @property
+    def __logo__(self):
+        """For Fun, show the Herbie Logo"""
+        print(Herbie_ascii())
+
     def _validate(self):
         """Validate the Herbie class input arguments"""
 
@@ -421,7 +272,7 @@ class Herbie:
         if self.model.lower() == "alaska":
             self.model = "hrrrak"
 
-        _models = {m for m in dir(models_template) if not m.startswith("__")}
+        _models = {m for m in dir(model_templates) if not m.startswith("__")}
         _products = set(self.PRODUCTS)
 
         assert self.date < datetime.utcnow(), "🔮 `date` cannot be in the future."
@@ -494,6 +345,85 @@ class Herbie:
             )
         return False, None
 
+    def find_grib(self, overwrite=False):
+        """Find a GRIB file from the archive sources
+
+        Returns
+        -------
+        1) The URL or pathlib.Path to the GRIB2 files that exists
+        2) The source of the GRIB2 file
+        """
+
+        # But first, check if the GRIB2 file exists locally.
+        local_grib = self.get_localFilePath()
+        if local_grib.exists() and not self.overwrite:
+            return local_grib, "local"
+            # NOTE: We will still get the idx files from a remote
+            #       because they aren't stored locally, or are they?   # TODO: If the idx file is local, then use that
+
+        # If priority list is set, we want to search SOURCES in that
+        # priority order. If priority is None, then search all SOURCES
+        # in the order given by the model template file.
+        # NOTE: A source from the template will not be used if it is not
+        # included in the priority list.
+        if self.priority is not None:
+            self.SOURCES = {
+                key: self.SOURCES[key] for key in self.priority if key in self.SOURCES
+            }
+
+        # Ok, NOW we are ready to search for the remote GRIB2 files...
+        for source in self.SOURCES:
+            if "pando" in source:
+                # Sometimes pando returns a bad handshake. Pinging
+                # pando first can help prevent that.
+                self._ping_pando()
+
+            # Get the file URL for the source and determine if the
+            # GRIB2 file and the index file exist. If found, store the
+            # URL for the GRIB2 file and the .idx file.
+            grib_url = self.SOURCES[source]
+
+            if self._check_grib(grib_url):
+                return grib_url, source
+
+        return None, None
+
+    def find_idx(self):
+        """Find an index file for the GRIB file"""
+        # If priority list is set, we want to search SOURCES in that
+        # priority order. If priority is None, then search all SOURCES
+        # in the order given by the model template file.
+        # NOTE: A source from the template will not be used if it is not
+        # included in the priority list.
+        if self.priority is not None:
+            self.SOURCES = {
+                key: self.SOURCES[key] for key in self.priority if key in self.SOURCES
+            }
+
+        # Ok, NOW we are ready to search for the remote GRIB2 files...
+        for source in self.SOURCES:
+            if "pando" in source:
+                # Sometimes pando returns a bad handshake. Pinging
+                # pando first can help prevent that.
+                self._ping_pando()
+
+            # Get the file URL for the source and determine if the
+            # GRIB2 file and the index file exist. If found, store the
+            # URL for the GRIB2 file and the .idx file.
+            grib_url = self.SOURCES[source]
+
+            if source == "local":
+                local_grib = Path(grib_url).expand()
+                local_idx = local_grib.with_suffix(self.IDX_SUFFIX[0])
+                return local_idx, "local"
+
+            idx_exists, idx_url = self._check_idx(grib_url)
+
+            if idx_exists:
+                return idx_url, source
+
+            return None, None
+
     @property
     def get_remoteFileName(self, source=None):
         """Predict Remote File Name"""
@@ -536,27 +466,9 @@ class Herbie:
 
         return outFile
 
-    def read_idx(self, searchString=None):
-        """
-        Inspect the GRIB2 file contents by reading the index file.
-
-        This reads index files created with the wgrib2 utility.
-
-        Parameters
-        ----------
-        searchString : str
-            Filter dataframe by a searchString regular expression.
-            Searches for strings in the index file lines, specifically
-            the variable, level, and forecast_time columns.
-            Execute ``_searchString_help()`` for examples of a good
-            searchString.
-
-            .. include:: ../../user_guide/searchString.rst
-
-        Returns
-        -------
-        A Pandas DataFrame of the index file.
-        """
+    @functools.cached_property
+    def index_as_dataframe(self):
+        """Read and cache the full index file"""
         assert self.idx is not None, f"No index file found for {self.grib}."
 
         if self.IDX_STYLE == "wgrib2":
@@ -589,9 +501,6 @@ class Herbie:
             )
 
             # Format the DataFrame
-            df["grib_message"] = df["grib_message"].astype(float)
-            # ^ float because RAP idx files have some decimal grib message numbers
-            # TODO: ^ how can I address issue #32?
             df["reference_time"] = pd.to_datetime(
                 df.reference_time, format="d=%Y%m%d%H"
             )
@@ -602,9 +511,9 @@ class Herbie:
             # TODO: df["end_byte"] = df["start_byte"].shift(-1, fill_value=requests.get(self.grib, stream=True).headers['Content-Length'])
             # TODO: Based on what Karl Schnieder did.
             df["range"] = df.start_byte.astype(str) + "-" + df.end_byte.astype(str)
-            df = df.set_index("grib_message")
             df = df.reindex(
                 columns=[
+                    "grib_message",
                     "start_byte",
                     "end_byte",
                     "range",
@@ -642,6 +551,7 @@ class Herbie:
             # Format the DataFrame
             df.index = df.index.rename("grib_message")
             df.index += 1
+            df = df.reset_index()
             df["start_byte"] = df["_offset"]
             df["end_byte"] = df["_offset"] + df["_length"]
             df["range"] = df.start_byte.astype(str) + "-" + df.end_byte.astype(str)
@@ -653,6 +563,7 @@ class Herbie:
 
             df = df.reindex(
                 columns=[
+                    "grib_message",
                     "start_byte",
                     "end_byte",
                     "range",
@@ -691,6 +602,31 @@ class Herbie:
             lead_time=self.fxx,
             datetime=self.date,
         )
+
+        return df
+
+    def read_idx(self, searchString=None):
+        """
+        Inspect the GRIB2 file contents by reading the index file.
+
+        This reads index files created with the wgrib2 utility.
+
+        Parameters
+        ----------
+        searchString : str
+            Filter dataframe by a searchString regular expression.
+            Searches for strings in the index file lines, specifically
+            the variable, level, and forecast_time columns.
+            Execute ``_searchString_help()`` for examples of a good
+            searchString.
+
+            .. include:: ../../user_guide/searchString.rst
+
+        Returns
+        -------
+        A Pandas DataFrame of the index file.
+        """
+        df = self.index_as_dataframe
 
         # Filter DataFrame by searchString
         if searchString not in [None, ":"]:
@@ -783,19 +719,44 @@ class Herbie:
                 )
 
             # Download subsets of the file by byte range with cURL.
-            for i, (grbmsg, row) in enumerate(self.idx_df.iterrows()):
+            # > Instead of using a single curl command for each row,
+            # > group adjacent messages in the same curl command.
+
+            # Find index groupings
+            # TODO: Improve this for readability
+            # https://stackoverflow.com/a/32199363/2383070
+            li = self.idx_df.index
+            inds = (
+                [0]
+                + [ind for ind, (i, j) in enumerate(zip(li, li[1:]), 1) if j - i > 1]
+                + [len(li) + 1]
+            )
+            curl_groups = [li[i:j] for i, j in zip(inds, inds[1:])]
+
+            curl_ranges = []
+            group_dfs = []
+            for i, group in enumerate(curl_groups):
+                _df = self.idx_df.loc[group]
+                curl_ranges.append(f"{_df.iloc[0].start_byte}-{_df.iloc[-1].end_byte}")
+                group_dfs.append(_df)
+
+            for i, (range, _df) in enumerate(zip(curl_ranges, group_dfs)):
                 if verbose:
-                    print(
-                        f"{i+1:>4g}: GRIB_message={grbmsg:<3g} \033[34m{row.search_this}\033[m"
-                    )
+                    for i, row in _df.iterrows():
+                        print(
+                            f"  {row.grib_message:<3g} \033[34m{row.search_this}\033[0m"
+                        )
+
                 if i == 0:
                     # If we are working on the first item, overwrite the existing file...
-                    curl = f"curl -s --range {row.range} {grib_source} > {outFile}"
+                    curl = f"curl -s --range {range} {grib_source} > {outFile}"
                 else:
                     # ...all other messages are appended to the subset file.
-                    curl = f"curl -s --range {row.range} {grib_source} >> {outFile}"
+                    curl = f"curl -s --range {range} {grib_source} >> {outFile}"
                 os.system(curl)
 
+            if verbose:
+                print(f"💾 Saved the above subset to {outFile}")
             self.local_grib_subset = outFile
 
         # If the file exists in the localPath and we don't want to
@@ -833,14 +794,14 @@ class Herbie:
         if self.grib is None:
             msg = f"🦨 GRIB2 file not found: {self.model=} {self.date=} {self.fxx=}"
             if errors == "warn":
-                warnings.warn(msg)
+                log.warning(msg)
                 return  # Can't download anything without a GRIB file URL.
             elif errors == "raise":
                 raise ValueError(msg)
         if self.idx is None and searchString is not None:
             msg = f"🦨 Index file not found; cannot download subset: {self.model=} {self.date=} {self.fxx=}"
             if errors == "warn":
-                warnings.warn(
+                log.warning(
                     msg + " I will download the full file because I cannot subset."
                 )
             elif errors == "raise":
@@ -860,7 +821,7 @@ class Herbie:
             urllib.request.urlretrieve(self.grib, outFile, _reporthook)
             if verbose:
                 print(
-                    f"✅ Success! Downloaded {self.model.upper()} from \033[38;5;202m{self.grib_source:20s}\033[m\n\tsrc: {self.grib}\n\tdst: {outFile}"
+                    f"✅ Success! Downloaded {self.model.upper()} from \033[38;5;202m{self.grib_source:20s}\033[0m\n\tsrc: {self.grib}\n\tdst: {outFile}"
                 )
             self.local_grib = outFile
         else:

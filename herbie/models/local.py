@@ -2,9 +2,17 @@
 ## September 30, 2021
 
 """
-! Experimental
+
+.. warning ::
+    ! This is an experimental feature
+
 This is a special case template for GRIB2 model data that is stored on
 your local machine rather than retrieving data from remote sources.
+
+.. attention ::
+    Rather than editing this file, this class should be copied to a
+    private template file at ``~/.config/herbie/custom_template.py``.
+    Don't forget to create the file ``~/.config/herbie/__init__.py``.
 
 Index files are assumed to be in the same directory as the file with
 ".idx" appended to the file name. If you don't have these, you will need
@@ -37,6 +45,7 @@ class my_model:
         self.PRODUCTS = {
             # UPDATE THIS
             "prs": "3D pressure level fields",
+            "sfc": "Surface level fields",
         }
         self.SOURCES = {
             "local": f"/path/to/your/model/templated/with/{self.model}/gribfiles/{self.date:%Y%m%d%H}/nest{self.nest}/the_file.t{self.date:%H}z.{self.product}.f{self.fxx:02d}.grib2",
@@ -53,6 +62,7 @@ class my_second_model:
         self.PRODUCTS = {
             # UPDATE THIS
             "prs": "3D pressure level fields",
+            "sfc": "Surface level fields",
         }
         self.SOURCES = {
             "local": f"/path/to/your/second/model/templated/with/{self.model}/gribfiles/{self.date:%Y%m%d%H}/nest{self.nest}/the_file.t{self.date:%H}z.{self.product}.f{self.fxx:02d}.grib2",
