@@ -174,6 +174,7 @@ class Herbie:
         self.priority = priority
         self.save_dir = Path(save_dir).expand()
         self.overwrite = overwrite
+        self.verbose = verbose
 
         # Some model templates may require kwargs not listed (e.g., `nest=`, `member=`).
         for key, value in kwargs.items():
@@ -646,7 +647,7 @@ class Herbie:
         source=None,
         save_dir=None,
         overwrite=None,
-        verbose=True,
+        verbose=None,
         errors="warn",
     ):
         """
@@ -767,6 +768,10 @@ class Herbie:
         if overwrite is not None:
             self.overwrite = overwrite
 
+        # This overrides the verbose specified in __init__
+        if verbose is not None:
+            self.verbose = verbose
+
         if outFile.exists() and not self.overwrite:
             if verbose:
                 print(f"🌉 Already have local copy --> {outFile}")
@@ -852,8 +857,13 @@ class Herbie:
         # Download file if local file does not exists
         local_file = self.get_localFilePath(searchString=searchString)
 
-        # Only remove grib if it didn't exists before we download it
+        # ! \/ This is critical...
+        # Only remove file if it did n0t exists before we download it
         remove_grib = not local_file.exists() and remove_grib
+
+        # ! \/ Fail-safe; Never remove a file if the source is 'local'
+        if self.grib_source == 'local':
+            remove_grib = False
 
         if not local_file.exists() or download_kwargs["overwrite"]:
             self.download(searchString=searchString, **download_kwargs)
@@ -912,29 +922,32 @@ class Herbie:
                     continue
                 ds[var].attrs["grid_mapping"] = "gribfile_projection"
 
-        if remove_grib:
-            # Load the datasets into memory before removing the file
-            Hxr = [ds.load() for ds in Hxr]
-            _ = [ds.close() for ds in Hxr]
+        # ! DO NOT REMOVE GRIB FILES IF THE SOURCE IS LOCAL
+        # ! (I know I already checked this; I am just so worried about erasing my local data)
+        if self.grib_source != "local":
+            if remove_grib:
+                # Load the datasets into memory before removing the file
+                Hxr = [ds.load() for ds in Hxr]
+                _ = [ds.close() for ds in Hxr]
 
-            # TODO:
-            # Forcefully close the files so it can be removed
-            # (this is a WindowsOS specific requirement).
-            # os.close(?WHAT IS THE FILE HANDLER?)
-            """
-            https://docs.python.org/3/library/os.html#os.remove
-            On Windows, attempting to remove a file that is in use
-            causes an exception to be raised; on Unix, the directory
-            entry is removed but the storage allocated to the file is
-            not made available until the original file is no longer in
-            use.
-            >> HOW DO I COMPLETELY CLOSE THE FILE OPENED BY CFGRIB??
-            """
-            if not sys.platform == "win32":
-                # Removes file
-                local_file.unlink()
-            else:
-                warnings.warn("sorry, on windows I couldn't remove the file.")
+                # TODO:
+                # Forcefully close the files so it can be removed
+                # (this is a WindowsOS specific requirement).
+                # os.close(?WHAT IS THE FILE HANDLER?)
+                """
+                https://docs.python.org/3/library/os.html#os.remove
+                On Windows, attempting to remove a file that is in use
+                causes an exception to be raised; on Unix, the directory
+                entry is removed but the storage allocated to the file is
+                not made available until the original file is no longer in
+                use.
+                >> HOW DO I COMPLETELY CLOSE THE FILE OPENED BY CFGRIB??
+                """
+                if not sys.platform == "win32":
+                    # Removes file
+                    local_file.unlink()
+                else:
+                    warnings.warn("sorry, on windows I couldn't remove the file.")
 
         if len(Hxr) == 1:
             return Hxr[0]
