@@ -862,7 +862,7 @@ class Herbie:
         remove_grib = not local_file.exists() and remove_grib
 
         # ! \/ Fail-safe; Never remove a file if the source is 'local'
-        if self.grib_source == 'local':
+        if self.grib_source == "local":
             remove_grib = False
 
         if not local_file.exists() or download_kwargs["overwrite"]:
