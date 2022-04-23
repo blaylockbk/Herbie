@@ -385,9 +385,9 @@ class Herbie:
             grib_url = self.SOURCES[source]
 
             if self._check_grib(grib_url):
-                return grib_url, source
+                return [grib_url, source]
 
-        return None, None
+        return [None, None]
 
     def find_idx(self):
         """Find an index file for the GRIB file"""
@@ -416,14 +416,14 @@ class Herbie:
             if source == "local":
                 local_grib = Path(grib_url).expand()
                 local_idx = local_grib.with_suffix(self.IDX_SUFFIX[0])
-                return local_idx, "local"
+                return [local_idx, "local"]
 
             idx_exists, idx_url = self._check_idx(grib_url)
 
             if idx_exists:
-                return idx_url, source
+                return [idx_url, source]
 
-            return None, None
+        return [None, None]
 
     @property
     def get_remoteFileName(self, source=None):
