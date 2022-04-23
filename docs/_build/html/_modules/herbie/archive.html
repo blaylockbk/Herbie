@@ -235,6 +235,7 @@
 
 <span class="kn">import</span> <span class="nn">herbie.models</span> <span class="k">as</span> <span class="nn">model_templates</span>
 <span class="kn">from</span> <span class="nn">herbie.help</span> <span class="kn">import</span> <span class="n">_searchString_help</span>
+<span class="kn">from</span> <span class="nn">herbie.misc</span> <span class="kn">import</span> <span class="n">Herbie_ascii</span>
 
 <span class="c1"># NOTE: These config dict values are retrieved from __init__ and read</span>
 <span class="c1"># from the file ${HOME}/.config/herbie/config.toml</span>
@@ -347,6 +348,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">priority</span> <span class="o">=</span> <span class="n">priority</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">save_dir</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">save_dir</span><span class="p">)</span><span class="o">.</span><span class="n">expand</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">overwrite</span> <span class="o">=</span> <span class="n">overwrite</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span> <span class="o">=</span> <span class="n">verbose</span>
 
         <span class="c1"># Some model templates may require kwargs not listed (e.g., `nest=`, `member=`).</span>
         <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
@@ -432,6 +434,11 @@
                 <span class="k">if</span> <span class="ow">not</span> <span class="n">i</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;__&quot;</span><span class="p">):</span>
                     <span class="n">msg</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;self.</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">=</span><span class="si">{</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">__logo__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;For Fun, show the Herbie Logo&quot;&quot;&quot;</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">Herbie_ascii</span><span class="p">())</span>
 
     <span class="k">def</span> <span class="nf">_validate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Validate the Herbie class input arguments&quot;&quot;&quot;</span>
@@ -552,9 +559,9 @@
             <span class="n">grib_url</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">SOURCES</span><span class="p">[</span><span class="n">source</span><span class="p">]</span>
 
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check_grib</span><span class="p">(</span><span class="n">grib_url</span><span class="p">):</span>
-                <span class="k">return</span> <span class="n">grib_url</span><span class="p">,</span> <span class="n">source</span>
+                <span class="k">return</span> <span class="p">[</span><span class="n">grib_url</span><span class="p">,</span> <span class="n">source</span><span class="p">]</span>
 
-        <span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span></div>
+        <span class="k">return</span> <span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span></div>
 
 <div class="viewcode-block" id="Herbie.find_idx"><a class="viewcode-back" href="../../reference_guide/_autosummary/herbie.archive.Herbie.html#herbie.archive.Herbie.find_idx">[docs]</a>    <span class="k">def</span> <span class="nf">find_idx</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Find an index file for the GRIB file&quot;&quot;&quot;</span>
@@ -583,14 +590,14 @@
             <span class="k">if</span> <span class="n">source</span> <span class="o">==</span> <span class="s2">&quot;local&quot;</span><span class="p">:</span>
                 <span class="n">local_grib</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">grib_url</span><span class="p">)</span><span class="o">.</span><span class="n">expand</span><span class="p">()</span>
                 <span class="n">local_idx</span> <span class="o">=</span> <span class="n">local_grib</span><span class="o">.</span><span class="n">with_suffix</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">IDX_SUFFIX</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-                <span class="k">return</span> <span class="n">local_idx</span><span class="p">,</span> <span class="s2">&quot;local&quot;</span>
+                <span class="k">return</span> <span class="p">[</span><span class="n">local_idx</span><span class="p">,</span> <span class="s2">&quot;local&quot;</span><span class="p">]</span>
 
             <span class="n">idx_exists</span><span class="p">,</span> <span class="n">idx_url</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check_idx</span><span class="p">(</span><span class="n">grib_url</span><span class="p">)</span>
 
             <span class="k">if</span> <span class="n">idx_exists</span><span class="p">:</span>
-                <span class="k">return</span> <span class="n">idx_url</span><span class="p">,</span> <span class="n">source</span>
+                <span class="k">return</span> <span class="p">[</span><span class="n">idx_url</span><span class="p">,</span> <span class="n">source</span><span class="p">]</span>
 
-            <span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span></div>
+        <span class="k">return</span> <span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span></div>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">get_remoteFileName</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -814,7 +821,7 @@
         <span class="n">source</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">save_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">overwrite</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">verbose</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">errors</span><span class="o">=</span><span class="s2">&quot;warn&quot;</span><span class="p">,</span>
     <span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -935,6 +942,10 @@
         <span class="k">if</span> <span class="n">overwrite</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">overwrite</span> <span class="o">=</span> <span class="n">overwrite</span>
 
+        <span class="c1"># This overrides the verbose specified in __init__</span>
+        <span class="k">if</span> <span class="n">verbose</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span> <span class="o">=</span> <span class="n">verbose</span>
+
         <span class="k">if</span> <span class="n">outFile</span><span class="o">.</span><span class="n">exists</span><span class="p">()</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">overwrite</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
                 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;🌉 Already have local copy --&gt; </span><span class="si">{</span><span class="n">outFile</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
@@ -1020,8 +1031,13 @@
         <span class="c1"># Download file if local file does not exists</span>
         <span class="n">local_file</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_localFilePath</span><span class="p">(</span><span class="n">searchString</span><span class="o">=</span><span class="n">searchString</span><span class="p">)</span>
 
-        <span class="c1"># Only remove grib if it didn&#39;t exists before we download it</span>
+        <span class="c1"># ! \/ This is critical...</span>
+        <span class="c1"># Only remove file if it did n0t exists before we download it</span>
         <span class="n">remove_grib</span> <span class="o">=</span> <span class="ow">not</span> <span class="n">local_file</span><span class="o">.</span><span class="n">exists</span><span class="p">()</span> <span class="ow">and</span> <span class="n">remove_grib</span>
+
+        <span class="c1"># ! \/ Fail-safe; Never remove a file if the source is &#39;local&#39;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">grib_source</span> <span class="o">==</span> <span class="s2">&quot;local&quot;</span><span class="p">:</span>
+            <span class="n">remove_grib</span> <span class="o">=</span> <span class="kc">False</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="n">local_file</span><span class="o">.</span><span class="n">exists</span><span class="p">()</span> <span class="ow">or</span> <span class="n">download_kwargs</span><span class="p">[</span><span class="s2">&quot;overwrite&quot;</span><span class="p">]:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">download</span><span class="p">(</span><span class="n">searchString</span><span class="o">=</span><span class="n">searchString</span><span class="p">,</span> <span class="o">**</span><span class="n">download_kwargs</span><span class="p">)</span>
@@ -1080,29 +1096,32 @@
                     <span class="k">continue</span>
                 <span class="n">ds</span><span class="p">[</span><span class="n">var</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;grid_mapping&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;gribfile_projection&quot;</span>
 
-        <span class="k">if</span> <span class="n">remove_grib</span><span class="p">:</span>
-            <span class="c1"># Load the datasets into memory before removing the file</span>
-            <span class="n">Hxr</span> <span class="o">=</span> <span class="p">[</span><span class="n">ds</span><span class="o">.</span><span class="n">load</span><span class="p">()</span> <span class="k">for</span> <span class="n">ds</span> <span class="ow">in</span> <span class="n">Hxr</span><span class="p">]</span>
-            <span class="n">_</span> <span class="o">=</span> <span class="p">[</span><span class="n">ds</span><span class="o">.</span><span class="n">close</span><span class="p">()</span> <span class="k">for</span> <span class="n">ds</span> <span class="ow">in</span> <span class="n">Hxr</span><span class="p">]</span>
+        <span class="c1"># ! DO NOT REMOVE GRIB FILES IF THE SOURCE IS LOCAL</span>
+        <span class="c1"># ! (I know I already checked this; I am just so worried about erasing my local data)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">grib_source</span> <span class="o">!=</span> <span class="s2">&quot;local&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">remove_grib</span><span class="p">:</span>
+                <span class="c1"># Load the datasets into memory before removing the file</span>
+                <span class="n">Hxr</span> <span class="o">=</span> <span class="p">[</span><span class="n">ds</span><span class="o">.</span><span class="n">load</span><span class="p">()</span> <span class="k">for</span> <span class="n">ds</span> <span class="ow">in</span> <span class="n">Hxr</span><span class="p">]</span>
+                <span class="n">_</span> <span class="o">=</span> <span class="p">[</span><span class="n">ds</span><span class="o">.</span><span class="n">close</span><span class="p">()</span> <span class="k">for</span> <span class="n">ds</span> <span class="ow">in</span> <span class="n">Hxr</span><span class="p">]</span>
 
-            <span class="c1"># TODO:</span>
-            <span class="c1"># Forcefully close the files so it can be removed</span>
-            <span class="c1"># (this is a WindowsOS specific requirement).</span>
-            <span class="c1"># os.close(?WHAT IS THE FILE HANDLER?)</span>
-            <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">            https://docs.python.org/3/library/os.html#os.remove</span>
-<span class="sd">            On Windows, attempting to remove a file that is in use</span>
-<span class="sd">            causes an exception to be raised; on Unix, the directory</span>
-<span class="sd">            entry is removed but the storage allocated to the file is</span>
-<span class="sd">            not made available until the original file is no longer in</span>
-<span class="sd">            use.</span>
-<span class="sd">            &gt;&gt; HOW DO I COMPLETELY CLOSE THE FILE OPENED BY CFGRIB??</span>
-<span class="sd">            &quot;&quot;&quot;</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">sys</span><span class="o">.</span><span class="n">platform</span> <span class="o">==</span> <span class="s2">&quot;win32&quot;</span><span class="p">:</span>
-                <span class="c1"># Removes file</span>
-                <span class="n">local_file</span><span class="o">.</span><span class="n">unlink</span><span class="p">()</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;sorry, on windows I couldn&#39;t remove the file.&quot;</span><span class="p">)</span>
+                <span class="c1"># TODO:</span>
+                <span class="c1"># Forcefully close the files so it can be removed</span>
+                <span class="c1"># (this is a WindowsOS specific requirement).</span>
+                <span class="c1"># os.close(?WHAT IS THE FILE HANDLER?)</span>
+                <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">                https://docs.python.org/3/library/os.html#os.remove</span>
+<span class="sd">                On Windows, attempting to remove a file that is in use</span>
+<span class="sd">                causes an exception to be raised; on Unix, the directory</span>
+<span class="sd">                entry is removed but the storage allocated to the file is</span>
+<span class="sd">                not made available until the original file is no longer in</span>
+<span class="sd">                use.</span>
+<span class="sd">                &gt;&gt; HOW DO I COMPLETELY CLOSE THE FILE OPENED BY CFGRIB??</span>
+<span class="sd">                &quot;&quot;&quot;</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">sys</span><span class="o">.</span><span class="n">platform</span> <span class="o">==</span> <span class="s2">&quot;win32&quot;</span><span class="p">:</span>
+                    <span class="c1"># Removes file</span>
+                    <span class="n">local_file</span><span class="o">.</span><span class="n">unlink</span><span class="p">()</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;sorry, on windows I couldn&#39;t remove the file.&quot;</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">Hxr</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">Hxr</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
@@ -1133,7 +1152,7 @@
     
     <div class="footer-item">
       <p class="copyright">
-    &copy; Copyright 2022, Brian K. Blaylock.    ♻ Updated: 15:51 UTC 13 Apr 2022.<br>
+    &copy; Copyright 2022, Brian K. Blaylock.    ♻ Updated: 19:10 UTC 23 Apr 2022.<br>
 </p>
     </div>
     
