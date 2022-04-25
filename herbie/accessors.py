@@ -16,27 +16,47 @@ To use the herbie xarray accessor, do this...
     H = Herbie('2021-01-01', model='hrrr')
     ds = H.xarray('TMP:2 m')
     ds.herbie.crs
-    ds.herbie.plot
+    ds.herbie.plot()
 
 """
 import functools
-import warnings
-
 import cartopy.crs as ccrs
 import matplotlib.pyplot as plt
-import metpy
+import metpy  # * Needed for metpy accessor
 import numpy as np
 import pandas as pd
 import xarray as xr
-from paint.radar import cm_reflectivity
-from paint.radar2 import cm_reflectivity
-from paint.standard2 import cm_dpt, cm_pcp, cm_rh, cm_tmp, cm_wind
 from shapely.geometry import Polygon
 
-# From Carpenter_Workshop:
-# https://github.com/blaylockbk/Carpenter_Workshop
-# TODO: update to the new cartopy_tools
-from toolbox.cartopy_tools import common_features, pc
+
+_level_units = dict(
+    adiabaticCondensation="adiabatic condensation",
+    atmosphere="atmosphere",
+    atmosphereSingleLayer="atmosphere single layer",
+    boundaryLayerCloudLayer="boundary layer cloud layer",
+    cloudBase="cloud base",
+    cloudCeiling="cloud ceiling",
+    cloudTop="cloud top",
+    depthBelowLand="m",
+    equilibrium="equilibrium",
+    heightAboveGround="m",
+    heightAboveGroundLayer="m",
+    highCloudLayer="high cloud layer",
+    highestTroposphericFreezing="highest tropospheric freezing",
+    isobaricInhPa="hPa",
+    isobaricLayer="hPa",
+    isothermZero="0 C",
+    isothermal="K",
+    level="m",
+    lowCloudLayer="low cloud layer",
+    meanSea="MSLP",
+    middleCloudLayer="middle cloud layer",
+    nominalTop="nominal top",
+    pressureFromGroundLayer="Pa",
+    sigma="sigma",
+    sigmaLayer="sigmaLayer",
+    surface="surface",
+)
 
 
 @xr.register_dataset_accessor("herbie")
@@ -122,38 +142,101 @@ class HerbieAccessor:
 
         return domain_polygon, domain_polygon_latlon
 
-    def plot(self, ax=None, common_features_kw={}, **kwargs):
-        """Plot data on a map."""
+    def nearest_points(self, points, names=None, verbose=True):
+        """
+        Get the nearest latitude/longitude points from a xarray Dataset.
+
+        Info
+        ----
+        - Stack Overflow: https://stackoverflow.com/questions/58758480/xarray-select-nearest-lat-lon-with-multi-dimension-coordinates
+        - MetPy Details: https://unidata.github.io/MetPy/latest/tutorials/xarray_tutorial.html?highlight=assign_y_x
+
+        Parameters
+        ----------
+        ds : xr.Dataset
+            A Herbie-friendly xarray Dataset
+        points : tuple (lon, lat) or list of tuples
+            The longitude and latitude (lon, lat) coordinate pair (as a tuple)
+            for the points you want to pluck from the gridded Dataset.
+            A list of tuples may be given to return the values from multiple points.
+        names : list
+            A list of names for each point location (i.e., station name).
+            None will not append any names. names should be the same
+            length as points.
+
+        Benchmark
+        ---------
+            This is **much** faster than my old "pluck_points" method.
+            For matchign 1,948 points:
+            - `nearest_points` completed in 7.5 seconds.
+            - `pluck_points` completed in 2 minutes.
+        """
         ds = self._obj
 
-        _level_units = dict(
-            adiabaticCondensation="adiabatic condensation",
-            atmosphere="atmosphere",
-            atmosphereSingleLayer="atmosphere single layer",
-            boundaryLayerCloudLayer="boundary layer cloud layer",
-            cloudBase="cloud base",
-            cloudCeiling="cloud ceiling",
-            cloudTop="cloud top",
-            depthBelowLand="m",
-            equilibrium="equilibrium",
-            heightAboveGround="m",
-            heightAboveGroundLayer="m",
-            highCloudLayer="high cloud layer",
-            highestTroposphericFreezing="highest tropospheric freezing",
-            isobaricInhPa="hPa",
-            isobaricLayer="hPa",
-            isothermZero="0 C",
-            isothermal="K",
-            level="m",
-            lowCloudLayer="low cloud layer",
-            meanSea="MSLP",
-            middleCloudLayer="middle cloud layer",
-            nominalTop="nominal top",
-            pressureFromGroundLayer="Pa",
-            sigma="sigma",
-            sigmaLayer="sigmaLayer",
-            surface="surface",
+        # Check if MetPy has already parsed the CF metadata grid projection.
+        # Do that if it hasn't been done yet.
+        if "metpy_crs" not in ds:
+            ds = ds.metpy.parse_cf()
+
+        # Apply the MetPy method `assign_y_x` to the dataset
+        # https://unidata.github.io/MetPy/latest/api/generated/metpy.xarray.html?highlight=assign_y_x#metpy.xarray.MetPyDataArrayAccessor.assign_y_x
+        ds = ds.metpy.assign_y_x()
+
+        # Convert the requested [(lon,lat), (lon,lat)] points to map projection.
+        # Accept a list of point tuples, or Shapely Points object.
+        # We want to index the dataset at a single point.
+        # We can do this by transforming a lat/lon point to the grid location
+        crs = ds.metpy_crs.item().to_cartopy()
+        # lat/lon input must be a numpy array, not a list or polygon
+        if isinstance(points, tuple):
+            # If a tuple is give, turn into a one-item list.
+            points = np.array([points])
+        if not isinstance(points, np.ndarray):
+            # Points must be a 2D numpy array
+            points = np.array(points)
+        lons = points[:, 0]
+        lats = points[:, 1]
+        transformed_data = crs.transform_points(ccrs.PlateCarree(), lons, lats)
+        xs = transformed_data[:, 0]
+        ys = transformed_data[:, 1]
+
+        # Select the nearest points from the projection coordinates.
+        # TODO: Is there a better way?
+        # There doesn't seem to be a way to get just the points like this
+        # ds = ds.sel(x=xs, y=ys, method='nearest')
+        # because it gives a 2D array, and not a point-by-point index.
+        # Instead, I have too loop the ds.sel method
+        new_ds = xr.concat(
+            [ds.sel(x=xi, y=yi, method="nearest") for xi, yi in zip(xs, ys)],
+            dim="point",
         )
+
+        # Add list of names as a coordinate
+        if names is not None:
+            # Assign the point dimension as the names.
+            assert len(points) == len(
+                names
+            ), "`points` and `names` must be same length."
+            new_ds["point"] = names
+
+        return new_ds
+
+    def plot(self, ax=None, common_features_kw={}, **kwargs):
+        """Plot data on a map."""
+        # From Carpenter_Workshop:
+        # https://github.com/blaylockbk/Carpenter_Workshop
+        try:
+            from toolbox.cartopy_tools import common_features, pc
+            from paint.radar import cm_reflectivity
+            from paint.radar2 import cm_reflectivity
+            from paint.standard2 import cm_dpt, cm_pcp, cm_rh, cm_tmp, cm_wind
+        except:
+            print("The plotting accessor requires my Carpenter Workshop. Try:")
+            print(
+                "`pip install git+https://github.com/blaylockbk/Carpenter_Workshop.git`"
+            )
+
+        ds = self._obj
 
         for var in ds.data_vars:
             if "longitude" not in ds[var].coords:
@@ -188,7 +271,7 @@ class HerbieAccessor:
             ax = common_features(**common_features_kw).STATES().ax
 
             title = ""
-            kwargs = {}
+            kwargs.setdefault("shading", "auto")
             cbar_kwargs = dict(pad=0.01)
 
             if ds[var].GRIB_cfVarName in ["d2m", "dpt"]:

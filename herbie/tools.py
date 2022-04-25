@@ -33,9 +33,31 @@ This is my first implementation of multithreading to create, download,
 and read many Herbie objects. This drastically reduces the time it takes
 to create a Herbie object (which is just looking for if and where a
 GRIB2 file exists on the internet) and to download a file.
-
-TODO: Write some docs for this feature
 """
+
+
+def _validate_fxx(fxx):
+    """Fast Herbie requires fxx as a list-like"""
+    if isinstance(fxx, int):
+        fxx = [fxx]
+
+    if not isinstance(fxx, (list, range)):
+        raise ValueError(f"fxx must be an int, list, or range. Gave {fxx}")
+
+    return fxx
+
+
+def _validate_DATES(DATES):
+    """Fast Herbie requires DATES as a list-like"""
+    if isinstance(DATES, str):
+        DATES = [pd.to_datetime(DATES)]
+
+    if not isinstance(DATES, (list, pd.DatetimeIndex)):
+        raise ValueError(
+            f"DATES must be a pandas-parsable datetime string or a list. Gave {DATES}"
+        )
+
+    return DATES
 
 
 def fast_Herbie(DATES, fxx=[0], *, max_threads=50, **kwargs):
@@ -65,19 +87,8 @@ def fast_Herbie(DATES, fxx=[0], *, max_threads=50, **kwargs):
         - 10 threads took 1.7 s
         - 50 threads took 0.5 s
     """
-    ################
-    # Validate Input
-    if isinstance(DATES, str):
-        DATES = [pd.to_datetime(DATES)]
-
-    if not isinstance(DATES, (list, pd.DatetimeIndex)):
-        raise ValueError("DATES must be a pandas-parsable datetime string or a list.")
-
-    if isinstance(fxx, int):
-        fxx = [fxx]
-
-    if not isinstance(fxx, (list, range)):
-        raise ValueError("fxx must be an int, list, or range.")
+    DATES = _validate_DATES(DATES)
+    fxx = _validate_fxx(fxx)
 
     kwargs.setdefault("verbose", False)
 
@@ -125,6 +136,8 @@ def fast_Herbie_download(
         - 10 threads took 25 s
         - 50 threads took 23 s
     """
+    DATES = _validate_DATES(DATES)
+    fxx = _validate_fxx(fxx)
 
     kwargs.setdefault("verbose", False)
 
@@ -153,7 +166,7 @@ def fast_Herbie_download(
     return dict(passed=passed, failed=failed)
 
 
-def fast_Herbie_xarray(DATES, *, searchString=None, fxx=[0], max_threads=10, **kwargs):
+def fast_Herbie_xarray(DATES, *, searchString=None, fxx=[0], max_threads=5, **kwargs):
     """
     Use multithreading to download many Herbie objects
 
@@ -161,6 +174,7 @@ def fast_Herbie_xarray(DATES, *, searchString=None, fxx=[0], max_threads=10, **k
     ----------
     max_threads : int
         Control the maximum number of threads to use.
+        If you use too many threads, you may run into memory limits.
 
     Benchmark
     ---------
@@ -171,6 +185,8 @@ def fast_Herbie_xarray(DATES, *, searchString=None, fxx=[0], max_threads=10, **k
         - 10 threads took 39 s
         - 50 threads took 37 s
     """
+    DATES = _validate_DATES(DATES)
+    fxx = _validate_fxx(fxx)
 
     kwargs.setdefault("verbose", False)
 
@@ -199,9 +215,9 @@ def fast_Herbie_xarray(DATES, *, searchString=None, fxx=[0], max_threads=10, **k
     ds_list = [ds_list[x : x + len(fxx)] for x in range(0, len(ds_list), len(fxx))]
 
     # Concat DataSets
-    ds = xr.combine_nested(ds_list, concat_dim=["t", "f"]).squeeze()
-
-    # TODO: Replace some lost attributes after the combine.
+    ds = xr.combine_nested(ds_list, concat_dim=["t", "f"], combine_attrs="drop_conflicts")
+    ds['gribfile_projection'] = ds.gribfile_projection[0][0]
+    ds = ds.squeeze()
 
     if len(failed):
         log.warning(
@@ -255,87 +271,9 @@ def create_index_files(path, overwrite=False):
         raise ValueError(f"No grib2 files were found in {path}")
 
 
-# TODO: Probably should implement this as an accessor instead of a "tool".
-def nearest_points(ds, points, names=None, verbose=True):
-    """
-    Get the nearest latitude/longitude points from a xarray Dataset.
-
-    This is **much** faster than my old "pluck_points" method. For
-    matchign 1,948 points,
-    - `nearest_points` completed in 7.5 seconds.
-    - `pluck_points` completed in 2 minutes.
-
-    Info
-    ----
-    - Stack Overflow: https://stackoverflow.com/questions/58758480/xarray-select-nearest-lat-lon-with-multi-dimension-coordinates
-    - MetPy Details: https://unidata.github.io/MetPy/latest/tutorials/xarray_tutorial.html?highlight=assign_y_x
-
-
-    Parameters
-    ----------
-    ds : a friendly xarray Dataset
-    points : tuple (lon, lat) or list of tuples
-        The longitude and latitude (lon, lat) coordinate pair (as a tuple)
-        for the points you want to pluck from the gridded Dataset.
-        A list of tuples may be given to return the values from multiple points.
-    names : list
-        A list of names for each point location (i.e., station name).
-        None will not append any names. names should be the same
-        length as points.
-    """
-    # Check if MetPy has already parsed the CF metadata grid projection.
-    # Do that if it hasn't been done yet.
-    if "metpy_crs" not in ds:
-        ds = ds.metpy.parse_cf()
-
-    # Apply the MetPy method `assign_y_x` to the dataset
-    # https://unidata.github.io/MetPy/latest/api/generated/metpy.xarray.html?highlight=assign_y_x#metpy.xarray.MetPyDataArrayAccessor.assign_y_x
-    ds = ds.metpy.assign_y_x()
-
-    # Convert the requested [(lon,lat), (lon,lat)] points to map projection.
-    # Accept a list of point tuples, or Shapely Points object.
-    # We want to index the dataset at a single point.
-    # We can do this by transforming a lat/lon point to the grid location
-    crs = ds.metpy_crs.item().to_cartopy()
-    # lat/lon input must be a numpy array, not a list or polygon
-    if isinstance(points, tuple):
-        # If a tuple is give, turn into a one-item list.
-        points = np.array([points])
-    if not isinstance(points, np.ndarray):
-        # Points must be a 2D numpy array
-        points = np.array(points)
-    lons = points[:, 0]
-    lats = points[:, 1]
-    transformed_data = crs.transform_points(ccrs.PlateCarree(), lons, lats)
-    xs = transformed_data[:, 0]
-    ys = transformed_data[:, 1]
-
-    # Select the nearest points from the projection coordinates.
-    # TODO: Is there a better way?
-    # There doesn't seem to be a way to get just the points like this
-    # ds = ds.sel(x=xs, y=ys, method='nearest')
-    # because it gives a 2D array, and not a point-by-point index.
-    # Instead, I have too loop the ds.sel method
-    new_ds = xr.concat(
-        [ds.sel(x=xi, y=yi, method="nearest") for xi, yi in zip(xs, ys)], dim="point"
-    )
-
-    # Add list of names as a coordinate
-    if names is not None:
-        # Assign the point dimension as the names.
-        assert len(points) == len(names), "`points` and `names` must be same length."
-        new_ds["point"] = names
-
-    return new_ds
-
-
-# TODO: I like the idea in Salem to mask data by a geographic region
-# TODO: Maybe can use that in Herbie. https://github.com/fmaussion/salem
-
-
 ########################################################################
 ########################################################################
-# ! Old Sequential Scripts
+# ! Old
 
 
 def bulk_download(DATES, searchString=None, *, fxx=range(0, 1), verbose=True, **kwargs):
@@ -447,3 +385,84 @@ def xr_concat_sameLead(DATES, searchString, fxx=0, verbose=False, **kwargs):
     Hs = fast_Herbie(DATES, fxx, **kwargs)
     Hs_to_cat = [H.xarray(searchString, verbose=verbose) for H in Hs]
     return xr.concat(Hs_to_cat, dim="t")
+
+
+def nearest_points(ds, points, names=None, verbose=True):
+    """
+    Get the nearest latitude/longitude points from a xarray Dataset.
+
+    This is **much** faster than my old "pluck_points" method. For
+    matchign 1,948 points,
+    - `nearest_points` completed in 7.5 seconds.
+    - `pluck_points` completed in 2 minutes.
+
+    Info
+    ----
+    - Stack Overflow: https://stackoverflow.com/questions/58758480/xarray-select-nearest-lat-lon-with-multi-dimension-coordinates
+    - MetPy Details: https://unidata.github.io/MetPy/latest/tutorials/xarray_tutorial.html?highlight=assign_y_x
+
+
+    Parameters
+    ----------
+    ds : a friendly xarray Dataset
+    points : tuple (lon, lat) or list of tuples
+        The longitude and latitude (lon, lat) coordinate pair (as a tuple)
+        for the points you want to pluck from the gridded Dataset.
+        A list of tuples may be given to return the values from multiple points.
+    names : list
+        A list of names for each point location (i.e., station name).
+        None will not append any names. names should be the same
+        length as points.
+    """
+    log.warning(
+        "Depreciated:  `nearest_points` is now a herbie accessor. Use `ds.herbie.nearest_points()`"
+    )
+
+    # Check if MetPy has already parsed the CF metadata grid projection.
+    # Do that if it hasn't been done yet.
+    if "metpy_crs" not in ds:
+        ds = ds.metpy.parse_cf()
+
+    # Apply the MetPy method `assign_y_x` to the dataset
+    # https://unidata.github.io/MetPy/latest/api/generated/metpy.xarray.html?highlight=assign_y_x#metpy.xarray.MetPyDataArrayAccessor.assign_y_x
+    ds = ds.metpy.assign_y_x()
+
+    # Convert the requested [(lon,lat), (lon,lat)] points to map projection.
+    # Accept a list of point tuples, or Shapely Points object.
+    # We want to index the dataset at a single point.
+    # We can do this by transforming a lat/lon point to the grid location
+    crs = ds.metpy_crs.item().to_cartopy()
+    # lat/lon input must be a numpy array, not a list or polygon
+    if isinstance(points, tuple):
+        # If a tuple is give, turn into a one-item list.
+        points = np.array([points])
+    if not isinstance(points, np.ndarray):
+        # Points must be a 2D numpy array
+        points = np.array(points)
+    lons = points[:, 0]
+    lats = points[:, 1]
+    transformed_data = crs.transform_points(ccrs.PlateCarree(), lons, lats)
+    xs = transformed_data[:, 0]
+    ys = transformed_data[:, 1]
+
+    # Select the nearest points from the projection coordinates.
+    # TODO: Is there a better way?
+    # There doesn't seem to be a way to get just the points like this
+    # ds = ds.sel(x=xs, y=ys, method='nearest')
+    # because it gives a 2D array, and not a point-by-point index.
+    # Instead, I have too loop the ds.sel method
+    new_ds = xr.concat(
+        [ds.sel(x=xi, y=yi, method="nearest") for xi, yi in zip(xs, ys)], dim="point"
+    )
+
+    # Add list of names as a coordinate
+    if names is not None:
+        # Assign the point dimension as the names.
+        assert len(points) == len(names), "`points` and `names` must be same length."
+        new_ds["point"] = names
+
+    return new_ds
+
+
+# TODO: I like the idea in Salem to mask data by a geographic region
+# TODO: Maybe can use that in Herbie. https://github.com/fmaussion/salem

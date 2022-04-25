@@ -114,24 +114,45 @@ Herbie can help you read these files with `xarray <http://xarray.pydata.org/en/s
 
 .. image:: _static/screenshots/usage_4.png
 
-Plot Fields
+Fast Herbie
 ^^^^^^^^^^^
-🏗 Under construction. I want to make some useful xarray accessors for plotting the GRIB2 fields. This will use tools I am developing in my `Carpenter Workshop <https://github.com/blaylockbk/Carpenter_Workshop>`_ package to plot the data on a Cartopy map or pluck points nearest specific latitudes and longitudes.
-
-Bulk Download
-^^^^^^^^^^^^^
-Sometimes you need lots of data. Herbie can help download many files for a range of dates and forecast lead times. For example,
+Often, data from several GRIB2 files is needed (range of datetimes and/or forecast lead time). "Fast Herbie" tools use multithreading to help you efficiently create multiple Herbie objects, download many files, and open data in xarray DataSets for a range of model runs and forecast lead times.
 
 .. code-block:: python
 
-   from herbie.tools import bulk_download
+   from herbie.tools import fast_Herbie, fast_Herbie_download, fast_Herbie_xarray
    import pandas as pd
 
-   # Download HRRR analysis for every hour of a day
-   DATES = pd.date_range('2021-01-01 00:00', '2021-01-01 06:00', freq='1H')
-   bulk_download(DATES, model='hrrr', product='sfc', fxx=0, searchString='TMP:2 m')
+   # Get the F00-F06 forecasts for each of the runs initialized
+   # between 00z-06z on January 1, 2022 (a total of 42 Herbie objects)
+   DATES = pd.date_range('2022-01-01 00:00', '2022-01-01 06:00', freq='1H')
+   fxx = range(0,7)
+
+   # Create list of Herbie objects for all dates and lead times requested.
+   HH = fast_Herbie(DATES=DATES, fxx=fxx)
+
+   # Download many GRIB2 files; subset the files for 2-m temperature
+   d = fast_Herbie_download(DATES=DATES, fxx=fxx, searchString='TMP:2 m')
+
+   # Load many files into xarray; subset for 10-m u and v wind.
+   ds = fast_Herbie_xarray(DATES=DATES, fxx=fxx, searchString='(?:U|V)GRD:10 m')
 
 .. image:: _static/screenshots/usage_5.png
+
+Xarray Herbie Accessors
+^^^^^^^^^^^^^^^^^^^^^^^
+
+.. note::
+   🏗 Some of these features are under construction.
+
+Herbie comes with custom xarray DataSet accessors. These can help with
+
+- ``ds.herbie.crs`` returns the cartopy coordinate reference system.
+- ``ds.herbie.polygon`` returns the model domain boundary as a polygon.
+- ``ds.herbie.nearest_points()`` extracts the data nearest certain lat/lon points.
+- ``ds.herbie.plot()`` creates a map plot.
+
+These tools use my `Carpenter Workshop <https://github.com/blaylockbk/Carpenter_Workshop>`_.
 
 
 Other Tools
