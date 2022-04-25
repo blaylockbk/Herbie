@@ -145,7 +145,7 @@ Xarray Herbie Accessors
 .. note::
    🏗 Some of these features are under construction.
 
-Herbie comes with custom xarray DataSet accessors. These can help with
+Herbie comes with custom xarray DataSet accessors.
 
 - ``ds.herbie.crs`` returns the cartopy coordinate reference system.
 - ``ds.herbie.polygon`` returns the model domain boundary as a polygon.
