@@ -14,6 +14,7 @@
    .. autosummary::
    
       ~HerbieAccessor.__init__
+      ~HerbieAccessor.nearest_points
       ~HerbieAccessor.plot
    
    
