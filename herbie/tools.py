@@ -51,6 +51,8 @@ def _validate_DATES(DATES):
     """Fast Herbie requires DATES as a list-like"""
     if isinstance(DATES, str):
         DATES = [pd.to_datetime(DATES)]
+    elif not hasattr(DATES, "__len__"):
+        DATES = [pd.to_datetime(DATES)]
 
     if not isinstance(DATES, (list, pd.DatetimeIndex)):
         raise ValueError(
@@ -215,8 +217,20 @@ def fast_Herbie_xarray(DATES, *, searchString=None, fxx=[0], max_threads=5, **kw
     ds_list = [ds_list[x : x + len(fxx)] for x in range(0, len(ds_list), len(fxx))]
 
     # Concat DataSets
-    ds = xr.combine_nested(ds_list, concat_dim=["t", "f"], combine_attrs="drop_conflicts")
-    ds['gribfile_projection'] = ds.gribfile_projection[0][0]
+    try:
+        ds = xr.combine_nested(
+            ds_list,
+            concat_dim=["t", "f"],
+            combine_attrs="drop_conflicts",
+        )
+    except:
+        # ? I'm not sure why some cases doesn't like the combine_attrs argument
+        ds = xr.combine_nested(
+            ds_list,
+            concat_dim=["t", "f"],
+        )
+
+    ds["gribfile_projection"] = ds.gribfile_projection[0][0]
     ds = ds.squeeze()
 
     if len(failed):

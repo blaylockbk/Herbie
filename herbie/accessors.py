@@ -132,7 +132,7 @@ class HerbieAccessor:
 
         ###################################
         # Polygon in projection coordinates
-        transform = self.crs.transform_points(pc, x, y)
+        transform = self.crs.transform_points(ccrs.PlateCarree(), x, y)
 
         # Remove any points that run off the projection map (i.e., point's value is `inf`).
         transform = transform[~np.isinf(transform).any(axis=1)]
