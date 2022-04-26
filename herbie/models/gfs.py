@@ -22,6 +22,7 @@ class gfs:
         self.SOURCES = {
             "aws": f"https://noaa-gfs-bdp-pds.s3.amazonaws.com/gfs.{self.date:%Y%m%d/%H}/atmos/gfs.t{self.date:%H}z.{self.product}.f{self.fxx:03d}",
             "aws-old": f"https://noaa-gfs-bdp-pds.s3.amazonaws.com/gfs.{self.date:%Y%m%d/%H}/gfs.t{self.date:%H}z.{self.product}.f{self.fxx:03d}",
+            "ftpprd": f"https://ftpprd.ncep.noaa.gov/data/nccf/com/gfs/prod/gfs.{self.date:%Y%m%d/%H}/atmos/gfs.t{self.date:%H}z.{self.product}.f{self.fxx:03d}",
             "nomads": f"https://nomads.ncep.noaa.gov/pub/data/nccf/com/gfs/prod/gfs.{self.date:%Y%m%d/%H}/atmos/gfs.t{self.date:%H}z.{self.product}.f{self.fxx:03d}",
             "google": f"https://storage.googleapis.com/global-forecast-system/gfs.{self.date:%Y%m%d/%H}/atmos/gfs.t{self.date:%H}z.{self.product}.f{self.fxx:03d}",
             "azure": f"https://noaagfs.blob.core.windows.net/gfs/gfs.{self.date:%Y%m%d/%H}/atmos/gfs.t{self.date:%H}z.{self.product}.f{self.fxx:03d}",
@@ -46,8 +47,9 @@ class gfs_wave:
             "wcoast.0p16": "West Coast; 0.16 deg resolution",
         }
         self.SOURCES = {
-            "nomads": f"https://nomads.ncep.noaa.gov/pub/data/nccf/com/gfs/prod/gfs.{self.date:%Y%m%d/%H}/wave/gridded/gfswave.t{self.date:%H}z.{self.product}.f{self.fxx:03d}.grib2",
             "aws": f"https://noaa-gfs-bdp-pds.s3.amazonaws.com/gfs.{self.date:%Y%m%d/%H}/wave/gridded/gfswave.t{self.date:%H}z.{self.product}.f{self.fxx:03d}.grib2",
+            "ftpprd": f"https://ftpprd.ncep.noaa.gov/data/nccf/com/gfs/prod/gfs.{self.date:%Y%m%d/%H}/wave/gridder/gfswave.t{self.date:%H}z.{self.product}.f{self.fxx:03d}.grib2",
+            "nomads": f"https://nomads.ncep.noaa.gov/pub/data/nccf/com/gfs/prod/gfs.{self.date:%Y%m%d/%H}/wave/gridded/gfswave.t{self.date:%H}z.{self.product}.f{self.fxx:03d}.grib2",
             "google": f"https://storage.googleapis.com/global-forecast-system/gfs.{self.date:%Y%m%d/%H}/wave/gridded/gfswave.t{self.date:%H}z.{self.product}.f{self.fxx:03d}.grib2",
             "azure": f"https://noaahrrr.blob.core.windows.net/gfs/gfs.{self.date:%Y%m%d/%H}/wave/gridded/gfswave.t{self.date:%H}z.{self.product}.f{self.fxx:03d}.grib2",
         }
