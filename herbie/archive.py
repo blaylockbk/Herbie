@@ -463,7 +463,7 @@ class Herbie:
             hash_label = hashlib.sha1(all_grib_msg.encode()).hexdigest()
 
             # Append the filename to distinguish it from the full file.
-            outFile = outFile.with_suffix(f".grib2.subset_{hash_label}")
+            outFile = outFile.parent / f"subset_{hash_label}__{outFile.name}"
 
         return outFile
 
