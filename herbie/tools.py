@@ -234,14 +234,14 @@ def fast_Herbie_xarray(
     try:
         ds = xr.combine_nested(
             ds_list,
-            concat_dim=["t", "f"],
+            concat_dim=["i_run", "i_fxx"],
             combine_attrs="drop_conflicts",
         )
     except:
-        # ? I'm not sure why some cases doesn't like the combine_attrs argument
+        # TODO: I'm not sure why some cases doesn't like the combine_attrs argument
         ds = xr.combine_nested(
             ds_list,
-            concat_dim=["t", "f"],
+            concat_dim=["i_run", "i_fxx"],
         )
 
     ds["gribfile_projection"] = ds.gribfile_projection[0][0]
