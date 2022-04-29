@@ -27,6 +27,7 @@ dependencies:
   - pylint
   - pyproj
   - requests>=2.27.1
+  - rich
   - s3fs
   - scipy
   - toml
