@@ -265,10 +265,11 @@ class Herbie:
         """
         try:
             from rich.console import Console
+            from herbie.misc import rich_herbie
 
             console = Console()
             console.print(
-                f"[bold][#88211b]▐[/][#0c3576]▐[/] Herbie:[/bold] "
+                f"{rich_herbie} "
                 f"{self.model.upper()} model "
                 f"[italic]{self.product}[/] product "
                 f"initialized [green]{self.date:%Y-%b-%d %H:%M} UTC[/] "
