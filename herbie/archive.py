@@ -257,6 +257,7 @@ class Herbie:
                     f'{" ":100s}',
                 )
 
+    @property
     def print_rich(self):
         """
         Print "rich" display console
