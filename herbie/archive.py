@@ -272,8 +272,8 @@ class Herbie:
                 f"{rich_herbie()} "
                 f"{self.model.upper()} model "
                 f"[italic]{self.product}[/] product "
-                f"initialized [green]{self.date:%Y-%b-%d %H:%M} UTC[/] "
-                f"[#d8c89d]F{self.fxx:02d}[/] "
+                f"initialized [green bold]{self.date:%Y-%b-%d %H:%M} UTC[/] "
+                f"[#3ab813]F{self.fxx:02d}[/] "
                 f"| [#ff9900 italic]source={self.grib_source}[/]"
             )
         except:
