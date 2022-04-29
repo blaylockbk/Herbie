@@ -21,7 +21,6 @@ To use the herbie xarray accessor, do this...
 """
 import functools
 import cartopy.crs as ccrs
-import matplotlib.pyplot as plt
 import metpy  # * Needed for metpy accessor
 import numpy as np
 import pandas as pd
@@ -225,6 +224,8 @@ class HerbieAccessor:
         """Plot data on a map."""
         # From Carpenter_Workshop:
         # https://github.com/blaylockbk/Carpenter_Workshop
+        import matplotlib.pyplot as plt
+
         try:
             from toolbox.cartopy_tools import common_features, pc
             from paint.radar import cm_reflectivity

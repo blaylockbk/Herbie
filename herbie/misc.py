@@ -66,7 +66,7 @@ def rich_herbie():
     """
     Returns "▌▌Herbie" with rich colors
     """
-    return f"[on {hc.tan}][{hc.red} on {hc.white}]▌[/][{hc.blue}]▌[/][bold {hc.black}]Herbie[/]"
+    return f"[on {hc.tan}][{hc.red} on {hc.white}]▌[/][{hc.blue}]▌[/][bold {hc.black}]Herbie[/][/]"
 
 
 def Herbie_ascii(body="tan"):

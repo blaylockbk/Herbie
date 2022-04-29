@@ -67,7 +67,7 @@ from herbie.misc import Herbie_ascii
 # NOTE: These config dict values are retrieved from __init__ and read
 # from the file ${HOME}/.config/herbie/config.toml
 # Path imported from __init__ because it has my custom `expand()` method
-from . import Path, config
+from herbie import Path, config
 
 try:
     # Load custom xarray accessors
@@ -269,7 +269,7 @@ class Herbie:
 
             console = Console()
             console.print(
-                f"{rich_herbie} "
+                f"{rich_herbie()} "
                 f"{self.model.upper()} model "
                 f"[italic]{self.product}[/] product "
                 f"initialized [green]{self.date:%Y-%b-%d %H:%M} UTC[/] "

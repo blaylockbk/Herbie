@@ -66,3 +66,5 @@ twine upload --skip-existing --repository-url https://test.pypi.org/legacy/ dist
 """
 
 # See download statistics at: https://pepy.tech/project/herbie-data
+
+# Check import time with python -X importtime herbie/archive.py > importtime.txt 2>&1
