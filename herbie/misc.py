@@ -23,6 +23,52 @@
 """
 
 
+class hc:
+    """Herbie Color Pallette"""
+
+    tan = "#f0ead2"
+    red = "#88211b"
+    blue = "#0c3576"
+    white = "#ffffff"
+    black = "#000000"
+
+
+class ansi:
+    """
+    Herbie colors as ansi codes
+
+    Reference
+    ---------
+    https://gist.github.com/fnky/458719343aabd01cfb17a3a4f7296797
+    """
+
+    # Octal: \033
+    # Unicode: \u001b
+    # Hexadecimal: \x1B
+    ESC = "\x1B"
+    # Style
+    bold = f"{ESC}[1m"
+    italic = f"{ESC}[3m"
+    underline = f"{ESC}[4m"
+    strikethrough = f"{ESC}[9m"
+    reset = f"{ESC}[0m"
+    # Colors
+    red = f"{ESC}[38;2;136;33;27m"
+    blue = f"{ESC}[38;2;12;53;118m"
+    black = f"{ESC}[38;2;0;0;0m"
+    white = f"{ESC}[37m"
+    # Background color
+    _tan = f"{ESC}[48;2;240;234;210m"
+    _white = f"{ESC}[47m"
+
+
+def rich_herbie():
+    """
+    Returns "▌▌Herbie" with rich colors
+    """
+    return f"[on {hc.tan}][{hc.red} on {hc.white}]▌[/][{hc.blue}]▌[/][bold {hc.black}]Herbie[/][/]"
+
+
 def Herbie_ascii(body="tan"):
     """
     Display the Herbie logo in ASCII characters and colors.
@@ -32,36 +78,21 @@ def Herbie_ascii(body="tan"):
     Command Line
     >>> python -c "from herbie.misc import Herbie_ascii; print(Herbie_ascii())"
     """
-    red = "\033[38;2;136;33;27m"
-    blue = "\033[38;2;12;53;118m"
-    black = "\033[38;2;0;0;0m"  # black
-    escape = "\033[0m"
-    background = "\033[48;2;240;234;210m"  # Tan
     a = f"""
 
-{background}{' ':45}{escape}
-{background}   {red}█ {blue}██ {black}                                    {escape}
-{background}   {red}█ {blue}██ {black}┏━┓ ┏━┓            ┏━┓   ┏━┓        {escape}
-{background}   {red}█ {blue}██ {black}┃ ┃ ┃ ┃┏━━━━┓┏━┓┏━┓┃ ┃   ┏━┓┏━━━━┓  {escape}
-{background}   {red}█ {blue}██ {black}┃ ┗━┛ ┃┃ ━━ ┃┃ ┏━━┛┃ ┗━━┓┃ ┃┃ ━━ ┃  {escape}
-{background}   {red}█ {blue}██ {black}┃ ┏━┓ ┃┃ ━━━┓┃ ┃   ┃ ━━ ┃┃ ┃┃ ━━━┓  {escape}
-{background}   {red}█ {blue}██ {black}┗━┛ ┗━┛┗━━━━┛┗━┛   ┗━━━━┛┗━┛┗━━━━┛  {escape}
-{background}   {red}█ {blue}██ {black}                                    {escape}
-{background}{' ':4}{black}       🏁 Retrieve NWP Model Data 🏁     {escape}
-{background}{' ':45}{escape}
+{ansi._tan}{' ':44}{ansi.reset}
+{ansi._tan}   {ansi.red}█ {ansi.blue}██ {ansi.black}                                    {ansi.reset}
+{ansi._tan}   {ansi.red}█ {ansi.blue}██ {ansi.black}┏━┓ ┏━┓            ┏━┓   ┏━┓        {ansi.reset}
+{ansi._tan}   {ansi.red}█ {ansi.blue}██ {ansi.black}┃ ┃ ┃ ┃┏━━━━┓┏━┓┏━┓┃ ┃   ┏━┓┏━━━━┓  {ansi.reset}
+{ansi._tan}   {ansi.red}█ {ansi.blue}██ {ansi.black}┃ ┗━┛ ┃┃ ━━ ┃┃ ┏━━┛┃ ┗━━┓┃ ┃┃ ━━ ┃  {ansi.reset}
+{ansi._tan}   {ansi.red}█ {ansi.blue}██ {ansi.black}┃ ┏━┓ ┃┃ ━━━┓┃ ┃   ┃ ━━ ┃┃ ┃┃ ━━━┓  {ansi.reset}
+{ansi._tan}   {ansi.red}█ {ansi.blue}██ {ansi.black}┗━┛ ┗━┛┗━━━━┛┗━┛   ┗━━━━┛┗━┛┗━━━━┛  {ansi.reset}
+{ansi._tan}   {ansi.red}█ {ansi.blue}██ {ansi.black}                                    {ansi.reset}
+{ansi._tan}{' ':3}{ansi.black}       🏁 Retrieve NWP Model Data 🏁     {ansi.reset}
+{ansi._tan}{' ':44}{ansi.reset}
 
     """
     return a
-
-
-def HerbieColors():
-    return dict(
-        body="#f0ead2",
-        red="#88211b",
-        blue="#0c3576",
-        white="#ffffff",
-        black="#000000",
-    )
 
 
 def HerbieLogo(white_line=False):
@@ -69,15 +100,13 @@ def HerbieLogo(white_line=False):
     import matplotlib.patheffects as path_effects
     import matplotlib.pyplot as plt
 
-    colors = HerbieColors()
-
-    plt.figure(figsize=[5, 5], facecolor=colors["body"])
+    plt.figure(figsize=[5, 5], facecolor=hc.tan)
 
     plt.axis([-10, 10, -10, 10])
     if white_line:
-        plt.axvline(4, lw=40, color=colors["white"])
-    plt.axvline(2.5, lw=20, color=colors["red"])
-    plt.axvline(5.5, lw=40, color=colors["blue"])
+        plt.axvline(4, lw=40, color=hc.white)
+    plt.axvline(2.5, lw=20, color=hc.red)
+    plt.axvline(5.5, lw=40, color=hc.blue)
 
     c = plt.Circle((0, 0), radius=6, ec="k", fc="w", zorder=10, linewidth=3)
     plt.gca().add_artist(c)
@@ -93,7 +122,7 @@ def HerbieLogo(white_line=False):
         zorder=11,
     )
 
-    plt.gca().set_facecolor(colors["body"])
+    plt.gca().set_facecolor(hc.tan)
     plt.gca().margins(0)
 
     plt.gca().get_xaxis().set_visible(False)
@@ -107,26 +136,35 @@ def HerbieLogo(white_line=False):
     return plt.gca()
 
 
-def HerbieLogo2(white_line=False, text_color="body", text_stroke="black"):
-    """Logo of Herbie The Love Bug"""
+def HerbieLogo2(white_line=False, text_color="tan", text_stroke="black"):
+    """
+    Herbie logo (main)
+
+    >>> ax = HerbieLogo2()
+    >>> plt.savefig('Herbie.svg', bbox_inches="tight")
+
+    >>> ax = HerbieLogo2()
+    >>> plt.savefig('Herbie_transparent.svg', bbox_inches="tight", transparent=True)
+
+    >>> ax = HerbieLogo2(text_color='tan')
+    >>> plt.savefig('Herbie_transparent_tan.svg', bbox_inches="tight", transparent=True)
+    """
     import matplotlib.patheffects as path_effects
     import matplotlib.pyplot as plt
 
-    colors = HerbieColors()
-
-    plt.figure(figsize=[5, 3], facecolor=colors["body"])
+    plt.figure(figsize=[5, 3], facecolor=hc.tan)
 
     plt.axis([1.5, 20, -10, 10])
 
     if white_line:
-        plt.axvline(4, lw=40, color=colors["white"])
-    plt.axvline(2.5, lw=20, color=colors["red"])
-    plt.axvline(5.5, lw=40, color=colors["blue"])
+        plt.axvline(4, lw=40, color=hc.white)
+    plt.axvline(2.5, lw=20, color=hc.red)
+    plt.axvline(5.5, lw=40, color=hc.blue)
 
-    if text_color in colors:
-        text_color = colors[text_color]
-    if text_stroke in colors:
-        text_stroke = colors[text_stroke]
+    if hasattr(hc, text_color):
+        text_color = getattr(hc, text_color)
+    if hasattr(hc, text_stroke):
+        text_stroke = getattr(hc, text_stroke)
 
     text = plt.text(
         8,
@@ -148,7 +186,7 @@ def HerbieLogo2(white_line=False, text_color="body", text_stroke="black"):
             ]
         )
 
-    plt.gca().set_facecolor(colors["body"])
+    plt.gca().set_facecolor(hc.tan)
     plt.gca().margins(0)
 
     plt.gca().get_xaxis().set_visible(False)

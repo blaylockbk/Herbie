@@ -47,6 +47,7 @@ import functools
 import hashlib
 import json
 import os
+from io import StringIO
 import sys
 import urllib.request
 import warnings
@@ -66,7 +67,7 @@ from herbie.misc import Herbie_ascii
 # NOTE: These config dict values are retrieved from __init__ and read
 # from the file ${HOME}/.config/herbie/config.toml
 # Path imported from __init__ because it has my custom `expand()` method
-from . import Path, config
+from herbie import Path, config
 
 try:
     # Load custom xarray accessors
@@ -81,6 +82,19 @@ except:
     pass
 
 log = logging.getLogger(__name__)
+
+
+def wgrib2_idx_to_str(GRIB2_FILEPATH):
+    """Produce the index file as a string with wgrib2"""
+    from shutil import which
+    import subprocess
+
+    if which("wgrib2") is None:
+        raise RuntimeError("wgrib2 command was not found.")
+
+    cmd = f"wgrib2 -s {GRIB2_FILEPATH}"
+    out = subprocess.run(cmd, shell=True, capture_output=True, check=True)
+    return out.stdout.decode("utf-8")
 
 
 class Herbie:
@@ -242,6 +256,28 @@ class Herbie:
                     f"{self.model.upper()}",
                     f'{" ":100s}',
                 )
+
+    @property
+    def print_rich(self):
+        """
+        Print "rich" display console
+        TODO: How do I get the __repr__ to do this?
+        """
+        try:
+            from rich.console import Console
+            from herbie.misc import rich_herbie
+
+            console = Console()
+            console.print(
+                f"{rich_herbie()} "
+                f"{self.model.upper()} model "
+                f"[italic]{self.product}[/] product "
+                f"initialized [green bold]{self.date:%Y-%b-%d %H:%M} UTC[/] "
+                f"[#3ab813]F{self.fxx:02d}[/] "
+                f"| [#ff9900 italic]source={self.grib_source}[/]"
+            )
+        except:
+            print("rich is not working/installed")
 
     def __repr__(self):
         """Representation in Notebook"""
@@ -434,7 +470,7 @@ class Herbie:
 
     @property
     def get_localFileName(self):
-        """Predict Local File Name"""
+        """Predict Local File Name of the full file"""
         return self.LOCALFILE
 
     def get_localFilePath(self, searchString=None):
@@ -452,24 +488,43 @@ class Herbie:
 
         if searchString is not None:
             # Reassign the index DataFrame with the requested searchString
-            self.idx_df = self.read_idx(searchString)
+            idx_df = self.read_idx(searchString)
 
             # Get a list of all GRIB message numbers. We will use this
             # in the output file name as a unique identifier.
-            all_grib_msg = "-".join([f"{i:g}" for i in self.idx_df.index])
+            all_grib_msg = "-".join([f"{i:g}" for i in idx_df.index])
 
             # To prevent "filename too long" error, create a hash to
             # make unique filename.
             hash_label = hashlib.sha1(all_grib_msg.encode()).hexdigest()
 
-            # Append the filename to distinguish it from the full file.
-            outFile = outFile.with_suffix(f".grib2.subset_{hash_label}")
+            # Prepend the filename with the has label to distinguish it from the full file.
+            # The hash label is a cryptic representation of the GRIB messages in the subset
+            outFile = outFile.parent / f"subset_{hash_label}__{outFile.name}"
 
         return outFile
 
     @functools.cached_property
     def index_as_dataframe(self):
         """Read and cache the full index file"""
+
+        # If the index file does not exists on the archive, but we have
+        # downloaded the full file (it is local), then we can use wgrib2
+        # to get the index file.
+        if self.idx is None:
+            if self.grib_source == "local":
+                # Use wgrib2 to get the index file if the file is local
+                log.info("🧙🏻‍♂️ I'll use wgrib2 to create the missing index file.")
+                self.idx = StringIO(wgrib2_idx_to_str(self.get_localFilePath()))
+                self.IDX_STYLE = "wgrib2"
+            else:
+                raise ValueError(
+                    f"\nNo index file was found for . \n"
+                    f"Download the full file first (with `H.download()`).\n"
+                    f"You will need to remake the Herbie object (H = `Herbie()`)\n"
+                    f"or delete this cached property: `del H.index_as_dataframe()`"
+                )
+
         assert self.idx is not None, f"No index file found for {self.grib}."
 
         if self.IDX_STYLE == "wgrib2":
@@ -478,12 +533,6 @@ class Herbie:
             # https://noaa-hrrr-bdp-pds.s3.amazonaws.com/hrrr.20210101/conus/hrrr.t00z.wrfsfcf00.grib2.idx
             # Sometimes idx has more than the standard messages
             # https://noaa-nbm-grib2-pds.s3.amazonaws.com/blend.20210711/13/core/blend.t13z.core.f001.co.grib2.idx
-
-            # TODO: Experimental special case when self.idx is a pathlib.Path
-            if not hasattr(self.idx, "exists"):
-                # If the self.idx is not a pathlib.Path, then we assume it needs to be downloaded
-                r = requests.get(self.idx)
-                assert r.ok, f"Index file does not exist: {self.idx}"
 
             df = pd.read_csv(
                 self.idx,
@@ -571,7 +620,7 @@ class Herbie:
                     "reference_time",
                     "valid_time",
                     "step",
-                    # --- Used for searchString ------------------------------------
+                    # ---- Used for searchString ------------------------------
                     "param",  # parameter field (variable)
                     "levelist",  # level
                     "levtype",  # sfc=surface, pl=pressure level, pt=potential vorticity
@@ -653,6 +702,9 @@ class Herbie:
         """
         Download file from source.
 
+        TODO: When we download a full file, the value of self.grib and
+        TODO: self.grib_source should change to represent the local file.
+
         Subsetting by variable follows the same principles described here:
         https://www.cpc.ncep.noaa.gov/products/wesley/fast_downloading_grib.html
 
@@ -706,8 +758,6 @@ class Herbie:
             # TODO  to use the request module directly.
             # TODO  >> headers = dict(Range=f"bytes={start_bytes}-{end_bytes}")
             # TODO  >> r = requests.get(grib_url, headers=headers)
-            # TODO  Except does this allow multiple ranges??
-            # TODO  See example here: https://github.com/pangeo-forge/pangeo-forge-recipes/issues/267#issuecomment-1026934765
 
             grib_source = self.grib
             if hasattr(grib_source, "as_posix") and grib_source.exists():
@@ -726,7 +776,8 @@ class Herbie:
             # Find index groupings
             # TODO: Improve this for readability
             # https://stackoverflow.com/a/32199363/2383070
-            li = self.idx_df.index
+            idx_df = self.read_idx(searchString)
+            li = idx_df.index
             inds = (
                 [0]
                 + [ind for ind, (i, j) in enumerate(zip(li, li[1:]), 1) if j - i > 1]
@@ -737,7 +788,7 @@ class Herbie:
             curl_ranges = []
             group_dfs = []
             for i, group in enumerate(curl_groups):
-                _df = self.idx_df.loc[group]
+                _df = idx_df.loc[group]
                 curl_ranges.append(f"{_df.iloc[0].start_byte}-{_df.iloc[-1].end_byte}")
                 group_dfs.append(_df)
 
@@ -758,7 +809,6 @@ class Herbie:
 
             if verbose:
                 print(f"💾 Saved the above subset to {outFile}")
-            self.local_grib_subset = outFile
 
         # If the file exists in the localPath and we don't want to
         # overwrite, then we don't need to download it.
@@ -775,18 +825,13 @@ class Herbie:
         if outFile.exists() and not self.overwrite:
             if verbose:
                 print(f"🌉 Already have local copy --> {outFile}")
-            if searchString in [None, ":"]:
-                self.local_grib = outFile
-            else:
-                self.local_grib_subset = outFile
             return
 
-        # Attach the index file to the object (how much overhead is this?)
-        if self.idx is not None:
-            try:
-                self.idx_df = self.read_idx(searchString)
-            except:
-                print("Note: Herbie could not read and attach index file.")
+        if self.overwrite and self.grib_source == "local":
+            # Search for the grib files on the remote archives again
+            self.grib, self.grib_source = self.find_grib(overwrite=True)
+            self.idx, self.idx_source = self.find_idx()
+            print(f"Overwrite local file with file from [{self.grib_source}]")
 
         # This overrides the save_dir specified in __init__
         if save_dir is not None:
@@ -824,14 +869,20 @@ class Herbie:
         if searchString in [None, ":"] or self.idx is None:
             # Download the full file from remote source
             urllib.request.urlretrieve(self.grib, outFile, _reporthook)
+
+            self.grib = outFile
+            self.grib_source = "local"
+
             if verbose:
                 print(
                     f"✅ Success! Downloaded {self.model.upper()} from \033[38;5;202m{self.grib_source:20s}\033[0m\n\tsrc: {self.grib}\n\tdst: {outFile}"
                 )
-            self.local_grib = outFile
+
         else:
             # Download a subset of the file
             subset(searchString, outFile)
+
+        return self
 
     def xarray(
         self,

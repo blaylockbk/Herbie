@@ -22,7 +22,7 @@ setup(
         "": ["*.cfg"],
     },
     python_requires=">=3.8",
-    install_requires=["numpy", "pandas", "xarray", "cfgrib", "metpy", "toml"],
+    install_requires=["numpy", "pandas", "xarray", "cfgrib", "metpy", "toml", "rich"],
     keywords=[
         "xarray",
         "meteorology",
@@ -64,3 +64,7 @@ twine upload --skip-existing dist/*
 # Test PyPI
 twine upload --skip-existing --repository-url https://test.pypi.org/legacy/ dist/*
 """
+
+# See download statistics at: https://pepy.tech/project/herbie-data
+
+# Check import time with python -X importtime herbie/archive.py > importtime.txt 2>&1

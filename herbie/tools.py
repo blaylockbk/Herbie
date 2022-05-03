@@ -10,6 +10,7 @@ from datetime import datetime, timedelta
 
 import logging
 import os
+import subprocess
 import cartopy.crs as ccrs
 import metpy  # accessor needed to parse crs
 import numpy as np
@@ -124,7 +125,13 @@ def fast_Herbie(DATES, fxx=[0], *, max_threads=50, **kwargs):
 
 
 def fast_Herbie_download(
-    DATES, *, searchString=None, fxx=[0], max_threads=20, **kwargs
+    DATES,
+    *,
+    searchString=None,
+    fxx=[0],
+    max_threads=20,
+    download_kw={},
+    **kwargs,
 ):
     """
     Use multithreading to download many Herbie objects
@@ -155,7 +162,7 @@ def fast_Herbie_download(
     log.info(f"🧵 Working on {tasks} tasks with {threads} threads.")
 
     with ThreadPoolExecutor(max_threads) as exe:
-        futures = [exe.submit(H.download, searchString) for H in passed]
+        futures = [exe.submit(H.download, searchString, **download_kw) for H in passed]
 
         # Return list of Herbie objects in order completed
         _ = [future.result() for future in as_completed(futures)]
@@ -168,7 +175,15 @@ def fast_Herbie_download(
     return dict(passed=passed, failed=failed)
 
 
-def fast_Herbie_xarray(DATES, *, searchString=None, fxx=[0], max_threads=5, **kwargs):
+def fast_Herbie_xarray(
+    DATES,
+    *,
+    searchString=None,
+    fxx=[0],
+    max_threads=5,
+    xarray_kw={},
+    **kwargs,
+):
     """
     Use multithreading to download many Herbie objects
 
@@ -204,7 +219,7 @@ def fast_Herbie_xarray(DATES, *, searchString=None, fxx=[0], max_threads=5, **kw
     log.info(f"🧵 Working on {tasks} tasks with {threads} threads.")
 
     with ThreadPoolExecutor(max_threads) as exe:
-        futures = [exe.submit(H.xarray, searchString) for H in passed]
+        futures = [exe.submit(H.xarray, searchString, **xarray_kw) for H in passed]
 
         # Return list of Herbie objects in order completed
         ds_list = [future.result() for future in as_completed(futures)]
@@ -220,14 +235,14 @@ def fast_Herbie_xarray(DATES, *, searchString=None, fxx=[0], max_threads=5, **kw
     try:
         ds = xr.combine_nested(
             ds_list,
-            concat_dim=["t", "f"],
+            concat_dim=["i_run", "i_fxx"],
             combine_attrs="drop_conflicts",
         )
     except:
-        # ? I'm not sure why some cases doesn't like the combine_attrs argument
+        # TODO: I'm not sure why some cases doesn't like the combine_attrs argument
         ds = xr.combine_nested(
             ds_list,
-            concat_dim=["t", "f"],
+            concat_dim=["i_run", "i_fxx"],
         )
 
     ds["gribfile_projection"] = ds.gribfile_projection[0][0]
