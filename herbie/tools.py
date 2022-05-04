@@ -10,7 +10,6 @@ from datetime import datetime, timedelta
 
 import logging
 import os
-import subprocess
 import cartopy.crs as ccrs
 import metpy  # accessor needed to parse crs
 import numpy as np
@@ -225,8 +224,8 @@ def fast_Herbie_xarray(
         ds_list = [future.result() for future in as_completed(futures)]
 
     # Sort the DataSets, first by lead time (step), then by run time (time)
-    ds_list.sort(key=lambda ds: ds.step.item())
-    ds_list.sort(key=lambda ds: ds.time.item())
+    ds_list.sort(key=lambda x: x.step.data.max())
+    ds_list.sort(key=lambda x: x.time.data.max())
 
     # Reshape list with dimensions (len(DATES), len(fxx))
     ds_list = [ds_list[x : x + len(fxx)] for x in range(0, len(ds_list), len(fxx))]
@@ -235,14 +234,14 @@ def fast_Herbie_xarray(
     try:
         ds = xr.combine_nested(
             ds_list,
-            concat_dim=["i_run", "i_fxx"],
+            concat_dim=["time", "step"],
             combine_attrs="drop_conflicts",
         )
     except:
         # TODO: I'm not sure why some cases doesn't like the combine_attrs argument
         ds = xr.combine_nested(
             ds_list,
-            concat_dim=["i_run", "i_fxx"],
+            concat_dim=["time", "step"],
         )
 
     ds["gribfile_projection"] = ds.gribfile_projection[0][0]

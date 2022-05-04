@@ -44,6 +44,7 @@ For more details, see https://blaylockbk.github.io/Herbie/_build/html/user_guide
 
 """
 import functools
+import itertools
 import hashlib
 import json
 import os
@@ -55,6 +56,7 @@ from datetime import datetime, timedelta
 import logging
 
 import cfgrib
+import xarray as xr
 import pandas as pd
 import pygrib
 import requests
@@ -1003,7 +1005,14 @@ class Herbie:
         if len(Hxr) == 1:
             return Hxr[0]
         else:
-            print(
-                f"Note: Returning a list of [{len(ds)}] xarray.Datasets because of multiple hypercubes."
-            )
+            # cfgrib returned multiple hypercubes.
+            try:
+                # Handle case where HRRR subh returns multiple hypercubes (see #73)
+                data_vars = set(itertools.chain(*[list(i) for i in Hxr]))
+                data_vars.remove("gribfile_projection")
+                Hxr = xr.concat(Hxr, dim="step", data_vars=data_vars)
+            except:
+                print(
+                    f"Note: Returning a list of [{len(Hxr)}] xarray.Datasets because cfgrib opened with multiple hypercubes."
+                )
             return Hxr

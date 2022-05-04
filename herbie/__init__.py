@@ -96,3 +96,7 @@ if not _config_path.exists():
 config = toml.load(_config_path)
 
 config["default"]["save_dir"] = Path(config["default"]["save_dir"]).expand()
+
+
+from herbie.archive import Herbie
+from herbie.tools import fast_Herbie, fast_Herbie_download, fast_Herbie_xarray
