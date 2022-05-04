@@ -28,7 +28,7 @@ log = logging.getLogger(__name__)
 
 
 """
-🧵 Notice! Multithreading is use
+ Notice! Multithreading is use
 
 This is my first implementation of multithreading to create, download,
 and read many Herbie objects. This drastically reduces the time it takes
@@ -99,7 +99,7 @@ def fast_Herbie(DATES, fxx=[0], *, max_threads=50, **kwargs):
     # Multithreading
     tasks = len(DATES) * len(fxx)
     threads = min(tasks, max_threads)
-    log.info(f"🧵 Working on {tasks} tasks with {threads} threads.")
+    log.info(f"Working on {tasks} tasks with {threads} threads.")
 
     with ThreadPoolExecutor(threads) as exe:
         futures = [
@@ -159,7 +159,7 @@ def fast_Herbie_download(
     # Multithread the downloads
     tasks = len(DATES) * len(fxx)
     threads = min(tasks, max_threads)
-    log.info(f"🧵 Working on {tasks} tasks with {threads} threads.")
+    log.info(f"Working on {tasks} tasks with {threads} threads.")
 
     with ThreadPoolExecutor(max_threads) as exe:
         futures = [exe.submit(H.download, searchString, **download_kw) for H in passed]
@@ -216,7 +216,7 @@ def fast_Herbie_xarray(
     # Multithread the downloads
     tasks = len(DATES) * len(fxx)
     threads = min(tasks, max_threads)
-    log.info(f"🧵 Working on {tasks} tasks with {threads} threads.")
+    log.info(f"Working on {tasks} tasks with {threads} threads.")
 
     with ThreadPoolExecutor(max_threads) as exe:
         futures = [exe.submit(H.xarray, searchString, **xarray_kw) for H in passed]
@@ -334,7 +334,7 @@ def bulk_download(DATES, searchString=None, *, fxx=range(0, 1), verbose=True, **
         fxx = [fxx]
 
     # Locate the file sources
-    print("👨🏻‍🔬 Check which requested files exists")
+    print("Check which requested files exists")
     grib_sources = fast_Herbie(DATES, fxx, **kwargs)
 
     # Keep a list of successful and failed Herbie objects

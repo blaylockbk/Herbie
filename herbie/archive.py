@@ -12,9 +12,9 @@ Herbie is your model output download assistant with a mind of his own!
 Herbie might look small on the outside, but he has a big heart on the
 inside and will get you to the
 `finish line <https://www.youtube.com/watch?v=4XWufUZ1mxQ&t=189s>`_.
-Happy racing! 🏎🏁
+Happy racing!
 
-`📔 Documentation <https://blaylockbk.github.io/Herbie/_build/html/>`_
+`Documentation <https://blaylockbk.github.io/Herbie/_build/html/>`_
 
 With Herbie's API, you can search and download GRIB2 model output files
 from different archive sources for the High-Resolution Rapid Refresh
@@ -242,7 +242,7 @@ class Herbie:
             # ANSI color's added for style points
             if any([self.grib is not None, self.idx is not None]):
                 print(
-                    f"🏋🏻‍♂️ Found",
+                    f" Found",
                     f"\033[32m{self.date:%Y-%b-%d %H:%M UTC} F{self.fxx:02d}\033[0m",
                     f"[{self.model.upper()}] [product={self.product}]",
                     f"GRIB2 file from \033[31m{self.grib_source}\033[0m and",
@@ -251,7 +251,7 @@ class Herbie:
                 )
             else:
                 print(
-                    f"💔 Did not find a GRIB2 or Index File for",
+                    f" Did not find a GRIB2 or Index File for",
                     f"\033[32m{self.date:%Y-%b-%d %H:%M UTC} F{self.fxx:02d}\033[0m",
                     f"{self.model.upper()}",
                     f'{" ":100s}',
@@ -312,7 +312,7 @@ class Herbie:
         _models = {m for m in dir(model_templates) if not m.startswith("__")}
         _products = set(self.PRODUCTS)
 
-        assert self.date < datetime.utcnow(), "🔮 `date` cannot be in the future."
+        assert self.date < datetime.utcnow(), "🔮`date` cannot be in the future."
         assert self.model in _models, f"`model` must be one of {_models}"
         assert self.product in _products, f"`product` must be one of {_products}"
 
@@ -339,7 +339,7 @@ class Herbie:
         try:
             requests.head("https://pando-rgw01.chpc.utah.edu/")
         except:
-            print("🤝🏻⛔ Bad handshake with pando? Am I able to move on?")
+            print(" Bad handshake with pando? Am I able to move on?")
             pass
 
     def _check_grib(self, url):
@@ -358,7 +358,7 @@ class Herbie:
         # we will loop through the IDX_SUFFIX.
 
         if verbose:
-            print(f"🐜 {self.IDX_SUFFIX=}")
+            print(f" {self.IDX_SUFFIX=}")
 
         # Loop through IDX_SUFFIX options until we find one that exists
         for i in self.IDX_SUFFIX:
@@ -370,8 +370,8 @@ class Herbie:
 
             idx_exists = requests.head(idx_url).ok
             if verbose:
-                print(f"🐜 {idx_url=}")
-                print(f"🐜 {idx_exists=}")
+                print(f"🐜{idx_url=}")
+                print(f"🐜{idx_exists=}")
             if idx_exists:
                 return idx_exists, idx_url
 
@@ -514,7 +514,7 @@ class Herbie:
         if self.idx is None:
             if self.grib_source == "local":
                 # Use wgrib2 to get the index file if the file is local
-                log.info("🧙🏻‍♂️ I'll use wgrib2 to create the missing index file.")
+                log.info("I'll use wgrib2 to create the missing index file.")
                 self.idx = StringIO(wgrib2_idx_to_str(self.get_localFilePath()))
                 self.IDX_STYLE = "wgrib2"
             else:
@@ -746,7 +746,7 @@ class Herbie:
             chunk_progress = a * b / c * 100
             total_size_MB = c / 1000000.0
             print(
-                f"\r🚛💨  Download Progress: {chunk_progress:.2f}% of {total_size_MB:.1f} MB\r",
+                f"\rDownload Progress: {chunk_progress:.2f}% of {total_size_MB:.1f} MB\r",
                 end="",
             )
 
@@ -766,7 +766,7 @@ class Herbie:
                 grib_source = f"file://{str(self.grib)}"
             if verbose:
                 print(
-                    f'📇 Download subset: {self.__repr__()}{" ":60s}\n cURL from {grib_source}'
+                    f'📇Download subset: {self.__repr__()}{" ":60s}\n cURL from {grib_source}'
                 )
 
             # Download subsets of the file by byte range with cURL.
@@ -808,7 +808,7 @@ class Herbie:
                 os.system(curl)
 
             if verbose:
-                print(f"💾 Saved the above subset to {outFile}")
+                print(f"💾Saved the above subset to {outFile}")
 
         # If the file exists in the localPath and we don't want to
         # overwrite, then we don't need to download it.
@@ -824,7 +824,7 @@ class Herbie:
 
         if outFile.exists() and not self.overwrite:
             if verbose:
-                print(f"🌉 Already have local copy --> {outFile}")
+                print(f"Already have local copy --> {outFile}")
             return
 
         if self.overwrite and self.grib_source == "local":
@@ -842,14 +842,14 @@ class Herbie:
 
         # Check that data exists
         if self.grib is None:
-            msg = f"🦨 GRIB2 file not found: {self.model=} {self.date=} {self.fxx=}"
+            msg = f" GRIB2 file not found: {self.model=} {self.date=} {self.fxx=}"
             if errors == "warn":
                 log.warning(msg)
                 return  # Can't download anything without a GRIB file URL.
             elif errors == "raise":
                 raise ValueError(msg)
         if self.idx is None and searchString is not None:
-            msg = f"🦨 Index file not found; cannot download subset: {self.model=} {self.date=} {self.fxx=}"
+            msg = f"Index file not found; cannot download subset: {self.model=} {self.date=} {self.fxx=}"
             if errors == "warn":
                 log.warning(
                     msg + " I will download the full file because I cannot subset."
@@ -864,7 +864,7 @@ class Herbie:
         # Create directory if it doesn't exist
         if not outFile.parent.is_dir():
             outFile.parent.mkdir(parents=True, exist_ok=True)
-            print(f"👨🏻‍🏭 Created directory: [{outFile.parent}]")
+            print(f" Created directory: [{outFile.parent}]")
 
         if searchString in [None, ":"] or self.idx is None:
             # Download the full file from remote source
@@ -875,7 +875,7 @@ class Herbie:
 
             if verbose:
                 print(
-                    f"✅ Success! Downloaded {self.model.upper()} from \033[38;5;202m{self.grib_source:20s}\033[0m\n\tsrc: {self.grib}\n\tdst: {outFile}"
+                    f" Success! Downloaded {self.model.upper()} from \033[38;5;202m{self.grib_source:20s}\033[0m\n\tsrc: {self.grib}\n\tdst: {outFile}"
                 )
 
         else:
