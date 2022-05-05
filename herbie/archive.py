@@ -745,10 +745,11 @@ class Herbie:
             """
             chunk_progress = a * b / c * 100
             total_size_MB = c / 1000000.0
-            print(
-                f"\rDownload Progress: {chunk_progress:.2f}% of {total_size_MB:.1f} MB\r",
-                end="",
-            )
+            if verbose:
+                print(
+                    f"\rDownload Progress: {chunk_progress:.2f}% of {total_size_MB:.1f} MB\r",
+                    end="",
+                )
 
         def subset(searchString, outFile):
             """
@@ -766,7 +767,7 @@ class Herbie:
                 grib_source = f"file://{str(self.grib)}"
             if verbose:
                 print(
-                    f'📇Download subset: {self.__repr__()}{" ":60s}\n cURL from {grib_source}'
+                    f'Download subset: {self.__repr__()}{" ":60s}\n cURL from {grib_source}'
                 )
 
             # Download subsets of the file by byte range with cURL.
@@ -808,7 +809,7 @@ class Herbie:
                 os.system(curl)
 
             if verbose:
-                print(f"💾Saved the above subset to {outFile}")
+                print(f"Saved the above subset to {outFile}")
 
         # If the file exists in the localPath and we don't want to
         # overwrite, then we don't need to download it.
