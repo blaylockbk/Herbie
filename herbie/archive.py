@@ -346,7 +346,7 @@ class Herbie:
         """Check that the GRIB2 URL exist and is of useful length."""
         head = requests.head(url)
         check_exists = head.ok
-        if check_exists:
+        if check_exists and "Content-Length" in head.raw.info():
             check_content = int(head.raw.info()["Content-Length"]) > 1_000_000
             return check_exists and check_content
         else:
