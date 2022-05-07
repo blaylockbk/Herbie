@@ -51,7 +51,7 @@ setup(
 # Created a new conda environment with twine
 # conda create -n pypi python=3 twine pip -c conda-forge
 """
-conda env update -f Cartpenter_Workshop/environments/pypi.yml
+conda env update -f Carpenter_Workshop/environments/pypi.yml
 
 conda activate pypi
 cd Herbie
