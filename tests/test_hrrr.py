@@ -6,7 +6,7 @@ Tests for downloading HRRR model
 """
 from datetime import datetime, timedelta
 
-from herbie.archive import Herbie
+from herbie import Herbie
 
 now = datetime.now()
 today = datetime(now.year, now.month, now.day, now.hour) - timedelta(hours=6)

@@ -1,5 +1,5 @@
 ## Brian Blaylock
-## May 13, 2021
+## May 6, 2022
 
 """
 ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██
@@ -14,7 +14,7 @@
                 █ ██ ┃ ┏━┓ ┃┃ ━━━┓┃ ┃   ┃ ━━ ┃┃ ┃┃ ━━━┓
                 █ ██ ┗━┛ ┗━┛┗━━━━┛┗━┛   ┗━━━━┛┗━┛┗━━━━┛
                 █ ██
-                        Retrieve NWP Model Data 🏎🏁
+                       🏁 Retrieve NWP Model Data 🏁
 
 ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██
   ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██
@@ -33,66 +33,92 @@ class hc:
     black = "#000000"
 
 
-class ansi:
+class ANSI:
     """
     Herbie colors as ansi codes
 
     Reference
     ---------
     https://gist.github.com/fnky/458719343aabd01cfb17a3a4f7296797
+
     """
 
     # Octal: \033
     # Unicode: \u001b
     # Hexadecimal: \x1B
     ESC = "\x1B"
+
     # Style
     bold = f"{ESC}[1m"
     italic = f"{ESC}[3m"
     underline = f"{ESC}[4m"
     strikethrough = f"{ESC}[9m"
     reset = f"{ESC}[0m"
-    # Colors
+
+    # Text Colors
     red = f"{ESC}[38;2;136;33;27m"
     blue = f"{ESC}[38;2;12;53;118m"
     black = f"{ESC}[38;2;0;0;0m"
     white = f"{ESC}[37m"
+    orange = f"{ESC}[38;2;255;153;0m"
+    green = f"{ESC}[38;2;41;130;13m"
+    bright_green = f"{ESC}[92m"
+
     # Background color
     _tan = f"{ESC}[48;2;240;234;210m"
-    _white = f"{ESC}[47m"
+    _white = f"{ESC}[48;2;255;255;255m"
+
+    herbie = f"{_white}{red}▌{reset}{blue}{_tan}▌{black}{bold}Herbie{reset}"
+
+    ascii = f"""
+
+{_tan}{' ':44}{reset}
+{_tan}   {red}█ {blue}██ {black}                                    {reset}
+{_tan}   {red}█ {blue}██ {black}┏━┓ ┏━┓            ┏━┓   ┏━┓        {reset}
+{_tan}   {red}█ {blue}██ {black}┃ ┃ ┃ ┃┏━━━━┓┏━┓┏━┓┃ ┃   ┏━┓┏━━━━┓  {reset}
+{_tan}   {red}█ {blue}██ {black}┃ ┗━┛ ┃┃ ━━ ┃┃ ┏━━┛┃ ┗━━┓┃ ┃┃ ━━ ┃  {reset}
+{_tan}   {red}█ {blue}██ {black}┃ ┏━┓ ┃┃ ━━━┓┃ ┃   ┃ ━━ ┃┃ ┃┃ ━━━┓  {reset}
+{_tan}   {red}█ {blue}██ {black}┗━┛ ┗━┛┗━━━━┛┗━┛   ┗━━━━┛┗━┛┗━━━━┛  {reset}
+{_tan}   {red}█ {blue}██ {black}                                    {reset}
+{_tan}{' ':3}{black}       🏁 Retrieve NWP Model Data 🏁     {reset}
+{_tan}{' ':44}{reset}
+
+    """
 
 
 def rich_herbie():
     """
-    Returns "▌▌Herbie" with rich colors
+    Returns "▌▌Herbie" with rich colors (if rich is installed).
     """
     return f"[on {hc.tan}][{hc.red} on {hc.white}]▌[/][{hc.blue}]▌[/][bold {hc.black}]Herbie[/][/]"
 
 
-def Herbie_ascii(body="tan"):
+def print_rich(H):
     """
-    Display the Herbie logo in ASCII characters and colors.
+    Print "rich" display console
+    TODO: How do I get the __repr__ to do this?
 
-    Usage
-    -----
-    Command Line
-    >>> python -c "from herbie.misc import Herbie_ascii; print(Herbie_ascii())"
+    eh, just use my own ANSI class for text coloring.
     """
-    a = f"""
+    try:
+        from rich.console import Console
 
-{ansi._tan}{' ':44}{ansi.reset}
-{ansi._tan}   {ansi.red}█ {ansi.blue}██ {ansi.black}                                    {ansi.reset}
-{ansi._tan}   {ansi.red}█ {ansi.blue}██ {ansi.black}┏━┓ ┏━┓            ┏━┓   ┏━┓        {ansi.reset}
-{ansi._tan}   {ansi.red}█ {ansi.blue}██ {ansi.black}┃ ┃ ┃ ┃┏━━━━┓┏━┓┏━┓┃ ┃   ┏━┓┏━━━━┓  {ansi.reset}
-{ansi._tan}   {ansi.red}█ {ansi.blue}██ {ansi.black}┃ ┗━┛ ┃┃ ━━ ┃┃ ┏━━┛┃ ┗━━┓┃ ┃┃ ━━ ┃  {ansi.reset}
-{ansi._tan}   {ansi.red}█ {ansi.blue}██ {ansi.black}┃ ┏━┓ ┃┃ ━━━┓┃ ┃   ┃ ━━ ┃┃ ┃┃ ━━━┓  {ansi.reset}
-{ansi._tan}   {ansi.red}█ {ansi.blue}██ {ansi.black}┗━┛ ┗━┛┗━━━━┛┗━┛   ┗━━━━┛┗━┛┗━━━━┛  {ansi.reset}
-{ansi._tan}   {ansi.red}█ {ansi.blue}██ {ansi.black}                                    {ansi.reset}
-{ansi._tan}{' ':3}{ansi.black}       🏁 Retrieve NWP Model Data 🏁     {ansi.reset}
-{ansi._tan}{' ':44}{ansi.reset}
+        from herbie.misc import rich_herbie
 
-    """
-    return a
+        console = Console()
+        console.print(
+            f"{rich_herbie()} "
+            f"{H.model.upper()} model "
+            f"[italic]{H.product}[/] product "
+            f"initialized [green bold]{H.date:%Y-%b-%d %H:%M} UTC[/] "
+            f"[rgb(41, 130, 13)]F{H.fxx:02d}[/] "
+            f"┊ [#ff9900 italic]source={H.grib_source}[/]"
+        )
+    except:
+        print("rich is not working/installed")
+
+
+########################################################################
 
 
 def HerbieLogo(white_line=False):

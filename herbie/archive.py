@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 ## Brian Blaylock
-## May 3, 2021
+## May 6, 2022
 
 """
 ===============================
@@ -12,9 +12,9 @@ Herbie is your model output download assistant with a mind of his own!
 Herbie might look small on the outside, but he has a big heart on the
 inside and will get you to the
 `finish line <https://www.youtube.com/watch?v=4XWufUZ1mxQ&t=189s>`_.
-Happy racing! 🏎🏁
+Happy racing! 🏁
 
-`📔 Documentation <https://blaylockbk.github.io/Herbie/_build/html/>`_
+`📓 Documentation <https://blaylockbk.github.io/Herbie/_build/html/>`_
 
 With Herbie's API, you can search and download GRIB2 model output files
 from different archive sources for the High-Resolution Rapid Refresh
@@ -44,32 +44,33 @@ For more details, see https://blaylockbk.github.io/Herbie/_build/html/user_guide
 
 """
 import functools
-import itertools
 import hashlib
+import itertools
 import json
+import logging
 import os
-from io import StringIO
 import sys
 import urllib.request
 import warnings
 from datetime import datetime, timedelta
-import logging
+from io import StringIO
 
 import cfgrib
-import xarray as xr
 import pandas as pd
 import pygrib
 import requests
+from soupsieve import escape
+import xarray as xr
 from pyproj import CRS
 
 import herbie.models as model_templates
-from herbie.help import _searchString_help
-from herbie.misc import Herbie_ascii
-
-# NOTE: These config dict values are retrieved from __init__ and read
-# from the file ${HOME}/.config/herbie/config.toml
-# Path imported from __init__ because it has my custom `expand()` method
 from herbie import Path, config
+from herbie.help import _searchString_help
+from herbie.misc import ANSI
+
+# NOTE: The config dict values are retrieved from __init__ and read
+# from the file ${HOME}/.config/herbie/config.toml
+# Path is imported from __init__ because it has my custom methods.
 
 try:
     # Load custom xarray accessors
@@ -88,8 +89,8 @@ log = logging.getLogger(__name__)
 
 def wgrib2_idx_to_str(GRIB2_FILEPATH):
     """Produce the index file as a string with wgrib2"""
-    from shutil import which
     import subprocess
+    from shutil import which
 
     if which("wgrib2") is None:
         raise RuntimeError("wgrib2 command was not found.")
@@ -241,52 +242,31 @@ class Herbie:
         self.idx, self.idx_source = self.find_idx()
 
         if verbose:
-            # ANSI color's added for style points
+            # ANSI colors added for style points
             if any([self.grib is not None, self.idx is not None]):
                 print(
-                    f"🏋🏻‍♂️ Found",
-                    f"\033[32m{self.date:%Y-%b-%d %H:%M UTC} F{self.fxx:02d}\033[0m",
-                    f"[{self.model.upper()}] [product={self.product}]",
-                    f"GRIB2 file from \033[31m{self.grib_source}\033[0m and",
-                    f"index file from \033[31m{self.idx_source}\033[0m.",
-                    f'{" ":150s}',
+                    f"✅ Found",
+                    f"┊ model={self.model}",
+                    f"┊ {ANSI.italic}product={self.product}{ANSI.reset}",
+                    f"┊ {ANSI.green}{self.date:%Y-%b-%d %H:%M UTC}{ANSI.bright_green} F{self.fxx:02d}{ANSI.reset}",
+                    f"┊ {ANSI.orange}{ANSI.italic}GRIB2 @ {self.grib_source}{ANSI.reset}",
+                    f"┊ {ANSI.orange}{ANSI.italic}IDX @ {self.idx_source}{ANSI.reset}",
                 )
             else:
                 print(
-                    f"💔 Did not find a GRIB2 or Index File for",
-                    f"\033[32m{self.date:%Y-%b-%d %H:%M UTC} F{self.fxx:02d}\033[0m",
-                    f"{self.model.upper()}",
-                    f'{" ":100s}',
+                    f"💔 Did not find",
+                    f"┊ model={self.model}",
+                    f"┊ {ANSI.italic}product={self.product}{ANSI.reset}",
+                    f"┊ {ANSI.green}{self.date:%Y-%b-%d %H:%M UTC}{ANSI.bright_green} F{self.fxx:02d}{ANSI.reset}",
                 )
-
-    @property
-    def print_rich(self):
-        """
-        Print "rich" display console
-        TODO: How do I get the __repr__ to do this?
-        """
-        try:
-            from rich.console import Console
-            from herbie.misc import rich_herbie
-
-            console = Console()
-            console.print(
-                f"{rich_herbie()} "
-                f"{self.model.upper()} model "
-                f"[italic]{self.product}[/] product "
-                f"initialized [green bold]{self.date:%Y-%b-%d %H:%M} UTC[/] "
-                f"[#3ab813]F{self.fxx:02d}[/] "
-                f"| [#ff9900 italic]source={self.grib_source}[/]"
-            )
-        except:
-            print("rich is not working/installed")
 
     def __repr__(self):
         """Representation in Notebook"""
         msg = (
-            f"[{self.model.upper()}] model [{self.product}] product",
-            f"run at \033[32m{self.date:%Y-%b-%d %H:%M UTC}",
-            f"F{self.fxx:02d}\033[0m",
+            f"{ANSI.herbie} {self.model.upper()} model",
+            f"{ANSI.italic}{self.product}{ANSI.reset} product initialized",
+            f"{ANSI.green}{self.date:%Y-%b-%d %H:%M UTC}{ANSI.bright_green} F{self.fxx:02d}{ANSI.reset}",
+            f"┊ {ANSI.orange}{ANSI.italic}source={self.grib_source}{ANSI.reset}",
         )
         return " ".join(msg)
 
@@ -302,7 +282,7 @@ class Herbie:
     @property
     def __logo__(self):
         """For Fun, show the Herbie Logo"""
-        print(Herbie_ascii())
+        print(ANSI.ascii)
 
     def _validate(self):
         """Validate the Herbie class input arguments"""
@@ -798,7 +778,7 @@ class Herbie:
                 if verbose:
                     for i, row in _df.iterrows():
                         print(
-                            f"  {row.grib_message:<3g} \033[34m{row.search_this}\033[0m"
+                            f"  {row.grib_message:<3g} {ANSI.orange}{row.search_this}{ANSI.reset}"
                         )
 
                 if i == 0:
@@ -810,7 +790,7 @@ class Herbie:
                 os.system(curl)
 
             if verbose:
-                print(f"💾 Saved the above subset to {outFile}")
+                print(f"💾 Saved the subset to {outFile}")
 
         # If the file exists in the localPath and we don't want to
         # overwrite, then we don't need to download it.

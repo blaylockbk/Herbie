@@ -6,7 +6,7 @@ dependencies:
   - pip
   - git
   - curl
-  - rclone # Not required by Herbie, but is an awesome alternative https://rclone.org/
+  - rclone # Not required, but is an awesome alternative https://rclone.org/
   #- wgrib2  # ONLY AVAILABLE ON LINUX. Comment if not using Linux.
 
   # Tools
@@ -27,7 +27,7 @@ dependencies:
   - pylint
   - pyproj
   - requests>=2.27.1
-  - rich
+  - rich # Not required, but I'm playing around with it
   - s3fs
   - scipy
   - toml

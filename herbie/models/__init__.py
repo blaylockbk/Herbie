@@ -15,6 +15,7 @@ from pathlib import Path
 from .gfs import *
 from .hrrr import *
 from .navgem import *
+from .nogaps import *
 from .nbm import *
 from .nexrad import *
 from .rap import *
