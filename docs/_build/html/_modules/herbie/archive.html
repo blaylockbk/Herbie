@@ -175,7 +175,7 @@
 <span></span><span class="ch">#!/usr/bin/env python3</span>
 
 <span class="c1">## Brian Blaylock</span>
-<span class="c1">## May 3, 2021</span>
+<span class="c1">## May 6, 2022</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">===============================</span>
@@ -186,9 +186,9 @@
 <span class="sd">Herbie might look small on the outside, but he has a big heart on the</span>
 <span class="sd">inside and will get you to the</span>
 <span class="sd">`finish line &lt;https://www.youtube.com/watch?v=4XWufUZ1mxQ&amp;t=189s&gt;`_.</span>
-<span class="sd">Happy racing! 🏎🏁</span>
+<span class="sd">Happy racing! 🏁</span>
 
-<span class="sd">`📔 Documentation &lt;https://blaylockbk.github.io/Herbie/_build/html/&gt;`_</span>
+<span class="sd">`📓 Documentation &lt;https://blaylockbk.github.io/Herbie/_build/html/&gt;`_</span>
 
 <span class="sd">With Herbie&#39;s API, you can search and download GRIB2 model output files</span>
 <span class="sd">from different archive sources for the High-Resolution Rapid Refresh</span>
@@ -219,28 +219,32 @@
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">import</span> <span class="nn">functools</span>
 <span class="kn">import</span> <span class="nn">hashlib</span>
+<span class="kn">import</span> <span class="nn">itertools</span>
 <span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">sys</span>
 <span class="kn">import</span> <span class="nn">urllib.request</span>
 <span class="kn">import</span> <span class="nn">warnings</span>
 <span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">timedelta</span>
-<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">from</span> <span class="nn">io</span> <span class="kn">import</span> <span class="n">StringIO</span>
 
 <span class="kn">import</span> <span class="nn">cfgrib</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">import</span> <span class="nn">pygrib</span>
 <span class="kn">import</span> <span class="nn">requests</span>
+<span class="kn">from</span> <span class="nn">soupsieve</span> <span class="kn">import</span> <span class="n">escape</span>
+<span class="kn">import</span> <span class="nn">xarray</span> <span class="k">as</span> <span class="nn">xr</span>
 <span class="kn">from</span> <span class="nn">pyproj</span> <span class="kn">import</span> <span class="n">CRS</span>
 
 <span class="kn">import</span> <span class="nn">herbie.models</span> <span class="k">as</span> <span class="nn">model_templates</span>
+<span class="kn">from</span> <span class="nn">herbie</span> <span class="kn">import</span> <span class="n">Path</span><span class="p">,</span> <span class="n">config</span>
 <span class="kn">from</span> <span class="nn">herbie.help</span> <span class="kn">import</span> <span class="n">_searchString_help</span>
-<span class="kn">from</span> <span class="nn">herbie.misc</span> <span class="kn">import</span> <span class="n">Herbie_ascii</span>
+<span class="kn">from</span> <span class="nn">herbie.misc</span> <span class="kn">import</span> <span class="n">ANSI</span>
 
-<span class="c1"># NOTE: These config dict values are retrieved from __init__ and read</span>
+<span class="c1"># NOTE: The config dict values are retrieved from __init__ and read</span>
 <span class="c1"># from the file ${HOME}/.config/herbie/config.toml</span>
-<span class="c1"># Path imported from __init__ because it has my custom `expand()` method</span>
-<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">Path</span><span class="p">,</span> <span class="n">config</span>
+<span class="c1"># Path is imported from __init__ because it has my custom methods.</span>
 
 <span class="k">try</span><span class="p">:</span>
     <span class="c1"># Load custom xarray accessors</span>
@@ -255,6 +259,19 @@
     <span class="k">pass</span>
 
 <span class="n">log</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">wgrib2_idx_to_str</span><span class="p">(</span><span class="n">GRIB2_FILEPATH</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Produce the index file as a string with wgrib2&quot;&quot;&quot;</span>
+    <span class="kn">import</span> <span class="nn">subprocess</span>
+    <span class="kn">from</span> <span class="nn">shutil</span> <span class="kn">import</span> <span class="n">which</span>
+
+    <span class="k">if</span> <span class="n">which</span><span class="p">(</span><span class="s2">&quot;wgrib2&quot;</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;wgrib2 command was not found.&quot;</span><span class="p">)</span>
+
+    <span class="n">cmd</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;wgrib2 -s </span><span class="si">{</span><span class="n">GRIB2_FILEPATH</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">cmd</span><span class="p">,</span> <span class="n">shell</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">capture_output</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">out</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="Herbie"><a class="viewcode-back" href="../../reference_guide/_autosummary/herbie.archive.Herbie.html#herbie.archive.Herbie">[docs]</a><span class="k">class</span> <span class="nc">Herbie</span><span class="p">:</span>
@@ -399,30 +416,31 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">idx</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">idx_source</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_idx</span><span class="p">()</span>
 
         <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
-            <span class="c1"># ANSI color&#39;s added for style points</span>
+            <span class="c1"># ANSI colors added for style points</span>
             <span class="k">if</span> <span class="nb">any</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">grib</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">idx</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">]):</span>
                 <span class="nb">print</span><span class="p">(</span>
-                    <span class="sa">f</span><span class="s2">&quot;🏋🏻‍♂️ Found&quot;</span><span class="p">,</span>
-                    <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\033</span><span class="s2">[32m</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">date</span><span class="si">:</span><span class="s2">%Y-%b-%d %H:%M UTC</span><span class="si">}</span><span class="s2"> F</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">fxx</span><span class="si">:</span><span class="s2">02d</span><span class="si">}</span><span class="se">\033</span><span class="s2">[0m&quot;</span><span class="p">,</span>
-                    <span class="sa">f</span><span class="s2">&quot;[</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span><span class="si">}</span><span class="s2">] [product=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">product</span><span class="si">}</span><span class="s2">]&quot;</span><span class="p">,</span>
-                    <span class="sa">f</span><span class="s2">&quot;GRIB2 file from </span><span class="se">\033</span><span class="s2">[31m</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">grib_source</span><span class="si">}</span><span class="se">\033</span><span class="s2">[0m and&quot;</span><span class="p">,</span>
-                    <span class="sa">f</span><span class="s2">&quot;index file from </span><span class="se">\033</span><span class="s2">[31m</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">idx_source</span><span class="si">}</span><span class="se">\033</span><span class="s2">[0m.&quot;</span><span class="p">,</span>
-                    <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="s2">&quot; &quot;</span><span class="si">:</span><span class="s1">150s</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
+                    <span class="sa">f</span><span class="s2">&quot;✅ Found&quot;</span><span class="p">,</span>
+                    <span class="sa">f</span><span class="s2">&quot;┊ model=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+                    <span class="sa">f</span><span class="s2">&quot;┊ </span><span class="si">{</span><span class="n">ANSI</span><span class="o">.</span><span class="n">italic</span><span class="si">}</span><span class="s2">product=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">product</span><span class="si">}{</span><span class="n">ANSI</span><span class="o">.</span><span class="n">reset</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+                    <span class="sa">f</span><span class="s2">&quot;┊ </span><span class="si">{</span><span class="n">ANSI</span><span class="o">.</span><span class="n">green</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">date</span><span class="si">:</span><span class="s2">%Y-%b-%d %H:%M UTC</span><span class="si">}{</span><span class="n">ANSI</span><span class="o">.</span><span class="n">bright_green</span><span class="si">}</span><span class="s2"> F</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">fxx</span><span class="si">:</span><span class="s2">02d</span><span class="si">}{</span><span class="n">ANSI</span><span class="o">.</span><span class="n">reset</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+                    <span class="sa">f</span><span class="s2">&quot;┊ </span><span class="si">{</span><span class="n">ANSI</span><span class="o">.</span><span class="n">orange</span><span class="si">}{</span><span class="n">ANSI</span><span class="o">.</span><span class="n">italic</span><span class="si">}</span><span class="s2">GRIB2 @ </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">grib_source</span><span class="si">}{</span><span class="n">ANSI</span><span class="o">.</span><span class="n">reset</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+                    <span class="sa">f</span><span class="s2">&quot;┊ </span><span class="si">{</span><span class="n">ANSI</span><span class="o">.</span><span class="n">orange</span><span class="si">}{</span><span class="n">ANSI</span><span class="o">.</span><span class="n">italic</span><span class="si">}</span><span class="s2">IDX @ </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">idx_source</span><span class="si">}{</span><span class="n">ANSI</span><span class="o">.</span><span class="n">reset</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
                 <span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="nb">print</span><span class="p">(</span>
-                    <span class="sa">f</span><span class="s2">&quot;💔 Did not find a GRIB2 or Index File for&quot;</span><span class="p">,</span>
-                    <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\033</span><span class="s2">[32m</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">date</span><span class="si">:</span><span class="s2">%Y-%b-%d %H:%M UTC</span><span class="si">}</span><span class="s2"> F</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">fxx</span><span class="si">:</span><span class="s2">02d</span><span class="si">}</span><span class="se">\033</span><span class="s2">[0m&quot;</span><span class="p">,</span>
-                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
-                    <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="s2">&quot; &quot;</span><span class="si">:</span><span class="s1">100s</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
+                    <span class="sa">f</span><span class="s2">&quot;💔 Did not find&quot;</span><span class="p">,</span>
+                    <span class="sa">f</span><span class="s2">&quot;┊ model=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+                    <span class="sa">f</span><span class="s2">&quot;┊ </span><span class="si">{</span><span class="n">ANSI</span><span class="o">.</span><span class="n">italic</span><span class="si">}</span><span class="s2">product=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">product</span><span class="si">}{</span><span class="n">ANSI</span><span class="o">.</span><span class="n">reset</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+                    <span class="sa">f</span><span class="s2">&quot;┊ </span><span class="si">{</span><span class="n">ANSI</span><span class="o">.</span><span class="n">green</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">date</span><span class="si">:</span><span class="s2">%Y-%b-%d %H:%M UTC</span><span class="si">}{</span><span class="n">ANSI</span><span class="o">.</span><span class="n">bright_green</span><span class="si">}</span><span class="s2"> F</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">fxx</span><span class="si">:</span><span class="s2">02d</span><span class="si">}{</span><span class="n">ANSI</span><span class="o">.</span><span class="n">reset</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
                 <span class="p">)</span></div>
 
     <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Representation in Notebook&quot;&quot;&quot;</span>
         <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;[</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span><span class="si">}</span><span class="s2">] model [</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">product</span><span class="si">}</span><span class="s2">] product&quot;</span><span class="p">,</span>
-            <span class="sa">f</span><span class="s2">&quot;run at </span><span class="se">\033</span><span class="s2">[32m</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">date</span><span class="si">:</span><span class="s2">%Y-%b-%d %H:%M UTC</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
-            <span class="sa">f</span><span class="s2">&quot;F</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">fxx</span><span class="si">:</span><span class="s2">02d</span><span class="si">}</span><span class="se">\033</span><span class="s2">[0m&quot;</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">ANSI</span><span class="o">.</span><span class="n">herbie</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span><span class="si">}</span><span class="s2"> model&quot;</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">ANSI</span><span class="o">.</span><span class="n">italic</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">product</span><span class="si">}{</span><span class="n">ANSI</span><span class="o">.</span><span class="n">reset</span><span class="si">}</span><span class="s2"> product initialized&quot;</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">ANSI</span><span class="o">.</span><span class="n">green</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">date</span><span class="si">:</span><span class="s2">%Y-%b-%d %H:%M UTC</span><span class="si">}{</span><span class="n">ANSI</span><span class="o">.</span><span class="n">bright_green</span><span class="si">}</span><span class="s2"> F</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">fxx</span><span class="si">:</span><span class="s2">02d</span><span class="si">}{</span><span class="n">ANSI</span><span class="o">.</span><span class="n">reset</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s2">&quot;┊ </span><span class="si">{</span><span class="n">ANSI</span><span class="o">.</span><span class="n">orange</span><span class="si">}{</span><span class="n">ANSI</span><span class="o">.</span><span class="n">italic</span><span class="si">}</span><span class="s2">source=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">grib_source</span><span class="si">}{</span><span class="n">ANSI</span><span class="o">.</span><span class="n">reset</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="k">return</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
 
@@ -438,7 +456,7 @@
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">__logo__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;For Fun, show the Herbie Logo&quot;&quot;&quot;</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">Herbie_ascii</span><span class="p">())</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">ANSI</span><span class="o">.</span><span class="n">ascii</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_validate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Validate the Herbie class input arguments&quot;&quot;&quot;</span>
@@ -608,7 +626,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">get_localFileName</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Predict Local File Name&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Predict Local File Name of the full file&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">LOCALFILE</span>
 
 <div class="viewcode-block" id="Herbie.get_localFilePath"><a class="viewcode-back" href="../../reference_guide/_autosummary/herbie.archive.Herbie.html#herbie.archive.Herbie.get_localFilePath">[docs]</a>    <span class="k">def</span> <span class="nf">get_localFilePath</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">searchString</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -626,24 +644,43 @@
 
         <span class="k">if</span> <span class="n">searchString</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="c1"># Reassign the index DataFrame with the requested searchString</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">idx_df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_idx</span><span class="p">(</span><span class="n">searchString</span><span class="p">)</span>
+            <span class="n">idx_df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_idx</span><span class="p">(</span><span class="n">searchString</span><span class="p">)</span>
 
             <span class="c1"># Get a list of all GRIB message numbers. We will use this</span>
             <span class="c1"># in the output file name as a unique identifier.</span>
-            <span class="n">all_grib_msg</span> <span class="o">=</span> <span class="s2">&quot;-&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">i</span><span class="si">:</span><span class="s2">g</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">idx_df</span><span class="o">.</span><span class="n">index</span><span class="p">])</span>
+            <span class="n">all_grib_msg</span> <span class="o">=</span> <span class="s2">&quot;-&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">i</span><span class="si">:</span><span class="s2">g</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">idx_df</span><span class="o">.</span><span class="n">index</span><span class="p">])</span>
 
             <span class="c1"># To prevent &quot;filename too long&quot; error, create a hash to</span>
             <span class="c1"># make unique filename.</span>
             <span class="n">hash_label</span> <span class="o">=</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">sha1</span><span class="p">(</span><span class="n">all_grib_msg</span><span class="o">.</span><span class="n">encode</span><span class="p">())</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()</span>
 
-            <span class="c1"># Append the filename to distinguish it from the full file.</span>
-            <span class="n">outFile</span> <span class="o">=</span> <span class="n">outFile</span><span class="o">.</span><span class="n">with_suffix</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;.grib2.subset_</span><span class="si">{</span><span class="n">hash_label</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="c1"># Prepend the filename with the has label to distinguish it from the full file.</span>
+            <span class="c1"># The hash label is a cryptic representation of the GRIB messages in the subset</span>
+            <span class="n">outFile</span> <span class="o">=</span> <span class="n">outFile</span><span class="o">.</span><span class="n">parent</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;subset_</span><span class="si">{</span><span class="n">hash_label</span><span class="si">}</span><span class="s2">__</span><span class="si">{</span><span class="n">outFile</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span>
 
         <span class="k">return</span> <span class="n">outFile</span></div>
 
     <span class="nd">@functools</span><span class="o">.</span><span class="n">cached_property</span>
     <span class="k">def</span> <span class="nf">index_as_dataframe</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Read and cache the full index file&quot;&quot;&quot;</span>
+
+        <span class="c1"># If the index file does not exists on the archive, but we have</span>
+        <span class="c1"># downloaded the full file (it is local), then we can use wgrib2</span>
+        <span class="c1"># to get the index file.</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">idx</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">grib_source</span> <span class="o">==</span> <span class="s2">&quot;local&quot;</span><span class="p">:</span>
+                <span class="c1"># Use wgrib2 to get the index file if the file is local</span>
+                <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;🧙🏻‍♂️ I&#39;ll use wgrib2 to create the missing index file.&quot;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">idx</span> <span class="o">=</span> <span class="n">StringIO</span><span class="p">(</span><span class="n">wgrib2_idx_to_str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_localFilePath</span><span class="p">()))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">IDX_STYLE</span> <span class="o">=</span> <span class="s2">&quot;wgrib2&quot;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">No index file was found for . </span><span class="se">\n</span><span class="s2">&quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;Download the full file first (with `H.download()`).</span><span class="se">\n</span><span class="s2">&quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;You will need to remake the Herbie object (H = `Herbie()`)</span><span class="se">\n</span><span class="s2">&quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;or delete this cached property: `del H.index_as_dataframe()`&quot;</span>
+                <span class="p">)</span>
+
         <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">idx</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;No index file found for </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">grib</span><span class="si">}</span><span class="s2">.&quot;</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">IDX_STYLE</span> <span class="o">==</span> <span class="s2">&quot;wgrib2&quot;</span><span class="p">:</span>
@@ -652,12 +689,6 @@
             <span class="c1"># https://noaa-hrrr-bdp-pds.s3.amazonaws.com/hrrr.20210101/conus/hrrr.t00z.wrfsfcf00.grib2.idx</span>
             <span class="c1"># Sometimes idx has more than the standard messages</span>
             <span class="c1"># https://noaa-nbm-grib2-pds.s3.amazonaws.com/blend.20210711/13/core/blend.t13z.core.f001.co.grib2.idx</span>
-
-            <span class="c1"># TODO: Experimental special case when self.idx is a pathlib.Path</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">idx</span><span class="p">,</span> <span class="s2">&quot;exists&quot;</span><span class="p">):</span>
-                <span class="c1"># If the self.idx is not a pathlib.Path, then we assume it needs to be downloaded</span>
-                <span class="n">r</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">idx</span><span class="p">)</span>
-                <span class="k">assert</span> <span class="n">r</span><span class="o">.</span><span class="n">ok</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Index file does not exist: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">idx</span><span class="si">}</span><span class="s2">&quot;</span>
 
             <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">idx</span><span class="p">,</span>
@@ -745,7 +776,7 @@
                     <span class="s2">&quot;reference_time&quot;</span><span class="p">,</span>
                     <span class="s2">&quot;valid_time&quot;</span><span class="p">,</span>
                     <span class="s2">&quot;step&quot;</span><span class="p">,</span>
-                    <span class="c1"># --- Used for searchString ------------------------------------</span>
+                    <span class="c1"># ---- Used for searchString ------------------------------</span>
                     <span class="s2">&quot;param&quot;</span><span class="p">,</span>  <span class="c1"># parameter field (variable)</span>
                     <span class="s2">&quot;levelist&quot;</span><span class="p">,</span>  <span class="c1"># level</span>
                     <span class="s2">&quot;levtype&quot;</span><span class="p">,</span>  <span class="c1"># sfc=surface, pl=pressure level, pt=potential vorticity</span>
@@ -827,6 +858,9 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Download file from source.</span>
 
+<span class="sd">        TODO: When we download a full file, the value of self.grib and</span>
+<span class="sd">        TODO: self.grib_source should change to represent the local file.</span>
+
 <span class="sd">        Subsetting by variable follows the same principles described here:</span>
 <span class="sd">        https://www.cpc.ncep.noaa.gov/products/wesley/fast_downloading_grib.html</span>
 
@@ -880,8 +914,6 @@
             <span class="c1"># TODO  to use the request module directly.</span>
             <span class="c1"># TODO  &gt;&gt; headers = dict(Range=f&quot;bytes={start_bytes}-{end_bytes}&quot;)</span>
             <span class="c1"># TODO  &gt;&gt; r = requests.get(grib_url, headers=headers)</span>
-            <span class="c1"># TODO  Except does this allow multiple ranges??</span>
-            <span class="c1"># TODO  See example here: https://github.com/pangeo-forge/pangeo-forge-recipes/issues/267#issuecomment-1026934765</span>
 
             <span class="n">grib_source</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">grib</span>
             <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">grib_source</span><span class="p">,</span> <span class="s2">&quot;as_posix&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">grib_source</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
@@ -900,7 +932,8 @@
             <span class="c1"># Find index groupings</span>
             <span class="c1"># TODO: Improve this for readability</span>
             <span class="c1"># https://stackoverflow.com/a/32199363/2383070</span>
-            <span class="n">li</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">idx_df</span><span class="o">.</span><span class="n">index</span>
+            <span class="n">idx_df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_idx</span><span class="p">(</span><span class="n">searchString</span><span class="p">)</span>
+            <span class="n">li</span> <span class="o">=</span> <span class="n">idx_df</span><span class="o">.</span><span class="n">index</span>
             <span class="n">inds</span> <span class="o">=</span> <span class="p">(</span>
                 <span class="p">[</span><span class="mi">0</span><span class="p">]</span>
                 <span class="o">+</span> <span class="p">[</span><span class="n">ind</span> <span class="k">for</span> <span class="n">ind</span><span class="p">,</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">li</span><span class="p">,</span> <span class="n">li</span><span class="p">[</span><span class="mi">1</span><span class="p">:]),</span> <span class="mi">1</span><span class="p">)</span> <span class="k">if</span> <span class="n">j</span> <span class="o">-</span> <span class="n">i</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">]</span>
@@ -911,7 +944,7 @@
             <span class="n">curl_ranges</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="n">group_dfs</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">group</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">curl_groups</span><span class="p">):</span>
-                <span class="n">_df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">idx_df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">group</span><span class="p">]</span>
+                <span class="n">_df</span> <span class="o">=</span> <span class="n">idx_df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">group</span><span class="p">]</span>
                 <span class="n">curl_ranges</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">_df</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">start_byte</span><span class="si">}</span><span class="s2">-</span><span class="si">{</span><span class="n">_df</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">end_byte</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
                 <span class="n">group_dfs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">_df</span><span class="p">)</span>
 
@@ -919,7 +952,7 @@
                 <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
                     <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">_df</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
                         <span class="nb">print</span><span class="p">(</span>
-                            <span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">row</span><span class="o">.</span><span class="n">grib_message</span><span class="si">:</span><span class="s2">&lt;3g</span><span class="si">}</span><span class="s2"> </span><span class="se">\033</span><span class="s2">[34m</span><span class="si">{</span><span class="n">row</span><span class="o">.</span><span class="n">search_this</span><span class="si">}</span><span class="se">\033</span><span class="s2">[0m&quot;</span>
+                            <span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">row</span><span class="o">.</span><span class="n">grib_message</span><span class="si">:</span><span class="s2">&lt;3g</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">ANSI</span><span class="o">.</span><span class="n">orange</span><span class="si">}{</span><span class="n">row</span><span class="o">.</span><span class="n">search_this</span><span class="si">}{</span><span class="n">ANSI</span><span class="o">.</span><span class="n">reset</span><span class="si">}</span><span class="s2">&quot;</span>
                         <span class="p">)</span>
 
                 <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
@@ -931,8 +964,7 @@
                 <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="n">curl</span><span class="p">)</span>
 
             <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
-                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;💾 Saved the above subset to </span><span class="si">{</span><span class="n">outFile</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">local_grib_subset</span> <span class="o">=</span> <span class="n">outFile</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;💾 Saved the subset to </span><span class="si">{</span><span class="n">outFile</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
         <span class="c1"># If the file exists in the localPath and we don&#39;t want to</span>
         <span class="c1"># overwrite, then we don&#39;t need to download it.</span>
@@ -949,18 +981,13 @@
         <span class="k">if</span> <span class="n">outFile</span><span class="o">.</span><span class="n">exists</span><span class="p">()</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">overwrite</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
                 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;🌉 Already have local copy --&gt; </span><span class="si">{</span><span class="n">outFile</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">searchString</span> <span class="ow">in</span> <span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;:&quot;</span><span class="p">]:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">local_grib</span> <span class="o">=</span> <span class="n">outFile</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">local_grib_subset</span> <span class="o">=</span> <span class="n">outFile</span>
             <span class="k">return</span>
 
-        <span class="c1"># Attach the index file to the object (how much overhead is this?)</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">idx</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">idx_df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_idx</span><span class="p">(</span><span class="n">searchString</span><span class="p">)</span>
-            <span class="k">except</span><span class="p">:</span>
-                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Note: Herbie could not read and attach index file.&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">overwrite</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">grib_source</span> <span class="o">==</span> <span class="s2">&quot;local&quot;</span><span class="p">:</span>
+            <span class="c1"># Search for the grib files on the remote archives again</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">grib</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">grib_source</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_grib</span><span class="p">(</span><span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">idx</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">idx_source</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_idx</span><span class="p">()</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Overwrite local file with file from [</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">grib_source</span><span class="si">}</span><span class="s2">]&quot;</span><span class="p">)</span>
 
         <span class="c1"># This overrides the save_dir specified in __init__</span>
         <span class="k">if</span> <span class="n">save_dir</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -998,14 +1025,20 @@
         <span class="k">if</span> <span class="n">searchString</span> <span class="ow">in</span> <span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;:&quot;</span><span class="p">]</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">idx</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="c1"># Download the full file from remote source</span>
             <span class="n">urllib</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">urlretrieve</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">grib</span><span class="p">,</span> <span class="n">outFile</span><span class="p">,</span> <span class="n">_reporthook</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">grib</span> <span class="o">=</span> <span class="n">outFile</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">grib_source</span> <span class="o">=</span> <span class="s2">&quot;local&quot;</span>
+
             <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
                 <span class="nb">print</span><span class="p">(</span>
                     <span class="sa">f</span><span class="s2">&quot;✅ Success! Downloaded </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span><span class="si">}</span><span class="s2"> from </span><span class="se">\033</span><span class="s2">[38;5;202m</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">grib_source</span><span class="si">:</span><span class="s2">20s</span><span class="si">}</span><span class="se">\033</span><span class="s2">[0m</span><span class="se">\n\t</span><span class="s2">src: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">grib</span><span class="si">}</span><span class="se">\n\t</span><span class="s2">dst: </span><span class="si">{</span><span class="n">outFile</span><span class="si">}</span><span class="s2">&quot;</span>
                 <span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">local_grib</span> <span class="o">=</span> <span class="n">outFile</span>
+
         <span class="k">else</span><span class="p">:</span>
             <span class="c1"># Download a subset of the file</span>
-            <span class="n">subset</span><span class="p">(</span><span class="n">searchString</span><span class="p">,</span> <span class="n">outFile</span><span class="p">)</span></div>
+            <span class="n">subset</span><span class="p">(</span><span class="n">searchString</span><span class="p">,</span> <span class="n">outFile</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span></div>
 
 <div class="viewcode-block" id="Herbie.xarray"><a class="viewcode-back" href="../../reference_guide/_autosummary/herbie.archive.Herbie.html#herbie.archive.Herbie.xarray">[docs]</a>    <span class="k">def</span> <span class="nf">xarray</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
@@ -1126,9 +1159,16 @@
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">Hxr</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">Hxr</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;Note: Returning a list of [</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">ds</span><span class="p">)</span><span class="si">}</span><span class="s2">] xarray.Datasets because of multiple hypercubes.&quot;</span>
-            <span class="p">)</span>
+            <span class="c1"># cfgrib returned multiple hypercubes.</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="c1"># Handle case where HRRR subh returns multiple hypercubes (see #73)</span>
+                <span class="n">data_vars</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">itertools</span><span class="o">.</span><span class="n">chain</span><span class="p">(</span><span class="o">*</span><span class="p">[</span><span class="nb">list</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">Hxr</span><span class="p">]))</span>
+                <span class="n">data_vars</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="s2">&quot;gribfile_projection&quot;</span><span class="p">)</span>
+                <span class="n">Hxr</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">Hxr</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="s2">&quot;step&quot;</span><span class="p">,</span> <span class="n">data_vars</span><span class="o">=</span><span class="n">data_vars</span><span class="p">)</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;Note: Returning a list of [</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">Hxr</span><span class="p">)</span><span class="si">}</span><span class="s2">] xarray.Datasets because cfgrib opened with multiple hypercubes.&quot;</span>
+                <span class="p">)</span>
             <span class="k">return</span> <span class="n">Hxr</span></div></div>
 </pre></div>
 
@@ -1152,7 +1192,7 @@
     
     <div class="footer-item">
       <p class="copyright">
-    &copy; Copyright 2022, Brian K. Blaylock.    ♻ Updated: 19:10 UTC 23 Apr 2022.<br>
+    &copy; Copyright 2022, Brian K. Blaylock.    ♻ Updated: 04:33 UTC 07 May 2022.<br>
 </p>
     </div>
     
