@@ -10,7 +10,6 @@ from datetime import datetime, timedelta
 
 import logging
 import os
-import subprocess
 import cartopy.crs as ccrs
 import metpy  # accessor needed to parse crs
 import numpy as np
@@ -28,7 +27,7 @@ log = logging.getLogger(__name__)
 
 
 """
- Notice! Multithreading is use
+🧵 Notice! Multithreading is use
 
 This is my first implementation of multithreading to create, download,
 and read many Herbie objects. This drastically reduces the time it takes
@@ -99,7 +98,7 @@ def fast_Herbie(DATES, fxx=[0], *, max_threads=50, **kwargs):
     # Multithreading
     tasks = len(DATES) * len(fxx)
     threads = min(tasks, max_threads)
-    log.info(f"Working on {tasks} tasks with {threads} threads.")
+    log.info(f"🧵 Working on {tasks} tasks with {threads} threads.")
 
     with ThreadPoolExecutor(threads) as exe:
         futures = [
@@ -159,7 +158,7 @@ def fast_Herbie_download(
     # Multithread the downloads
     tasks = len(DATES) * len(fxx)
     threads = min(tasks, max_threads)
-    log.info(f"Working on {tasks} tasks with {threads} threads.")
+    log.info(f"🧵 Working on {tasks} tasks with {threads} threads.")
 
     with ThreadPoolExecutor(max_threads) as exe:
         futures = [exe.submit(H.download, searchString, **download_kw) for H in passed]
@@ -216,7 +215,7 @@ def fast_Herbie_xarray(
     # Multithread the downloads
     tasks = len(DATES) * len(fxx)
     threads = min(tasks, max_threads)
-    log.info(f"Working on {tasks} tasks with {threads} threads.")
+    log.info(f"🧵 Working on {tasks} tasks with {threads} threads.")
 
     with ThreadPoolExecutor(max_threads) as exe:
         futures = [exe.submit(H.xarray, searchString, **xarray_kw) for H in passed]
@@ -225,8 +224,8 @@ def fast_Herbie_xarray(
         ds_list = [future.result() for future in as_completed(futures)]
 
     # Sort the DataSets, first by lead time (step), then by run time (time)
-    ds_list.sort(key=lambda ds: ds.step.item())
-    ds_list.sort(key=lambda ds: ds.time.item())
+    ds_list.sort(key=lambda x: x.step.data.max())
+    ds_list.sort(key=lambda x: x.time.data.max())
 
     # Reshape list with dimensions (len(DATES), len(fxx))
     ds_list = [ds_list[x : x + len(fxx)] for x in range(0, len(ds_list), len(fxx))]
@@ -235,14 +234,14 @@ def fast_Herbie_xarray(
     try:
         ds = xr.combine_nested(
             ds_list,
-            concat_dim=["i_run", "i_fxx"],
+            concat_dim=["time", "step"],
             combine_attrs="drop_conflicts",
         )
     except:
         # TODO: I'm not sure why some cases doesn't like the combine_attrs argument
         ds = xr.combine_nested(
             ds_list,
-            concat_dim=["i_run", "i_fxx"],
+            concat_dim=["time", "step"],
         )
 
     ds["gribfile_projection"] = ds.gribfile_projection[0][0]
@@ -334,7 +333,7 @@ def bulk_download(DATES, searchString=None, *, fxx=range(0, 1), verbose=True, **
         fxx = [fxx]
 
     # Locate the file sources
-    print("Check which requested files exists")
+    print("👨🏻‍🔬 Check which requested files exists")
     grib_sources = fast_Herbie(DATES, fxx, **kwargs)
 
     # Keep a list of successful and failed Herbie objects

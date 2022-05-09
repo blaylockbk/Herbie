@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 ## Brian Blaylock
-## May 3, 2021
+## May 6, 2022
 
 """
 ===============================
@@ -12,9 +12,9 @@ Herbie is your model output download assistant with a mind of his own!
 Herbie might look small on the outside, but he has a big heart on the
 inside and will get you to the
 `finish line <https://www.youtube.com/watch?v=4XWufUZ1mxQ&t=189s>`_.
-Happy racing!
+Happy racing! 🏁
 
-`Documentation <https://blaylockbk.github.io/Herbie/_build/html/>`_
+`📓 Documentation <https://blaylockbk.github.io/Herbie/_build/html/>`_
 
 With Herbie's API, you can search and download GRIB2 model output files
 from different archive sources for the High-Resolution Rapid Refresh
@@ -45,29 +45,32 @@ For more details, see https://blaylockbk.github.io/Herbie/_build/html/user_guide
 """
 import functools
 import hashlib
+import itertools
 import json
+import logging
 import os
-from io import StringIO
 import sys
 import urllib.request
 import warnings
 from datetime import datetime, timedelta
-import logging
+from io import StringIO
 
 import cfgrib
 import pandas as pd
 import pygrib
 import requests
+from soupsieve import escape
+import xarray as xr
 from pyproj import CRS
 
 import herbie.models as model_templates
-from herbie.help import _searchString_help
-from herbie.misc import Herbie_ascii
-
-# NOTE: These config dict values are retrieved from __init__ and read
-# from the file ${HOME}/.config/herbie/config.toml
-# Path imported from __init__ because it has my custom `expand()` method
 from herbie import Path, config
+from herbie.help import _searchString_help
+from herbie.misc import ANSI
+
+# NOTE: The config dict values are retrieved from __init__ and read
+# from the file ${HOME}/.config/herbie/config.toml
+# Path is imported from __init__ because it has my custom methods.
 
 try:
     # Load custom xarray accessors
@@ -86,8 +89,8 @@ log = logging.getLogger(__name__)
 
 def wgrib2_idx_to_str(GRIB2_FILEPATH):
     """Produce the index file as a string with wgrib2"""
-    from shutil import which
     import subprocess
+    from shutil import which
 
     if which("wgrib2") is None:
         raise RuntimeError("wgrib2 command was not found.")
@@ -239,52 +242,31 @@ class Herbie:
         self.idx, self.idx_source = self.find_idx()
 
         if verbose:
-            # ANSI color's added for style points
+            # ANSI colors added for style points
             if any([self.grib is not None, self.idx is not None]):
                 print(
-                    f" Found",
-                    f"\033[32m{self.date:%Y-%b-%d %H:%M UTC} F{self.fxx:02d}\033[0m",
-                    f"[{self.model.upper()}] [product={self.product}]",
-                    f"GRIB2 file from \033[31m{self.grib_source}\033[0m and",
-                    f"index file from \033[31m{self.idx_source}\033[0m.",
-                    f'{" ":150s}',
+                    f"✅ Found",
+                    f"┊ model={self.model}",
+                    f"┊ {ANSI.italic}product={self.product}{ANSI.reset}",
+                    f"┊ {ANSI.green}{self.date:%Y-%b-%d %H:%M UTC}{ANSI.bright_green} F{self.fxx:02d}{ANSI.reset}",
+                    f"┊ {ANSI.orange}{ANSI.italic}GRIB2 @ {self.grib_source}{ANSI.reset}",
+                    f"┊ {ANSI.orange}{ANSI.italic}IDX @ {self.idx_source}{ANSI.reset}",
                 )
             else:
                 print(
-                    f" Did not find a GRIB2 or Index File for",
-                    f"\033[32m{self.date:%Y-%b-%d %H:%M UTC} F{self.fxx:02d}\033[0m",
-                    f"{self.model.upper()}",
-                    f'{" ":100s}',
+                    f"💔 Did not find",
+                    f"┊ model={self.model}",
+                    f"┊ {ANSI.italic}product={self.product}{ANSI.reset}",
+                    f"┊ {ANSI.green}{self.date:%Y-%b-%d %H:%M UTC}{ANSI.bright_green} F{self.fxx:02d}{ANSI.reset}",
                 )
-
-    @property
-    def print_rich(self):
-        """
-        Print "rich" display console
-        TODO: How do I get the __repr__ to do this?
-        """
-        try:
-            from rich.console import Console
-            from herbie.misc import rich_herbie
-
-            console = Console()
-            console.print(
-                f"{rich_herbie()} "
-                f"{self.model.upper()} model "
-                f"[italic]{self.product}[/] product "
-                f"initialized [green bold]{self.date:%Y-%b-%d %H:%M} UTC[/] "
-                f"[#3ab813]F{self.fxx:02d}[/] "
-                f"| [#ff9900 italic]source={self.grib_source}[/]"
-            )
-        except:
-            print("rich is not working/installed")
 
     def __repr__(self):
         """Representation in Notebook"""
         msg = (
-            f"[{self.model.upper()}] model [{self.product}] product",
-            f"run at \033[32m{self.date:%Y-%b-%d %H:%M UTC}",
-            f"F{self.fxx:02d}\033[0m",
+            f"{ANSI.herbie} {self.model.upper()} model",
+            f"{ANSI.italic}{self.product}{ANSI.reset} product initialized",
+            f"{ANSI.green}{self.date:%Y-%b-%d %H:%M UTC}{ANSI.bright_green} F{self.fxx:02d}{ANSI.reset}",
+            f"┊ {ANSI.orange}{ANSI.italic}source={self.grib_source}{ANSI.reset}",
         )
         return " ".join(msg)
 
@@ -300,7 +282,7 @@ class Herbie:
     @property
     def __logo__(self):
         """For Fun, show the Herbie Logo"""
-        print(Herbie_ascii())
+        print(ANSI.ascii)
 
     def _validate(self):
         """Validate the Herbie class input arguments"""
@@ -312,7 +294,7 @@ class Herbie:
         _models = {m for m in dir(model_templates) if not m.startswith("__")}
         _products = set(self.PRODUCTS)
 
-        assert self.date < datetime.utcnow(), "🔮`date` cannot be in the future."
+        assert self.date < datetime.utcnow(), "🔮 `date` cannot be in the future."
         assert self.model in _models, f"`model` must be one of {_models}"
         assert self.product in _products, f"`product` must be one of {_products}"
 
@@ -339,7 +321,7 @@ class Herbie:
         try:
             requests.head("https://pando-rgw01.chpc.utah.edu/")
         except:
-            print(" Bad handshake with pando? Am I able to move on?")
+            print("🤝🏻⛔ Bad handshake with pando? Am I able to move on?")
             pass
 
     def _check_grib(self, url):
@@ -358,7 +340,7 @@ class Herbie:
         # we will loop through the IDX_SUFFIX.
 
         if verbose:
-            print(f" {self.IDX_SUFFIX=}")
+            print(f"🐜 {self.IDX_SUFFIX=}")
 
         # Loop through IDX_SUFFIX options until we find one that exists
         for i in self.IDX_SUFFIX:
@@ -370,8 +352,8 @@ class Herbie:
 
             idx_exists = requests.head(idx_url).ok
             if verbose:
-                print(f"🐜{idx_url=}")
-                print(f"🐜{idx_exists=}")
+                print(f"🐜 {idx_url=}")
+                print(f"🐜 {idx_exists=}")
             if idx_exists:
                 return idx_exists, idx_url
 
@@ -514,7 +496,7 @@ class Herbie:
         if self.idx is None:
             if self.grib_source == "local":
                 # Use wgrib2 to get the index file if the file is local
-                log.info("I'll use wgrib2 to create the missing index file.")
+                log.info("🧙🏻‍♂️ I'll use wgrib2 to create the missing index file.")
                 self.idx = StringIO(wgrib2_idx_to_str(self.get_localFilePath()))
                 self.IDX_STYLE = "wgrib2"
             else:
@@ -747,7 +729,7 @@ class Herbie:
             total_size_MB = c / 1000000.0
             if verbose:
                 print(
-                    f"\rDownload Progress: {chunk_progress:.2f}% of {total_size_MB:.1f} MB\r",
+                    f"\r🚛💨  Download Progress: {chunk_progress:.2f}% of {total_size_MB:.1f} MB\r",
                     end="",
                 )
 
@@ -767,7 +749,7 @@ class Herbie:
                 grib_source = f"file://{str(self.grib)}"
             if verbose:
                 print(
-                    f'Download subset: {self.__repr__()}{" ":60s}\n cURL from {grib_source}'
+                    f'📇 Download subset: {self.__repr__()}{" ":60s}\n cURL from {grib_source}'
                 )
 
             # Download subsets of the file by byte range with cURL.
@@ -797,7 +779,7 @@ class Herbie:
                 if verbose:
                     for i, row in _df.iterrows():
                         print(
-                            f"  {row.grib_message:<3g} \033[34m{row.search_this}\033[0m"
+                            f"  {row.grib_message:<3g} {ANSI.orange}{row.search_this}{ANSI.reset}"
                         )
 
                 if i == 0:
@@ -809,7 +791,7 @@ class Herbie:
                 os.system(curl)
 
             if verbose:
-                print(f"Saved the above subset to {outFile}")
+                print(f"💾 Saved the subset to {outFile}")
 
         # If the file exists in the localPath and we don't want to
         # overwrite, then we don't need to download it.
@@ -825,7 +807,7 @@ class Herbie:
 
         if outFile.exists() and not self.overwrite:
             if verbose:
-                print(f"Already have local copy --> {outFile}")
+                print(f"🌉 Already have local copy --> {outFile}")
             return
 
         if self.overwrite and self.grib_source == "local":
@@ -843,14 +825,14 @@ class Herbie:
 
         # Check that data exists
         if self.grib is None:
-            msg = f" GRIB2 file not found: {self.model=} {self.date=} {self.fxx=}"
+            msg = f"🦨 GRIB2 file not found: {self.model=} {self.date=} {self.fxx=}"
             if errors == "warn":
                 log.warning(msg)
                 return  # Can't download anything without a GRIB file URL.
             elif errors == "raise":
                 raise ValueError(msg)
         if self.idx is None and searchString is not None:
-            msg = f"Index file not found; cannot download subset: {self.model=} {self.date=} {self.fxx=}"
+            msg = f"🦨 Index file not found; cannot download subset: {self.model=} {self.date=} {self.fxx=}"
             if errors == "warn":
                 log.warning(
                     msg + " I will download the full file because I cannot subset."
@@ -865,7 +847,7 @@ class Herbie:
         # Create directory if it doesn't exist
         if not outFile.parent.is_dir():
             outFile.parent.mkdir(parents=True, exist_ok=True)
-            print(f" Created directory: [{outFile.parent}]")
+            print(f"👨🏻‍🏭 Created directory: [{outFile.parent}]")
 
         if searchString in [None, ":"] or self.idx is None:
             # Download the full file from remote source
@@ -876,7 +858,7 @@ class Herbie:
 
             if verbose:
                 print(
-                    f" Success! Downloaded {self.model.upper()} from \033[38;5;202m{self.grib_source:20s}\033[0m\n\tsrc: {self.grib}\n\tdst: {outFile}"
+                    f"✅ Success! Downloaded {self.model.upper()} from \033[38;5;202m{self.grib_source:20s}\033[0m\n\tsrc: {self.grib}\n\tdst: {outFile}"
                 )
 
         else:
@@ -1004,7 +986,14 @@ class Herbie:
         if len(Hxr) == 1:
             return Hxr[0]
         else:
-            print(
-                f"Note: Returning a list of [{len(ds)}] xarray.Datasets because of multiple hypercubes."
-            )
+            # cfgrib returned multiple hypercubes.
+            try:
+                # Handle case where HRRR subh returns multiple hypercubes (see #73)
+                data_vars = set(itertools.chain(*[list(i) for i in Hxr]))
+                data_vars.remove("gribfile_projection")
+                Hxr = xr.concat(Hxr, dim="step", data_vars=data_vars)
+            except:
+                print(
+                    f"Note: Returning a list of [{len(Hxr)}] xarray.Datasets because cfgrib opened with multiple hypercubes."
+                )
             return Hxr

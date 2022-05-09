@@ -20,7 +20,6 @@ def test_gfs():
         priority="aws",
         product="pgrb2.0p25",
         model="gfs",
-        save_dir="$TMPDIR",
     )
 
     assert H.grib, "GFS grib2 file not found"
