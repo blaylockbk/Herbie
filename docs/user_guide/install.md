@@ -21,7 +21,7 @@ pip install git+https://github.com/blaylockbk/Herbie.git
 ## Option 2: conda
 If conda environments are new to you, I suggest you become familiar with [managing conda environments](https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html).
 
-I have provided a sample Anaconda [environment.yml](https://github.com/blaylockbk/Herbie/blob/master/environment.yml) file that lists the minimum packages required plus some extras that I find useful. Look at the bottom lines of that yaml file...there are two ways to install `hrrrb` with pip within the environment file. Comment out the line you don't want.
+I have provided a sample Anaconda [environment.yml](https://github.com/blaylockbk/Herbie/blob/main/environment.yml) file that lists the minimum packages required plus some extras that I find useful. Look at the bottom lines of that yaml file...there are two ways to install `hrrrb` with pip within the environment file. Comment out the line you don't want.
 
 For the latest development code:
 ```yaml
@@ -37,7 +37,7 @@ For the latest published version
 First, create the virtual environment with 
 
 ```bash
-wget https://github.com/blaylockbk/Herbie/raw/master/environment.yml
+wget https://github.com/blaylockbk/Herbie/raw/main/environment.yml
 conda env create -f environment.yml
 ```
 

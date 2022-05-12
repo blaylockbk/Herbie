@@ -279,7 +279,7 @@ def create_index_files(path, overwrite=False):
         raise RuntimeError("wgrib2 command was not found.")
 
     path = Path(path)
-
+    files = []
     if path.is_dir():
         # List all GRIB2 files in the directory
         files = list(path.rglob("*.grib2*"))
@@ -287,7 +287,7 @@ def create_index_files(path, overwrite=False):
         # The path is a single file
         files = [path]
 
-    if len(files) > 0:
+    if files:
         for f in files:
             f_idx = Path(str(f) + ".idx")
             if not f_idx.exists() or overwrite:

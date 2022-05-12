@@ -29,7 +29,7 @@ Other notebooks
 ---------------
 
 - `Brian Cartopy Tools <https://github.com/blaylockbk/Carpenter_Workshop/blob/main/notebooks/demo_cartopy_tools.ipynb>`_
-- `Make Cartopy maps with HRRR data <https://github.com/blaylockbk/Herbie/blob/master/notebooks/demo_plot-on-map-with-common-features.ipynb>`_
+- `Make Cartopy maps with HRRR data <https://github.com/blaylockbk/Herbie/blob/main/notebooks/demo_plot-on-map-with-common-features.ipynb>`_
 
 
 HRRR in Zarr Format
@@ -43,5 +43,5 @@ To get started check out these notebooks:
 - `Kevin Tyle: HRRR-Zarr AMS Short Course <https://github.com/ktyle/python_pangeo_ams2021/blob/main/notebooks/03_Pangeo_HRRR.ipynb>`_
 
 I haven't added Zarr functionality into `Herbie`, but I started to explore the capability. Here is my sandbox notebook...
-- `Brian Blaylock: HRRR-Zarr sandbox <https://github.com/blaylockbk/Herbie/blob/master/notebooks/zarr_HRRR.ipynb>`_
+- `Brian Blaylock: HRRR-Zarr sandbox <https://github.com/blaylockbk/Herbie/blob/main/notebooks/zarr_HRRR.ipynb>`_
 

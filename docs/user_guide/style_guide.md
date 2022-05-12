@@ -1,4 +1,4 @@
-![](https://github.com/blaylockbk/Herbie/blob/master/docs/_static/HerbieLogo2_tan_transparent.png?raw=true)
+![](https://github.com/blaylockbk/Herbie/blob/main/docs/_static/HerbieLogo2_tan_transparent.png?raw=true)
 
 # 🎨 Style Guide
 
@@ -36,7 +36,7 @@ DejaVu Sans Bold
 ## Samples
 
 ### Transparent Background
-![](https://github.com/blaylockbk/Herbie/blob/master/docs/_static/HerbieLogo2_tan_transparent.png?raw=true)
+![](https://github.com/blaylockbk/Herbie/blob/main/docs/_static/HerbieLogo2_tan_transparent.png?raw=true)
 
 ### Tan Background
-![](https://github.com/blaylockbk/Herbie/blob/master/docs/_static/HerbieLogo2_white.png?raw=true)
+![](https://github.com/blaylockbk/Herbie/blob/main/docs/_static/HerbieLogo2_white.png?raw=true)

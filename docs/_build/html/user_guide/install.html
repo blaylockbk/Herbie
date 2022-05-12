@@ -7,12 +7,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
     <title>🐍 Installation and Conda Environment &#8212; Herbie 0.0.9 documentation</title>
-    
+
   <!-- Loaded before other Sphinx assets -->
   <link href="../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
 <link href="../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
 
-    
+
   <link rel="stylesheet"
     href="../_static/vendor/fontawesome/5.13.0/css/all.min.css">
   <link rel="preload" as="font" type="font/woff2" crossorigin
@@ -24,7 +24,7 @@
     <link rel="stylesheet" type="text/css" href="../_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css" />
     <link rel="stylesheet" type="text/css" href="../_static/panels-variables.06eb56fa6e07937060861dad626602ad.css" />
     <link rel="stylesheet" type="text/css" href="../_static/brian_style.css" />
-    
+
   <!-- Pre-loaded scripts that we'll load fully later -->
   <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
 
@@ -43,10 +43,10 @@
     <link rel="prev" title="📜 History" href="history.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="None">
-    
+
 
     <!-- Google Analytics -->
-    
+
 <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-PT9LX1B7B8"></script>
 <script>
                     window.dataLayer = window.dataLayer || [];
@@ -57,32 +57,32 @@
 
   </head>
   <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
-    
+
     <div class="container-fluid" id="banner"></div>
 
-    
+
     <nav class="navbar navbar-light navbar-expand-lg bg-light fixed-top bd-navbar" id="navbar-main"><div class="container-xl">
 
   <div id="navbar-start">
-    
-    
+
+
 
 <a class="navbar-brand" href="../index.html">
   <img src="../_static/HerbieLogo2_white_transparent.png" class="logo" alt="logo">
 </a>
 
 
-    
+
   </div>
 
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-collapsible" aria-controls="navbar-collapsible" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
 
-  
+
   <div id="navbar-collapsible" class="col-lg-9 collapse navbar-collapse">
     <div id="navbar-center" class="mr-auto">
-      
+
       <div class="navbar-center-item">
         <ul id="navbar-main-elements" class="navbar-nav">
     <li class="toctree-l1 current active nav-item">
@@ -97,22 +97,22 @@
  </a>
 </li>
 
-    
+
     <li class="nav-item">
         <a class="nav-link nav-external" href="https://blaylockbk.github.io/SynopticPy/_build/html/">SynopticPy<i class="fas fa-external-link-alt"></i></a>
     </li>
-    
+
     <li class="nav-item">
         <a class="nav-link nav-external" href="https://blaylockbk.github.io/goes2go/_build/html/">GOES-2-go<i class="fas fa-external-link-alt"></i></a>
     </li>
-    
+
 </ul>
       </div>
-      
+
     </div>
 
     <div id="navbar-end">
-      
+
       <div class="navbar-end-item">
         <ul id="navbar-icon-links" class="navbar-nav" aria-label="Icon Links">
         <li class="nav-item">
@@ -125,24 +125,24 @@
         </li>
       </ul>
       </div>
-      
+
       <div class="navbar-end-item">
         <form class="bd-search d-flex align-items-center" action="../search.html" method="get">
   <i class="icon fas fa-search"></i>
   <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
 </form>
       </div>
-      
+
     </div>
   </div>
 </div>
     </nav>
-    
+
 
     <div class="container-xl">
       <div class="row">
-          
-            
+
+
             <!-- Only show if we have sidebars configured, else just a small margin  -->
             <div class="col-12 col-md-3 bd-sidebar">
               <div class="sidebar-start-items"><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
@@ -276,15 +276,15 @@
               <div class="sidebar-end-items">
               </div>
             </div>
-            
-          
 
-          
+
+
+
           <div class="d-none d-xl-block col-xl-2 bd-toc">
-            
-              
+
+
               <div class="toc-item">
-                
+
 <div class="tocsection onthispage mt-5 pt-1 pb-3">
     <i class="fas fa-list"></i> On this page
 </div>
@@ -310,9 +310,9 @@
 
 </nav>
               </div>
-              
+
               <div class="toc-item">
-                
+
 
 <div class="tocsection editthispage">
     <a href="https://github.com/blaylockbk/Herbie/edit/master/docs/user_guide/install.md">
@@ -321,19 +321,19 @@
 </div>
 
               </div>
-              
-            
-          </div>
-          
 
-          
-          
-            
-          
+
+          </div>
+
+
+
+
+
+
           <main class="col-12 col-md-9 col-xl-7 py-md-5 pl-md-5 pr-md-4 bd-content" role="main">
-              
+
               <div>
-                
+
   <section id="installation-and-conda-environment">
 <h1>🐍 Installation and Conda Environment<a class="headerlink" href="#installation-and-conda-environment" title="Permalink to this headline">#</a></h1>
 <p>Herbie requires <code class="docutils literal notranslate"><span class="pre">curl</span></code> and <strong>Python 3.8+</strong> with the following packages: <code class="docutils literal notranslate"><span class="pre">requests</span></code>, <code class="docutils literal notranslate"><span class="pre">pandas</span></code>, <code class="docutils literal notranslate"><span class="pre">xarray</span></code>, and <code class="docutils literal notranslate"><span class="pre">cfgrib</span></code>. Optional packages are <code class="docutils literal notranslate"><span class="pre">matplotlib</span></code>, <code class="docutils literal notranslate"><span class="pre">cartopy</span></code>, and<a class="reference external" href="https://github.com/blaylockbk/Carpenter_Workshop"><code class="docutils literal notranslate"><span class="pre">Carpenter_Workshop</span></code></a>.</p>
@@ -354,7 +354,7 @@
 <section id="option-2-conda">
 <h2>Option 2: conda<a class="headerlink" href="#option-2-conda" title="Permalink to this headline">#</a></h2>
 <p>If conda environments are new to you, I suggest you become familiar with <a class="reference external" href="https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html">managing conda environments</a>.</p>
-<p>I have provided a sample Anaconda <a class="reference external" href="https://github.com/blaylockbk/Herbie/blob/master/environment.yml">environment.yml</a> file that lists the minimum packages required plus some extras that I find useful. Look at the bottom lines of that yaml file…there are two ways to install <code class="docutils literal notranslate"><span class="pre">hrrrb</span></code> with pip within the environment file. Comment out the line you don’t want.</p>
+<p>I have provided a sample Anaconda <a class="reference external" href="https://github.com/blaylockbk/Herbie/blob/main/environment.yml">environment.yml</a> file that lists the minimum packages required plus some extras that I find useful. Look at the bottom lines of that yaml file…there are two ways to install <code class="docutils literal notranslate"><span class="pre">hrrrb</span></code> with pip within the environment file. Comment out the line you don’t want.</p>
 <p>For the latest development code:</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">pip</span><span class="p">:</span><span class="w"></span>
 <span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">git+https://github.com/blaylockbk/Herbie.git</span><span class="w"></span>
@@ -366,7 +366,7 @@
 </pre></div>
 </div>
 <p>First, create the virtual environment with</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>wget https://github.com/blaylockbk/Herbie/raw/master/environment.yml
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>wget https://github.com/blaylockbk/Herbie/raw/main/environment.yml
 conda env create -f environment.yml
 </pre></div>
 </div>
@@ -391,8 +391,8 @@ conda env create -f environment.yml
 
 
               </div>
-              
-              
+
+
               <!-- Previous / next buttons -->
 <div class='prev-next-area'>
     <a class='left-prev' id="prev-link" href="history.html" title="previous page">
@@ -410,30 +410,30 @@ conda env create -f environment.yml
     <i class="fas fa-angle-right"></i>
     </a>
 </div>
-              
+
           </main>
-          
+
 
       </div>
     </div>
-  
+
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
   <script src="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
 <footer class="footer mt-5 mt-md-0">
   <div class="container">
-    
+
     <div class="footer-item">
       <p class="copyright">
     &copy; Copyright 2022, Brian K. Blaylock.    ♻ Updated: 04:33 UTC 07 May 2022.<br>
 </p>
     </div>
-    
+
     <div class="footer-item">
       <p class="sphinx-version">
 Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.5.0.<br>
 </p>
     </div>
-    
+
   </div>
 </footer>
   </body>
