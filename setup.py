@@ -22,8 +22,7 @@ setup(
         "": ["*.cfg"],
     },
     python_requires=">=3.8",
-    install_requires=["numpy", "pandas", "xarray", "cfgrib", "metpy", "toml",
-                      "pygrib"],
+    install_requires=["numpy", "pandas", "xarray", "cfgrib", "metpy", "toml", "pygrib"],
     keywords=[
         "xarray",
         "meteorology",
