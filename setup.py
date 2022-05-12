@@ -68,3 +68,15 @@ twine upload --skip-existing --repository-url https://test.pypi.org/legacy/ dist
 # See download statistics at: https://pepy.tech/project/herbie-data
 
 # Check import time with python -X importtime herbie/archive.py > importtime.txt 2>&1
+
+
+#######################################################
+## On May 12, 2022 I changed the default branch to main
+## You can change your local clone default name with
+## The following
+"""
+git branch -m master main
+git fetch origin
+git branch -u origin/main main
+git remote set-head origin -a
+"""
