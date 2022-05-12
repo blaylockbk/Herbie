@@ -34,7 +34,7 @@ For the latest published version
     - herbie-data
 ```
 
-First, create the virtual environment with
+First, create the virtual environment with 
 
 ```bash
 wget https://github.com/blaylockbk/Herbie/raw/main/environment.yml
