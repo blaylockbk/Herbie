@@ -37,7 +37,7 @@ For the latest published version
 First, create the virtual environment with 
 
 ```bash
-wget https://github.com/blaylockbk/Herbie/raw/master/environment.yml
+wget https://github.com/blaylockbk/Herbie/raw/main/environment.yml
 conda env create -f environment.yml
 ```
 
