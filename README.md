@@ -2,7 +2,7 @@
   align="center"
 >
 
-![](https://github.com/blaylockbk/Herbie/blob/master/docs/_static/HerbieLogo2_tan_transparent.png?raw=true)
+![](https://github.com/blaylockbk/Herbie/blob/main/docs/_static/HerbieLogo2_tan_transparent.png?raw=true)
 
 # Herbie: Retrieve NWP Model Data 🏁
 
@@ -41,7 +41,7 @@ or
 pip install git+https://github.com/blaylockbk/Herbie.git
 ```
 
-You may also create the provided **[conda environment](https://github.com/blaylockbk/Herbie/blob/master/environment.yml)**.
+You may also create the provided **[conda environment](https://github.com/blaylockbk/Herbie/blob/main/environment.yml)**.
 
 ## Capabilities
 

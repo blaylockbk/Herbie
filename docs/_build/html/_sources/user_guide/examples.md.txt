@@ -20,13 +20,13 @@ from hrrrb.archive import download_hrrr, xhrrr
 |`xhrrr` | Downloads single HRRR file and returns as an `xarray.Dataset` or list of Datasets.
 
 
-## [👉 Click Here For Some Examples](https://github.com/blaylockbk/Herbie/blob/master/notebooks/examples.ipynb)
+## [👉 Click Here For Some Examples](https://github.com/blaylockbk/Herbie/blob/main/notebooks/examples.ipynb)
 
 ## Function arguments
 
 ```python
 # Download full GRIB2 files to local disk
-download_hrrr(DATES, searchString=None, *, 
+download_hrrr(DATES, searchString=None, *,
               fxx=range(0, 1),
               model='hrrr',
               field='sfc',
@@ -48,14 +48,14 @@ xhrrr(DATE, searchString, fxx=0, *,
 - `fxx` Range or list of forecast hours.
     - e.g., `range(0,19)` for F00-F18
     - Default is the model analysis (F00).
-- `model` The type of model. 
+- `model` The type of model.
     - Options are `hrrr`, `alaska`, `hrrrX`
-- `field` The type of field file. 
+- `field` The type of field file.
     - Options are `sfc` and `prs`
     - `nat` and `subh` are only available for today and yesterday.
-- `save_dir` The directory path the files will be saved in. 
+- `save_dir` The directory path the files will be saved in.
     - By default, GRIB2 files are downloaded into the user's home directory at `~/data/{model}`. The default directory can be changed in the `~/.config/hrrrb/config.cfg` file. This file is generated the first time you import **hrrrb.archive**.
-- `download_source_priority` The default source priority is `['pando', 'google', 'nomads']`, but you might want to instead try to download a file from Google before trying to get it from Pando. In that case, set to `['google', 'pando', 'nomads']`. 
+- `download_source_priority` The default source priority is `['pando', 'google', 'nomads']`, but you might want to instead try to download a file from Google before trying to get it from Pando. In that case, set to `['google', 'pando', 'nomads']`.
 - `dryrun` If `True`, the function will tell you what it will download but not actually download anything.
 - `verbose` If `True`, prints lots of info to the screen.
 
@@ -66,9 +66,9 @@ Specific to `xhrrr`:
 
 
 ## The **`searchString`** argument
-`searchString` is used to specify select variables you want to download. For example, instead of downloading the full GRIB2 file, you could download just the wind or precipitation variables. Read the docstring for the functions or look at [notebook #2](https://github.com/blaylockbk/Herbie/blob/master/notebooks/demo_download_hrrr_archive_part2.ipynb) for more details. 
+`searchString` is used to specify select variables you want to download. For example, instead of downloading the full GRIB2 file, you could download just the wind or precipitation variables. Read the docstring for the functions or look at [notebook #2](https://github.com/blaylockbk/Herbie/blob/main/notebooks/demo_download_hrrr_archive_part2.ipynb) for more details.
 
-`searchString` uses regular expression to search for GRIB message lines in the files .idx file. There must be a .idx file for the GRIB2 file for the search to work. 
+`searchString` uses regular expression to search for GRIB message lines in the files .idx file. There must be a .idx file for the GRIB2 file for the search to work.
 
 For reference, here are some useful examples to give you some ideas...
 
@@ -94,7 +94,7 @@ For reference, here are some useful examples to give you some ideas...
 
 <br><br>
 
-> **Are you working with precipitation fields? (e.g., APCP)**  
+> **Are you working with precipitation fields? (e.g., APCP)**
 >A lot of users have asked why the precipitation accumulation fields are all zero for the model analysis (F00). That is because it is an *accumulation* variable over a period of time. At the model analysis time, there has been no precipitation because no time has passed.
 >
 >- **F00** only has a 0-0 hour accumulation (always zero)

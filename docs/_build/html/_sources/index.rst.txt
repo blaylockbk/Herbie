@@ -27,7 +27,7 @@ Install with pip
    pip install git+https://github.com/blaylockbk/Herbie.git
 
 To install within a conda environment file, you may use this minimum `environment.yml
-<https://github.com/blaylockbk/Herbie/blob/master/environment.yml>`_ file
+<https://github.com/blaylockbk/Herbie/blob/main/environment.yml>`_ file
 and create the environment with the following...
 
 .. code:: bash
