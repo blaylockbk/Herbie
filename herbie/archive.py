@@ -59,7 +59,6 @@ import cfgrib
 import pandas as pd
 import pygrib
 import requests
-from soupsieve import escape
 import xarray as xr
 from pyproj import CRS
 
