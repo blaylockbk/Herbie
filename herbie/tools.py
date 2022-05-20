@@ -16,7 +16,7 @@ import numpy as np
 import pandas as pd
 import xarray as xr
 
-from herbie.archive import Herbie
+from herbie.archive import Herbie, wgrib2_idx_to_str
 from . import Path
 
 # Multithreading :)
@@ -263,7 +263,6 @@ def create_index_files(path, overwrite=False):
     """Create an index file for all GRIB2 files in a directory.
 
     # TODO: use Path().expand()
-    # TODO: after changing subset naming, use rglob("*.grib2")
 
     Parameters
     ----------
@@ -272,12 +271,6 @@ def create_index_files(path, overwrite=False):
     overwrite : bool
         Overwrite index file if it exists.
     """
-
-    from shutil import which
-
-    if which("wgrib2") is None:
-        raise RuntimeError("wgrib2 command was not found.")
-
     path = Path(path)
     files = []
     if path.is_dir():
@@ -287,16 +280,17 @@ def create_index_files(path, overwrite=False):
         # The path is a single file
         files = [path]
 
-    if files:
-        for f in files:
-            f_idx = Path(str(f) + ".idx")
-            if not f_idx.exists() or overwrite:
-                # Create an index using wgrib2's simple inventory option
-                # if it doesn't already exist or if overwrite is True.
-                cmd = f"wgrib2 -s {f} > {f_idx}"
-                os.system(cmd)
-    else:
+    if not files:
         raise ValueError(f"No grib2 files were found in {path}")
+
+    for f in files:
+        f_idx = Path(str(f) + ".idx")
+        if not f_idx.exists() or overwrite:
+            # Create an index using wgrib2's simple inventory option
+            # if it doesn't already exist or if overwrite is True.
+            index_data = wgrib2_idx_to_str(Path(f))
+            with open(f_idx, "w+") as out_idx:
+                out_idx.write(index_data)
 
 
 ########################################################################
