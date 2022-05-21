@@ -37,10 +37,8 @@ For more details, see https://blaylockbk.github.io/Herbie/_build/html/user_guide
 .. note:: Updates since the ``Herbie 0.0.9`` release
 
     - TODO: Rename 'searchString' to 'subset' (and rename subset function)
-    - TODO: Create .idx file if wgrib2 is installed (linux only) when index file doesn't exist
     - TODO: add `idx_to_df()` and `df_to_idx()` methods.
     - TODO: clean up document examples. It's kind of scattered now.
-    - TODO: Allow for searching of locally stored model data.
 
 """
 import functools
