@@ -60,10 +60,7 @@ _level_units = dict(
 
 @xr.register_dataset_accessor("herbie")
 class HerbieAccessor:
-    """
-    Accessor for xarray Datasets opened with Herbie
-
-    """
+    """Accessor for xarray Datasets opened with Herbie"""
 
     def __init__(self, xarray_obj):
         self._obj = xarray_obj

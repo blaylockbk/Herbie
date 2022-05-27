@@ -37,10 +37,8 @@ For more details, see https://blaylockbk.github.io/Herbie/_build/html/user_guide
 .. note:: Updates since the ``Herbie 0.0.9`` release
 
     - TODO: Rename 'searchString' to 'subset' (and rename subset function)
-    - TODO: Create .idx file if wgrib2 is installed (linux only) when index file doesn't exist
     - TODO: add `idx_to_df()` and `df_to_idx()` methods.
     - TODO: clean up document examples. It's kind of scattered now.
-    - TODO: Allow for searching of locally stored model data.
 
 """
 import functools
@@ -59,7 +57,6 @@ import cfgrib
 import pandas as pd
 import pygrib
 import requests
-from soupsieve import escape
 import xarray as xr
 from pyproj import CRS
 
@@ -807,7 +804,7 @@ class Herbie:
         if outFile.exists() and not self.overwrite:
             if verbose:
                 print(f"🌉 Already have local copy --> {outFile}")
-            return
+            return outFile
 
         if self.overwrite and self.grib_source == "local":
             # Search for the grib files on the remote archives again
@@ -864,7 +861,7 @@ class Herbie:
             # Download a subset of the file
             subset(searchString, outFile)
 
-        return self
+        return outFile
 
     def xarray(
         self,
