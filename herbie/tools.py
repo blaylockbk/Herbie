@@ -62,6 +62,185 @@ def _validate_DATES(DATES):
     return DATES
 
 
+class FastHerbie:
+    def __init__(self, DATES, fxx=[0], *, max_threads=50, **kwargs):
+        """Create many Herbie objects with methods to download or read with xarray.
+
+        Uses multithreading.
+
+        .. note::
+            Currently, Herbie objects looped by run datetime (date)
+            and forecast lead time (fxx).
+
+        Parameters
+        ----------
+        DATES : pandas-parsable datetime string or list of datetimes
+        fxx : int or list of forecast lead times
+        max_threads : int
+            Maximum number of threads to use.
+        kwargs :
+            Remaining keywords for Herbie object
+            (e.g., model, product, priority, verbose, etc.)
+
+        Benchmark
+        ---------
+        Creating 48 Herbie objects
+            - 1 thread took 16 s
+            - 2 threads took 8 s
+            - 5 threads took 3.3 s
+            - 10 threads took 1.7 s
+            - 50 threads took 0.5 s
+        """
+        self.DATES = _validate_DATES(DATES)
+        self.fxx = _validate_fxx(fxx)
+
+        kwargs.setdefault("verbose", False)
+
+        ################
+        # Multithreading
+        self.tasks = len(DATES) * len(fxx)
+        threads = min(self.tasks, max_threads)
+        log.info(f"🧵 Working on {self.tasks} tasks with {threads} threads.")
+
+        with ThreadPoolExecutor(threads) as exe:
+            futures = [
+                exe.submit(Herbie, date=DATE, fxx=f, **kwargs)
+                for DATE in DATES
+                for f in fxx
+            ]
+
+            # Return list of Herbie objects in order completed
+            self.objects = [future.result() for future in as_completed(futures)]
+
+        log.info(f"Number of Herbie objects: {len(self.objects)}")
+
+        # Sort the list of Herbie objects by lead time then by date
+        self.objects.sort(key=lambda H: H.fxx)
+        self.objects.sort(key=lambda H: H.date)
+
+        self.objects = self.objects
+
+        # Which files exist?
+        self.file_exists = [H for H in self.objects if H.grib is not None]
+        self.file_not_exists = [H for H in self.objects if H.grib is None]
+
+        if len(self.file_not_exists) > 0:
+            log.warning(
+                f"Could not find {len(self.file_not_exists)}/{len(self.file_exists)} GRIB files."
+            )
+
+    def __len__(self):
+        return len(self.objects)
+
+    def download(self, searchString=None, max_threads=20, **download_kwargs):
+        r"""Download many Herbie objects
+
+        Uses multithreading.
+
+        Parameters
+        ----------
+        searchString : string
+            Regular expression string to specify which GRIB messages to
+            download.
+        **download_kwargs :
+            Any kwarg for Herbie's download method.
+
+        Benchmark
+        ---------
+        Downloading 48 files with 1 variable (TMP:2 m)
+            - 1 thread took 1 min 17 s
+            - 2 threads took 36 s
+            - 5 threads took 28 s
+            - 10 threads took 25 s
+            - 50 threads took 23 s
+        """
+        ###########################
+        # Multithread the downloads
+        threads = min(self.tasks, max_threads)
+        log.info(f"🧵 Working on {self.tasks} tasks with {threads} threads.")
+
+        with ThreadPoolExecutor(max_threads) as exe:
+            futures = [
+                exe.submit(H.download, searchString, **download_kwargs)
+                for H in self.file_exists
+            ]
+
+            # Return list of Herbie objects in order completed
+            outFiles = [future.result() for future in as_completed(futures)]
+
+        return outFiles
+
+    def xarray(self, searchString, max_threads=2, **xarray_kwargs):
+        """Read many Herbie objects into an xarray Dataset
+
+        # TODO: Sometimes the Jupyter Cell always crashes when I run this.
+        # TODO: "fatal flex scanner internal error--end of buffer missed"
+
+        Uses multithreading.
+        This would likely benefit from multiprocessing instead.
+
+        Parameters
+        ----------
+        max_threads : int
+            Control the maximum number of threads to use.
+            If you use too many threads, you may run into memory limits.
+
+        Benchmark
+        ---------
+        Opening 48 files with 1 variable (TMP:2 m)
+            - 1 thread took 1 min 45 s
+            - 2 threads took 55 s
+            - 5 threads took 39 s
+            - 10 threads took 39 s
+            - 50 threads took 37 s
+        """
+        ###########################
+        # Multithread the downloads
+        threads = min(self.tasks, max_threads)
+        log.info(f"🧵 Working on {self.tasks} tasks with {threads} threads.")
+
+        with ThreadPoolExecutor(max_threads) as exe:
+            futures = [
+                exe.submit(H.xarray, searchString, **xarray_kwargs)
+                for H in self.file_exists
+            ]
+
+            # Return list of Herbie objects in order completed
+            ds_list = [future.result() for future in as_completed(futures)]
+
+        # Sort the DataSets, first by lead time (step), then by run time (time)
+        ds_list.sort(key=lambda x: x.step.data.max())
+        ds_list.sort(key=lambda x: x.time.data.max())
+
+        # Reshape list with dimensions (len(DATES), len(fxx))
+        ds_list = [
+            ds_list[x : x + len(self.fxx)]
+            for x in range(0, len(ds_list), len(self.fxx))
+        ]
+
+        # Concat DataSets
+        try:
+            ds = xr.combine_nested(
+                ds_list,
+                concat_dim=["time", "step"],
+                combine_attrs="drop_conflicts",
+            )
+        except:
+            # TODO: I'm not sure why some cases doesn't like the combine_attrs argument
+            ds = xr.combine_nested(
+                ds_list,
+                concat_dim=["time", "step"],
+            )
+
+        ds["gribfile_projection"] = ds.gribfile_projection[0][0]
+        ds = ds.squeeze()
+
+        return ds
+
+
+###############################################################################
+
+# !OLD, use FastHerbie class instead
 def fast_Herbie(DATES, fxx=[0], *, max_threads=50, **kwargs):
     """
     Create many Herbie objects with Multithreading.
@@ -123,6 +302,7 @@ def fast_Herbie(DATES, fxx=[0], *, max_threads=50, **kwargs):
     return H_list
 
 
+# !OLD, use FastHerbie class instead
 def fast_Herbie_download(
     DATES,
     *,
@@ -174,6 +354,7 @@ def fast_Herbie_download(
     return dict(passed=passed, failed=failed)
 
 
+# !OLD, use FastHerbie class instead
 def fast_Herbie_xarray(
     DATES,
     *,
@@ -295,9 +476,8 @@ def create_index_files(path, overwrite=False):
 
 ########################################################################
 ########################################################################
-# ! Old
 
-
+# ! Old: Use FastHerbie instead
 def bulk_download(DATES, searchString=None, *, fxx=range(0, 1), verbose=True, **kwargs):
     """
     Bulk download GRIB2 files from file source to the local machine.
@@ -368,6 +548,7 @@ def bulk_download(DATES, searchString=None, *, fxx=range(0, 1), verbose=True, **
     return dict(success=success, failed=failed)
 
 
+# ! Old: Use FastHerbie instead
 def xr_concat_sameRun(DATE, searchString, fxx=range(0, 18), verbose=False, **kwargs):
     """
     Load and concatenate xarray objects by forecast lead time for the same run.
@@ -389,6 +570,7 @@ def xr_concat_sameRun(DATE, searchString, fxx=range(0, 18), verbose=False, **kwa
     return xr.concat(Hs_to_cat, dim="f")
 
 
+# ! Old: Use FastHerbie instead
 def xr_concat_sameLead(DATES, searchString, fxx=0, verbose=False, **kwargs):
     """
     Load and concatenate xarray objects by model initialization date for the same lead time.
@@ -409,6 +591,7 @@ def xr_concat_sameLead(DATES, searchString, fxx=0, verbose=False, **kwargs):
     return xr.concat(Hs_to_cat, dim="t")
 
 
+# ! Old: Use herbie accessor instead
 def nearest_points(ds, points, names=None, verbose=True):
     """
     Get the nearest latitude/longitude points from a xarray Dataset.

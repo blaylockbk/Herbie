@@ -804,7 +804,7 @@ class Herbie:
         if outFile.exists() and not self.overwrite:
             if verbose:
                 print(f"🌉 Already have local copy --> {outFile}")
-            return
+            return outFile
 
         if self.overwrite and self.grib_source == "local":
             # Search for the grib files on the remote archives again
@@ -861,7 +861,7 @@ class Herbie:
             # Download a subset of the file
             subset(searchString, outFile)
 
-        return self
+        return outFile
 
     def xarray(
         self,
