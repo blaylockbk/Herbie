@@ -269,10 +269,8 @@ class Herbie:
 
     def __str__(self):
         """When Herbie class object is printed, print all properties."""
-        #* Keep this simple so it runs fast.
-        msg = (
-            f"║HERBIE╠ {self.model.upper()}:{self.product}",
-        )
+        # * Keep this simple so it runs fast.
+        msg = (f"║HERBIE╠ {self.model.upper()}:{self.product}",)
         return " ".join(msg)
 
     def tell_me_everything(self):
