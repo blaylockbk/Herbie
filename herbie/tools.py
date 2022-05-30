@@ -132,6 +132,19 @@ class FastHerbie:
     def __len__(self):
         return len(self.objects)
 
+    def df(self):
+        """Organize Herbie objects into a DataFrame.
+
+        #? Why is this inefficient? Takes several seconds to display because the __str__ does a lot.
+        """
+        ds_list = [
+            self.objects[x : x + len(self.fxx)]
+            for x in range(0, len(self.objects), len(self.fxx))
+        ]
+        return pd.DataFrame(
+            ds_list, index=self.DATES, columns=[f"F{i:02d}" for i in self.fxx]
+        )
+
     def download(self, searchString=None, max_threads=20, **download_kwargs):
         r"""Download many Herbie objects
 
