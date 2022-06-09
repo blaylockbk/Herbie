@@ -2,7 +2,9 @@
   align="center"
 >
 
-![](https://github.com/blaylockbk/Herbie/blob/main/docs/_static/HerbieLogo2_tan_transparent.png?raw=true)
+<!-- ![](https://github.com/blaylockbk/Herbie/blob/main/docs/_static/HerbieLogo2_tan_transparent.png?raw=true) -->
+
+![](./images/Herbie_transparent_tan.svg)
 
 # Herbie: Retrieve NWP Model Data 🏁
 
