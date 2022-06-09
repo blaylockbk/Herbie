@@ -137,7 +137,7 @@ html_static_path = ["_static", "../images"]
 fontawesome_included = True
 panels_add_bootstrap_css = False  # False, because pydata theme already loads it
 
-html_css_files = ["brian_style.css"]
+html_css_files = ["css/brian_style.css"]
 
 html_js_files = [
     "https://kit.fontawesome.com/f6cc126dcc.js",
