@@ -112,17 +112,20 @@ html_theme_options = {
             "url": "https://blaylockbk.github.io/goes2go/_build/html/",
         },
     ],
+    "logo": {
+        "image_light": "_static/HerbieLogo2_tan_transparent.png",
+        "image_dark": "_static/HerbieLogo2_white_transparent.png",
+    },
 }
 
 html_sidebars = {}
 
-html_logo = "_static/HerbieLogo2_white_transparent.png"
 html_favicon = "_static/wxicon.png"
 
 html_context = {
     "github_user": "blaylockbk",
     "github_repo": "Herbie",
-    "github_version": "master",  # Make changes to the master branch
+    "github_version": "main",  # Make changes to the main branch
     "doc_path": "docs",
 }
 
