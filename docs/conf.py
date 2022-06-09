@@ -98,7 +98,7 @@ html_theme = "pydata_sphinx_theme"
 html_theme_options = {
     "github_url": "https://github.com/blaylockbk/Herbie",
     "twitter_url": "https://twitter.com/blaylockbk",
-    "navbar_end": ["navbar-icon-links.html", "search-field.html"],
+    "navbar_end": ["theme-switcher", "navbar-icon-links.html", "search-field.html"],
     "use_edit_page_button": True,
     "google_analytics_id": "G-PT9LX1B7B8",
     "show_toc_level": 1,
