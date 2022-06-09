@@ -19,6 +19,7 @@
       ~Herbie.find_idx
       ~Herbie.get_localFilePath
       ~Herbie.read_idx
+      ~Herbie.tell_me_everything
       ~Herbie.xarray
    
    
