@@ -113,8 +113,8 @@ html_theme_options = {
         },
     ],
     "logo": {
-        "image_light": "_static/HerbieLogo2_tan_transparent.png",
-        "image_dark": "_static/HerbieLogo2_white_transparent.png",
+        "image_light": "HerbieLogo2_tan_transparent.png",
+        "image_dark": "HerbieLogo2_white_transparent.png",
     },
 }
 
