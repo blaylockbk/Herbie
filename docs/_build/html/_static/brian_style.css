@@ -1,5 +1,5 @@
 .bd-header[data-theme="light"] {
-    background-color: #f0ead2 !important;
+    background: #f0ead2 !important;
 }
 
 a:-webkit-any-link[data-theme="light"] {
