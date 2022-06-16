@@ -4,7 +4,11 @@
 
 <!-- ![](https://github.com/blaylockbk/Herbie/blob/main/docs/_static/HerbieLogo2_tan_transparent.png?raw=true) -->
 
-![](https://github.com/blaylockbk/Herbie/raw/main/images/Herbie_transparent_tan.svg)
+<!-- ![](https://github.com/blaylockbk/Herbie/raw/main/images/Herbie_transparent_tan.svg) -->
+
+<img 
+  src="https://github.com/blaylockbk/Herbie/raw/main/images/Herbie_transparent_tan.svg" 
+  style="filter: drop-shadow(0px 0px 5px #000000)">
 
 # Herbie: Retrieve NWP Model Data 🏁
 
