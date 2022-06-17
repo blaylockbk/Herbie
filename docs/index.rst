@@ -1,4 +1,12 @@
-.. image:: _static/HerbieLogo2_tan_transparent.png
+
+.. .. image:: _static/HerbieLogo2_tan_transparent.png
+
+.. This drop-shadow glow on the logo helps when in Darkmode
+
+.. raw :: html
+
+   <img src="_static/HerbieLogo2_tan_transparent.png" style="filter: drop-shadow(0px 0px 100px #ffffff62)">
+
 
 
 ===============================

@@ -1,4 +1,9 @@
-.. image:: _static/HerbieLogo2_tan_transparent.png
+
+.. raw :: html
+
+   <img src="_static/HerbieLogo2_tan_transparent.png" style="filter: drop-shadow(0px 0px 5px #000000)">
+
+.. .. image:: _static/HerbieLogo2_tan_transparent.png
 
 
 ===============================
