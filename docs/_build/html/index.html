@@ -1,0 +1,466 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Herbie: Retrieve NWP Model Data &#8212; Herbie 0.0.9 documentation</title>
+<script>
+  document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+  document.documentElement.dataset.theme = localStorage.getItem("theme") || "light"
+</script>
+
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=92025949c220c2e29695" rel="stylesheet">
+<link href="_static/styles/pydata-sphinx-theme.css?digest=92025949c220c2e29695" rel="stylesheet">
+
+
+  <link rel="stylesheet"
+    href="_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css" />
+    <link rel="stylesheet" type="text/css" href="_static/panels-variables.06eb56fa6e07937060861dad626602ad.css" />
+    <link rel="stylesheet" type="text/css" href="_static/css/brian_style.css" />
+
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=92025949c220c2e29695">
+
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script async="async" src="https://www.googletagmanager.com/gtag/js?id=G-PT9LX1B7B8"></script>
+    <script>
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){ dataLayer.push(arguments); }
+                gtag('js', new Date());
+                gtag('config', 'G-PT9LX1B7B8');
+            </script>
+    <script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+    <script>mermaid.initialize({startOnLoad:true});</script>
+    <script src="https://kit.fontawesome.com/f6cc126dcc.js"></script>
+    <link rel="shortcut icon" href="_static/wxicon.png"/>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="User Guide" href="user_guide/index.html" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="docsearch:language" content="None">
+  </head>
+  
+  
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="180" data-default-mode="">
+    <div class="bd-header-announcement container-fluid" id="banner">
+      
+
+    </div>
+
+    
+    <nav class="bd-header navbar navbar-light navbar-expand-lg bg-light fixed-top bd-navbar" id="navbar-main"><div class="bd-header__inner container-xl">
+
+  <div id="navbar-start">
+    
+    
+  
+
+
+<a class="navbar-brand logo" href="#">
+  
+  
+  
+  
+    <img src="_static/HerbieLogo2_tan_transparent.png" class="logo__image only-light" alt="Logo image">
+    <img src="_static/HerbieLogo2_white_transparent.png" class="logo__image only-dark" alt="Logo image">
+  
+  
+</a>
+    
+  </div>
+
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-collapsible" aria-controls="navbar-collapsible" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="fas fa-bars"></span>
+  </button>
+
+  
+  <div id="navbar-collapsible" class="col-lg-9 collapse navbar-collapse">
+    <div id="navbar-center" class="mr-auto">
+      
+      <div class="navbar-center-item">
+        <ul id="navbar-main-elements" class="navbar-nav">
+    <li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="user_guide/index.html">
+  User Guide
+ </a>
+</li>
+
+<li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="reference_guide/index.html">
+  Reference Guide
+ </a>
+</li>
+
+    
+    <li class="nav-item">
+        <a class="nav-link nav-external" href="https://blaylockbk.github.io/SynopticPy/_build/html/">SynopticPy<i class="fas fa-external-link-alt"></i></a>
+    </li>
+    
+    <li class="nav-item">
+        <a class="nav-link nav-external" href="https://blaylockbk.github.io/goes2go/_build/html/">GOES-2-go<i class="fas fa-external-link-alt"></i></a>
+    </li>
+    
+</ul>
+      </div>
+      
+    </div>
+
+    <div id="navbar-end">
+      
+      <div class="navbar-end-item">
+        <span id="theme-switch" class="btn btn-sm btn-outline-primary navbar-btn rounded-circle">
+    <a class="theme-switch" data-mode="light"><i class="fas fa-sun"></i></a>
+    <a class="theme-switch" data-mode="dark"><i class="far fa-moon"></i></a>
+    <a class="theme-switch" data-mode="auto"><i class="fas fa-adjust"></i></a>
+</span>
+      </div>
+      
+      <div class="navbar-end-item">
+        <ul id="navbar-icon-links" class="navbar-nav" aria-label="Icon Links">
+        <li class="nav-item">
+          <a class="nav-link" href="https://github.com/blaylockbk/Herbie" rel="noopener" target="_blank" title="GitHub"><span><i class="fab fa-github-square"></i></span>
+            <label class="sr-only">GitHub</label></a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="https://twitter.com/blaylockbk" rel="noopener" target="_blank" title="Twitter"><span><i class="fab fa-twitter-square"></i></span>
+            <label class="sr-only">Twitter</label></a>
+        </li>
+      </ul>
+      </div>
+      
+      <div class="navbar-end-item">
+        <form class="bd-search d-flex align-items-center" action="search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
+</form>
+      </div>
+      
+    </div>
+  </div>
+</div>
+    </nav>
+    
+
+    <div class="bd-container container-xl">
+      <div class="bd-container__inner row">
+          
+
+<!-- Only show if we have sidebars configured, else just a small margin  -->
+<div class="bd-sidebar-primary col-12 col-md-3 bd-sidebar">
+  <div class="sidebar-start-items"><form class="bd-search d-flex align-items-center" action="search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
+  <div class="bd-toc-item active">
+    
+  </div>
+</nav>
+  </div>
+  <div class="sidebar-end-items">
+  </div>
+</div>
+
+
+          
+
+
+<div class="bd-sidebar-secondary d-none d-xl-block col-xl-2 bd-toc">
+  
+    
+    <div class="toc-item">
+      
+<div class="tocsection onthispage mt-5 pt-1 pb-3">
+    <i class="fas fa-list"></i> On this page
+</div>
+
+<nav id="bd-toc-nav">
+    <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#install">
+   Install
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#capabilities">
+   Capabilities
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#create-a-herbie-object">
+     Create a Herbie object
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#data-sources">
+       Data Sources
+      </a>
+     </li>
+    </ul>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#download-model-data">
+     Download Model Data
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#download-a-subset">
+       Download a subset
+      </a>
+     </li>
+    </ul>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#read-grib2-data">
+     Read GRIB2 Data
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#fast-herbie">
+     Fast Herbie
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#xarray-herbie-accessors">
+     Xarray Herbie Accessors
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#other-tools">
+   Other Tools
+  </a>
+ </li>
+</ul>
+
+</nav>
+    </div>
+    
+    <div class="toc-item">
+      
+
+<div class="tocsection editthispage">
+    <a href="https://github.com/blaylockbk/Herbie/edit/main/docs/index.rst">
+        <i class="fas fa-pencil-alt"></i> Edit this page
+    </a>
+</div>
+
+    </div>
+    
+  
+</div>
+
+
+          
+          
+          <div class="bd-content col-12 col-md-9 col-xl-7">
+              
+              <article class="bd-article" role="main">
+                
+  <img src="_static/HerbieLogo2_tan_transparent.png" style="filter: drop-shadow(0px 0px 100px #ffffff62)"><section id="herbie-retrieve-nwp-model-data">
+<h1>Herbie: Retrieve NWP Model Data<a class="headerlink" href="#herbie-retrieve-nwp-model-data" title="Permalink to this headline">#</a></h1>
+<p><strong>Herbie</strong> is a python package that downloads recent and archived numerical weather prediction (NWP) model output from different cloud archive sources. NWP data in GRIB2 format can be read with xarray+cfgrib. Model data Herbie can retrieve includes the High Resolution Rapid Refresh (HRRR), Rapid Refresh (RAP), Global Forecast System (GFS), National Blend of Models (NBM), Rapid Refresh Forecast System - Prototype (RRFS), and  ECMWF open data forecast products (ECMWF).</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="user_guide/index.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference_guide/index.html">Reference Guide</a></li>
+</ul>
+</div>
+<section id="install">
+<h2>Install<a class="headerlink" href="#install" title="Permalink to this headline">#</a></h2>
+<p>Herbie requires <strong>Python 3.8+</strong></p>
+<p>Install with pip</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip install herbie-data
+
+<span class="c1"># or</span>
+
+pip install git+https://github.com/blaylockbk/Herbie.git
+</pre></div>
+</div>
+<p>To install within a conda environment file, you may use this minimum <a class="reference external" href="https://github.com/blaylockbk/Herbie/blob/main/environment.yml">environment.yml</a> file
+and create the environment with the following…</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create the environment</span>
+conda env create -f environment.yml
+
+<span class="c1"># Update the environment</span>
+conda env update -f environment.yml
+
+<span class="c1"># Activate the environment</span>
+conda activate herbie
+</pre></div>
+</div>
+</section>
+<section id="capabilities">
+<h2>Capabilities<a class="headerlink" href="#capabilities" title="Permalink to this headline">#</a></h2>
+<section id="create-a-herbie-object">
+<h3>Create a Herbie object<a class="headerlink" href="#create-a-herbie-object" title="Permalink to this headline">#</a></h3>
+<p>Herbie looks for model data at different sources until the requested file is found.</p>
+<p>Herbie can discover data from the following models (click for example usage):</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://blaylockbk.github.io/Herbie/_build/html/user_guide/notebooks/data_hrrr.html">High Resolution Rapid Refresh (HRRR)</a></p></li>
+<li><p><a class="reference external" href="https://blaylockbk.github.io/Herbie/_build/html/user_guide/notebooks/data_hrrrak.html">High Resolution Rapid Refresh - Alaska (HRRRAK)</a></p></li>
+<li><p><a class="reference external" href="https://blaylockbk.github.io/Herbie/_build/html/user_guide/notebooks/data_rap.html">Rapid Refresh (RAP)</a></p></li>
+<li><p><a class="reference external" href="https://blaylockbk.github.io/Herbie/_build/html/user_guide/notebooks/data_gfs.html">Global Forecast System (GFS)</a></p></li>
+<li><p><a class="reference external" href="https://blaylockbk.github.io/Herbie/_build/html/user_guide/notebooks/data_gfs.html#Get-data-from-the-GFS-wave-output">Global Forecast System - Wave (GFS-Wave)</a></p></li>
+<li><p><a class="reference external" href="https://blaylockbk.github.io/Herbie/_build/html/user_guide/notebooks/data_ecmwf.html">ECMWF Open Data Forecast Products (ECMWF)</a></p></li>
+<li><p><a class="reference external" href="https://blaylockbk.github.io/Herbie/_build/html/user_guide/notebooks/data_nbm.html">National Blend of Models (NMB)</a></p></li>
+<li><p><a class="reference external" href="https://blaylockbk.github.io/Herbie/_build/html/user_guide/notebooks/data_rrfs.html">Rapid Refresh Forecast System - Prototype (RRFS)</a></p></li>
+</ul>
+<p>This Herbie object is for the HRRR model sfc product and 6 hour forecast. The file was found an Amazon Web Services.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">herbie.archive</span> <span class="kn">import</span> <span class="n">Herbie</span>
+<span class="n">H</span> <span class="o">=</span> <span class="n">Herbie</span><span class="p">(</span><span class="s1">&#39;2021-01-01 12:00&#39;</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="s1">&#39;hrrr&#39;</span><span class="p">,</span> <span class="n">product</span><span class="o">=</span><span class="s1">&#39;sfc&#39;</span><span class="p">,</span> <span class="n">fxx</span><span class="o">=</span><span class="mi">6</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="_images/usage_1.png" src="_images/usage_1.png" />
+<section id="data-sources">
+<h4>Data Sources<a class="headerlink" href="#data-sources" title="Permalink to this headline">#</a></h4>
+<p>Thanks to the <a class="reference external" href="https://www.noaa.gov/information-technology/big-data">NOAA Big Data Program</a> weather data is more easily accessible than ever before. Common data sources include</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://nomads.ncep.noaa.gov/">NOAA NOMADS Server</a> (most recent data, but not archived)</p></li>
+<li><p><a class="reference external" href="https://registry.opendata.aws/noaa-hrrr-pds/">Amazon Web Services</a></p></li>
+<li><p><a class="reference external" href="https://console.cloud.google.com/marketplace/product/noaa-public/hrrr">Google Cloud Platform</a></p></li>
+<li><p><a class="reference external" href="https://github.com/microsoft/AIforEarthDataSets/blob/main/data/noaa-hrrr.md">Microsoft Azure</a></p></li>
+<li><p><a class="reference external" href="http://hrrr.chpc.utah.edu/">University of Utah Pando Archive</a></p></li>
+<li><p><a class="reference external" href="https://www.ecmwf.int/en/forecasts/datasets/open-data">ECMWF Open Data</a></p></li>
+</ul>
+</section>
+</section>
+<section id="download-model-data">
+<h3>Download Model Data<a class="headerlink" href="#download-model-data" title="Permalink to this headline">#</a></h3>
+<p>Using the Herbie object we created above, this downloads the full GRIB2 file to your local machine.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">H</span><span class="o">.</span><span class="n">download</span><span class="p">()</span>
+</pre></div>
+</div>
+<img alt="_images/usage_2.png" src="_images/usage_2.png" />
+<section id="download-a-subset">
+<h4>Download a subset<a class="headerlink" href="#download-a-subset" title="Permalink to this headline">#</a></h4>
+<p><strong>Subsetting GRIB files by GRIB message</strong> is also supported, provided that an index (.idx) file exists. For more information about subsetting, read <a class="reference internal" href="user_guide/grib2.html#grib2-faq"><span class="std std-ref">What is GRIB2?</span></a>.</p>
+<p>Using the Herbie object we created above, we can retrieve all fields at 500 mb.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Download all fields at 500 mb level</span>
+<span class="n">H</span><span class="o">.</span><span class="n">download</span><span class="p">(</span><span class="s1">&#39;:500 mb&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="_images/usage_3.png" src="_images/usage_3.png" />
+</section>
+</section>
+<section id="read-grib2-data">
+<h3>Read GRIB2 Data<a class="headerlink" href="#read-grib2-data" title="Permalink to this headline">#</a></h3>
+<p>Herbie can help you read these files with <a class="reference external" href="http://xarray.pydata.org/en/stable/">xarray</a> via <a class="reference external" href="https://github.com/ecmwf/cfgrib">cfgrib</a>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Open 2-m Temperature field</span>
+<span class="n">H</span><span class="o">.</span><span class="n">xarray</span><span class="p">(</span><span class="s1">&#39;TMP:2 m&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="_images/usage_4.png" src="_images/usage_4.png" />
+</section>
+<section id="fast-herbie">
+<h3>Fast Herbie<a class="headerlink" href="#fast-herbie" title="Permalink to this headline">#</a></h3>
+<p>Often, data from several GRIB2 files is needed (range of datetimes and/or forecast lead time). “Fast Herbie” tools use multithreading to help you efficiently create multiple Herbie objects, download many files, and open data in xarray DataSets for a range of model runs and forecast lead times.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">herbie.tools</span> <span class="kn">import</span> <span class="n">fast_Herbie</span><span class="p">,</span> <span class="n">fast_Herbie_download</span><span class="p">,</span> <span class="n">fast_Herbie_xarray</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+
+<span class="c1"># Get the F00-F06 forecasts for each of the runs initialized</span>
+<span class="c1"># between 00z-06z on January 1, 2022 (a total of 42 Herbie objects)</span>
+<span class="n">DATES</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">date_range</span><span class="p">(</span><span class="s1">&#39;2022-01-01 00:00&#39;</span><span class="p">,</span> <span class="s1">&#39;2022-01-01 06:00&#39;</span><span class="p">,</span> <span class="n">freq</span><span class="o">=</span><span class="s1">&#39;1H&#39;</span><span class="p">)</span>
+<span class="n">fxx</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">7</span><span class="p">)</span>
+
+<span class="c1"># Create list of Herbie objects for all dates and lead times requested.</span>
+<span class="n">HH</span> <span class="o">=</span> <span class="n">fast_Herbie</span><span class="p">(</span><span class="n">DATES</span><span class="o">=</span><span class="n">DATES</span><span class="p">,</span> <span class="n">fxx</span><span class="o">=</span><span class="n">fxx</span><span class="p">)</span>
+
+<span class="c1"># Download many GRIB2 files; subset the files for 2-m temperature</span>
+<span class="n">d</span> <span class="o">=</span> <span class="n">fast_Herbie_download</span><span class="p">(</span><span class="n">DATES</span><span class="o">=</span><span class="n">DATES</span><span class="p">,</span> <span class="n">fxx</span><span class="o">=</span><span class="n">fxx</span><span class="p">,</span> <span class="n">searchString</span><span class="o">=</span><span class="s1">&#39;TMP:2 m&#39;</span><span class="p">)</span>
+
+<span class="c1"># Load many files into xarray; subset for 10-m u and v wind.</span>
+<span class="n">ds</span> <span class="o">=</span> <span class="n">fast_Herbie_xarray</span><span class="p">(</span><span class="n">DATES</span><span class="o">=</span><span class="n">DATES</span><span class="p">,</span> <span class="n">fxx</span><span class="o">=</span><span class="n">fxx</span><span class="p">,</span> <span class="n">searchString</span><span class="o">=</span><span class="s1">&#39;(?:U|V)GRD:10 m&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="_images/usage_5.png" src="_images/usage_5.png" />
+</section>
+<section id="xarray-herbie-accessors">
+<h3>Xarray Herbie Accessors<a class="headerlink" href="#xarray-herbie-accessors" title="Permalink to this headline">#</a></h3>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>🏗 Some of these features are under construction.</p>
+</div>
+<p>Herbie comes with custom xarray DataSet accessors.</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">ds.herbie.crs</span></code> returns the cartopy coordinate reference system.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ds.herbie.polygon</span></code> returns the model domain boundary as a polygon.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ds.herbie.nearest_points()</span></code> extracts the data nearest certain lat/lon points.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ds.herbie.plot()</span></code> creates a map plot.</p></li>
+</ul>
+<p>These tools use my <a class="reference external" href="https://github.com/blaylockbk/Carpenter_Workshop">Carpenter Workshop</a>.</p>
+</section>
+</section>
+<section id="other-tools">
+<h2>Other Tools<a class="headerlink" href="#other-tools" title="Permalink to this headline">#</a></h2>
+<p><strong>🛰 GOES ABI and GLM</strong> data can be downloaded from AWS with my <a class="reference external" href="https://github.com/blaylockbk/goes2go">goes-2-go</a> package. This package was also originally developed during grad school and has been updated.</p>
+<p><strong>🌡 Synoptic API (MesoWest)</strong> data can be retrieved with my <a class="reference external" href="https://github.com/blaylockbk/SynopticPy">SynopticPy</a> package, also originally developed during grad school and has been updated.</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
+<li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
+<li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
+</ul>
+</section>
+</section>
+
+
+              </article>
+              
+
+              
+              <footer class="bd-footer-article">
+                  <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+  <a class='right-next' id="next-link" href="user_guide/index.html" title="next page">
+  <div class="prev-next-info">
+      <p class="prev-next-subtitle">next</p>
+      <p class="prev-next-title">User Guide</p>
+  </div>
+  <i class="fas fa-angle-right"></i>
+  </a>
+</div>
+              </footer>
+              
+          </div>
+          
+      </div>
+    </div>
+
+  
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="_static/scripts/pydata-sphinx-theme.js?digest=92025949c220c2e29695"></script>
+
+<footer class="bd-footer"><div class="bd-footer__inner container">
+  
+  <div class="footer-item">
+    <p class="copyright">
+    &copy; Copyright 2022, Brian K. Blaylock.    ♻ Updated: 16:32 UTC 17 Jun 2022.<br>
+</p>
+  </div>
+  
+  <div class="footer-item">
+    <p class="sphinx-version">
+Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.5.0.<br>
+</p>
+  </div>
+  
+</div>
+</footer>
+  </body>
+</html>
