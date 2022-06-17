@@ -5,7 +5,7 @@
 
 .. raw :: html
 
-   <img src="_static/HerbieLogo2_tan_transparent.png" style="filter: drop-shadow(0px 0px 100px #ffffff62)">
+   <img src="_static/HerbieLogo2_tan_transparent.png" style="filter: drop-shadow(0px 0px 100px #ffffff28)">
 
 
 
