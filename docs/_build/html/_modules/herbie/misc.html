@@ -1,0 +1,457 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>herbie.misc &#8212; Herbie 0.0.9 documentation</title>
+<script>
+  document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+  document.documentElement.dataset.theme = localStorage.getItem("theme") || "light"
+</script>
+
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=92025949c220c2e29695" rel="stylesheet">
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=92025949c220c2e29695" rel="stylesheet">
+
+
+  <link rel="stylesheet"
+    href="../../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/panels-variables.06eb56fa6e07937060861dad626602ad.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/css/brian_style.css" />
+
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=92025949c220c2e29695">
+
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script async="async" src="https://www.googletagmanager.com/gtag/js?id=G-PT9LX1B7B8"></script>
+    <script>
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){ dataLayer.push(arguments); }
+                gtag('js', new Date());
+                gtag('config', 'G-PT9LX1B7B8');
+            </script>
+    <script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+    <script>mermaid.initialize({startOnLoad:true});</script>
+    <script src="https://kit.fontawesome.com/f6cc126dcc.js"></script>
+    <link rel="shortcut icon" href="../../_static/wxicon.png"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="docsearch:language" content="None">
+  </head>
+  
+  
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="180" data-default-mode="">
+    <div class="bd-header-announcement container-fluid" id="banner">
+      
+
+    </div>
+
+    
+    <nav class="bd-header navbar navbar-light navbar-expand-lg bg-light fixed-top bd-navbar" id="navbar-main"><div class="bd-header__inner container-xl">
+
+  <div id="navbar-start">
+    
+    
+  
+
+
+<a class="navbar-brand logo" href="../../index.html">
+  
+  
+  
+  
+    <img src="../../_static/HerbieLogo2_tan_transparent.png" class="logo__image only-light" alt="Logo image">
+    <img src="../../_static/HerbieLogo2_white_transparent.png" class="logo__image only-dark" alt="Logo image">
+  
+  
+</a>
+    
+  </div>
+
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-collapsible" aria-controls="navbar-collapsible" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="fas fa-bars"></span>
+  </button>
+
+  
+  <div id="navbar-collapsible" class="col-lg-9 collapse navbar-collapse">
+    <div id="navbar-center" class="mr-auto">
+      
+      <div class="navbar-center-item">
+        <ul id="navbar-main-elements" class="navbar-nav">
+    <li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="../../user_guide/index.html">
+  User Guide
+ </a>
+</li>
+
+<li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="../../reference_guide/index.html">
+  Reference Guide
+ </a>
+</li>
+
+    
+    <li class="nav-item">
+        <a class="nav-link nav-external" href="https://blaylockbk.github.io/SynopticPy/_build/html/">SynopticPy<i class="fas fa-external-link-alt"></i></a>
+    </li>
+    
+    <li class="nav-item">
+        <a class="nav-link nav-external" href="https://blaylockbk.github.io/goes2go/_build/html/">GOES-2-go<i class="fas fa-external-link-alt"></i></a>
+    </li>
+    
+</ul>
+      </div>
+      
+    </div>
+
+    <div id="navbar-end">
+      
+      <div class="navbar-end-item">
+        <span id="theme-switch" class="btn btn-sm btn-outline-primary navbar-btn rounded-circle">
+    <a class="theme-switch" data-mode="light"><i class="fas fa-sun"></i></a>
+    <a class="theme-switch" data-mode="dark"><i class="far fa-moon"></i></a>
+    <a class="theme-switch" data-mode="auto"><i class="fas fa-adjust"></i></a>
+</span>
+      </div>
+      
+      <div class="navbar-end-item">
+        <ul id="navbar-icon-links" class="navbar-nav" aria-label="Icon Links">
+        <li class="nav-item">
+          <a class="nav-link" href="https://github.com/blaylockbk/Herbie" rel="noopener" target="_blank" title="GitHub"><span><i class="fab fa-github-square"></i></span>
+            <label class="sr-only">GitHub</label></a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="https://twitter.com/blaylockbk" rel="noopener" target="_blank" title="Twitter"><span><i class="fab fa-twitter-square"></i></span>
+            <label class="sr-only">Twitter</label></a>
+        </li>
+      </ul>
+      </div>
+      
+      <div class="navbar-end-item">
+        <form class="bd-search d-flex align-items-center" action="../../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
+</form>
+      </div>
+      
+    </div>
+  </div>
+</div>
+    </nav>
+    
+
+    <div class="bd-container container-xl">
+      <div class="bd-container__inner row">
+          
+
+<!-- Only show if we have sidebars configured, else just a small margin  -->
+<div class="bd-sidebar-primary col-12 col-md-3 bd-sidebar">
+  <div class="sidebar-start-items"><form class="bd-search d-flex align-items-center" action="../../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
+  <div class="bd-toc-item active">
+    
+  </div>
+</nav>
+  </div>
+  <div class="sidebar-end-items">
+  </div>
+</div>
+
+
+          
+
+
+<div class="bd-sidebar-secondary d-none d-xl-block col-xl-2 bd-toc">
+  
+</div>
+
+
+          
+          
+          <div class="bd-content col-12 col-md-9 col-xl-7">
+              
+              <article class="bd-article" role="main">
+                
+  <h1>Source code for herbie.misc</h1><div class="highlight"><pre>
+<span></span><span class="c1">## Brian Blaylock</span>
+<span class="c1">## May 6, 2022</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██</span>
+<span class="sd">  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██</span>
+<span class="sd">██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██</span>
+<span class="sd">  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██</span>
+
+<span class="sd">                █ ██</span>
+<span class="sd">                █ ██ ┏━┓ ┏━┓            ┏━┓   ┏━┓</span>
+<span class="sd">                █ ██ ┃ ┃ ┃ ┃┏━━━━┓┏━┓┏━┓┃ ┃   ┏━┓┏━━━━┓</span>
+<span class="sd">                █ ██ ┃ ┗━┛ ┃┃ ━━ ┃┃ ┏━━┛┃ ┗━━┓┃ ┃┃ ━━ ┃</span>
+<span class="sd">                █ ██ ┃ ┏━┓ ┃┃ ━━━┓┃ ┃   ┃ ━━ ┃┃ ┃┃ ━━━┓</span>
+<span class="sd">                █ ██ ┗━┛ ┗━┛┗━━━━┛┗━┛   ┗━━━━┛┗━┛┗━━━━┛</span>
+<span class="sd">                █ ██</span>
+<span class="sd">                       🏁 Retrieve NWP Model Data 🏁</span>
+
+<span class="sd">██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██</span>
+<span class="sd">  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██</span>
+<span class="sd">██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██</span>
+<span class="sd">  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+
+<div class="viewcode-block" id="hc"><a class="viewcode-back" href="../../reference_guide/_autosummary/herbie.misc.hc.html#herbie.misc.hc">[docs]</a><span class="k">class</span> <span class="nc">hc</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Herbie Color Pallette&quot;&quot;&quot;</span>
+
+    <span class="n">tan</span> <span class="o">=</span> <span class="s2">&quot;#f0ead2&quot;</span>
+    <span class="n">red</span> <span class="o">=</span> <span class="s2">&quot;#88211b&quot;</span>
+    <span class="n">blue</span> <span class="o">=</span> <span class="s2">&quot;#0c3576&quot;</span>
+    <span class="n">white</span> <span class="o">=</span> <span class="s2">&quot;#ffffff&quot;</span>
+    <span class="n">black</span> <span class="o">=</span> <span class="s2">&quot;#000000&quot;</span></div>
+
+
+<div class="viewcode-block" id="ANSI"><a class="viewcode-back" href="../../reference_guide/_autosummary/herbie.misc.ANSI.html#herbie.misc.ANSI">[docs]</a><span class="k">class</span> <span class="nc">ANSI</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Herbie colors as ansi codes</span>
+
+<span class="sd">    Reference</span>
+<span class="sd">    ---------</span>
+<span class="sd">    https://gist.github.com/fnky/458719343aabd01cfb17a3a4f7296797</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Octal: \033</span>
+    <span class="c1"># Unicode: \u001b</span>
+    <span class="c1"># Hexadecimal: \x1B</span>
+    <span class="n">ESC</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\x1B</span><span class="s2">&quot;</span>
+
+    <span class="c1"># Style</span>
+    <span class="n">bold</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">ESC</span><span class="si">}</span><span class="s2">[1m&quot;</span>
+    <span class="n">italic</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">ESC</span><span class="si">}</span><span class="s2">[3m&quot;</span>
+    <span class="n">underline</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">ESC</span><span class="si">}</span><span class="s2">[4m&quot;</span>
+    <span class="n">strikethrough</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">ESC</span><span class="si">}</span><span class="s2">[9m&quot;</span>
+    <span class="n">reset</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">ESC</span><span class="si">}</span><span class="s2">[0m&quot;</span>
+
+    <span class="c1"># Text Colors</span>
+    <span class="n">red</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">ESC</span><span class="si">}</span><span class="s2">[38;2;136;33;27m&quot;</span>
+    <span class="n">blue</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">ESC</span><span class="si">}</span><span class="s2">[38;2;12;53;118m&quot;</span>
+    <span class="n">black</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">ESC</span><span class="si">}</span><span class="s2">[38;2;0;0;0m&quot;</span>
+    <span class="n">white</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">ESC</span><span class="si">}</span><span class="s2">[37m&quot;</span>
+    <span class="n">orange</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">ESC</span><span class="si">}</span><span class="s2">[38;2;255;153;0m&quot;</span>
+    <span class="n">green</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">ESC</span><span class="si">}</span><span class="s2">[38;2;41;130;13m&quot;</span>
+    <span class="n">bright_green</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">ESC</span><span class="si">}</span><span class="s2">[92m&quot;</span>
+
+    <span class="c1"># Background color</span>
+    <span class="n">_tan</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">ESC</span><span class="si">}</span><span class="s2">[48;2;240;234;210m&quot;</span>
+    <span class="n">_white</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">ESC</span><span class="si">}</span><span class="s2">[48;2;255;255;255m&quot;</span>
+
+    <span class="n">herbie</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">_white</span><span class="si">}{</span><span class="n">red</span><span class="si">}</span><span class="s2">▌</span><span class="si">{</span><span class="n">reset</span><span class="si">}{</span><span class="n">blue</span><span class="si">}{</span><span class="n">_tan</span><span class="si">}</span><span class="s2">▌</span><span class="si">{</span><span class="n">black</span><span class="si">}{</span><span class="n">bold</span><span class="si">}</span><span class="s2">Herbie</span><span class="si">{</span><span class="n">reset</span><span class="si">}</span><span class="s2">&quot;</span>
+
+    <span class="n">ascii</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span>
+
+<span class="si">{</span><span class="n">_tan</span><span class="si">}{</span><span class="s1">&#39; &#39;</span><span class="si">:</span><span class="s2">44</span><span class="si">}{</span><span class="n">reset</span><span class="si">}</span><span class="s2"></span>
+<span class="si">{</span><span class="n">_tan</span><span class="si">}</span><span class="s2">   </span><span class="si">{</span><span class="n">red</span><span class="si">}</span><span class="s2">█ </span><span class="si">{</span><span class="n">blue</span><span class="si">}</span><span class="s2">██ </span><span class="si">{</span><span class="n">black</span><span class="si">}</span><span class="s2">                                    </span><span class="si">{</span><span class="n">reset</span><span class="si">}</span><span class="s2"></span>
+<span class="si">{</span><span class="n">_tan</span><span class="si">}</span><span class="s2">   </span><span class="si">{</span><span class="n">red</span><span class="si">}</span><span class="s2">█ </span><span class="si">{</span><span class="n">blue</span><span class="si">}</span><span class="s2">██ </span><span class="si">{</span><span class="n">black</span><span class="si">}</span><span class="s2">┏━┓ ┏━┓            ┏━┓   ┏━┓        </span><span class="si">{</span><span class="n">reset</span><span class="si">}</span><span class="s2"></span>
+<span class="si">{</span><span class="n">_tan</span><span class="si">}</span><span class="s2">   </span><span class="si">{</span><span class="n">red</span><span class="si">}</span><span class="s2">█ </span><span class="si">{</span><span class="n">blue</span><span class="si">}</span><span class="s2">██ </span><span class="si">{</span><span class="n">black</span><span class="si">}</span><span class="s2">┃ ┃ ┃ ┃┏━━━━┓┏━┓┏━┓┃ ┃   ┏━┓┏━━━━┓  </span><span class="si">{</span><span class="n">reset</span><span class="si">}</span><span class="s2"></span>
+<span class="si">{</span><span class="n">_tan</span><span class="si">}</span><span class="s2">   </span><span class="si">{</span><span class="n">red</span><span class="si">}</span><span class="s2">█ </span><span class="si">{</span><span class="n">blue</span><span class="si">}</span><span class="s2">██ </span><span class="si">{</span><span class="n">black</span><span class="si">}</span><span class="s2">┃ ┗━┛ ┃┃ ━━ ┃┃ ┏━━┛┃ ┗━━┓┃ ┃┃ ━━ ┃  </span><span class="si">{</span><span class="n">reset</span><span class="si">}</span><span class="s2"></span>
+<span class="si">{</span><span class="n">_tan</span><span class="si">}</span><span class="s2">   </span><span class="si">{</span><span class="n">red</span><span class="si">}</span><span class="s2">█ </span><span class="si">{</span><span class="n">blue</span><span class="si">}</span><span class="s2">██ </span><span class="si">{</span><span class="n">black</span><span class="si">}</span><span class="s2">┃ ┏━┓ ┃┃ ━━━┓┃ ┃   ┃ ━━ ┃┃ ┃┃ ━━━┓  </span><span class="si">{</span><span class="n">reset</span><span class="si">}</span><span class="s2"></span>
+<span class="si">{</span><span class="n">_tan</span><span class="si">}</span><span class="s2">   </span><span class="si">{</span><span class="n">red</span><span class="si">}</span><span class="s2">█ </span><span class="si">{</span><span class="n">blue</span><span class="si">}</span><span class="s2">██ </span><span class="si">{</span><span class="n">black</span><span class="si">}</span><span class="s2">┗━┛ ┗━┛┗━━━━┛┗━┛   ┗━━━━┛┗━┛┗━━━━┛  </span><span class="si">{</span><span class="n">reset</span><span class="si">}</span><span class="s2"></span>
+<span class="si">{</span><span class="n">_tan</span><span class="si">}</span><span class="s2">   </span><span class="si">{</span><span class="n">red</span><span class="si">}</span><span class="s2">█ </span><span class="si">{</span><span class="n">blue</span><span class="si">}</span><span class="s2">██ </span><span class="si">{</span><span class="n">black</span><span class="si">}</span><span class="s2">                                    </span><span class="si">{</span><span class="n">reset</span><span class="si">}</span><span class="s2"></span>
+<span class="si">{</span><span class="n">_tan</span><span class="si">}{</span><span class="s1">&#39; &#39;</span><span class="si">:</span><span class="s2">3</span><span class="si">}{</span><span class="n">black</span><span class="si">}</span><span class="s2">       🏁 Retrieve NWP Model Data 🏁     </span><span class="si">{</span><span class="n">reset</span><span class="si">}</span><span class="s2"></span>
+<span class="si">{</span><span class="n">_tan</span><span class="si">}{</span><span class="s1">&#39; &#39;</span><span class="si">:</span><span class="s2">44</span><span class="si">}{</span><span class="n">reset</span><span class="si">}</span><span class="s2"></span>
+
+<span class="s2">    &quot;&quot;&quot;</span></div>
+
+
+<span class="k">def</span> <span class="nf">rich_herbie</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns &quot;▌▌Herbie&quot; with rich colors (if rich is installed).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;[on </span><span class="si">{</span><span class="n">hc</span><span class="o">.</span><span class="n">tan</span><span class="si">}</span><span class="s2">][</span><span class="si">{</span><span class="n">hc</span><span class="o">.</span><span class="n">red</span><span class="si">}</span><span class="s2"> on </span><span class="si">{</span><span class="n">hc</span><span class="o">.</span><span class="n">white</span><span class="si">}</span><span class="s2">]▌[/][</span><span class="si">{</span><span class="n">hc</span><span class="o">.</span><span class="n">blue</span><span class="si">}</span><span class="s2">]▌[/][bold </span><span class="si">{</span><span class="n">hc</span><span class="o">.</span><span class="n">black</span><span class="si">}</span><span class="s2">]Herbie[/][/]&quot;</span>
+
+
+<span class="k">def</span> <span class="nf">print_rich</span><span class="p">(</span><span class="n">H</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Print &quot;rich&quot; display console</span>
+<span class="sd">    TODO: How do I get the __repr__ to do this?</span>
+
+<span class="sd">    eh, just use my own ANSI class for text coloring.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="kn">from</span> <span class="nn">rich.console</span> <span class="kn">import</span> <span class="n">Console</span>
+
+        <span class="kn">from</span> <span class="nn">herbie.misc</span> <span class="kn">import</span> <span class="n">rich_herbie</span>
+
+        <span class="n">console</span> <span class="o">=</span> <span class="n">Console</span><span class="p">()</span>
+        <span class="n">console</span><span class="o">.</span><span class="n">print</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">rich_herbie</span><span class="p">()</span><span class="si">}</span><span class="s2"> &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">H</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span><span class="si">}</span><span class="s2"> model &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;[italic]</span><span class="si">{</span><span class="n">H</span><span class="o">.</span><span class="n">product</span><span class="si">}</span><span class="s2">[/] product &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;initialized [green bold]</span><span class="si">{</span><span class="n">H</span><span class="o">.</span><span class="n">date</span><span class="si">:</span><span class="s2">%Y-%b-%d %H:%M</span><span class="si">}</span><span class="s2"> UTC[/] &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;[rgb(41, 130, 13)]F</span><span class="si">{</span><span class="n">H</span><span class="o">.</span><span class="n">fxx</span><span class="si">:</span><span class="s2">02d</span><span class="si">}</span><span class="s2">[/] &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;┊ [#ff9900 italic]source=</span><span class="si">{</span><span class="n">H</span><span class="o">.</span><span class="n">grib_source</span><span class="si">}</span><span class="s2">[/]&quot;</span>
+        <span class="p">)</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;rich is not working/installed&quot;</span><span class="p">)</span>
+
+
+<span class="c1">########################################################################</span>
+
+
+<div class="viewcode-block" id="HerbieLogo"><a class="viewcode-back" href="../../reference_guide/_autosummary/herbie.misc.HerbieLogo.html#herbie.misc.HerbieLogo">[docs]</a><span class="k">def</span> <span class="nf">HerbieLogo</span><span class="p">(</span><span class="n">white_line</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Logo of Herbie The Love Bug&quot;&quot;&quot;</span>
+    <span class="kn">import</span> <span class="nn">matplotlib.patheffects</span> <span class="k">as</span> <span class="nn">path_effects</span>
+    <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+    <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span> <span class="n">facecolor</span><span class="o">=</span><span class="n">hc</span><span class="o">.</span><span class="n">tan</span><span class="p">)</span>
+
+    <span class="n">plt</span><span class="o">.</span><span class="n">axis</span><span class="p">([</span><span class="o">-</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="o">-</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">])</span>
+    <span class="k">if</span> <span class="n">white_line</span><span class="p">:</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">40</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">hc</span><span class="o">.</span><span class="n">white</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="mf">2.5</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">hc</span><span class="o">.</span><span class="n">red</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="mf">5.5</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">40</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">hc</span><span class="o">.</span><span class="n">blue</span><span class="p">)</span>
+
+    <span class="n">c</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">Circle</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">radius</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">ec</span><span class="o">=</span><span class="s2">&quot;k&quot;</span><span class="p">,</span> <span class="n">fc</span><span class="o">=</span><span class="s2">&quot;w&quot;</span><span class="p">,</span> <span class="n">zorder</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span><span class="o">.</span><span class="n">add_artist</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+
+    <span class="n">plt</span><span class="o">.</span><span class="n">text</span><span class="p">(</span>
+        <span class="mi">0</span><span class="p">,</span>
+        <span class="mi">0</span><span class="p">,</span>
+        <span class="s2">&quot;53&quot;</span><span class="p">,</span>
+        <span class="n">fontsize</span><span class="o">=</span><span class="mi">110</span><span class="p">,</span>
+        <span class="n">fontweight</span><span class="o">=</span><span class="s2">&quot;bold&quot;</span><span class="p">,</span>
+        <span class="n">va</span><span class="o">=</span><span class="s2">&quot;center_baseline&quot;</span><span class="p">,</span>
+        <span class="n">ha</span><span class="o">=</span><span class="s2">&quot;center&quot;</span><span class="p">,</span>
+        <span class="n">zorder</span><span class="o">=</span><span class="mi">11</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span><span class="o">.</span><span class="n">set_facecolor</span><span class="p">(</span><span class="n">hc</span><span class="o">.</span><span class="n">tan</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span><span class="o">.</span><span class="n">margins</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+    <span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span><span class="o">.</span><span class="n">get_xaxis</span><span class="p">()</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span><span class="o">.</span><span class="n">get_yaxis</span><span class="p">()</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span><span class="o">.</span><span class="n">spines</span><span class="p">[</span><span class="s2">&quot;bottom&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span><span class="o">.</span><span class="n">spines</span><span class="p">[</span><span class="s2">&quot;top&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span><span class="o">.</span><span class="n">spines</span><span class="p">[</span><span class="s2">&quot;left&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span><span class="o">.</span><span class="n">spines</span><span class="p">[</span><span class="s2">&quot;right&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="HerbieLogo2"><a class="viewcode-back" href="../../reference_guide/_autosummary/herbie.misc.HerbieLogo2.html#herbie.misc.HerbieLogo2">[docs]</a><span class="k">def</span> <span class="nf">HerbieLogo2</span><span class="p">(</span><span class="n">white_line</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">text_color</span><span class="o">=</span><span class="s2">&quot;tan&quot;</span><span class="p">,</span> <span class="n">text_stroke</span><span class="o">=</span><span class="s2">&quot;black&quot;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Herbie logo (main)</span>
+
+<span class="sd">    &gt;&gt;&gt; ax = HerbieLogo2()</span>
+<span class="sd">    &gt;&gt;&gt; plt.savefig(&#39;Herbie.svg&#39;, bbox_inches=&quot;tight&quot;)</span>
+
+<span class="sd">    &gt;&gt;&gt; ax = HerbieLogo2()</span>
+<span class="sd">    &gt;&gt;&gt; plt.savefig(&#39;Herbie_transparent.svg&#39;, bbox_inches=&quot;tight&quot;, transparent=True)</span>
+
+<span class="sd">    &gt;&gt;&gt; ax = HerbieLogo2(text_color=&#39;tan&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; plt.savefig(&#39;Herbie_transparent_tan.svg&#39;, bbox_inches=&quot;tight&quot;, transparent=True)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">import</span> <span class="nn">matplotlib.patheffects</span> <span class="k">as</span> <span class="nn">path_effects</span>
+    <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+    <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="n">facecolor</span><span class="o">=</span><span class="n">hc</span><span class="o">.</span><span class="n">tan</span><span class="p">)</span>
+
+    <span class="n">plt</span><span class="o">.</span><span class="n">axis</span><span class="p">([</span><span class="mf">1.5</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="o">-</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">])</span>
+
+    <span class="k">if</span> <span class="n">white_line</span><span class="p">:</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">40</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">hc</span><span class="o">.</span><span class="n">white</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="mf">2.5</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">hc</span><span class="o">.</span><span class="n">red</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="mf">5.5</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">40</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">hc</span><span class="o">.</span><span class="n">blue</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">hc</span><span class="p">,</span> <span class="n">text_color</span><span class="p">):</span>
+        <span class="n">text_color</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">hc</span><span class="p">,</span> <span class="n">text_color</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">hc</span><span class="p">,</span> <span class="n">text_stroke</span><span class="p">):</span>
+        <span class="n">text_stroke</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">hc</span><span class="p">,</span> <span class="n">text_stroke</span><span class="p">)</span>
+
+    <span class="n">text</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">text</span><span class="p">(</span>
+        <span class="mi">8</span><span class="p">,</span>
+        <span class="mi">0</span><span class="p">,</span>
+        <span class="s2">&quot;Herbie&quot;</span><span class="p">,</span>
+        <span class="n">fontsize</span><span class="o">=</span><span class="mi">110</span><span class="p">,</span>
+        <span class="n">fontweight</span><span class="o">=</span><span class="s2">&quot;bold&quot;</span><span class="p">,</span>
+        <span class="n">color</span><span class="o">=</span><span class="n">text_color</span><span class="p">,</span>
+        <span class="n">va</span><span class="o">=</span><span class="s2">&quot;center_baseline&quot;</span><span class="p">,</span>
+        <span class="n">ha</span><span class="o">=</span><span class="s2">&quot;left&quot;</span><span class="p">,</span>
+        <span class="n">zorder</span><span class="o">=</span><span class="mi">11</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">text_stroke</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">text</span><span class="o">.</span><span class="n">set_path_effects</span><span class="p">(</span>
+            <span class="p">[</span>
+                <span class="n">path_effects</span><span class="o">.</span><span class="n">Stroke</span><span class="p">(</span><span class="n">linewidth</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">foreground</span><span class="o">=</span><span class="n">text_stroke</span><span class="p">),</span>
+                <span class="n">path_effects</span><span class="o">.</span><span class="n">Normal</span><span class="p">(),</span>
+            <span class="p">]</span>
+        <span class="p">)</span>
+
+    <span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span><span class="o">.</span><span class="n">set_facecolor</span><span class="p">(</span><span class="n">hc</span><span class="o">.</span><span class="n">tan</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span><span class="o">.</span><span class="n">margins</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+    <span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span><span class="o">.</span><span class="n">get_xaxis</span><span class="p">()</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span><span class="o">.</span><span class="n">get_yaxis</span><span class="p">()</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span><span class="o">.</span><span class="n">spines</span><span class="p">[</span><span class="s2">&quot;bottom&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span><span class="o">.</span><span class="n">spines</span><span class="p">[</span><span class="s2">&quot;top&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span><span class="o">.</span><span class="n">spines</span><span class="p">[</span><span class="s2">&quot;left&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span><span class="o">.</span><span class="n">spines</span><span class="p">[</span><span class="s2">&quot;right&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span></div>
+</pre></div>
+
+              </article>
+              
+
+              
+              <footer class="bd-footer-article">
+                  <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+</div>
+              </footer>
+              
+          </div>
+          
+      </div>
+    </div>
+
+  
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../_static/scripts/pydata-sphinx-theme.js?digest=92025949c220c2e29695"></script>
+
+<footer class="bd-footer"><div class="bd-footer__inner container">
+  
+  <div class="footer-item">
+    <p class="copyright">
+    &copy; Copyright 2022, Brian K. Blaylock.    ♻ Updated: 16:41 UTC 17 Jun 2022.<br>
+</p>
+  </div>
+  
+  <div class="footer-item">
+    <p class="sphinx-version">
+Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.5.0.<br>
+</p>
+  </div>
+  
+</div>
+</footer>
+  </body>
+</html>
