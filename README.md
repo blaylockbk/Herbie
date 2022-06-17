@@ -2,10 +2,6 @@
   align="center"
 >
 
-<!-- ![](https://github.com/blaylockbk/Herbie/blob/main/docs/_static/HerbieLogo2_tan_transparent.png?raw=true) -->
-
-<!-- ![](https://github.com/blaylockbk/Herbie/raw/main/images/Herbie_transparent_tan.svg) -->
-
 <img 
   src="https://github.com/blaylockbk/Herbie/raw/main/images/Herbie_transparent_tan.svg" 
   style="filter: drop-shadow(0px 0px 5px #000000)">
@@ -22,7 +18,7 @@
 
 </div>
 
-**Herbie** is a python package that downloads recent and archived numerical weather prediction (NWP) model output from different cloud archive sources. NWP data in GRIB2 format can be read with xarray+cfgrib. Much of this data is made available through the [NOAA Big Data Program](https://www.noaa.gov/information-technology/big-data) which has made weather data more accessible than ever before.
+**Herbie** is a python package that downloads recent and archived numerical weather prediction (NWP) model output from different cloud archive sources. **Its most popular capability is to download HRRR model data.** NWP data in GRIB2 format can be read with xarray+cfgrib. Much of this data is made available through the [NOAA Big Data Program](https://www.noaa.gov/information-technology/big-data) which has made weather data more accessible than ever before.
 
 Herbie helps you discover, download, and read data from:
 - [High Resolution Rapid Refresh (HRRR)](https://blaylockbk.github.io/Herbie/_build/html/user_guide/notebooks/data_hrrr.html) | [HRRR-Alaska](https://blaylockbk.github.io/Herbie/_build/html/user_guide/notebooks/data_hrrrak.html)
