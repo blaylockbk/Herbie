@@ -10,6 +10,7 @@ herbie.mics
 .. autosummary::
    :toctree: _autosummary
 
-   HerbieColors
+   hc
+   ANSI
    HerbieLogo
    HerbieLogo2
