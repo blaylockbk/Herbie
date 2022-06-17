@@ -24,9 +24,19 @@
             "command": "conda env update -f environment.yml --prune"
         },
         {
+            "label": "✨ update all packages",
+            "type": "shell",
+            "command": "conda update --name herbie --all -c conda-forge"
+        },
+        {
+            "label": "🗿 search outdated packages",
+            "type": "shell",
+            "command": "eval \"$(conda shell.bash hook)\" && conda activate herbie && conda search --outdated -c conda-forge"
+        },
+        {
             "label": "💣 destroy conda environment",
             "type": "shell",
-            "command": "conda activate base && conda env remove --name herbie"
+            "command": "eval \"$(conda shell.bash hook)\" && conda activate base && conda env remove --name herbie"
         },
         {
             "label": "🚀 launch JupyterLab",

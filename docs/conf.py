@@ -42,7 +42,7 @@ extensions = [
     "sphinx.ext.autosectionlabel",
     "sphinx.ext.napoleon",
     "sphinx.ext.viewcode",
-    "sphinx_panels",
+    "sphinx_design",
     "autodocsumm",
     "sphinx_markdown_tables",
     "myst_parser",

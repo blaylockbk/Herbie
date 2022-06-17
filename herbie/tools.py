@@ -27,7 +27,7 @@ log = logging.getLogger(__name__)
 
 
 """
-🧵 Notice! Multithreading is use
+🧵🤹🏻‍♂️ Notice! Multithreading and Multiprocessing is use
 
 This is my first implementation of multithreading to create, download,
 and read many Herbie objects. This drastically reduces the time it takes
@@ -145,7 +145,7 @@ class FastHerbie:
             ds_list, index=self.DATES, columns=[f"F{i:02d}" for i in self.fxx]
         )
 
-    def download(self, searchString=None, max_threads=20, **download_kwargs):
+    def download(self, searchString=None, *, max_threads=20, **download_kwargs):
         r"""Download many Herbie objects
 
         Uses multithreading.
@@ -183,13 +183,19 @@ class FastHerbie:
 
         return outFiles
 
-    def xarray(self, searchString, max_threads=2, **xarray_kwargs):
+    def xarray(
+        self,
+        searchString,
+        *,
+        max_threads=None,
+        **xarray_kwargs,
+    ):
         """Read many Herbie objects into an xarray Dataset
 
         # TODO: Sometimes the Jupyter Cell always crashes when I run this.
         # TODO: "fatal flex scanner internal error--end of buffer missed"
 
-        Uses multithreading.
+        Uses multithreading (or multiprocessing).
         This would likely benefit from multiprocessing instead.
 
         Parameters
@@ -207,19 +213,31 @@ class FastHerbie:
             - 10 threads took 39 s
             - 50 threads took 37 s
         """
-        ###########################
-        # Multithread the downloads
-        threads = min(self.tasks, max_threads)
-        log.info(f"🧵 Working on {self.tasks} tasks with {threads} threads.")
+        xarray_kwargs = dict(searchString=searchString, **xarray_kwargs)
 
-        with ThreadPoolExecutor(max_threads) as exe:
-            futures = [
-                exe.submit(H.xarray, searchString, **xarray_kwargs)
-                for H in self.file_exists
-            ]
+        # NOTE: Multiprocessing does not seem to work because it looks
+        # NOTE: like xarray objects are not pickleable.
+        # NOTE: ``Reason: 'TypeError("cannot pickle '_thread.lock' object"``
 
-            # Return list of Herbie objects in order completed
-            ds_list = [future.result() for future in as_completed(futures)]
+        if max_threads:
+            ###########################
+            # Multithread the downloads
+            # ! Only works sometimes
+            # ! I get this error: "'EntryPoint' object has no attribute '_key'""
+
+            threads = min(self.tasks, max_threads)
+            log.info(f"🧵 Working on {self.tasks} tasks with {threads} threads.")
+
+            with ThreadPoolExecutor(max_threads) as exe:
+                futures = [
+                    exe.submit(H.xarray, **xarray_kwargs) for H in self.file_exists
+                ]
+
+                # Return list of Herbie objects in order completed
+                ds_list = [future.result() for future in as_completed(futures)]
+
+        else:
+            ds_list = [H.xarray(**xarray_kwargs) for H in self.file_exists]
 
         # Sort the DataSets, first by lead time (step), then by run time (time)
         ds_list.sort(key=lambda x: x.step.data.max())
