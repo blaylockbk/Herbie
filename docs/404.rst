@@ -1,6 +1,4 @@
----
-permalink: /404.html
----
+:orphan:
 
 404: Page Not Found
 
