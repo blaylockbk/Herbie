@@ -60,10 +60,7 @@ _level_units = dict(
 
 @xr.register_dataset_accessor("herbie")
 class HerbieAccessor:
-    """
-    Accessor for xarray Datasets opened with Herbie
-
-    """
+    """Accessor for xarray Datasets opened with Herbie"""
 
     def __init__(self, xarray_obj):
         self._obj = xarray_obj
@@ -220,8 +217,15 @@ class HerbieAccessor:
 
         return new_ds
 
-    def plot(self, ax=None, common_features_kw={}, **kwargs):
-        """Plot data on a map."""
+    def plot(self, ax=None, common_features_kw={}, vars=None, **kwargs):
+        """Plot data on a map.
+
+        Parameters
+        ----------
+        vars : list
+            List of variables to plot. Default None will plot all
+            variables in the DataSet.
+        """
         # From Carpenter_Workshop:
         # https://github.com/blaylockbk/Carpenter_Workshop
         import matplotlib.pyplot as plt
@@ -230,6 +234,7 @@ class HerbieAccessor:
             from toolbox.cartopy_tools import common_features, pc
             from paint.radar import cm_reflectivity
             from paint.radar2 import cm_reflectivity
+            from paint.terrain2 import cm_terrain
             from paint.standard2 import cm_dpt, cm_pcp, cm_rh, cm_tmp, cm_wind
         except:
             print("The plotting accessor requires my Carpenter Workshop. Try:")
@@ -239,7 +244,13 @@ class HerbieAccessor:
 
         ds = self._obj
 
-        for var in ds.data_vars:
+        if isinstance(vars, str):
+            vars = [vars]
+
+        if vars is None:
+            vars = ds.data_vars
+
+        for var in vars:
             if "longitude" not in ds[var].coords:
                 # This is the case for the gribfile_projection variable
                 continue
@@ -313,6 +324,13 @@ class HerbieAccessor:
             elif ds[var].GRIB_cfName == "relative_humidity":
                 cbar_kwargs = {**cm_rh().cbar_kwargs, **cbar_kwargs}
                 kwargs = {**cm_rh().cmap_kwargs, **kwargs}
+
+            elif ds[var].GRIB_name == "Orography":
+                if "lsm" in ds:
+                    ds["orog"] = ds.orog.where(ds.lsm == 1, -100)
+
+                cbar_kwargs = {**cm_terrain().cbar_kwargs, **cbar_kwargs}
+                kwargs = {**cm_terrain().cmap_kwargs, **kwargs}
 
             elif "wind" in ds[var].GRIB_cfName or "wind" in ds[var].GRIB_name:
                 cbar_kwargs = {**cm_wind().cbar_kwargs, **cbar_kwargs}

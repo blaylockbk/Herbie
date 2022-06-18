@@ -268,15 +268,21 @@ class Herbie:
         return " ".join(msg)
 
     def __str__(self):
-        """When Herbie class object is printed, print all properties"""
+        """When Herbie class object is printed, print all properties."""
+        # * Keep this simple so it runs fast.
+        msg = (f"║HERBIE╠ {self.model.upper()}:{self.product}",)
+        return " ".join(msg)
+
+    def tell_me_everything(self):
+        """Print all the attributes of the Herbie object"""
         msg = []
         for i in dir(self):
             if isinstance(getattr(self, i), (int, str, dict)):
                 if not i.startswith("__"):
                     msg.append(f"self.{i}={getattr(self, i)}")
-        return "\n".join(msg)
+        msg = "\n".join(msg)
+        print(msg)
 
-    @property
     def __logo__(self):
         """For Fun, show the Herbie Logo"""
         print(ANSI.ascii)
@@ -805,7 +811,7 @@ class Herbie:
         if outFile.exists() and not self.overwrite:
             if verbose:
                 print(f"🌉 Already have local copy --> {outFile}")
-            return
+            return outFile
 
         if self.overwrite and self.grib_source == "local":
             # Search for the grib files on the remote archives again
@@ -862,7 +868,7 @@ class Herbie:
             # Download a subset of the file
             subset(searchString, outFile)
 
-        return self
+        return outFile
 
     def xarray(
         self,

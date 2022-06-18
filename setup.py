@@ -1,5 +1,6 @@
 from pathlib import Path
-from setuptools import setup, find_packages
+
+from setuptools import find_packages, setup
 
 HERE = Path(__file__).parent
 README = (HERE / "README.md").read_text(encoding="utf8")
@@ -18,16 +19,24 @@ setup(
     },
     license="MIT",
     packages=find_packages(),
-    package_data={
-        "": ["*.cfg"],
-    },
+    include_package_data=True,
     python_requires=">=3.8",
-    install_requires=["numpy", "pandas", "xarray", "cfgrib", "metpy", "toml", "pygrib"],
+    install_requires=[
+        "numpy",
+        "pandas",
+        "xarray",
+        "cfgrib",
+        "metpy",
+        "cartopy",
+        "toml",
+        "pygrib",
+    ],
     keywords=[
         "xarray",
         "meteorology",
         "weather",
         "HRRR",
+        "GRIB2",
         "numerical weather prediction",
         "forecast",
         "atmosphere",

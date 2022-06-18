@@ -7,12 +7,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
     <title>HRRR Data &#8212; Herbie 0.0.9 documentation</title>
-    
-  <!-- Loaded before other Sphinx assets -->
-  <link href="../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
-<link href="../../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+<script>
+  document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+  document.documentElement.dataset.theme = localStorage.getItem("theme") || "light"
+</script>
 
-    
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=92025949c220c2e29695" rel="stylesheet">
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=92025949c220c2e29695" rel="stylesheet">
+
+
   <link rel="stylesheet"
     href="../../_static/vendor/fontawesome/5.13.0/css/all.min.css">
   <link rel="preload" as="font" type="font/woff2" crossorigin
@@ -21,18 +25,25 @@
     href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
 
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/panels-variables.06eb56fa6e07937060861dad626602ad.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/brian_style.css" />
-    
+    <link rel="stylesheet" type="text/css" href="../../_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/css/brian_style.css" />
+
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+  <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=92025949c220c2e29695">
 
     <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
     <script src="../../_static/jquery.js"></script>
     <script src="../../_static/underscore.js"></script>
     <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/design-tabs.js"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script async="async" src="https://www.googletagmanager.com/gtag/js?id=G-PT9LX1B7B8"></script>
+    <script>
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){ dataLayer.push(arguments); }
+                gtag('js', new Date());
+                gtag('config', 'G-PT9LX1B7B8');
+            </script>
     <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
@@ -43,42 +54,41 @@
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="HRRR-Alaska Data" href="data_hrrrak.html" />
     <link rel="prev" title="Quick Tutorial" href="tutorial.html" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="docsearch:language" content="None">
-    
-
-    <!-- Google Analytics -->
-    
-<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-PT9LX1B7B8"></script>
-<script>
-                    window.dataLayer = window.dataLayer || [];
-                    function gtag(){ dataLayer.push(arguments); }
-                    gtag('js', new Date());
-                    gtag('config', 'G-PT9LX1B7B8');
-                </script>
-
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="docsearch:language" content="None">
   </head>
-  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
-    
-    <div class="container-fluid" id="banner"></div>
+  
+  
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="180" data-default-mode="">
+    <div class="bd-header-announcement container-fluid" id="banner">
+      
+
+    </div>
 
     
-    <nav class="navbar navbar-light navbar-expand-lg bg-light fixed-top bd-navbar" id="navbar-main"><div class="container-xl">
+    <nav class="bd-header navbar navbar-light navbar-expand-lg bg-light fixed-top bd-navbar" id="navbar-main"><div class="bd-header__inner container-xl">
 
   <div id="navbar-start">
     
     
+  
 
-<a class="navbar-brand" href="../../index.html">
-  <img src="../../_static/HerbieLogo2_white_transparent.png" class="logo" alt="logo">
+
+<a class="navbar-brand logo" href="../../index.html">
+  
+  
+  
+  
+    <img src="../../_static/HerbieLogo2_tan_transparent.png" class="logo__image only-light" alt="Logo image">
+    <img src="../../_static/HerbieLogo2_white_transparent.png" class="logo__image only-dark" alt="Logo image">
+  
+  
 </a>
-
-
     
   </div>
 
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-collapsible" aria-controls="navbar-collapsible" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
+    <span class="fas fa-bars"></span>
   </button>
 
   
@@ -116,6 +126,14 @@
     <div id="navbar-end">
       
       <div class="navbar-end-item">
+        <span id="theme-switch" class="btn btn-sm btn-outline-primary navbar-btn rounded-circle">
+    <a class="theme-switch" data-mode="light"><i class="fas fa-sun"></i></a>
+    <a class="theme-switch" data-mode="dark"><i class="far fa-moon"></i></a>
+    <a class="theme-switch" data-mode="auto"><i class="fas fa-adjust"></i></a>
+</span>
+      </div>
+      
+      <div class="navbar-end-item">
         <ul id="navbar-icon-links" class="navbar-nav" aria-label="Icon Links">
         <li class="nav-item">
           <a class="nav-link" href="https://github.com/blaylockbk/Herbie" rel="noopener" target="_blank" title="GitHub"><span><i class="fab fa-github-square"></i></span>
@@ -141,13 +159,13 @@
     </nav>
     
 
-    <div class="container-xl">
-      <div class="row">
+    <div class="bd-container container-xl">
+      <div class="bd-container__inner row">
           
-            
-            <!-- Only show if we have sidebars configured, else just a small margin  -->
-            <div class="col-12 col-md-3 bd-sidebar">
-              <div class="sidebar-start-items"><form class="bd-search d-flex align-items-center" action="../../search.html" method="get">
+
+<!-- Only show if we have sidebars configured, else just a small margin  -->
+<div class="bd-sidebar-primary col-12 col-md-3 bd-sidebar">
+  <div class="sidebar-start-items"><form class="bd-search d-flex align-items-center" action="../../search.html" method="get">
   <i class="icon fas fa-search"></i>
   <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
 </form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
@@ -274,47 +292,46 @@
 
   </div>
 </nav>
-              </div>
-              <div class="sidebar-end-items">
-              </div>
-            </div>
-            
-          
+  </div>
+  <div class="sidebar-end-items">
+  </div>
+</div>
+
 
           
-          <div class="d-none d-xl-block col-xl-2 bd-toc">
-            
-              
-              <div class="toc-item">
-                
+
+
+<div class="bd-sidebar-secondary d-none d-xl-block col-xl-2 bd-toc">
+  
+    
+    <div class="toc-item">
+      
 
 <nav id="bd-toc-nav">
     
 </nav>
-              </div>
-              
-              <div class="toc-item">
-                
+    </div>
+    
+    <div class="toc-item">
+      
 
 <div class="tocsection editthispage">
-    <a href="https://github.com/blaylockbk/Herbie/edit/master/docs/user_guide/notebooks/data_hrrr.ipynb">
+    <a href="https://github.com/blaylockbk/Herbie/edit/main/docs/user_guide/notebooks/data_hrrr.ipynb">
         <i class="fas fa-pencil-alt"></i> Edit this page
     </a>
 </div>
 
-              </div>
-              
-            
-          </div>
-          
+    </div>
+    
+  
+</div>
+
 
           
           
-            
-          
-          <main class="col-12 col-md-9 col-xl-7 py-md-5 pl-md-5 pr-md-4 bd-content" role="main">
+          <div class="bd-content col-12 col-md-9 col-xl-7">
               
-              <div>
+              <article class="bd-article" role="main">
                 
   
 <style>
@@ -531,6 +548,7 @@ div.nboutput.container div.output_area > div[class^='highlight']{
 }
 
 /* Some additional styling taken form the Jupyter notebook CSS */
+.jp-RenderedHTMLCommon table,
 div.rendered_html table {
   border: none;
   border-collapse: collapse;
@@ -539,10 +557,14 @@ div.rendered_html table {
   font-size: 12px;
   table-layout: fixed;
 }
+.jp-RenderedHTMLCommon thead,
 div.rendered_html thead {
   border-bottom: 1px solid black;
   vertical-align: bottom;
 }
+.jp-RenderedHTMLCommon tr,
+.jp-RenderedHTMLCommon th,
+.jp-RenderedHTMLCommon td,
 div.rendered_html tr,
 div.rendered_html th,
 div.rendered_html td {
@@ -554,12 +576,15 @@ div.rendered_html td {
   max-width: none;
   border: none;
 }
+.jp-RenderedHTMLCommon th,
 div.rendered_html th {
   font-weight: bold;
 }
+.jp-RenderedHTMLCommon tbody tr:nth-child(odd),
 div.rendered_html tbody tr:nth-child(odd) {
   background: #f5f5f5;
 }
+.jp-RenderedHTMLCommon tbody tr:hover,
 div.rendered_html tbody tr:hover {
   background: rgba(66, 165, 245, 0.2);
 }
@@ -570,8 +595,8 @@ div.rendered_html tbody tr:hover {
 </div>
 <section id="HRRR-Data">
 <h1>HRRR Data<a class="headerlink" href="#HRRR-Data" title="Permalink to this headline">#</a></h1>
-<p>There are different products available on the cloud.</p>
-<div class="nbinput docutils container">
+<p>This tutorial shows you how to download HRRR data from Amazon (and other sources) with the Herbie Python package.</p>
+<div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
 </div>
@@ -583,14 +608,6 @@ div.rendered_html tbody tr:hover {
 <span class="kn">import</span> <span class="nn">cartopy.crs</span> <span class="k">as</span> <span class="nn">ccrs</span>
 <br/></pre></div>
 </div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-🥳 Herbie loaded your custom templates.
-</pre></div></div>
 </div>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
@@ -605,7 +622,7 @@ div.rendered_html tbody tr:hover {
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-🏋🏻‍♂️ Found <span class="ansi-green-fg">2021-Jul-19 00:00 UTC F00</span> [HRRR] [product=sfc] GRIB2 file from <span class="ansi-red-fg">aws</span> and index file from <span class="ansi-red-fg">aws</span>.
+✅ Found ┊ model=hrrr ┊ product=sfc ┊ <span style="color: rgb(41,130,13)">2021-Jul-19 00:00 UTC</span><span class="ansi-green-intense-fg"> F00</span> ┊ <span style="color: rgb(255,153,0)">GRIB2 @ aws</span> ┊ <span style="color: rgb(255,153,0)">IDX @ aws</span>
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
@@ -616,6 +633,23 @@ div.rendered_html tbody tr:hover {
 <span class="n">ds</span>
 </pre></div>
 </div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+👨🏻‍🏭 Created directory: [C:\Users\blayl_depgywe\data\hrrr\20210719]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+C:\Users\blayl_depgywe\BB_python\Herbie\herbie\archive.py:980: UserWarning: sorry, on windows I couldn&#39;t remove the file.
+  warnings.warn(&#34;sorry, on windows I couldn&#39;t remove the file.&#34;)
+</pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
@@ -997,8 +1031,8 @@ Attributes:
     product:                 sfc
     description:             High-Resolution Rapid Refresh - CONUS
     remote_grib:             https://noaa-hrrr-bdp-pds.s3.amazonaws.com/hrrr....
-    local_grib:              /p/cwfs/blaylock/data/hrrr/20210719/subset_b7103...
-    searchString:            TMP:2 m above</pre><div class='xr-wrap' style='display:none'><div class='xr-header'><div class='xr-obj-type'>xarray.Dataset</div></div><ul class='xr-sections'><li class='xr-section-item'><input id='section-039db384-1da2-4c7f-9adc-70aa29c78510' class='xr-section-summary-in' type='checkbox' disabled ><label for='section-039db384-1da2-4c7f-9adc-70aa29c78510' class='xr-section-summary'  title='Expand/collapse section'>Dimensions:</label><div class='xr-section-inline-details'><ul class='xr-dim-list'><li><span>y</span>: 1059</li><li><span>x</span>: 1799</li></ul></div><div class='xr-section-details'></div></li><li class='xr-section-item'><input id='section-9422b762-fc6b-459e-a45b-d126f1aa55d4' class='xr-section-summary-in' type='checkbox'  checked><label for='section-9422b762-fc6b-459e-a45b-d126f1aa55d4' class='xr-section-summary' >Coordinates: <span>(6)</span></label><div class='xr-section-inline-details'></div><div class='xr-section-details'><ul class='xr-var-list'><li class='xr-var-item'><div class='xr-var-name'><span>time</span></div><div class='xr-var-dims'>()</div><div class='xr-var-dtype'>datetime64[ns]</div><div class='xr-var-preview xr-preview'>2021-07-19</div><input id='attrs-0220d968-073a-4ba4-a395-1d196b5efe8a' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-0220d968-073a-4ba4-a395-1d196b5efe8a' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-49799b7b-4af5-464d-91f6-90be88e4efca' class='xr-var-data-in' type='checkbox'><label for='data-49799b7b-4af5-464d-91f6-90be88e4efca' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>long_name :</span></dt><dd>initial time of forecast</dd><dt><span>standard_name :</span></dt><dd>forecast_reference_time</dd></dl></div><div class='xr-var-data'><pre>array(&#x27;2021-07-19T00:00:00.000000000&#x27;, dtype=&#x27;datetime64[ns]&#x27;)</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span>step</span></div><div class='xr-var-dims'>()</div><div class='xr-var-dtype'>timedelta64[ns]</div><div class='xr-var-preview xr-preview'>00:00:00</div><input id='attrs-1b4aabba-302d-4c81-a76e-a910b52f3efa' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-1b4aabba-302d-4c81-a76e-a910b52f3efa' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-120816cc-a975-42bf-baa0-eec667f978c9' class='xr-var-data-in' type='checkbox'><label for='data-120816cc-a975-42bf-baa0-eec667f978c9' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>long_name :</span></dt><dd>time since forecast_reference_time</dd><dt><span>standard_name :</span></dt><dd>forecast_period</dd></dl></div><div class='xr-var-data'><pre>array(0, dtype=&#x27;timedelta64[ns]&#x27;)</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span>heightAboveGround</span></div><div class='xr-var-dims'>()</div><div class='xr-var-dtype'>float64</div><div class='xr-var-preview xr-preview'>2.0</div><input id='attrs-c10eb426-a017-4722-a183-9a05ea295b94' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-c10eb426-a017-4722-a183-9a05ea295b94' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-319d57a5-2327-4764-9acf-e7f237ef2b22' class='xr-var-data-in' type='checkbox'><label for='data-319d57a5-2327-4764-9acf-e7f237ef2b22' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>long_name :</span></dt><dd>height above the surface</dd><dt><span>units :</span></dt><dd>m</dd><dt><span>positive :</span></dt><dd>up</dd><dt><span>standard_name :</span></dt><dd>height</dd></dl></div><div class='xr-var-data'><pre>array(2.)</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span>latitude</span></div><div class='xr-var-dims'>(y, x)</div><div class='xr-var-dtype'>float64</div><div class='xr-var-preview xr-preview'>21.14 21.15 21.15 ... 47.85 47.84</div><input id='attrs-763a367b-26b7-428c-be13-2b30433a61d7' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-763a367b-26b7-428c-be13-2b30433a61d7' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-2e229c37-789a-4140-8959-f67ac4dc4809' class='xr-var-data-in' type='checkbox'><label for='data-2e229c37-789a-4140-8959-f67ac4dc4809' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>units :</span></dt><dd>degrees_north</dd><dt><span>standard_name :</span></dt><dd>latitude</dd><dt><span>long_name :</span></dt><dd>latitude</dd></dl></div><div class='xr-var-data'><pre>array([[21.138123  , 21.14511004, 21.1520901 , ..., 21.1545089 ,
+    local_grib:              C:\Users\blayl_depgywe\data\hrrr\20210719\subset...
+    searchString:            TMP:2 m above</pre><div class='xr-wrap' style='display:none'><div class='xr-header'><div class='xr-obj-type'>xarray.Dataset</div></div><ul class='xr-sections'><li class='xr-section-item'><input id='section-07124cf8-beab-417b-9e9e-d86299be9d81' class='xr-section-summary-in' type='checkbox' disabled ><label for='section-07124cf8-beab-417b-9e9e-d86299be9d81' class='xr-section-summary'  title='Expand/collapse section'>Dimensions:</label><div class='xr-section-inline-details'><ul class='xr-dim-list'><li><span>y</span>: 1059</li><li><span>x</span>: 1799</li></ul></div><div class='xr-section-details'></div></li><li class='xr-section-item'><input id='section-a0afd9a2-666f-4b62-b038-c81e0ac21a59' class='xr-section-summary-in' type='checkbox'  checked><label for='section-a0afd9a2-666f-4b62-b038-c81e0ac21a59' class='xr-section-summary' >Coordinates: <span>(6)</span></label><div class='xr-section-inline-details'></div><div class='xr-section-details'><ul class='xr-var-list'><li class='xr-var-item'><div class='xr-var-name'><span>time</span></div><div class='xr-var-dims'>()</div><div class='xr-var-dtype'>datetime64[ns]</div><div class='xr-var-preview xr-preview'>2021-07-19</div><input id='attrs-287d8c6c-3901-45ef-98a7-2203fad96f0c' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-287d8c6c-3901-45ef-98a7-2203fad96f0c' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-d254da76-1c60-4a5c-965e-cd40f5288ddf' class='xr-var-data-in' type='checkbox'><label for='data-d254da76-1c60-4a5c-965e-cd40f5288ddf' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>long_name :</span></dt><dd>initial time of forecast</dd><dt><span>standard_name :</span></dt><dd>forecast_reference_time</dd></dl></div><div class='xr-var-data'><pre>array(&#x27;2021-07-19T00:00:00.000000000&#x27;, dtype=&#x27;datetime64[ns]&#x27;)</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span>step</span></div><div class='xr-var-dims'>()</div><div class='xr-var-dtype'>timedelta64[ns]</div><div class='xr-var-preview xr-preview'>00:00:00</div><input id='attrs-b93bbaa2-1c5f-4056-888e-13b0f52298d5' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-b93bbaa2-1c5f-4056-888e-13b0f52298d5' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-cbb759a8-0e60-4b15-a6aa-ae0882ba53b6' class='xr-var-data-in' type='checkbox'><label for='data-cbb759a8-0e60-4b15-a6aa-ae0882ba53b6' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>long_name :</span></dt><dd>time since forecast_reference_time</dd><dt><span>standard_name :</span></dt><dd>forecast_period</dd></dl></div><div class='xr-var-data'><pre>array(0, dtype=&#x27;timedelta64[ns]&#x27;)</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span>heightAboveGround</span></div><div class='xr-var-dims'>()</div><div class='xr-var-dtype'>float64</div><div class='xr-var-preview xr-preview'>2.0</div><input id='attrs-31f67acf-7d8e-4d89-8995-346432342888' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-31f67acf-7d8e-4d89-8995-346432342888' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-e48da5d0-46b9-41b0-864e-c05eb5791c0f' class='xr-var-data-in' type='checkbox'><label for='data-e48da5d0-46b9-41b0-864e-c05eb5791c0f' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>long_name :</span></dt><dd>height above the surface</dd><dt><span>units :</span></dt><dd>m</dd><dt><span>positive :</span></dt><dd>up</dd><dt><span>standard_name :</span></dt><dd>height</dd></dl></div><div class='xr-var-data'><pre>array(2.)</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span>latitude</span></div><div class='xr-var-dims'>(y, x)</div><div class='xr-var-dtype'>float64</div><div class='xr-var-preview xr-preview'>21.14 21.15 21.15 ... 47.85 47.84</div><input id='attrs-dc892cda-034f-4a59-9e64-af511d953a36' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-dc892cda-034f-4a59-9e64-af511d953a36' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-9ca27703-275b-4266-a005-da8505c0bb29' class='xr-var-data-in' type='checkbox'><label for='data-9ca27703-275b-4266-a005-da8505c0bb29' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>units :</span></dt><dd>degrees_north</dd><dt><span>standard_name :</span></dt><dd>latitude</dd><dt><span>long_name :</span></dt><dd>latitude</dd></dl></div><div class='xr-var-data'><pre>array([[21.138123  , 21.14511004, 21.1520901 , ..., 21.1545089 ,
         21.14753125, 21.14054663],
        [21.16299459, 21.1699845 , 21.17696744, ..., 21.17938723,
         21.1724067 , 21.16541921],
@@ -1010,7 +1044,7 @@ Attributes:
        [47.81409316, 47.82438621, 47.8346692 , ..., 47.83823259,
         47.8279531 , 47.81766354],
        [47.8386235 , 47.84891986, 47.85920615, ..., 47.86277069,
-        47.85248789, 47.84219502]])</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span>longitude</span></div><div class='xr-var-dims'>(y, x)</div><div class='xr-var-dtype'>float64</div><div class='xr-var-preview xr-preview'>237.3 237.3 237.3 ... 299.0 299.1</div><input id='attrs-1c1320fa-0bcb-47d5-8d29-258c39dc81ba' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-1c1320fa-0bcb-47d5-8d29-258c39dc81ba' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-e23ae7f1-a222-4f99-8228-50572b408b2e' class='xr-var-data-in' type='checkbox'><label for='data-e23ae7f1-a222-4f99-8228-50572b408b2e' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>units :</span></dt><dd>degrees_east</dd><dt><span>standard_name :</span></dt><dd>longitude</dd><dt><span>long_name :</span></dt><dd>longitude</dd></dl></div><div class='xr-var-data'><pre>array([[237.280472  , 237.30713868, 237.3338097 , ..., 287.6569408 ,
+        47.85248789, 47.84219502]])</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span>longitude</span></div><div class='xr-var-dims'>(y, x)</div><div class='xr-var-dtype'>float64</div><div class='xr-var-preview xr-preview'>237.3 237.3 237.3 ... 299.0 299.1</div><input id='attrs-d4346fb1-e03d-4547-857a-73ae3b3f79e8' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-d4346fb1-e03d-4547-857a-73ae3b3f79e8' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-c927fa01-54b8-4145-a02a-ee6c1eef4749' class='xr-var-data-in' type='checkbox'><label for='data-c927fa01-54b8-4145-a02a-ee6c1eef4749' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>units :</span></dt><dd>degrees_east</dd><dt><span>standard_name :</span></dt><dd>longitude</dd><dt><span>long_name :</span></dt><dd>longitude</dd></dl></div><div class='xr-var-data'><pre>array([[237.280472  , 237.30713868, 237.3338097 , ..., 287.6569408 ,
         287.68361332, 287.71028151],
        [237.27297501, 237.29964881, 237.32632695, ..., 287.66442108,
         287.69110073, 287.71777603],
@@ -1022,7 +1056,7 @@ Attributes:
        [225.91986142, 225.95639874, 225.99294822, ..., 298.99437498,
         299.03092868, 299.06747022],
        [225.90452027, 225.94106954, 225.97763099, ..., 299.00968806,
-        299.04625373, 299.08280723]])</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span>valid_time</span></div><div class='xr-var-dims'>()</div><div class='xr-var-dtype'>datetime64[ns]</div><div class='xr-var-preview xr-preview'>2021-07-19</div><input id='attrs-a03d9c4e-408f-4d57-88b9-3468698e164b' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-a03d9c4e-408f-4d57-88b9-3468698e164b' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-00a1da8c-cfc8-460c-a1de-2fe27464d9d7' class='xr-var-data-in' type='checkbox'><label for='data-00a1da8c-cfc8-460c-a1de-2fe27464d9d7' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>standard_name :</span></dt><dd>time</dd><dt><span>long_name :</span></dt><dd>time</dd></dl></div><div class='xr-var-data'><pre>array(&#x27;2021-07-19T00:00:00.000000000&#x27;, dtype=&#x27;datetime64[ns]&#x27;)</pre></div></li></ul></div></li><li class='xr-section-item'><input id='section-cbd35279-d34d-41a1-a19b-119eafc75849' class='xr-section-summary-in' type='checkbox'  checked><label for='section-cbd35279-d34d-41a1-a19b-119eafc75849' class='xr-section-summary' >Data variables: <span>(2)</span></label><div class='xr-section-inline-details'></div><div class='xr-section-details'><ul class='xr-var-list'><li class='xr-var-item'><div class='xr-var-name'><span>t2m</span></div><div class='xr-var-dims'>(y, x)</div><div class='xr-var-dtype'>float32</div><div class='xr-var-preview xr-preview'>295.3 295.3 295.3 ... 287.7 287.6</div><input id='attrs-02f36e62-672d-4f87-997d-ae9fd62fd3b1' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-02f36e62-672d-4f87-997d-ae9fd62fd3b1' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-f61196c4-b105-4c1f-b412-4fae9580f1cd' class='xr-var-data-in' type='checkbox'><label for='data-f61196c4-b105-4c1f-b412-4fae9580f1cd' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>GRIB_paramId :</span></dt><dd>167</dd><dt><span>GRIB_dataType :</span></dt><dd>fc</dd><dt><span>GRIB_numberOfPoints :</span></dt><dd>1905141</dd><dt><span>GRIB_typeOfLevel :</span></dt><dd>heightAboveGround</dd><dt><span>GRIB_stepUnits :</span></dt><dd>1</dd><dt><span>GRIB_stepType :</span></dt><dd>instant</dd><dt><span>GRIB_gridType :</span></dt><dd>lambert</dd><dt><span>GRIB_DxInMetres :</span></dt><dd>3000.0</dd><dt><span>GRIB_DyInMetres :</span></dt><dd>3000.0</dd><dt><span>GRIB_LaDInDegrees :</span></dt><dd>38.5</dd><dt><span>GRIB_Latin1InDegrees :</span></dt><dd>38.5</dd><dt><span>GRIB_Latin2InDegrees :</span></dt><dd>38.5</dd><dt><span>GRIB_LoVInDegrees :</span></dt><dd>262.5</dd><dt><span>GRIB_NV :</span></dt><dd>0</dd><dt><span>GRIB_Nx :</span></dt><dd>1799</dd><dt><span>GRIB_Ny :</span></dt><dd>1059</dd><dt><span>GRIB_cfName :</span></dt><dd>air_temperature</dd><dt><span>GRIB_cfVarName :</span></dt><dd>t2m</dd><dt><span>GRIB_gridDefinitionDescription :</span></dt><dd>Lambert Conformal can be secant or tangent, conical or bipolar</dd><dt><span>GRIB_iScansNegatively :</span></dt><dd>0</dd><dt><span>GRIB_jPointsAreConsecutive :</span></dt><dd>0</dd><dt><span>GRIB_jScansPositively :</span></dt><dd>1</dd><dt><span>GRIB_latitudeOfFirstGridPointInDegrees :</span></dt><dd>21.138123</dd><dt><span>GRIB_latitudeOfSouthernPoleInDegrees :</span></dt><dd>0.0</dd><dt><span>GRIB_longitudeOfFirstGridPointInDegrees :</span></dt><dd>237.280472</dd><dt><span>GRIB_longitudeOfSouthernPoleInDegrees :</span></dt><dd>0.0</dd><dt><span>GRIB_missingValue :</span></dt><dd>9999</dd><dt><span>GRIB_name :</span></dt><dd>2 metre temperature</dd><dt><span>GRIB_parameterName :</span></dt><dd>Temperature </dd><dt><span>GRIB_parameterUnits :</span></dt><dd>K</dd><dt><span>GRIB_shortName :</span></dt><dd>2t</dd><dt><span>GRIB_stepRange :</span></dt><dd>0</dd><dt><span>GRIB_units :</span></dt><dd>K</dd><dt><span>long_name :</span></dt><dd>2 metre temperature</dd><dt><span>units :</span></dt><dd>K</dd><dt><span>standard_name :</span></dt><dd>air_temperature</dd><dt><span>grid_mapping :</span></dt><dd>gribfile_projection</dd></dl></div><div class='xr-var-data'><pre>array([[295.33215, 295.33215, 295.33215, ..., 301.64465, 301.64465,
+        299.04625373, 299.08280723]])</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span>valid_time</span></div><div class='xr-var-dims'>()</div><div class='xr-var-dtype'>datetime64[ns]</div><div class='xr-var-preview xr-preview'>2021-07-19</div><input id='attrs-8d19fb27-f75b-4d3b-b617-244a65422848' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-8d19fb27-f75b-4d3b-b617-244a65422848' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-f76c0b49-2c6a-4a93-b303-2209dacb0380' class='xr-var-data-in' type='checkbox'><label for='data-f76c0b49-2c6a-4a93-b303-2209dacb0380' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>standard_name :</span></dt><dd>time</dd><dt><span>long_name :</span></dt><dd>time</dd></dl></div><div class='xr-var-data'><pre>array(&#x27;2021-07-19T00:00:00.000000000&#x27;, dtype=&#x27;datetime64[ns]&#x27;)</pre></div></li></ul></div></li><li class='xr-section-item'><input id='section-32b16ddf-5ee9-4a4e-84d2-9d76822a83c8' class='xr-section-summary-in' type='checkbox'  checked><label for='section-32b16ddf-5ee9-4a4e-84d2-9d76822a83c8' class='xr-section-summary' >Data variables: <span>(2)</span></label><div class='xr-section-inline-details'></div><div class='xr-section-details'><ul class='xr-var-list'><li class='xr-var-item'><div class='xr-var-name'><span>t2m</span></div><div class='xr-var-dims'>(y, x)</div><div class='xr-var-dtype'>float32</div><div class='xr-var-preview xr-preview'>295.3 295.3 295.3 ... 287.7 287.6</div><input id='attrs-aaa1555b-419a-417f-aa7e-4a7bb08ac25d' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-aaa1555b-419a-417f-aa7e-4a7bb08ac25d' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-54feed1c-2599-4c7d-9169-66f518f73407' class='xr-var-data-in' type='checkbox'><label for='data-54feed1c-2599-4c7d-9169-66f518f73407' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>GRIB_paramId :</span></dt><dd>167</dd><dt><span>GRIB_dataType :</span></dt><dd>fc</dd><dt><span>GRIB_numberOfPoints :</span></dt><dd>1905141</dd><dt><span>GRIB_typeOfLevel :</span></dt><dd>heightAboveGround</dd><dt><span>GRIB_stepUnits :</span></dt><dd>1</dd><dt><span>GRIB_stepType :</span></dt><dd>instant</dd><dt><span>GRIB_gridType :</span></dt><dd>lambert</dd><dt><span>GRIB_DxInMetres :</span></dt><dd>3000.0</dd><dt><span>GRIB_DyInMetres :</span></dt><dd>3000.0</dd><dt><span>GRIB_LaDInDegrees :</span></dt><dd>38.5</dd><dt><span>GRIB_Latin1InDegrees :</span></dt><dd>38.5</dd><dt><span>GRIB_Latin2InDegrees :</span></dt><dd>38.5</dd><dt><span>GRIB_LoVInDegrees :</span></dt><dd>262.5</dd><dt><span>GRIB_NV :</span></dt><dd>0</dd><dt><span>GRIB_Nx :</span></dt><dd>1799</dd><dt><span>GRIB_Ny :</span></dt><dd>1059</dd><dt><span>GRIB_cfName :</span></dt><dd>air_temperature</dd><dt><span>GRIB_cfVarName :</span></dt><dd>t2m</dd><dt><span>GRIB_gridDefinitionDescription :</span></dt><dd>Lambert Conformal can be secant or tangent, conical or bipolar</dd><dt><span>GRIB_iScansNegatively :</span></dt><dd>0</dd><dt><span>GRIB_jPointsAreConsecutive :</span></dt><dd>0</dd><dt><span>GRIB_jScansPositively :</span></dt><dd>1</dd><dt><span>GRIB_latitudeOfFirstGridPointInDegrees :</span></dt><dd>21.138123</dd><dt><span>GRIB_latitudeOfSouthernPoleInDegrees :</span></dt><dd>0.0</dd><dt><span>GRIB_longitudeOfFirstGridPointInDegrees :</span></dt><dd>237.280472</dd><dt><span>GRIB_longitudeOfSouthernPoleInDegrees :</span></dt><dd>0.0</dd><dt><span>GRIB_missingValue :</span></dt><dd>9999</dd><dt><span>GRIB_name :</span></dt><dd>2 metre temperature</dd><dt><span>GRIB_parameterName :</span></dt><dd>Temperature</dd><dt><span>GRIB_parameterUnits :</span></dt><dd>K</dd><dt><span>GRIB_shortName :</span></dt><dd>2t</dd><dt><span>GRIB_stepRange :</span></dt><dd>0</dd><dt><span>GRIB_units :</span></dt><dd>K</dd><dt><span>long_name :</span></dt><dd>2 metre temperature</dd><dt><span>units :</span></dt><dd>K</dd><dt><span>standard_name :</span></dt><dd>air_temperature</dd><dt><span>grid_mapping :</span></dt><dd>gribfile_projection</dd></dl></div><div class='xr-var-data'><pre>array([[295.33215, 295.33215, 295.33215, ..., 301.64465, 301.64465,
         301.64465],
        [295.33215, 295.33215, 295.33215, ..., 301.64465, 301.64465,
         301.64465],
@@ -1034,7 +1068,7 @@ Attributes:
        [287.26965, 287.33215, 287.33215, ..., 287.83215, 287.76965,
         287.70715],
        [287.26965, 287.26965, 287.26965, ..., 287.76965, 287.70715,
-        287.64465]], dtype=float32)</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span>gribfile_projection</span></div><div class='xr-var-dims'>()</div><div class='xr-var-dtype'>object</div><div class='xr-var-preview xr-preview'>None</div><input id='attrs-6dba0889-9585-4426-842d-ee1544d83afc' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-6dba0889-9585-4426-842d-ee1544d83afc' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-7bfd0925-7f82-4dd1-a8ff-828895507318' class='xr-var-data-in' type='checkbox'><label for='data-7bfd0925-7f82-4dd1-a8ff-828895507318' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>crs_wkt :</span></dt><dd>PROJCRS[&quot;unknown&quot;,BASEGEOGCRS[&quot;unknown&quot;,DATUM[&quot;unknown&quot;,ELLIPSOID[&quot;unknown&quot;,6371229,0,LENGTHUNIT[&quot;metre&quot;,1,ID[&quot;EPSG&quot;,9001]]]],PRIMEM[&quot;Greenwich&quot;,0,ANGLEUNIT[&quot;degree&quot;,0.0174532925199433],ID[&quot;EPSG&quot;,8901]]],CONVERSION[&quot;unknown&quot;,METHOD[&quot;Lambert Conic Conformal (2SP)&quot;,ID[&quot;EPSG&quot;,9802]],PARAMETER[&quot;Latitude of false origin&quot;,38.5,ANGLEUNIT[&quot;degree&quot;,0.0174532925199433],ID[&quot;EPSG&quot;,8821]],PARAMETER[&quot;Longitude of false origin&quot;,262.5,ANGLEUNIT[&quot;degree&quot;,0.0174532925199433],ID[&quot;EPSG&quot;,8822]],PARAMETER[&quot;Latitude of 1st standard parallel&quot;,38.5,ANGLEUNIT[&quot;degree&quot;,0.0174532925199433],ID[&quot;EPSG&quot;,8823]],PARAMETER[&quot;Latitude of 2nd standard parallel&quot;,38.5,ANGLEUNIT[&quot;degree&quot;,0.0174532925199433],ID[&quot;EPSG&quot;,8824]],PARAMETER[&quot;Easting at false origin&quot;,0,LENGTHUNIT[&quot;metre&quot;,1],ID[&quot;EPSG&quot;,8826]],PARAMETER[&quot;Northing at false origin&quot;,0,LENGTHUNIT[&quot;metre&quot;,1],ID[&quot;EPSG&quot;,8827]]],CS[Cartesian,2],AXIS[&quot;(E)&quot;,east,ORDER[1],LENGTHUNIT[&quot;metre&quot;,1,ID[&quot;EPSG&quot;,9001]]],AXIS[&quot;(N)&quot;,north,ORDER[2],LENGTHUNIT[&quot;metre&quot;,1,ID[&quot;EPSG&quot;,9001]]]]</dd><dt><span>semi_major_axis :</span></dt><dd>6371229.0</dd><dt><span>semi_minor_axis :</span></dt><dd>6371229.0</dd><dt><span>inverse_flattening :</span></dt><dd>0.0</dd><dt><span>reference_ellipsoid_name :</span></dt><dd>unknown</dd><dt><span>longitude_of_prime_meridian :</span></dt><dd>0.0</dd><dt><span>prime_meridian_name :</span></dt><dd>Greenwich</dd><dt><span>geographic_crs_name :</span></dt><dd>unknown</dd><dt><span>horizontal_datum_name :</span></dt><dd>unknown</dd><dt><span>projected_crs_name :</span></dt><dd>unknown</dd><dt><span>grid_mapping_name :</span></dt><dd>lambert_conformal_conic</dd><dt><span>standard_parallel :</span></dt><dd>(38.5, 38.5)</dd><dt><span>latitude_of_projection_origin :</span></dt><dd>38.5</dd><dt><span>longitude_of_central_meridian :</span></dt><dd>262.5</dd><dt><span>false_easting :</span></dt><dd>0.0</dd><dt><span>false_northing :</span></dt><dd>0.0</dd><dt><span>long_name :</span></dt><dd>HRRR model grid projection</dd></dl></div><div class='xr-var-data'><pre>array(None, dtype=object)</pre></div></li></ul></div></li><li class='xr-section-item'><input id='section-a9c63f98-32a3-4014-9bec-e82e00653f39' class='xr-section-summary-in' type='checkbox'  ><label for='section-a9c63f98-32a3-4014-9bec-e82e00653f39' class='xr-section-summary' >Attributes: <span>(12)</span></label><div class='xr-section-inline-details'></div><div class='xr-section-details'><dl class='xr-attrs'><dt><span>GRIB_edition :</span></dt><dd>2</dd><dt><span>GRIB_centre :</span></dt><dd>kwbc</dd><dt><span>GRIB_centreDescription :</span></dt><dd>US National Weather Service - NCEP </dd><dt><span>GRIB_subCentre :</span></dt><dd>0</dd><dt><span>Conventions :</span></dt><dd>CF-1.7</dd><dt><span>institution :</span></dt><dd>US National Weather Service - NCEP </dd><dt><span>model :</span></dt><dd>hrrr</dd><dt><span>product :</span></dt><dd>sfc</dd><dt><span>description :</span></dt><dd>High-Resolution Rapid Refresh - CONUS</dd><dt><span>remote_grib :</span></dt><dd>https://noaa-hrrr-bdp-pds.s3.amazonaws.com/hrrr.20210719/conus/hrrr.t00z.wrfsfcf00.grib2</dd><dt><span>local_grib :</span></dt><dd>/p/cwfs/blaylock/data/hrrr/20210719/subset_b7103ca278a75cad8f7d065acda0c2e80da0b7dc__hrrr.t00z.wrfsfcf00.grib2</dd><dt><span>searchString :</span></dt><dd>TMP:2 m above</dd></dl></div></li></ul></div></div></div>
+        287.64465]], dtype=float32)</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span>gribfile_projection</span></div><div class='xr-var-dims'>()</div><div class='xr-var-dtype'>object</div><div class='xr-var-preview xr-preview'>None</div><input id='attrs-d36568ab-5731-4db1-b040-c4a945455f48' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-d36568ab-5731-4db1-b040-c4a945455f48' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-1d9a4bd8-950e-4b4c-9834-ffa49dc0b597' class='xr-var-data-in' type='checkbox'><label for='data-1d9a4bd8-950e-4b4c-9834-ffa49dc0b597' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>crs_wkt :</span></dt><dd>PROJCRS[&quot;unknown&quot;,BASEGEOGCRS[&quot;unknown&quot;,DATUM[&quot;unknown&quot;,ELLIPSOID[&quot;unknown&quot;,6371229,0,LENGTHUNIT[&quot;metre&quot;,1,ID[&quot;EPSG&quot;,9001]]]],PRIMEM[&quot;Greenwich&quot;,0,ANGLEUNIT[&quot;degree&quot;,0.0174532925199433],ID[&quot;EPSG&quot;,8901]]],CONVERSION[&quot;unknown&quot;,METHOD[&quot;Lambert Conic Conformal (2SP)&quot;,ID[&quot;EPSG&quot;,9802]],PARAMETER[&quot;Latitude of false origin&quot;,38.5,ANGLEUNIT[&quot;degree&quot;,0.0174532925199433],ID[&quot;EPSG&quot;,8821]],PARAMETER[&quot;Longitude of false origin&quot;,262.5,ANGLEUNIT[&quot;degree&quot;,0.0174532925199433],ID[&quot;EPSG&quot;,8822]],PARAMETER[&quot;Latitude of 1st standard parallel&quot;,38.5,ANGLEUNIT[&quot;degree&quot;,0.0174532925199433],ID[&quot;EPSG&quot;,8823]],PARAMETER[&quot;Latitude of 2nd standard parallel&quot;,38.5,ANGLEUNIT[&quot;degree&quot;,0.0174532925199433],ID[&quot;EPSG&quot;,8824]],PARAMETER[&quot;Easting at false origin&quot;,0,LENGTHUNIT[&quot;metre&quot;,1],ID[&quot;EPSG&quot;,8826]],PARAMETER[&quot;Northing at false origin&quot;,0,LENGTHUNIT[&quot;metre&quot;,1],ID[&quot;EPSG&quot;,8827]]],CS[Cartesian,2],AXIS[&quot;(E)&quot;,east,ORDER[1],LENGTHUNIT[&quot;metre&quot;,1,ID[&quot;EPSG&quot;,9001]]],AXIS[&quot;(N)&quot;,north,ORDER[2],LENGTHUNIT[&quot;metre&quot;,1,ID[&quot;EPSG&quot;,9001]]]]</dd><dt><span>semi_major_axis :</span></dt><dd>6371229.0</dd><dt><span>semi_minor_axis :</span></dt><dd>6371229.0</dd><dt><span>inverse_flattening :</span></dt><dd>0.0</dd><dt><span>reference_ellipsoid_name :</span></dt><dd>unknown</dd><dt><span>longitude_of_prime_meridian :</span></dt><dd>0.0</dd><dt><span>prime_meridian_name :</span></dt><dd>Greenwich</dd><dt><span>geographic_crs_name :</span></dt><dd>unknown</dd><dt><span>horizontal_datum_name :</span></dt><dd>unknown</dd><dt><span>projected_crs_name :</span></dt><dd>unknown</dd><dt><span>grid_mapping_name :</span></dt><dd>lambert_conformal_conic</dd><dt><span>standard_parallel :</span></dt><dd>(38.5, 38.5)</dd><dt><span>latitude_of_projection_origin :</span></dt><dd>38.5</dd><dt><span>longitude_of_central_meridian :</span></dt><dd>262.5</dd><dt><span>false_easting :</span></dt><dd>0.0</dd><dt><span>false_northing :</span></dt><dd>0.0</dd><dt><span>long_name :</span></dt><dd>HRRR model grid projection</dd></dl></div><div class='xr-var-data'><pre>array(None, dtype=object)</pre></div></li></ul></div></li><li class='xr-section-item'><input id='section-3e685cdf-29e2-4a51-8d4a-601b910ea94b' class='xr-section-summary-in' type='checkbox'  ><label for='section-3e685cdf-29e2-4a51-8d4a-601b910ea94b' class='xr-section-summary' >Attributes: <span>(12)</span></label><div class='xr-section-inline-details'></div><div class='xr-section-details'><dl class='xr-attrs'><dt><span>GRIB_edition :</span></dt><dd>2</dd><dt><span>GRIB_centre :</span></dt><dd>kwbc</dd><dt><span>GRIB_centreDescription :</span></dt><dd>US National Weather Service - NCEP</dd><dt><span>GRIB_subCentre :</span></dt><dd>0</dd><dt><span>Conventions :</span></dt><dd>CF-1.7</dd><dt><span>institution :</span></dt><dd>US National Weather Service - NCEP</dd><dt><span>model :</span></dt><dd>hrrr</dd><dt><span>product :</span></dt><dd>sfc</dd><dt><span>description :</span></dt><dd>High-Resolution Rapid Refresh - CONUS</dd><dt><span>remote_grib :</span></dt><dd>https://noaa-hrrr-bdp-pds.s3.amazonaws.com/hrrr.20210719/conus/hrrr.t00z.wrfsfcf00.grib2</dd><dt><span>local_grib :</span></dt><dd>C:\Users\blayl_depgywe\data\hrrr\20210719\subset_b7103ca278a75cad8f7d065acda0c2e80da0b7dc__hrrr.t00z.wrfsfcf00.grib2</dd><dt><span>searchString :</span></dt><dd>TMP:2 m above</dd></dl></div></li></ul></div></div></div>
 </div>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
@@ -1057,15 +1091,6 @@ Attributes:
 </div>
 </div>
 <div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-/p/home/blaylock/anaconda3/envs/herbie/lib/python3.9/site-packages/cartopy/mpl/geoaxes.py:1797: MatplotlibDeprecationWarning: shading=&#39;flat&#39; when X and Y have the same dimensions as C is deprecated since 3.3.  Either specify the corners of the quadrilaterals with X and Y, or pass shading=&#39;auto&#39;, &#39;nearest&#39; or &#39;gouraud&#39;, or set rcParams[&#39;pcolor.shading&#39;].  This will become an error two minor releases later.
-  result = matplotlib.axes.Axes.pcolormesh(self, *args, **kwargs)
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
 </pre></div>
 </div>
@@ -1078,7 +1103,7 @@ Text(1.0, 1.0, &#39;2 metre temperature&#39;)
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../../_images/user_guide_notebooks_data_hrrr_4_2.png" src="../../_images/user_guide_notebooks_data_hrrr_4_2.png" />
+<img alt="../../_images/user_guide_notebooks_data_hrrr_4_1.png" src="../../_images/user_guide_notebooks_data_hrrr_4_1.png" />
 </div>
 </div>
 <div class="nbinput nblast docutils container">
@@ -1092,51 +1117,55 @@ Text(1.0, 1.0, &#39;2 metre temperature&#39;)
 </section>
 
 
-              </div>
+              </article>
               
-              
-              <!-- Previous / next buttons -->
-<div class='prev-next-area'>
-    <a class='left-prev' id="prev-link" href="tutorial.html" title="previous page">
-        <i class="fas fa-angle-left"></i>
-        <div class="prev-next-info">
-            <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title">Quick Tutorial</p>
-        </div>
-    </a>
-    <a class='right-next' id="next-link" href="data_hrrrak.html" title="next page">
-    <div class="prev-next-info">
-        <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">HRRR-Alaska Data</p>
-    </div>
-    <i class="fas fa-angle-right"></i>
-    </a>
-</div>
-              
-          </main>
-          
 
+              
+              <footer class="bd-footer-article">
+                  <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+  <a class='left-prev' id="prev-link" href="tutorial.html" title="previous page">
+      <i class="fas fa-angle-left"></i>
+      <div class="prev-next-info">
+          <p class="prev-next-subtitle">previous</p>
+          <p class="prev-next-title">Quick Tutorial</p>
+      </div>
+  </a>
+  <a class='right-next' id="next-link" href="data_hrrrak.html" title="next page">
+  <div class="prev-next-info">
+      <p class="prev-next-subtitle">next</p>
+      <p class="prev-next-title">HRRR-Alaska Data</p>
+  </div>
+  <i class="fas fa-angle-right"></i>
+  </a>
+</div>
+              </footer>
+              
+          </div>
+          
       </div>
     </div>
+
+  
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
-<footer class="footer mt-5 mt-md-0">
-  <div class="container">
-    
-    <div class="footer-item">
-      <p class="copyright">
-    &copy; Copyright 2022, Brian K. Blaylock.    ♻ Updated: 15:39 UTC 12 May 2022.<br>
+  <script src="../../_static/scripts/pydata-sphinx-theme.js?digest=92025949c220c2e29695"></script>
+
+<footer class="bd-footer"><div class="bd-footer__inner container">
+  
+  <div class="footer-item">
+    <p class="copyright">
+    &copy; Copyright 2022, Brian K. Blaylock.    ♻ Updated: 23:05 UTC 17 Jun 2022.<br>
 </p>
-    </div>
-    
-    <div class="footer-item">
-      <p class="sphinx-version">
+  </div>
+  
+  <div class="footer-item">
+    <p class="sphinx-version">
 Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.5.0.<br>
 </p>
-    </div>
-    
   </div>
+  
+</div>
 </footer>
   </body>
 </html>

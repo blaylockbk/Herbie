@@ -47,8 +47,9 @@ dependencies:
   # -------------
   - sphinx>=4.4.0
   - nbsphinx
+  - nbconvert>=6.5
   - pydata-sphinx-theme # PyData Sphinx Theme (i.e, Numpy, Pandas, MetPy)
-  - sphinx-panels # Add bootstrap elements to Sphinx
+  - sphinx-design
   - recommonmark
   - sphinx-markdown-tables
   - sphinxcontrib-mermaid # For mermaid diagram support

@@ -42,7 +42,7 @@ extensions = [
     "sphinx.ext.autosectionlabel",
     "sphinx.ext.napoleon",
     "sphinx.ext.viewcode",
-    "sphinx_panels",
+    "sphinx_design",
     "autodocsumm",
     "sphinx_markdown_tables",
     "myst_parser",
@@ -98,7 +98,7 @@ html_theme = "pydata_sphinx_theme"
 html_theme_options = {
     "github_url": "https://github.com/blaylockbk/Herbie",
     "twitter_url": "https://twitter.com/blaylockbk",
-    "navbar_end": ["navbar-icon-links.html", "search-field.html"],
+    "navbar_end": ["theme-switcher", "navbar-icon-links.html", "search-field.html"],
     "use_edit_page_button": True,
     "google_analytics_id": "G-PT9LX1B7B8",
     "show_toc_level": 1,
@@ -112,17 +112,20 @@ html_theme_options = {
             "url": "https://blaylockbk.github.io/goes2go/_build/html/",
         },
     ],
+    "logo": {
+        "image_light": "HerbieLogo2_tan_transparent.png",
+        "image_dark": "HerbieLogo2_white_transparent.png",
+    },
 }
 
 html_sidebars = {}
 
-html_logo = "_static/HerbieLogo2_white_transparent.png"
 html_favicon = "_static/wxicon.png"
 
 html_context = {
     "github_user": "blaylockbk",
     "github_repo": "Herbie",
-    "github_version": "master",  # Make changes to the master branch
+    "github_version": "main",  # Make changes to the main branch
     "doc_path": "docs",
 }
 
@@ -134,7 +137,7 @@ html_static_path = ["_static", "../images"]
 fontawesome_included = True
 panels_add_bootstrap_css = False  # False, because pydata theme already loads it
 
-html_css_files = ["brian_style.css"]
+html_css_files = ["css/brian_style.css"]
 
 html_js_files = [
     "https://kit.fontawesome.com/f6cc126dcc.js",
