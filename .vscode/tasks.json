@@ -4,14 +4,27 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "echo",
+            "label": "TEST ECHO",
             "type": "shell",
             "command": "echo Hello, my name is Herbie. I love to race and have a mind of my own.🏎️🏁"
         },
         {
+            "label": "git_commit",
+            "type": "shell",
+            "command": "git add -A && git commit -m 'updates'"
+        }
+        {
             "label": "🌐 build docs",
             "type": "shell",
-            "command": "cd docs && ./remake_docs.sh"
+            "linux": {
+                "command": "cd docs && ./remake_docs.sh"
+            },
+            "windows": {
+                "command": "conda activate herbie && pwd "
+            },
+            "dependsOn": [
+                "git_commit"
+            ]
         },
         {
             "label": "🐍 create conda environment",
