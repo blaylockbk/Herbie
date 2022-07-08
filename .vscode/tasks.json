@@ -1,6 +1,4 @@
 {
-    // See https://go.microsoft.com/fwlink/?LinkId=733558
-    // for the documentation about the tasks.json format
     "version": "2.0.0",
     "tasks": [
         {
@@ -9,7 +7,12 @@
             "command": "echo Hello, my name is Herbie. I love to race and have a mind of my own.🏎️🏁"
         },
         {
-            "label": "git_commit",
+            "label": "apply black",
+            "type": "shell",
+            "command": "black ."
+        }
+        {
+            "label": "git commit",
             "type": "shell",
             "command": "git add -A && git commit -m 'updates'"
         }
@@ -18,8 +21,24 @@
             "type": "shell",
             "command": "conda activate herbie && cd docs && make html && git add -A && git commit -m \"Updated Sphinx Docs\" && git push",
             "dependsOn": [
-                //"git_commit"
+                "apply black",
+                "git commit"
             ]
+        },
+        {
+            "label": "PyPI Publish",
+            "type": "shell",
+            // TODO: use bumpversion
+            "command": "conda activate pypi && python setup.py sdist bdist_wheel && twine check dist/* && twine upload --skip-existing dist/*",
+            "icon": {
+                "id": "cloud-upload",
+                "color": "terminal.ansiCyan"
+            }
+        },
+        {
+            "label": "🚀 Launch JupyterLab",
+            "type": "shell",
+            "command": "eval \"$(conda shell.bash hook)\" && conda activate herbie && jupyter lab --no-browser --port=7793"
         },
         // Manage Conda Environment
         {
@@ -48,21 +67,14 @@
             "command": "eval \"$(conda shell.bash hook)\" && conda activate base && conda env remove --name herbie"
         },
         {
-            "label": "🚀 Launch JupyterLab",
-            "type": "shell",
-            "command": "eval \"$(conda shell.bash hook)\" && conda activate herbie && jupyter lab --no-browser --port=7793"
-        },
-        {
-            // For when conda is out of date
             "label": "🧱 Conda: Update base",
             "type": "shell",
             "command": "conda update -n base -c defaults conda"
         },
         {
-            "label": "publish",
+            "label": "🧼 Conda: Clean unused packages",
             "type": "shell",
-            // TODO: use bumpversion
-            "command": "conda activate pypi && python setup.py sdist bdist_wheel && twine check dist/* && twine upload --skip-existing dist/*"
-        }
+            "command": "conda clean --all --yes"
+        },
     ]
 }
