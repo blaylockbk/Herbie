@@ -14,51 +14,47 @@
             "command": "git add -A && git commit -m 'updates'"
         }
         {
-            "label": "🌐 build docs",
+            "label": "🌐 Build and publish docs",
             "type": "shell",
-            "linux": {
-                "command": "cd docs && ./remake_docs.sh"
-            },
-            "windows": {
-                "command": "conda activate herbie && pwd "
-            },
+            "command": "conda activate herbie && cd docs && make html && git add -A && git commit -m 'Updated Sphinx Docs' && git push",
             "dependsOn": [
                 "git_commit"
             ]
         },
+        // Manage Conda Environment
         {
-            "label": "🐍 create conda environment",
+            "label": "🐍 Conda: Create environment",
             "type": "shell",
             "command": "conda env create -f environment.yml"
         },
         {
-            "label": "🥇 update conda environment",
+            "label": "🥇 Conda: Update environment",
             "type": "shell",
             "command": "conda env update -f environment.yml --prune"
         },
         {
-            "label": "✨ update all packages",
+            "label": "✨ Conda: Update all packages",
             "type": "shell",
             "command": "conda update --name herbie --all -c conda-forge"
         },
         {
-            "label": "🗿 search outdated packages",
+            "label": "🗿 Conda: Search outdated packages",
             "type": "shell",
             "command": "eval \"$(conda shell.bash hook)\" && conda activate herbie && conda search --outdated -c conda-forge"
         },
         {
-            "label": "💣 destroy conda environment",
+            "label": "💣 Conda: Destroy environment",
             "type": "shell",
             "command": "eval \"$(conda shell.bash hook)\" && conda activate base && conda env remove --name herbie"
         },
         {
-            "label": "🚀 launch JupyterLab",
+            "label": "🚀 Launch JupyterLab",
             "type": "shell",
             "command": "eval \"$(conda shell.bash hook)\" && conda activate herbie && jupyter lab --no-browser --port=7793"
         },
         {
             // For when conda is out of date
-            "label": "🧱 update conda base",
+            "label": "🧱 Conda: Update base",
             "type": "shell",
             "command": "conda update -n base -c defaults conda"
         },
