@@ -10,12 +10,12 @@
             "label": "apply black",
             "type": "shell",
             "command": "black ."
-        }
+        },
         {
             "label": "git commit",
             "type": "shell",
             "command": "git add -A && git commit -m 'updates'"
-        }
+        },
         {
             "label": "🌐 Build and publish docs",
             "type": "shell",
