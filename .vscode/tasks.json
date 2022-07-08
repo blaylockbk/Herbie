@@ -16,9 +16,9 @@
         {
             "label": "🌐 Build and publish docs",
             "type": "shell",
-            "command": "conda activate herbie && cd docs && make html && git add -A && git commit -m 'Updated Sphinx Docs' && git push",
+            "command": "conda activate herbie && cd docs && make html && git add -A && git commit -m \"Updated Sphinx Docs\" && git push",
             "dependsOn": [
-                "git_commit"
+                //"git_commit"
             ]
         },
         // Manage Conda Environment
