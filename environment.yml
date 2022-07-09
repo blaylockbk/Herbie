@@ -2,7 +2,7 @@ name: herbie
 channels:
   - conda-forge
 dependencies:
-  - python>=3.9.7
+  - python>=3.10
   - pip
   - git
   - curl
@@ -12,7 +12,7 @@ dependencies:
   # Tools
   # -----
   - cartopy
-  - cfgrib=0.9.9.1
+  - cfgrib>=0.9.10.1
   - eccodes
   - geopandas
   - h5py
@@ -27,7 +27,6 @@ dependencies:
   - pylint
   - pyproj
   - requests>=2.27.1
-  - rich # Not required, but I'm playing around with it
   - s3fs
   - scipy
   - toml

@@ -1,59 +1,80 @@
 {
-    // See https://go.microsoft.com/fwlink/?LinkId=733558
-    // for the documentation about the tasks.json format
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "echo",
+            "label": "TEST ECHO",
             "type": "shell",
             "command": "echo Hello, my name is Herbie. I love to race and have a mind of my own.🏎️🏁"
         },
         {
-            "label": "🌐 build docs",
+            "label": "apply black",
             "type": "shell",
-            "command": "cd docs && ./remake_docs.sh"
+            "command": "black ."
         },
         {
-            "label": "🐍 create conda environment",
+            "label": "git commit",
+            "type": "shell",
+            "command": "git add -A && git commit -m 'updates'"
+        },
+        {
+            "label": "🌐 Build and publish docs",
+            "type": "shell",
+            "command": "conda activate herbie && cd docs && make html && git add -A && git commit -m \"Updated Sphinx Docs\" && git push",
+            "dependsOn": [
+                "apply black",
+                "git commit"
+            ]
+        },
+        {
+            "label": "PyPI Publish",
+            "type": "shell",
+            // TODO: use bumpversion
+            "command": "conda activate pypi && python setup.py sdist bdist_wheel && twine check dist/* && twine upload --skip-existing dist/*",
+            "icon": {
+                "id": "cloud-upload",
+                "color": "terminal.ansiCyan"
+            }
+        },
+        {
+            "label": "🚀 Launch JupyterLab",
+            "type": "shell",
+            "command": "eval \"$(conda shell.bash hook)\" && conda activate herbie && jupyter lab --no-browser --port=7793"
+        },
+        // Manage Conda Environment
+        {
+            "label": "🐍 Conda: Create environment",
             "type": "shell",
             "command": "conda env create -f environment.yml"
         },
         {
-            "label": "🥇 update conda environment",
+            "label": "🥇 Conda: Update environment",
             "type": "shell",
             "command": "conda env update -f environment.yml --prune"
         },
         {
-            "label": "✨ update all packages",
+            "label": "✨ Conda: Update all packages",
             "type": "shell",
             "command": "conda update --name herbie --all -c conda-forge"
         },
         {
-            "label": "🗿 search outdated packages",
+            "label": "🗿 Conda: Search outdated packages",
             "type": "shell",
             "command": "eval \"$(conda shell.bash hook)\" && conda activate herbie && conda search --outdated -c conda-forge"
         },
         {
-            "label": "💣 destroy conda environment",
+            "label": "💣 Conda: Destroy environment",
             "type": "shell",
             "command": "eval \"$(conda shell.bash hook)\" && conda activate base && conda env remove --name herbie"
         },
         {
-            "label": "🚀 launch JupyterLab",
-            "type": "shell",
-            "command": "eval \"$(conda shell.bash hook)\" && conda activate herbie && jupyter lab --no-browser --port=7793"
-        },
-        {
-            // For when conda is out of date
-            "label": "🧱 update conda base",
+            "label": "🧱 Conda: Update base",
             "type": "shell",
             "command": "conda update -n base -c defaults conda"
         },
         {
-            "label": "publish",
+            "label": "🧼 Conda: Clean unused packages",
             "type": "shell",
-            // TODO: use bumpversion
-            "command": "conda activate pypi && python setup.py sdist bdist_wheel && twine check dist/* && twine upload --skip-existing dist/*"
-        }
+            "command": "conda clean --all --yes"
+        },
     ]
 }
