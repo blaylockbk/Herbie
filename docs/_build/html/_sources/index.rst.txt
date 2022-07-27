@@ -24,12 +24,13 @@ Herbie: Retrieve NWP Model Data
 .. card:: User Guide
     :link: https://blaylockbk.github.io/Herbie/_build/html/user_guide/index.html
 
-    Information you need to know to use Herbie.
+    :fas:` fa-book-open-reader` Information you need to know to use Herbie.
 
 .. card:: Reference Guide
     :link: https://blaylockbk.github.io/Herbie/_build/html/reference_guide/index.html
 
     API reference for Herbie's classes and functions.
+
 
 
 Install
