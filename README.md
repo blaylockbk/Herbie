@@ -24,8 +24,8 @@ Herbie helps you discover, download, and read data from:
 - [High Resolution Rapid Refresh (HRRR)](https://blaylockbk.github.io/Herbie/_build/html/user_guide/notebooks/data_hrrr.html) | [HRRR-Alaska](https://blaylockbk.github.io/Herbie/_build/html/user_guide/notebooks/data_hrrrak.html)
 - [Rapid Refresh (RAP)](https://blaylockbk.github.io/Herbie/_build/html/user_guide/notebooks/data_rap.html)
 - [Global Forecast System (GFS)](https://blaylockbk.github.io/Herbie/_build/html/user_guide/notebooks/data_gfs.html)
-- [Global Ensemble Forecast System (GEFS)](https://blaylockbk.github.io/Herbie/_build/html/user_guide/notebooks/data_gefs.html) ✨ new in Herbie 0.0.10
-- [ECMWF Open Data Forecast Products](https://blaylockbk.github.io/Herbie/_build/html/user_guide/notebooks/data_ecmwf.html) ✨ new in Herbie 0.0.8
+- [Global Ensemble Forecast System (GEFS)](https://blaylockbk.github.io/Herbie/_build/html/user_guide/notebooks/data_gefs.html)
+- [ECMWF Open Data Forecast Products](https://blaylockbk.github.io/Herbie/_build/html/user_guide/notebooks/data_ecmwf.html)
 - [National Blend of Models (NBM)](https://blaylockbk.github.io/Herbie/_build/html/user_guide/notebooks/data_nbm.html)
 - [Rapid Refresh Forecast System - Prototype (RRFS)](https://blaylockbk.github.io/Herbie/_build/html/user_guide/notebooks/data_rrfs.html)
 
@@ -45,14 +45,19 @@ pip install git+https://github.com/blaylockbk/Herbie.git
 
 You may also create the provided **[conda environment](https://github.com/blaylockbk/Herbie/blob/main/environment.yml)**.
 
+```bash
+wget https://github.com/blaylockbk/Herbie/raw/main/environment.yml
+conda env create -f environment.yml
+```
+
 ## Capabilities
 
 - Search for model output from different data sources.
-- Download full GRIB2 files
-- Download subset GRIB2 files (by grib field)
-- Read data with xarray
-- Read index file with Pandas
-- Plot data with Cartopy (very early development)
+- Download full GRIB2 files.
+- Download subset GRIB2 files (by grib field).
+- Read data with xarray.
+- Read index file with Pandas.
+- Plot data with Cartopy (very early development).
 
 
 ```mermaid
@@ -97,22 +102,23 @@ H.xarray("TMP:2 m")
 
 Herbie downloads model data from the following sources, but can be extended to include others:
 
-- NOMADS
+- [NOMADS](https://nomads.ncep.noaa.gov/)
 - Big Data Program Partners (AWS, Google, Azure)
 - ECMWF Open Data Azure storage
 - University of Utah CHPC Pando archive
+- Local file system
 
 ## History
 
-During my PhD at the University of Utah, I created, at the time, the [only publicly-accessible archive of HRRR data](http://hrrr.chpc.utah.edu/). Over 1,000 research scientists and professionals used that archive. 
+During my PhD at the University of Utah, I created, at the time, the [only publicly-accessible archive of HRRR data](http://hrrr.chpc.utah.edu/). Over 1,000 research scientists and professionals used that archive.
 
-> **✒  I wrote a paper about archiving HRRR data in the cloud**
->
-> Blaylock B., J. Horel and S. Liston, 2017: Cloud Archiving and Data Mining of High Resolution Rapid Refresh Model Output. Computers and Geosciences. 109, 43-50. https://doi.org/10.1016/j.cageo.2017.08.005
+<blockquote><cite>
+<p style="padding-left: 22px ; text-indent: -22px ;"> Blaylock B., J. Horel and S. Liston, 2017: Cloud Archiving and Data Mining of High Resolution Rapid Refresh Model Output. Computers and Geosciences. 109, 43-50. <a href="https://doi.org/10.1016/j.cageo.2017.08.005">https://doi.org/10.1016/j.cageo.2017.08.005</a></p>
+</cite></blockquote>
 
 In the later half of 2020, the HRRR dataset from 2014 to present was made available through the [NOAA Big Data Program](https://www.noaa.gov/information-technology/big-data). Herbie organizes and expands my original download scripts into a more coherent package with the extended ability to download data for other models from many different archive sources.
 
-I originally released this package under the name “HRRR-B” because it only dealt with the HRRR dataset; the “B” was for my first-name initial. Since then, I have added the ability to download RAP, GFS, ECMWF, GEFS, RRFS, and others with potentially more models in the future. Thus, this package was renamed ***Herbie***, named after one of my favorite childhood movie characters. 
+I originally released this package under the name “HRRR-B” because it only worked with the HRRR dataset; the “B” was for my first-name initial. Since then, I have added the ability to download RAP, GFS, ECMWF, GEFS, RRFS, and others with potentially more models in the future. Thus, this package was renamed ***Herbie***, named after one of my favorite childhood movie characters. 
 
 The University of Utah MesoWest group now manages a [HRRR archive in Zarr format](http://hrrr.chpc.utah.edu/). Maybe someday, Herbie will be able to take advantage of that archive.
 
@@ -125,7 +131,7 @@ The University of Utah MesoWest group now manages a [HRRR archive in Zarr format
 <br>
 
 |||
-|----|---|
+|:----:|---|
 | 👨🏻‍💻 | [Contributing Guidelines](https://blaylockbk.github.io/Herbie/_build/html/user_guide/contribute.html)  
 | 💬 | [GitHub Discussions](https://github.com/blaylockbk/Herbie/discussions)  
 | 🚑 | [GitHub Issues](https://github.com/blaylockbk/Herbie/issues)  
@@ -146,5 +152,5 @@ P.S. If you like Herbie, check out my other repos:
 
 ### Alternative Download Tools
 
-As an alternative to Herbie, you can use [rclone](https://rclone.org/) to download files from AWS or GCP. I quite like rclone. Here is a [short rclone tutorial](https://github.com/blaylockbk/pyBKB_v3/blob/master/rclone_howto.md)
+As an alternative to Herbie, you can use [rclone](https://rclone.org/) to download files from AWS or GCP. I love rclone. Here is a short [rclone tutorial](https://github.com/blaylockbk/pyBKB_v3/blob/master/rclone_howto.md)
 
