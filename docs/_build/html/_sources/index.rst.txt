@@ -20,16 +20,16 @@ Herbie: Retrieve NWP Model Data
    /user_guide/index
    /reference_guide/index
 
+.. TODO: I'd like to have the cards here instead of the toctree, but the toctree is needed to show the links in the top banner.
+.. .. card:: User Guide
+..     :link: https://blaylockbk.github.io/Herbie/_build/html/user_guide/index.html
 
-.. card:: User Guide
-    :link: https://blaylockbk.github.io/Herbie/_build/html/user_guide/index.html
+..     Information you need to know to use Herbie.
 
-    Information you need to know to use Herbie.
+.. .. card:: Reference Guide
+..     :link: https://blaylockbk.github.io/Herbie/_build/html/reference_guide/index.html
 
-.. card:: Reference Guide
-    :link: https://blaylockbk.github.io/Herbie/_build/html/reference_guide/index.html
-
-    API reference for Herbie's classes and functions.
+..     API reference for Herbie's classes and functions.
 
 
 
