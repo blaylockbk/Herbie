@@ -128,6 +128,7 @@ The University of Utah MesoWest group now manages a [HRRR archive in Zarr format
 
 🏁 Brian
 
+
 <br>
 
 |||
@@ -138,6 +139,10 @@ The University of Utah MesoWest group now manages a [HRRR archive in Zarr format
 | 🌐 | [Personal Webpage](http://home.chpc.utah.edu/~u0553130/Brian_Blaylock/home.html)  
 | 🌐 | [University of Utah HRRR archive](http://hrrr.chpc.utah.edu/) 
 
+Cite Herbie: 
+
+    Blaylock, B. K., 2022: Herbie: Retrieve Numerical Weather Prediction     
+    Model Data [Computer software]. https://doi.org/10.5281/zenodo.6526110.
 
 <br>
 
@@ -148,8 +153,5 @@ P.S. If you like Herbie, check out my other repos:
 - [💬 Bubble Print](https://github.com/blaylockbk/BubblePrint): A silly little python package that gives your print statement's personality.
 - [📜 MET Syntax](https://github.com/blaylockbk/vscode-met-syntax): An extension for Visual Studio Code that gives syntax highlighting for Model Evaluation Tools (MET) configuration files.
 
----
-
 > **Note**: Alternative Download Tools  
 > As an alternative to Herbie, you can use [rclone](https://rclone.org/) to download files from AWS or GCP. I love rclone. Here is a short [rclone tutorial](https://github.com/blaylockbk/pyBKB_v3/blob/master/rclone_howto.md)
-
