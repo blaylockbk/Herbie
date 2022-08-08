@@ -857,7 +857,7 @@ class Herbie:
             urllib.request.urlretrieve(self.grib, outFile, _reporthook)
 
             self.grib = outFile
-            self.grib_source = "local"
+            # self.grib_source = "local"
 
             if verbose:
                 print(

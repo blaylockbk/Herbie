@@ -19,11 +19,13 @@
         {
             "label": "🌐 Build and publish docs",
             "type": "shell",
-            "command": "conda activate herbie && cd docs && make html && git add -A && git commit -m \"Updated Sphinx Docs\" && git push",
-            "dependsOn": [
-                "apply black",
-                "git commit"
-            ]
+            "command": "cd docs && ./remake_docs.sh"
+            //"command": "conda activate herbie && cd docs && make html && git add -A && git commit -m \"Updated Sphinx Docs\" && git push",
+            // Doesn't work as expected, because git commit
+            // "dependsOn": [
+            //     "apply black",
+            //     "git commit"
+            // ]
         },
         {
             "label": "PyPI Publish",

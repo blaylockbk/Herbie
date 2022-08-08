@@ -6,14 +6,15 @@ dependencies:
   - pip
   - git
   - curl
-  - rclone # Not required, but is an awesome alternative https://rclone.org/
-  #- wgrib2  # ONLY AVAILABLE ON LINUX. Comment if not using Linux.
+  - rclone # Not required, but is an awesome alternative (https://rclone.org/)
+  - wgrib2 # ONLY AVAILABLE ON LINUX. Comment if not using Linux.
 
-  # Tools
-  # -----
-  - cartopy
+  # ===========
+  # Handy Tools
+  # ===========
+  - cartopy>=0.20.3
   - cfgrib>=0.9.10.1
-  - eccodes
+  - eccodes>=2.26.0
   - geopandas
   - h5py
   - jupyter
@@ -21,29 +22,30 @@ dependencies:
   - matplotlib>=3.4.3
   - metpy
   - netcdf4
-  - numpy>=1.22.3
-  - pandas>=1.4.1
-  - pygrib
+  - numpy>=1.23.1
+  - pandas>=1.4.3
+  - pygrib>=2.1.4
   - pylint
-  - pyproj
+  - pyproj>=3.3.1
   - requests>=2.27.1
   - s3fs
   - scipy
   - toml
-  - xarray>=2022.3.0
+  - xarray>=2022.6.0
   - zarr
 
+  # ===================
   # Formatter & Testing
-  # -------------------
+  # ===================
   - black
-  - jupyterlab_code_formatter
   - isort
   - pylint
   - pytest
   - line_profiler
 
+  # =============
   # Documentation
-  # -------------
+  # =============
   - sphinx>=4.4.0
   - nbsphinx
   - nbconvert>=6.5
@@ -59,10 +61,10 @@ dependencies:
   - linkify-it-py
 
   - pip:
-      # Development Version from GitHub
+      # Herbie: Development version from GitHub
       - git+https://github.com/blaylockbk/Herbie.git
       # *or* the latest release from PyPI
-      #- herbie-data    # Release Version
+      #- herbie-data
 
       # Borrow some tools from my garage
       - git+https://github.com/blaylockbk/Carpenter_Workshop.git

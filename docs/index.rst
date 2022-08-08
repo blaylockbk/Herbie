@@ -20,6 +20,19 @@ Herbie: Retrieve NWP Model Data
    /user_guide/index
    /reference_guide/index
 
+.. TODO: I'd like to have the cards here instead of the toctree, but the toctree is needed to show the links in the top banner.
+.. .. card:: User Guide
+..     :link: https://blaylockbk.github.io/Herbie/_build/html/user_guide/index.html
+
+..     Information you need to know to use Herbie.
+
+.. .. card:: Reference Guide
+..     :link: https://blaylockbk.github.io/Herbie/_build/html/reference_guide/index.html
+
+..     API reference for Herbie's classes and functions.
+
+
+
 Install
 -------
 Herbie requires **Python 3.8+**
@@ -30,15 +43,18 @@ Install with pip
 
    pip install herbie-data
 
-   # or
+or
+
+.. code:: bash
 
    pip install git+https://github.com/blaylockbk/Herbie.git
 
-To install within a conda environment file, you may use this minimum `environment.yml
-<https://github.com/blaylockbk/Herbie/blob/main/environment.yml>`_ file
-and create the environment with the following...
+To install Herbie within a conda environment file, you may use the `environment.yml
+<https://github.com/blaylockbk/Herbie/blob/main/environment.yml>`_ file I use to develop Herbie.
 
 .. code:: bash
+
+   wget https://github.com/blaylockbk/Herbie/raw/main/environment.yml
 
    # Create the environment
    conda env create -f environment.yml
@@ -54,7 +70,7 @@ Capabilities
 
 Create a Herbie object
 ^^^^^^^^^^^^^^^^^^^^^^
-Herbie looks for model data at different sources until the requested file is found.
+The most important piece of Herbie is the **Herbie class** which represents a single model output file. When you create a Herbie object, Herbie looks for model data at different sources until the requested file is found.
 
 Herbie can discover data from the following models (click for example usage):
 
@@ -67,14 +83,18 @@ Herbie can discover data from the following models (click for example usage):
 - `National Blend of Models (NMB) <https://blaylockbk.github.io/Herbie/_build/html/user_guide/notebooks/data_nbm.html>`_
 - `Rapid Refresh Forecast System - Prototype (RRFS) <https://blaylockbk.github.io/Herbie/_build/html/user_guide/notebooks/data_rrfs.html>`_
 
-This Herbie object is for the HRRR model sfc product and 6 hour forecast. The file was found an Amazon Web Services.
+This example shows how to create a Herbie object for the HRRR model ``sfc`` product and 6 hour forecast. The file was found an Amazon Web Services.
 
 .. code-block:: python
 
-   from herbie.archive import Herbie
-   H = Herbie('2021-01-01 12:00', model='hrrr', product='sfc', fxx=6)
+   from herbie import Herbie
+   H = Herbie('2021-07-01 12:00', model='hrrr', product='sfc', fxx=6)
 
-.. image:: _static/screenshots/usage_1.png
+.. code-block::
+
+   OUT:
+   ✅ Found ┊ model=hrrr ┊ product=sfc ┊ 2021-Jul-01 12:00 UTC F06 ┊ GRIB2 @ aws ┊ IDX @ aws
+
 
 Data Sources
 """"""""""""
@@ -96,8 +116,6 @@ Using the Herbie object we created above, this downloads the full GRIB2 file to 
 
    H.download()
 
-.. image:: _static/screenshots/usage_2.png
-
 Download a subset
 """""""""""""""""
 **Subsetting GRIB files by GRIB message** is also supported, provided that an index (.idx) file exists. For more information about subsetting, read :ref:`What is GRIB2? <GRIB2_FAQ>`.
@@ -106,10 +124,9 @@ Using the Herbie object we created above, we can retrieve all fields at 500 mb.
 
 .. code-block:: python
 
-   # Download all fields at 500 mb level
-   H.download(':500 mb')
+   # Download all fields at 700 mb level
+   H.download(":700 mb")
 
-.. image:: _static/screenshots/usage_3.png
 
 Read GRIB2 Data
 ^^^^^^^^^^^^^^^
@@ -122,30 +139,50 @@ Herbie can help you read these files with `xarray <http://xarray.pydata.org/en/s
 
 .. image:: _static/screenshots/usage_4.png
 
+
 Fast Herbie
 ^^^^^^^^^^^
-Often, data from several GRIB2 files is needed (range of datetimes and/or forecast lead time). "Fast Herbie" tools use multithreading to help you efficiently create multiple Herbie objects, download many files, and open data in xarray DataSets for a range of model runs and forecast lead times.
+Often, data from several GRIB2 files is needed (range of datetimes and/or forecast lead time). ``FastHerbie()`` use multithreading to help you efficiently create multiple Herbie objects, download many files, and open data in concatenated xarray DataSets for a range of model runs and forecast lead times.
+
+In this example, we will get the F00-F03 forecasts for each of the runs initialized between 00z-06z on January 1, 2022 (a total of 28 Herbie objects).
 
 .. code-block:: python
 
-   from herbie.tools import fast_Herbie, fast_Herbie_download, fast_Herbie_xarray
+   from herbie import FastHerbie
    import pandas as pd
 
-   # Get the F00-F06 forecasts for each of the runs initialized
-   # between 00z-06z on January 1, 2022 (a total of 42 Herbie objects)
+   # Create a range of dates
    DATES = pd.date_range('2022-01-01 00:00', '2022-01-01 06:00', freq='1H')
-   fxx = range(0,7)
 
-   # Create list of Herbie objects for all dates and lead times requested.
-   HH = fast_Herbie(DATES=DATES, fxx=fxx)
+   # Create a range of forecast lead times
+   fxx = range(0,4)
 
-   # Download many GRIB2 files; subset the files for 2-m temperature
-   d = fast_Herbie_download(DATES=DATES, fxx=fxx, searchString='TMP:2 m')
+   # Make FastHerbie Object.
+   FH = FastHerbie(DATES, model='hrrr', fxx=fxx)
 
-   # Load many files into xarray; subset for 10-m u and v wind.
-   ds = fast_Herbie_xarray(DATES=DATES, fxx=fxx, searchString='(?:U|V)GRD:10 m')
+At it's core, ``FastHerbie`` uses multithreading to make a list of Herbie objects. The list of Herbie objects is stored in the property
 
-.. image:: _static/screenshots/usage_5.png
+.. code-block:: python
+
+   FH.objects
+
+You can download those Herbie objects
+
+.. code-block:: python
+
+   # Full GRIB2 files
+   FH.download()
+
+   # Subset of GRIB2 files
+   FH.download("TMP:2 m")
+
+or read the data into an xarray DataSet
+
+.. code-block:: python
+
+   ds = FH.xarray("TMP:2 m")
+
+.. image:: _static/screenshots/usage_FastHerbie_xarray.png
 
 Xarray Herbie Accessors
 ^^^^^^^^^^^^^^^^^^^^^^^
