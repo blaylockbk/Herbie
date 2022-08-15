@@ -26,6 +26,7 @@ Herbie helps you discover, download, and read data from:
 - [Global Forecast System (GFS)](https://blaylockbk.github.io/Herbie/_build/html/user_guide/notebooks/data_gfs.html)
 - [Global Ensemble Forecast System (GEFS)](https://blaylockbk.github.io/Herbie/_build/html/user_guide/notebooks/data_gefs.html)
 - [ECMWF Open Data Forecast Products](https://blaylockbk.github.io/Herbie/_build/html/user_guide/notebooks/data_ecmwf.html)
+- [North American Mesoscale Model (NAM)](https://github.com/blaylockbk/Herbie/blob/main/docs/user_guide/notebooks/data_nam.ipynb)
 - [National Blend of Models (NBM)](https://blaylockbk.github.io/Herbie/_build/html/user_guide/notebooks/data_nbm.html)
 - [Rapid Refresh Forecast System - Prototype (RRFS)](https://blaylockbk.github.io/Herbie/_build/html/user_guide/notebooks/data_rrfs.html)
 
