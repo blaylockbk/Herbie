@@ -1,0 +1,24 @@
+cff-version: 1.2.0
+abstract: Herbie is a python package that downloads recent and archived numerical weather prediction (NWP) model output from different cloud archive sources. Its most popular capability is to download HRRR model data. NWP data in GRIB2 format can be read into an xarray dataframe using the cfgrib package. Much of this data is made available through the NOAA Open Data Dissemination (NODD) Program (formerly the Big Data Program) which has made weather data more accessible than ever before.
+message: "If you use this software, please cite it as below."
+authors:
+  - family-names: Blaylock
+    given-names: Brian K.
+    email: blaylockbk@gmail.com
+    orcid: "https://orcid.org/0000-0003-2133-9313"
+title: "Herbie: Retrieve Numerical Weather Prediction Model Data"
+version: 0.0.10
+date-released: "2022-05-06"
+url: "https://blaylockbk.github.io/Herbie/_build/html/"
+repository-code: "https://github.com/blaylockbk/Herbie"
+type: software
+keywords:
+  - meteorology
+  - weather
+  - numerical weather prediction
+  - forecast
+  - atmosphere
+license: "MIT"
+identifiers:
+  - type: doi
+    value: 10.5281/zenodo.4567540

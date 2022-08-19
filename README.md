@@ -18,7 +18,7 @@
 
 </div>
 
-**Herbie** is a python package that downloads recent and archived numerical weather prediction (NWP) model output from different cloud archive sources. **Its most popular capability is to download HRRR model data.** NWP data in GRIB2 format can be read with xarray+cfgrib. Much of this data is made available through the [NOAA Big Data Program](https://www.noaa.gov/information-technology/big-data) which has made weather data more accessible than ever before.
+**Herbie** is a python package that downloads recent and archived numerical weather prediction (NWP) model output from different cloud archive sources. **Its most popular capability is to download HRRR model data.** NWP data in GRIB2 format can be read with xarray+cfgrib. Much of this data is made available through the [NOAA Open Data Dissemination](https://www.noaa.gov/information-technology/open-data-dissemination) (NODD) Program (formerly the Big Data Program) which has made weather data more accessible than ever before.
 
 Herbie helps you discover, download, and read data from:
 - [High Resolution Rapid Refresh (HRRR)](https://blaylockbk.github.io/Herbie/_build/html/user_guide/notebooks/data_hrrr.html) | [HRRR-Alaska](https://blaylockbk.github.io/Herbie/_build/html/user_guide/notebooks/data_hrrrak.html)
@@ -26,6 +26,7 @@ Herbie helps you discover, download, and read data from:
 - [Global Forecast System (GFS)](https://blaylockbk.github.io/Herbie/_build/html/user_guide/notebooks/data_gfs.html)
 - [Global Ensemble Forecast System (GEFS)](https://blaylockbk.github.io/Herbie/_build/html/user_guide/notebooks/data_gefs.html)
 - [ECMWF Open Data Forecast Products](https://blaylockbk.github.io/Herbie/_build/html/user_guide/notebooks/data_ecmwf.html)
+- [North American Mesoscale Model (NAM)](https://github.com/blaylockbk/Herbie/blob/main/docs/user_guide/notebooks/data_nam.ipynb)
 - [National Blend of Models (NBM)](https://blaylockbk.github.io/Herbie/_build/html/user_guide/notebooks/data_nbm.html)
 - [Rapid Refresh Forecast System - Prototype (RRFS)](https://blaylockbk.github.io/Herbie/_build/html/user_guide/notebooks/data_rrfs.html)
 
@@ -128,6 +129,7 @@ The University of Utah MesoWest group now manages a [HRRR archive in Zarr format
 
 🏁 Brian
 
+
 <br>
 
 |||
@@ -138,6 +140,10 @@ The University of Utah MesoWest group now manages a [HRRR archive in Zarr format
 | 🌐 | [Personal Webpage](http://home.chpc.utah.edu/~u0553130/Brian_Blaylock/home.html)  
 | 🌐 | [University of Utah HRRR archive](http://hrrr.chpc.utah.edu/) 
 
+Cite Herbie: 
+
+    Blaylock, B. K., 2022: Herbie: Retrieve Numerical Weather Prediction     
+    Model Data [Computer software]. https://doi.org/10.5281/zenodo.6526110.
 
 <br>
 
@@ -148,8 +154,5 @@ P.S. If you like Herbie, check out my other repos:
 - [💬 Bubble Print](https://github.com/blaylockbk/BubblePrint): A silly little python package that gives your print statement's personality.
 - [📜 MET Syntax](https://github.com/blaylockbk/vscode-met-syntax): An extension for Visual Studio Code that gives syntax highlighting for Model Evaluation Tools (MET) configuration files.
 
----
-
 > **Note**: Alternative Download Tools  
 > As an alternative to Herbie, you can use [rclone](https://rclone.org/) to download files from AWS or GCP. I love rclone. Here is a short [rclone tutorial](https://github.com/blaylockbk/pyBKB_v3/blob/master/rclone_howto.md)
-

@@ -57,6 +57,10 @@ setup(
 ###############################################################################
 ## Brian's Note: How to upload a new version to PyPI
 ## -------------------------------------------------
+# Update version in
+#  - setup.py
+#  - CITATION.cff
+#  - Create a tag and release in GitHub
 # Created a new conda environment with twine
 # conda create -n pypi python=3 twine pip -c conda-forge
 """
