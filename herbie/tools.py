@@ -112,10 +112,10 @@ class FastHerbie:
 
             # Return list of Herbie objects in order completed
             for future in as_completed(futures):
-                 if future.exception() is None:
-                     self.objects.append(future.result())
-                 else:
-                     log.error(f"Exception has occured : {future.exception()}")
+                if future.exception() is None:
+                    self.objects.append(future.result())
+                else:
+                    log.error(f"Exception has occured : {future.exception()}")
 
         log.info(f"Number of Herbie objects: {len(self.objects)}")
 
@@ -186,10 +186,10 @@ class FastHerbie:
 
             # Return list of Herbie objects in order completed
             for future in as_completed(futures):
-                 if future.exception() is None:
-                     outFiles.append(future.result())
-                 else:
-                     log.error(f"Exception has occured : {future.exception()}")
+                if future.exception() is None:
+                    outFiles.append(future.result())
+                else:
+                    log.error(f"Exception has occured : {future.exception()}")
 
         return outFiles
 
