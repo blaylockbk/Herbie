@@ -102,6 +102,7 @@ class FastHerbie:
         threads = min(self.tasks, max_threads)
         log.info(f"🧵 Working on {self.tasks} tasks with {threads} threads.")
 
+        self.objects = []
         with ThreadPoolExecutor(threads) as exe:
             futures = [
                 exe.submit(Herbie, date=DATE, fxx=f, **kwargs)
@@ -110,7 +111,11 @@ class FastHerbie:
             ]
 
             # Return list of Herbie objects in order completed
-            self.objects = [future.result() for future in as_completed(futures)]
+            for future in as_completed(futures):
+                 if future.exception() is None:
+                     self.objects.append(future.result())
+                 else:
+                     log.error(f"Exception has occured : {future.exception()}")
 
         log.info(f"Number of Herbie objects: {len(self.objects)}")
 
@@ -172,6 +177,7 @@ class FastHerbie:
         threads = min(self.tasks, max_threads)
         log.info(f"🧵 Working on {self.tasks} tasks with {threads} threads.")
 
+        outFiles = []
         with ThreadPoolExecutor(max_threads) as exe:
             futures = [
                 exe.submit(H.download, searchString, **download_kwargs)
@@ -179,7 +185,11 @@ class FastHerbie:
             ]
 
             # Return list of Herbie objects in order completed
-            outFiles = [future.result() for future in as_completed(futures)]
+            for future in as_completed(futures):
+                 if future.exception() is None:
+                     outFiles.append(future.result())
+                 else:
+                     log.error(f"Exception has occured : {future.exception()}")
 
         return outFiles
 
