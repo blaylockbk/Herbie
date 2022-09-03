@@ -7,7 +7,7 @@ dependencies:
   - git
   - curl
   - rclone # Not required, but is an awesome alternative (https://rclone.org/)
-  - wgrib2 # ONLY AVAILABLE ON LINUX. Comment if not using Linux.
+  #- wgrib2 # ONLY AVAILABLE ON LINUX. Comment if not using Linux.
 
   # ===========
   # Handy Tools
@@ -63,6 +63,10 @@ dependencies:
   - pip:
       # Herbie: Development version from GitHub
       - git+https://github.com/blaylockbk/Herbie.git
+
+      # Install a specific branch
+      #- git+https://github.com/blaylockbk/Herbie.git@blaylockbk/issue98
+
       # *or* the latest release from PyPI
       #- herbie-data
 
@@ -78,15 +82,15 @@ dependencies:
 #
 # To create this environment
 #
-#     wget https://github.com/blaylockbk/Herbie/raw/main/environment.yml
-#     conda env create -f environment.yml
+#     wget https://github.com/blaylockbk/Herbie/raw/main/environment-dev.yml
+#     conda env create -f environment-dev.yml
 #
 # To update this environment
 #
-#     conda env update -f environment.yml --prune
+#     conda env update -f environment-dev.yml --prune
 #
 # To remove this environment
 #
-#     conda env remove --name environment
+#     conda env remove --name herbie-dev
 #
 ###############################################################################
