@@ -44,9 +44,7 @@
     }
    ],
    "source": [
-    "H = Herbie('2021-11-19', \n",
-    "           model='rap', \n",
-    "           product='awp130pgrb')"
+    "H = Herbie(\"2021-11-19\", model=\"rap\", product=\"awp130pgrb\")"
    ]
   },
   {
@@ -67,7 +65,7 @@
     }
    ],
    "source": [
-    "x = H.xarray('TMP:2 m above')"
+    "x = H.xarray(\"TMP:2 m above\")"
    ]
   },
   {
@@ -110,16 +108,16 @@
     }
    ],
    "source": [
-    "ax = common_features(crs=x.herbie.crs, figsize=[8,8]).ax\n",
-    "p = ax.pcolormesh(x.longitude, x.latitude, x.t2m, \n",
-    "              transform=pc, \n",
-    "              **cm_tmp(units='K').cmap_kwargs)\n",
-    "plt.colorbar(p, ax=ax, \n",
-    "             orientation='horizontal', pad=.05,\n",
-    "             **cm_tmp(units='K').cbar_kwargs)\n",
+    "ax = common_features(crs=x.herbie.crs, figsize=[8, 8]).ax\n",
+    "p = ax.pcolormesh(\n",
+    "    x.longitude, x.latitude, x.t2m, transform=pc, **cm_tmp(units=\"K\").cmap_kwargs\n",
+    ")\n",
+    "plt.colorbar(\n",
+    "    p, ax=ax, orientation=\"horizontal\", pad=0.05, **cm_tmp(units=\"K\").cbar_kwargs\n",
+    ")\n",
     "\n",
-    "ax.set_title(x.t2m.GRIB_name, loc='right')\n",
-    "ax.set_title(f\"{x.model.upper()}: {H.product_description}\", loc='left')"
+    "ax.set_title(x.t2m.GRIB_name, loc=\"right\")\n",
+    "ax.set_title(f\"{x.model.upper()}: {H.product_description}\", loc=\"left\")"
    ]
   },
   {
@@ -145,9 +143,7 @@
     }
    ],
    "source": [
-    "H = Herbie('2019-11-23', \n",
-    "           model='rap_historical', \n",
-    "           product='analysis')"
+    "H = Herbie(\"2019-11-23\", model=\"rap_historical\", product=\"analysis\")"
    ]
   },
   {
@@ -168,7 +164,7 @@
     }
    ],
    "source": [
-    "x = H.xarray('TMP:2 m above')"
+    "x = H.xarray(\"TMP:2 m above\")"
    ]
   },
   {
@@ -210,16 +206,16 @@
     }
    ],
    "source": [
-    "ax = common_features(crs=x.herbie.crs, figsize=[8,8]).ax\n",
-    "p = ax.pcolormesh(x.longitude, x.latitude, x.t2m, \n",
-    "              transform=pc, \n",
-    "              **cm_tmp(units='K').cmap_kwargs)\n",
-    "plt.colorbar(p, ax=ax, \n",
-    "             orientation='horizontal', pad=.05,\n",
-    "             **cm_tmp(units='K').cbar_kwargs)\n",
+    "ax = common_features(crs=x.herbie.crs, figsize=[8, 8]).ax\n",
+    "p = ax.pcolormesh(\n",
+    "    x.longitude, x.latitude, x.t2m, transform=pc, **cm_tmp(units=\"K\").cmap_kwargs\n",
+    ")\n",
+    "plt.colorbar(\n",
+    "    p, ax=ax, orientation=\"horizontal\", pad=0.05, **cm_tmp(units=\"K\").cbar_kwargs\n",
+    ")\n",
     "\n",
-    "ax.set_title(x.t2m.GRIB_name, loc='right')\n",
-    "ax.set_title(f\"{x.model.upper()}: {H.product_description}\", loc='left')"
+    "ax.set_title(x.t2m.GRIB_name, loc=\"right\")\n",
+    "ax.set_title(f\"{x.model.upper()}: {H.product_description}\", loc=\"left\")"
    ]
   },
   {
@@ -295,7 +291,7 @@
     }
    ],
    "source": [
-    "H = Herbie('2019-11-19', model='rap_historical', product='analysis')\n",
+    "H = Herbie(\"2019-11-19\", model=\"rap_historical\", product=\"analysis\")\n",
     "assert H.grib is not None"
    ]
   },
@@ -316,7 +312,7 @@
     }
    ],
    "source": [
-    "H = Herbie('2005-01-01', model='rap_historical', product='analysis')\n",
+    "H = Herbie(\"2005-01-01\", model=\"rap_historical\", product=\"analysis\")\n",
     "assert H.grib is not None"
    ]
   },
@@ -348,7 +344,7 @@
     }
    ],
    "source": [
-    "H = Herbie('2020-03-15', model='rap_ncei', product=\"rap-130-13km\")\n",
+    "H = Herbie(\"2020-03-15\", model=\"rap_ncei\", product=\"rap-130-13km\")\n",
     "H.SOURCES"
    ]
   },
@@ -376,7 +372,8 @@
    ],
    "source": [
     "import pandas as pd\n",
-    "H = Herbie(pd.to_datetime('today').floor('1D'), model=\"rap\")"
+    "\n",
+    "H = Herbie(pd.to_datetime(\"today\").floor(\"1D\"), model=\"rap\")"
    ]
   },
   {
@@ -397,7 +394,7 @@
     }
    ],
    "source": [
-    "pd.to_datetime('today').floor('1D')"
+    "pd.to_datetime(\"today\").floor(\"1D\")"
    ]
   },
   {
@@ -961,7 +958,7 @@
     }
    ],
    "source": [
-    "DATES = pd.date_range('2005-01-01', 'today', freq=\"AS\")\n",
+    "DATES = pd.date_range(\"2005-01-01\", \"today\", freq=\"AS\")\n",
     "len(DATES), DATES"
    ]
   },
@@ -997,7 +994,7 @@
    ],
    "source": [
     "for D in DATES:\n",
-    "    H = Herbie(D, model=\"rap_historical\", verbose=False, product='analysis')\n",
+    "    H = Herbie(D, model=\"rap_historical\", verbose=False, product=\"analysis\")\n",
     "    print(f\"{D:%Y-%m-%d %H:%M} ->FOUND-> {H.grib}\")"
    ]
   },
@@ -1021,7 +1018,7 @@
     }
    ],
    "source": [
-    "DATES = pd.date_range('2003-01-01', 'today', freq=\"AS-FEB\")\n",
+    "DATES = pd.date_range(\"2003-01-01\", \"today\", freq=\"AS-FEB\")\n",
     "print(len(DATES), DATES)"
    ]
   },
@@ -1058,9 +1055,8 @@
     }
    ],
    "source": [
-    "\n",
     "for D in DATES:\n",
-    "    H = Herbie(D, model=\"rap_historical\", verbose=False, product='forecast')\n",
+    "    H = Herbie(D, model=\"rap_historical\", verbose=False, product=\"forecast\")\n",
     "    print(f\"{D:%Y-%m-%d %H:%M} ->FOUND-> {H.grib}\")"
    ]
   },

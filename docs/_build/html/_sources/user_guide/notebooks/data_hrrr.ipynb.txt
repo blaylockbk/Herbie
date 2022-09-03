@@ -23,7 +23,7 @@
     "from paint.standard2 import cm_tmp\n",
     "\n",
     "import matplotlib.pyplot as plt\n",
-    "import cartopy.crs as ccrs\n"
+    "import cartopy.crs as ccrs"
    ]
   },
   {
@@ -40,7 +40,7 @@
     }
    ],
    "source": [
-    "H = Herbie(\"2021-07-19\", model=\"hrrr\", product=\"sfc\")\n"
+    "H = Herbie(\"2021-07-19\", model=\"hrrr\", product=\"sfc\")"
    ]
   },
   {
@@ -560,7 +560,7 @@
     "    f\"{ds.model.upper()}: {H.product_description}\\nValid: {ds.valid_time.dt.strftime('%H:%M UTC %d %b %Y').item()}\",\n",
     "    loc=\"left\",\n",
     ")\n",
-    "ax.set_title(ds.t2m.GRIB_name, loc=\"right\")\n"
+    "ax.set_title(ds.t2m.GRIB_name, loc=\"right\")"
    ]
   },
   {
