@@ -38,7 +38,7 @@ Installation
 The easiest way to instal Herbie and its dependencies is within a
 `Conda <https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html>`__
 environment. I provided an
-**`environment.yml <https://github.com/blaylockbk/Herbie/blob/main/environment.yml>`__**
+`environment.yml <https://github.com/blaylockbk/Herbie/blob/main/environment.yml>`__
 file that you may use or modify.
 
 .. code:: bash
