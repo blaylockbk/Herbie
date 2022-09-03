@@ -36,7 +36,7 @@ def test_hrrr_aws2():
 def test_create_idx_with_wgrib2():
     """Test that Herbie can make an index file with wgrib2 when an index file is not found"""
     # WILL FAIL ON WINDOWS (no wgrib2)
-    
+
     H = Herbie(today_str, model="hrrr", product="sfc", save_dir="$TMPDIR")
     H.download()
     H.idx = None

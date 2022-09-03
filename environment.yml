@@ -32,6 +32,7 @@ dependencies:
   # Optional Tools
   #================
   - black
+  - black-jupyter
   - jupyter
   - jupyterlab
   - pytest

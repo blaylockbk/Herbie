@@ -38,6 +38,7 @@ dependencies:
   # Formatter & Testing
   # ===================
   - black
+  - black-jupyter
   - isort
   - pylint
   - pytest
