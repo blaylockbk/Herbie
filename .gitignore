@@ -21,6 +21,8 @@ local_B.py
 dist/*
 build/*
 *.egg-info
+*.egg
 MANIFEST
+*.so
 .eggs/
 *.h5

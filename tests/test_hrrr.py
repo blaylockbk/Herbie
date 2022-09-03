@@ -25,6 +25,8 @@ def test_hrrr_aws1():
 
 
 def test_hrrr_aws2():
+    # WILL FAIL ON WINDOWS (can't remove grib2 file)
+
     # Test HRRR with string date
     H = Herbie(yesterday_str, model="hrrr", product="prs", save_dir="$TMPDIR")
     H.xarray("(?:U|V)GRD:10 m")
@@ -33,6 +35,8 @@ def test_hrrr_aws2():
 
 def test_create_idx_with_wgrib2():
     """Test that Herbie can make an index file with wgrib2 when an index file is not found"""
+    # WILL FAIL ON WINDOWS (no wgrib2)
+
     H = Herbie(today_str, model="hrrr", product="sfc", save_dir="$TMPDIR")
     H.download()
     H.idx = None

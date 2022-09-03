@@ -1,0 +1,97 @@
+name: herbie-dev
+channels:
+  - conda-forge
+dependencies:
+  - python>=3.10
+  - pip
+  - git
+  - curl
+  - rclone # Not required, but is an awesome alternative (https://rclone.org/)
+  #- wgrib2 # ONLY AVAILABLE ON LINUX. Comment if not using Linux.
+
+  # ===========
+  # Handy Tools
+  # ===========
+  - cartopy>=0.20.3
+  - cfgrib>=0.9.10.1
+  - eccodes>=2.26.0
+  - geopandas
+  - h5py
+  - jupyter
+  - jupyterlab
+  - matplotlib>=3.4.3
+  - metpy
+  - netcdf4
+  - numpy>=1.23.1
+  - pandas>=1.4.3
+  - pygrib>=2.1.4
+  - pylint
+  - pyproj>=3.3.1
+  - requests>=2.27.1
+  - s3fs
+  - scipy
+  - toml
+  - xarray>=2022.6.0
+  - zarr
+
+  # ===================
+  # Formatter & Testing
+  # ===================
+  - black
+  - black-jupyter
+  - isort
+  - pylint
+  - pytest
+  - line_profiler
+
+  # =============
+  # Documentation
+  # =============
+  - sphinx>=4.4.0
+  - nbsphinx
+  - nbconvert>=6.5
+  - pydata-sphinx-theme # PyData Sphinx Theme (i.e, Numpy, Pandas, MetPy)
+  - sphinx-design
+  - recommonmark
+  - sphinx-markdown-tables
+  - sphinxcontrib-mermaid # For mermaid diagram support
+  - autodocsumm
+  - sphinx-autosummary-accessors # pandas and xarray accessor docs
+  - latexmk
+  - myst-parser
+  - linkify-it-py
+
+  - pip:
+      # Herbie: Development version from GitHub
+      - git+https://github.com/blaylockbk/Herbie.git
+
+      # Install a specific branch
+      #- git+https://github.com/blaylockbk/Herbie.git@blaylockbk/issue98
+
+      # *or* the latest release from PyPI
+      #- herbie-data
+
+      # Borrow some tools from my garage
+      - git+https://github.com/blaylockbk/Carpenter_Workshop.git
+###############################################################################
+#
+# Note: Being more specific with versions *may* help speed up conda
+# creating/updating environments
+# https://www.anaconda.com/blog/understanding-and-improving-condas-performance
+#
+###############################################################################
+#
+# To create this environment
+#
+#     wget https://github.com/blaylockbk/Herbie/raw/main/environment-dev.yml
+#     conda env create -f environment-dev.yml
+#
+# To update this environment
+#
+#     conda env update -f environment-dev.yml --prune
+#
+# To remove this environment
+#
+#     conda env remove --name herbie-dev
+#
+###############################################################################

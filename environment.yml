@@ -4,67 +4,48 @@ channels:
 dependencies:
   - python>=3.10
   - pip
-  - git
-  - curl
-  - rclone # Not required, but is an awesome alternative (https://rclone.org/)
-  - wgrib2 # ONLY AVAILABLE ON LINUX. Comment if not using Linux.
 
-  # ===========
-  # Handy Tools
-  # ===========
+  #==============
+  # Dependencies
+  #==============
   - cartopy>=0.20.3
   - cfgrib>=0.9.10.1
-  - eccodes>=2.26.0
-  - geopandas
-  - h5py
-  - jupyter
-  - jupyterlab
-  - matplotlib>=3.4.3
+  - matplotlib>=3.5.3
   - metpy
-  - netcdf4
-  - numpy>=1.23.1
-  - pandas>=1.4.3
-  - pygrib>=2.1.4
-  - pylint
-  - pyproj>=3.3.1
-  - requests>=2.27.1
-  - s3fs
-  - scipy
+  - numpy
+  - pandas
+  - pygrib
+  - requests
   - toml
   - xarray>=2022.6.0
-  - zarr
 
-  # ===================
-  # Formatter & Testing
-  # ===================
+  #====================
+  # Other Dependencies
+  #====================
+  - curl
+  - eccodes # required by cfgrib
+  - geos # required by cartopy
+  - proj # required by cartopy
+  #- wgrib2 # ONLY AVAILABLE ON LINUX. Uncomment if you want this optional dependency.
+
+  #================
+  # Optional Tools
+  #================
   - black
-  - isort
-  - pylint
+  - black-jupyter
+  - jupyter
+  - jupyterlab
   - pytest
-  - line_profiler
-
-  # =============
-  # Documentation
-  # =============
-  - sphinx>=4.4.0
-  - nbsphinx
-  - nbconvert>=6.5
-  - pydata-sphinx-theme # PyData Sphinx Theme (i.e, Numpy, Pandas, MetPy)
-  - sphinx-design
-  - recommonmark
-  - sphinx-markdown-tables
-  - sphinxcontrib-mermaid # For mermaid diagram support
-  - autodocsumm
-  - sphinx-autosummary-accessors # pandas and xarray accessor docs
-  - latexmk
-  - myst-parser
-  - linkify-it-py
+  #- rclone # Not used by Herbie, but is an awesome alternative (https://rclone.org/)
 
   - pip:
-      # Herbie: Development version from GitHub
-      - git+https://github.com/blaylockbk/Herbie.git
-      # *or* the latest release from PyPI
+      # Install last published version on PyPi
       #- herbie-data
+
+      # ~~ or ~~
+
+      # Install most recent changes from GitHub
+      - git+https://github.com/blaylockbk/Herbie.git
 
       # Borrow some tools from my garage
       - git+https://github.com/blaylockbk/Carpenter_Workshop.git
@@ -87,6 +68,6 @@ dependencies:
 #
 # To remove this environment
 #
-#     conda env remove --name environment
+#     conda env remove --name herbie
 #
 ###############################################################################
