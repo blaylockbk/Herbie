@@ -75,9 +75,9 @@ try:
 except:
     warnings.warn(
         "herbie xarray accessors could not be imported."
-        "You are probably missing the Carpenter_Workshop."
+        "Probably missing a dependency like MetPy."
         "If you want to use these functions, try"
-        "`pip install git+https://github.com/blaylockbk/Carpenter_Workshop.git`"
+        "`pip install metpy`"
     )
     pass
 
