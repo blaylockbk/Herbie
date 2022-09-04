@@ -62,6 +62,18 @@ def _validate_DATES(DATES):
     return DATES
 
 
+def Herbie_latest(n=24, freq="1H", **kwargs):
+    """Search for the most recent GRIB2 file"""
+    current = pd.Timestamp.now("utc").tz_localize(None).floor(freq)
+
+    for i in range(n):
+        date = current - (pd.Timedelta(freq) * i)
+        H = Herbie(date, **kwargs)
+        if H.grib:
+            break
+    return H
+
+
 class FastHerbie:
     def __init__(self, DATES, fxx=[0], *, max_threads=50, **kwargs):
         """Create many Herbie objects with methods to download or read with xarray.
