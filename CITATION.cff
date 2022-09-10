@@ -7,7 +7,7 @@ authors:
     email: blaylockbk@gmail.com
     orcid: "https://orcid.org/0000-0003-2133-9313"
 title: "Herbie: Retrieve Numerical Weather Prediction Model Data"
-version: 0.0.10
+version: 2022.09.0
 date-released: "2022-05-06"
 url: "https://blaylockbk.github.io/Herbie/_build/html/"
 repository-code: "https://github.com/blaylockbk/Herbie"
