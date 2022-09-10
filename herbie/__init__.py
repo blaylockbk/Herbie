@@ -99,4 +99,4 @@ config["default"]["save_dir"] = Path(config["default"]["save_dir"]).expand()
 
 
 from herbie.archive import Herbie
-from herbie.tools import FastHerbie
+from herbie.tools import FastHerbie, Herbie_latest, Herbie_latest2

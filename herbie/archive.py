@@ -172,15 +172,16 @@ class Herbie:
         """
         self.fxx = fxx
 
-        if date is not None:
+        if date:
             # User supplied `date`, which is the model initialization datetime.
             self.date = pd.to_datetime(date)
             self.valid_date = self.date + timedelta(hours=self.fxx)
-        else:
-            assert valid_date is not None, "`date` or `valid_date` is required."
+        elif valid_date:
             # User supplied `valid_date`, which is the model valid datetime.
             self.valid_date = pd.to_datetime(valid_date)
             self.date = self.valid_date - timedelta(hours=self.fxx)
+        else:
+            raise ValueError("Must specify either `date` or `valid_date`")
 
         self.model = model.lower()
         self.product = product
