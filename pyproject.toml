@@ -1,9 +1,11 @@
 [build-system]
-requires = ["setuptools>=42", "wheel", "setuptools_scm[toml]>=3.4"]
+requires = ["setuptools>=42", "wheel", "setuptools_scm[toml]>=3.4", "calver"]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools_scm]
 version_scheme = "post-release"
+local_scheme = "no-local-version"
+write_to = "herbie/_version.py"
 
 [tool.isort]
 profile = "black"

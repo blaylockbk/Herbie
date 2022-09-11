@@ -26,3 +26,5 @@ MANIFEST
 *.so
 .eggs/
 *.h5
+
+herbie/_version.py

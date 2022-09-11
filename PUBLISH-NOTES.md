@@ -18,13 +18,14 @@ Created a new conda environment with twine
 
 ```bash
 # To create an environment for publishing to PyPI
-conda create -n pypi python=3 twine pip -c conda-forge
+conda create -n pypi python=3 twine pip build -c conda-forge
 
 # To update that conda environment
 conda update -n pypi --all
 ```
 
 ```bash
+## THIS IS OLD; DO NOT USE
 # Build the package for PyPI
 conda activate pypi
 cd Herbie
@@ -32,10 +33,15 @@ python setup.py sdist bdist_wheel
 twine check dist/*
 ```
 
-Or, should I be using this https://github.com/pypa/build
+Actually, I be using this https://github.com/pypa/build
+
+>following steps from here: https://towardsdatascience.com/how-to-package-your-python-code-df5a7739ab2e
 
 ```bash
+conda activate pypi
+cd Herbie
 python -m build
+twine check dist/*
 ```
 
 ### Upload Package to PyPI
