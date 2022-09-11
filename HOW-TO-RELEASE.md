@@ -1,6 +1,6 @@
 _Notes for when Brian needs to publish a new release_.
 
-# How to publish the `herbie-data` package
+# How to publish a new release of the `herbie-data` package
 
 ## Pre-step
 
@@ -9,12 +9,12 @@ Update Herbie version number in
 - ~~setup.py~~
 - ./CITATION.cff
 - ./docs/conf.py
-- Create a tag and release in GitHub
 - Build the docs (one last time before release)
+- **Create a tag and release in GitHub**
 
 ## 📦 Publish to PyPI
 
-Created a new conda environment with twine
+Created a new conda environment with twine, pip, and build
 
 ```bash
 # To create an environment for publishing to PyPI
@@ -33,9 +33,7 @@ python setup.py sdist bdist_wheel
 twine check dist/*
 ```
 
-Actually, I be using this https://github.com/pypa/build
-
->following steps from here: https://towardsdatascience.com/how-to-package-your-python-code-df5a7739ab2e
+**NEW** - Using the [build](https://github.com/pypa/build) tool to build my package following the steps from [here](https://towardsdatascience.com/how-to-package-your-python-code-df5a7739ab2e)
 
 ```bash
 conda activate pypi
@@ -44,21 +42,22 @@ python -m build
 twine check dist/*
 ```
 
-### Upload Package to PyPI
+### Upload Package PyPI
 
 ```bash
+# Upload to TEST PyPI site
+twine upload --skip-existing --repository-url https://test.pypi.org/legacy/ dist/*
+
+# followed by username and password
+```
+
+```bash
+# Upload to REAL PyPI site
 twine upload --skip-existing dist/*
 
 # followed by username/password
 ```
 
-### Upload Package to Test PyPI
-
-```bash
-twine upload --skip-existing --repository-url https://test.pypi.org/legacy/ dist/*
-
-# followed by username and password
-```
 
 ## 🐍 Publish to Conda
 
