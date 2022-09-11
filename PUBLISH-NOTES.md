@@ -29,6 +29,9 @@ python setup.py sdist bdist_wheel
 twine check dist/*
 ```
 
+> Or, should I be using this https://github.com/pypa/build
+
+
 ### Upload Package to PyPI
 ```bash
 twine upload --skip-existing dist/*
