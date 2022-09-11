@@ -5,8 +5,10 @@ _Notes for when Brian needs to publish a new release_.
 ## Pre-step 
 Update Herbie version number in
 - ~~setup.py~~
-- CITATION.cff
+- ./CITATION.cff
+- ./docs/conf.py
 - Create a tag and release in GitHub
+- Build the docs (one last time before release)
 
 ## 📦 Publish to PyPI
 
