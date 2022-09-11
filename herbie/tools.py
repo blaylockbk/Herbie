@@ -9,7 +9,6 @@ Herbie Tools
 from datetime import datetime, timedelta
 
 import logging
-import os
 import cartopy.crs as ccrs
 import metpy  # accessor needed to parse crs
 import numpy as np
