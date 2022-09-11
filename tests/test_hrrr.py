@@ -8,6 +8,8 @@ from datetime import datetime, timedelta
 
 from herbie import Herbie
 
+import os
+
 now = datetime.now()
 today = datetime(now.year, now.month, now.day, now.hour) - timedelta(hours=6)
 yesterday = today - timedelta(days=1)
@@ -25,19 +27,23 @@ def test_hrrr_aws1():
 
 
 def test_hrrr_aws2():
-    # WILL FAIL ON WINDOWS (can't remove grib2 file)
 
     # Test HRRR with string date
     H = Herbie(yesterday_str, model="hrrr", product="prs", save_dir="$TMPDIR")
     H.xarray("(?:U|V)GRD:10 m")
-    assert not H.get_localFilePath("(?:U|V)GRD:10 m").exists()
+
+    if os.name != 'nt':
+        # If not windows (nt), then check that the file was removed.
+        # (because windows can't remove an open grib2 file).
+        assert not H.get_localFilePath("(?:U|V)GRD:10 m").exists()
 
 
 def test_create_idx_with_wgrib2():
     """Test that Herbie can make an index file with wgrib2 when an index file is not found"""
-    # WILL FAIL ON WINDOWS (no wgrib2)
+    if os.name != 'nt':
+        # If not windows (nt), then try using wgrib2
+        H = Herbie(today_str, model="hrrr", product="sfc", save_dir="$TMPDIR")
+        H.download()
+        H.idx = None
+        assert len(H.index_as_dataframe) > 0
 
-    H = Herbie(today_str, model="hrrr", product="sfc", save_dir="$TMPDIR")
-    H.download()
-    H.idx = None
-    assert len(H.index_as_dataframe) > 0
