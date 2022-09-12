@@ -9,7 +9,6 @@ Herbie Tools
 from datetime import datetime, timedelta
 
 import logging
-import os
 import cartopy.crs as ccrs
 import metpy  # accessor needed to parse crs
 import numpy as np
@@ -60,6 +59,34 @@ def _validate_DATES(DATES):
         )
 
     return DATES
+
+
+def Herbie_latest(n=6, freq="1H", **kwargs):
+    """Search for the most recent GRIB2 file (using multithreading).
+
+    Parameters
+    ----------
+    n : int
+        Number of attempts to try.
+    freq : pandas-parsable timedelta string
+        Time interval between each attempt.
+
+    Examples
+    --------
+    When ``n=6``, and ``freq='1H'``, Herbie will look for the latest
+    file within the last 6 hours (suitable for the HRRR model).
+
+    When ``n=3``, and ``freq='6H'``, Herbie will look for the latest
+    file within the last 18 hours (suitable for the GFS model).
+    """
+    current = pd.Timestamp.now("utc").tz_localize(None).floor(freq)
+    DATES = pd.date_range(
+        start=current - (pd.Timedelta(freq) * n),
+        end=current,
+        freq=freq,
+    )
+    FH = FastHerbie(DATES, **kwargs)
+    return FH.file_exists[-1]
 
 
 class FastHerbie:

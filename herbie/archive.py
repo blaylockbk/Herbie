@@ -75,9 +75,9 @@ try:
 except:
     warnings.warn(
         "herbie xarray accessors could not be imported."
-        "You are probably missing the Carpenter_Workshop."
+        "Probably missing a dependency like MetPy."
         "If you want to use these functions, try"
-        "`pip install git+https://github.com/blaylockbk/Carpenter_Workshop.git`"
+        "`pip install metpy`"
     )
     pass
 
@@ -172,15 +172,16 @@ class Herbie:
         """
         self.fxx = fxx
 
-        if date is not None:
+        if date:
             # User supplied `date`, which is the model initialization datetime.
             self.date = pd.to_datetime(date)
             self.valid_date = self.date + timedelta(hours=self.fxx)
-        else:
-            assert valid_date is not None, "`date` or `valid_date` is required."
+        elif valid_date:
             # User supplied `valid_date`, which is the model valid datetime.
             self.valid_date = pd.to_datetime(valid_date)
             self.date = self.valid_date - timedelta(hours=self.fxx)
+        else:
+            raise ValueError("Must specify either `date` or `valid_date`")
 
         self.model = model.lower()
         self.product = product
@@ -475,17 +476,40 @@ class Herbie:
             # Reassign the index DataFrame with the requested searchString
             idx_df = self.read_idx(searchString)
 
+            # ======================================
+            # Make a unique filename for the subset
+
             # Get a list of all GRIB message numbers. We will use this
             # in the output file name as a unique identifier.
             all_grib_msg = "-".join([f"{i:g}" for i in idx_df.index])
 
             # To prevent "filename too long" error, create a hash to
-            # make unique filename.
-            hash_label = hashlib.sha1(all_grib_msg.encode()).hexdigest()
+            # that represents the file name and subseted variables to
+            # shorten the name.
 
-            # Prepend the filename with the has label to distinguish it from the full file.
-            # The hash label is a cryptic representation of the GRIB messages in the subset
-            outFile = outFile.parent / f"subset_{hash_label}__{outFile.name}"
+            # I want the files to still be sorted by date, fxx, and
+            # subset fields, so include three separate hashes to similar
+            # files will be sorted together.
+
+            hash_date = hashlib.blake2b(
+                f"{self.date:%Y%m%d%H%M}".encode(), digest_size=1
+            ).hexdigest()
+
+            hash_fxx = hashlib.blake2b(
+                f"{self.fxx}".encode(), digest_size=1
+            ).hexdigest()
+
+            hash_label = hashlib.blake2b(
+                all_grib_msg.encode(), digest_size=2
+            ).hexdigest()
+
+            # Prepend the filename with the hash label to distinguish it
+            # from the full file. The hash label is a cryptic
+            # representation of the GRIB messages in the subset.
+            outFile = (
+                outFile.parent
+                / f"subset_{hash_date}{hash_fxx}{hash_label}__{outFile.name}"
+            )
 
         return outFile
 

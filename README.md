@@ -9,6 +9,7 @@
 # Herbie: Retrieve NWP Model Data 🏁
 
 <!-- Badges -->
+
 [![](https://img.shields.io/pypi/v/herbie-data)](https://pypi.python.org/pypi/herbie-data/)
 ![](https://img.shields.io/github/license/blaylockbk/Herbie)
 [![DOI](https://zenodo.org/badge/275214142.svg)](https://zenodo.org/badge/latestdoi/275214142)
@@ -21,6 +22,7 @@
 **Herbie** is a python package that downloads recent and archived numerical weather prediction (NWP) model output from different cloud archive sources. **Its most popular capability is to download HRRR model data.** NWP data in GRIB2 format can be read with xarray+cfgrib. Much of this data is made available through the [NOAA Open Data Dissemination](https://www.noaa.gov/information-technology/open-data-dissemination) (NODD) Program (formerly the Big Data Program) which has made weather data more accessible than ever before.
 
 Herbie helps you discover, download, and read data from:
+
 - [High Resolution Rapid Refresh (HRRR)](https://blaylockbk.github.io/Herbie/_build/html/user_guide/notebooks/data_hrrr.html) | [HRRR-Alaska](https://blaylockbk.github.io/Herbie/_build/html/user_guide/notebooks/data_hrrrak.html)
 - [Rapid Refresh (RAP)](https://blaylockbk.github.io/Herbie/_build/html/user_guide/notebooks/data_rap.html)
 - [Global Forecast System (GFS)](https://blaylockbk.github.io/Herbie/_build/html/user_guide/notebooks/data_gfs.html)
@@ -32,23 +34,40 @@ Herbie helps you discover, download, and read data from:
 
 # 📓 [Herbie Documentation](https://blaylockbk.github.io/Herbie/_build/html/)
 
-## Install
+## Installation
 
-Herbie requires cURL and **Python 3.8+** with requests, numpy, pandas, xarray, and cfgrib. Optional packages are matplotlib, cartopy, and [Carpenter Workshop](https://github.com/blaylockbk/Carpenter_Workshop).
-
-```bash
-pip install herbie-data
-```
-or
-```bash
-pip install git+https://github.com/blaylockbk/Herbie.git
-```
-
-You may also create the provided **[conda environment](https://github.com/blaylockbk/Herbie/blob/main/environment.yml)**.
+The easiest way to instal Herbie and its dependencies is within a [Conda](https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html) environment. I provided an **[`environment.yml`](https://github.com/blaylockbk/Herbie/blob/main/environment.yml)** file that you may use or modify.
 
 ```bash
+# Download environment file
 wget https://github.com/blaylockbk/Herbie/raw/main/environment.yml
+
+# Create the environment
 conda env create -f environment.yml
+
+# Activate the environment
+conda activate herbie
+```
+
+Alternatively, Herbie is published on PyPI and you can install it with pip, _but_ it requires some dependencies that you will have to install yourself:
+
+- Python 3.8, 3.9, or **3.10** (recommended)
+- cURL
+- [Cartopy](https://scitools.org.uk/cartopy/docs/latest/installing.html), which requires GEOS and Proj.
+- [cfgrib](https://github.com/ecmwf/cfgrib), which requires eccodes.
+- _Optional:_ wgrib2
+- _Optional:_ [Carpenter Workshop](https://github.com/blaylockbk/Carpenter_Workshop)
+
+When those are installed within your environment, _then_ you can install Herbie with pip.
+
+```bash
+# Latest published version
+pip install herbie-data
+
+# ~~ or ~~
+
+# Most recent changes
+pip install git+https://github.com/blaylockbk/Herbie.git
 ```
 
 ## Capabilities
@@ -59,7 +78,6 @@ conda env create -f environment.yml
 - Read data with xarray.
 - Read index file with Pandas.
 - Plot data with Cartopy (very early development).
-
 
 ```mermaid
   graph TD;
@@ -119,7 +137,7 @@ During my PhD at the University of Utah, I created, at the time, the [only publi
 
 In the later half of 2020, the HRRR dataset from 2014 to present was made available through the [NOAA Big Data Program](https://www.noaa.gov/information-technology/big-data). Herbie organizes and expands my original download scripts into a more coherent package with the extended ability to download data for other models from many different archive sources.
 
-I originally released this package under the name “HRRR-B” because it only worked with the HRRR dataset; the “B” was for my first-name initial. Since then, I have added the ability to download RAP, GFS, ECMWF, GEFS, RRFS, and others with potentially more models in the future. Thus, this package was renamed ***Herbie***, named after one of my favorite childhood movie characters. 
+I originally released this package under the name “HRRR-B” because it only worked with the HRRR dataset; the “B” was for my first-name initial. Since then, I have added the ability to download RAP, GFS, ECMWF, GEFS, RRFS, and others with potentially more models in the future. Thus, this package was renamed **_Herbie_**, named after one of my favorite childhood movie characters.
 
 The University of Utah MesoWest group now manages a [HRRR archive in Zarr format](http://hrrr.chpc.utah.edu/). Maybe someday, Herbie will be able to take advantage of that archive.
 
@@ -129,25 +147,25 @@ The University of Utah MesoWest group now manages a [HRRR archive in Zarr format
 
 🏁 Brian
 
-
 <br>
 
-|||
-|:----:|---|
-| 👨🏻‍💻 | [Contributing Guidelines](https://blaylockbk.github.io/Herbie/_build/html/user_guide/contribute.html)  
-| 💬 | [GitHub Discussions](https://github.com/blaylockbk/Herbie/discussions)  
-| 🚑 | [GitHub Issues](https://github.com/blaylockbk/Herbie/issues)  
-| 🌐 | [Personal Webpage](http://home.chpc.utah.edu/~u0553130/Brian_Blaylock/home.html)  
-| 🌐 | [University of Utah HRRR archive](http://hrrr.chpc.utah.edu/) 
+|     |                                                                                                       |
+| :-: | ----------------------------------------------------------------------------------------------------- |
+| 👨🏻‍💻  | [Contributing Guidelines](https://blaylockbk.github.io/Herbie/_build/html/user_guide/contribute.html) |
+| 💬  | [GitHub Discussions](https://github.com/blaylockbk/Herbie/discussions)                                |
+| 🚑  | [GitHub Issues](https://github.com/blaylockbk/Herbie/issues)                                          |
+| 🌐  | [Personal Webpage](http://home.chpc.utah.edu/~u0553130/Brian_Blaylock/home.html)                      |
+| 🌐  | [University of Utah HRRR archive](http://hrrr.chpc.utah.edu/)                                         |
 
-Cite Herbie: 
+Cite Herbie:
 
-    Blaylock, B. K., 2022: Herbie: Retrieve Numerical Weather Prediction     
+    Blaylock, B. K., 2022: Herbie: Retrieve Numerical Weather Prediction
     Model Data [Computer software]. https://doi.org/10.5281/zenodo.6526110.
 
 <br>
 
 P.S. If you like Herbie, check out my other repos:
+
 - [🌎 GOES-2-go](https://github.com/blaylockbk/goes2go): A python package to download GOES-East/West data and make RGB composites.
 - [🌡 SynopticPy](https://github.com/blaylockbk/SynopticPy): A python package to download mesonet data from the Synoptic API.
 - [🔨 Carpenter Workshop](https://github.com/blaylockbk/Carpenter_Workshop): A python package with various tools I made that are useful (like easy funxtions to build Cartopy maps).

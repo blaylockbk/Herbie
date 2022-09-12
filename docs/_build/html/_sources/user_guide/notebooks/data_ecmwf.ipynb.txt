@@ -39,7 +39,7 @@
     "# The following are imported from\n",
     "# https://github.com/blaylockbk/Carpenter_Workshop\n",
     "from paint.standard2 import cm_tmp, cm_wind, cm_wave_height\n",
-    "from toolbox.cartopy_tools import common_features, pc\n"
+    "from toolbox.cartopy_tools import common_features, pc"
    ]
   },
   {
@@ -70,7 +70,7 @@
    ],
    "source": [
     "H = Herbie(\"2022-01-26\", model=\"ecmwf\", product=\"oper\", fxx=12)\n",
-    "H.download()\n"
+    "H.download()"
    ]
   },
   {
@@ -141,7 +141,7 @@
    ],
    "source": [
     "# Show the searchString_help\n",
-    "print(H.searchString_help)\n"
+    "print(H.searchString_help)"
    ]
   },
   {
@@ -195,7 +195,7 @@
     }
    ],
    "source": [
-    "ds = H.xarray(\":2t:\")\n"
+    "ds = H.xarray(\":2t:\")"
    ]
   },
   {
@@ -628,7 +628,7 @@
     }
    ],
    "source": [
-    "ds\n"
+    "ds"
    ]
   },
   {
@@ -689,7 +689,7 @@
     "    f\"{ds.model.upper()}: {H.product_description}\\nValid: {ds.valid_time.dt.strftime('%H:%M UTC %d %b %Y').item()}\",\n",
     "    loc=\"left\",\n",
     ")\n",
-    "ax.set_title(ds.t2m.GRIB_name, loc=\"right\")\n"
+    "ax.set_title(ds.t2m.GRIB_name, loc=\"right\")"
    ]
   },
   {
@@ -1178,7 +1178,7 @@
     "ds[\"spd\"].attrs[\"GRIB_name\"] = \"10 m Wind Speed\"\n",
     "\n",
     "\n",
-    "ds\n"
+    "ds"
    ]
   },
   {
@@ -1229,7 +1229,7 @@
     "    f\"{ds.model.upper()}: {H.product_description}\\nValid: {ds.valid_time.dt.strftime('%H:%M UTC %d %b %Y').item()}\",\n",
     "    loc=\"left\",\n",
     ")\n",
-    "ax.set_title(ds.spd.GRIB_name, loc=\"right\")\n"
+    "ax.set_title(ds.spd.GRIB_name, loc=\"right\")"
    ]
   },
   {
@@ -1704,7 +1704,7 @@
    "source": [
     "# Get 500 hPa specific humidity and geopotential height\n",
     "ds = H.xarray(\":(q|gh):500\")\n",
-    "ds\n"
+    "ds"
    ]
   },
   {
@@ -1757,8 +1757,8 @@
     "    ds.gh,\n",
     "    transform=pc,\n",
     "    colors=\"k\",\n",
-    "    linewidths=.5,\n",
-    "    levels=range(0,10_000,60*2)\n",
+    "    linewidths=0.5,\n",
+    "    levels=range(0, 10_000, 60 * 2),\n",
     ")\n",
     "\n",
     "\n",
@@ -1767,8 +1767,9 @@
     "    loc=\"left\",\n",
     ")\n",
     "ax.set_title(\n",
-    "    f\"{ds.isobaricInhPa.item()} {ds.isobaricInhPa.units}\\n{ds.q.GRIB_name}/{ds.gh.GRIB_name}\", loc=\"right\"\n",
-    ")\n"
+    "    f\"{ds.isobaricInhPa.item()} {ds.isobaricInhPa.units}\\n{ds.q.GRIB_name}/{ds.gh.GRIB_name}\",\n",
+    "    loc=\"right\",\n",
+    ")"
    ]
   },
   {
@@ -1794,7 +1795,7 @@
     }
    ],
    "source": [
-    "H = Herbie('2022-01-26 00:00', model='ecmwf', product='wave')"
+    "H = Herbie(\"2022-01-26 00:00\", model=\"ecmwf\", product=\"wave\")"
    ]
   },
   {
@@ -2316,15 +2317,25 @@
    "source": [
     "ax = common_features(\"50m\", crs=ds.herbie.crs, figsize=[10, 10]).STATES().BORDERS().ax\n",
     "p = ax.pcolormesh(\n",
-    "    ds.longitude, ds.latitude, ds.swh, transform=pc, **cm_wave_height(units='m').cmap_kwargs\n",
+    "    ds.longitude,\n",
+    "    ds.latitude,\n",
+    "    ds.swh,\n",
+    "    transform=pc,\n",
+    "    **cm_wave_height(units=\"m\").cmap_kwargs,\n",
     ")\n",
-    "plt.colorbar(p, ax=ax, orientation=\"horizontal\", pad=0.05, **cm_wave_height(units='m').cbar_kwargs)\n",
+    "plt.colorbar(\n",
+    "    p,\n",
+    "    ax=ax,\n",
+    "    orientation=\"horizontal\",\n",
+    "    pad=0.05,\n",
+    "    **cm_wave_height(units=\"m\").cbar_kwargs,\n",
+    ")\n",
     "\n",
     "ax.set_title(\n",
     "    f\"{ds.model.upper()}: {H.product_description}\\nValid: {ds.valid_time.dt.strftime('%H:%M UTC %d %b %Y').item()}\",\n",
     "    loc=\"left\",\n",
     ")\n",
-    "ax.set_title(ds.swh.GRIB_name, loc=\"right\")\n"
+    "ax.set_title(ds.swh.GRIB_name, loc=\"right\")"
    ]
   },
   {
@@ -2463,8 +2474,8 @@
     }
    ],
    "source": [
-    "H = Herbie('2022-01-26 00:00', model='ecmwf', product='enfo')\n",
-    "ds = H.xarray(':2t:')\n",
+    "H = Herbie(\"2022-01-26 00:00\", model=\"ecmwf\", product=\"enfo\")\n",
+    "ds = H.xarray(\":2t:\")\n",
     "ds"
    ]
   },
@@ -3485,7 +3496,7 @@
     }
    ],
    "source": [
-    "H = Herbie('2022-01-26 00:00', model='ecmwf', product='waef')\n",
+    "H = Herbie(\"2022-01-26 00:00\", model=\"ecmwf\", product=\"waef\")\n",
     "ds = H.xarray(None)\n",
     "ds"
    ]
@@ -4943,7 +4954,7 @@
     }
    ],
    "source": [
-    "H = Herbie('2022-01-26', model='ecmwf', product='enfo')\n",
+    "H = Herbie(\"2022-01-26\", model=\"ecmwf\", product=\"enfo\")\n",
     "H.read_idx()"
    ]
   },
@@ -4978,7 +4989,7 @@
     }
    ],
    "source": [
-    "H = Herbie(\"2022-01-26\", model=\"ecmwf\", product=\"oper\", fxx=12)\n"
+    "H = Herbie(\"2022-01-26\", model=\"ecmwf\", product=\"oper\", fxx=12)"
    ]
   },
   {
@@ -4996,9 +5007,8 @@
     }
    ],
    "source": [
-    "\n",
     "# Download the full grib2 file\n",
-    "H.download()\n"
+    "H.download()"
    ]
   },
   {
@@ -5027,9 +5037,8 @@
     }
    ],
    "source": [
-    "\n",
     "# Download just the 10-m u and v winds\n",
-    "H.download(searchString=\":10(u|v):\")\n"
+    "H.download(searchString=\":10(u|v):\")"
    ]
   },
   {
@@ -5049,7 +5058,6 @@
     }
    ],
    "source": [
-    "\n",
     "# Retrieve the 500 hPa temperature as an xarray.Dataset\n",
     "ds = H.xarray(searchString=\":t:500:\")"
    ]

@@ -33,37 +33,49 @@ Herbie: Retrieve NWP Model Data
 
 
 
-Install
--------
-Herbie requires **Python 3.8+**
-
-Install with pip
-
-.. code:: bash
-
-   pip install herbie-data
-
-or
+Installation
+------------
+The easiest way to instal Herbie and its dependencies is within a
+`Conda <https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html>`__
+environment. I provided an
+`environment.yml <https://github.com/blaylockbk/Herbie/blob/main/environment.yml>`__
+file that you may use or modify.
 
 .. code:: bash
 
-   pip install git+https://github.com/blaylockbk/Herbie.git
-
-To install Herbie within a conda environment file, you may use the `environment.yml
-<https://github.com/blaylockbk/Herbie/blob/main/environment.yml>`_ file I use to develop Herbie.
-
-.. code:: bash
-
+   # Download environment file
    wget https://github.com/blaylockbk/Herbie/raw/main/environment.yml
 
    # Create the environment
    conda env create -f environment.yml
 
-   # Update the environment
-   conda env update -f environment.yml
-
    # Activate the environment
    conda activate herbie
+
+Alternatively, Herbie is published on PyPI and can be install with pip, *but* it requires some dependencies that you will have to install yourself:
+
+-  Python 3.8, 3.9, or **3.10** (recommended)
+-  cURL
+-  `Cartopy <https://scitools.org.uk/cartopy/docs/latest/installing.html>`__,
+   which requires GEOS and Proj.
+-  `cfgrib <https://github.com/ecmwf/cfgrib>`__, which requires eccodes.
+-  *Optional:* wgrib2
+-  *Optional:* `Carpenter
+   Workshop <https://github.com/blaylockbk/Carpenter_Workshop>`__
+
+When those are installed within your environment, *then* you can install
+Herbie with pip.
+
+.. code:: bash
+
+   # Latest published version
+   pip install herbie-data
+
+   # ~~ or ~~
+
+   # Most recent changes
+   pip install git+https://github.com/blaylockbk/Herbie.git
+
 
 Capabilities
 ------------

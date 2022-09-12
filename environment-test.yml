@@ -1,0 +1,33 @@
+## Used to test Herbie install from PyPI
+
+name: herbie-test
+channels:
+  - conda-forge
+dependencies:
+  - python>=3.10
+  - pip
+
+  #==============
+  # Dependencies
+  #==============
+  - cartopy>=0.20.3
+  - cfgrib>=0.9.10.1
+  - matplotlib>=3.5.3
+  - metpy
+  - numpy
+  - pandas
+  - pygrib
+  - requests
+  - toml
+  - xarray>=2022.6.0
+
+  #====================
+  # Other Dependencies
+  #====================
+  - curl
+  - eccodes # required by cfgrib
+  - geos # required by cartopy
+  - proj # required by cartopy
+
+  - pip:
+      - herbie-data
