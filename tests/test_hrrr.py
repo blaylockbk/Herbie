@@ -46,4 +46,3 @@ def test_create_idx_with_wgrib2():
         H.download()
         H.idx = None
         assert len(H.index_as_dataframe) > 0
-
