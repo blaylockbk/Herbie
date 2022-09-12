@@ -32,7 +32,7 @@ def test_hrrr_aws2():
     H = Herbie(yesterday_str, model="hrrr", product="prs", save_dir="$TMPDIR")
     H.xarray("(?:U|V)GRD:10 m")
 
-    if os.name != 'nt':
+    if os.name != "nt":
         # If not windows (nt), then check that the file was removed.
         # (because windows can't remove an open grib2 file).
         assert not H.get_localFilePath("(?:U|V)GRD:10 m").exists()
@@ -40,7 +40,7 @@ def test_hrrr_aws2():
 
 def test_create_idx_with_wgrib2():
     """Test that Herbie can make an index file with wgrib2 when an index file is not found"""
-    if os.name != 'nt':
+    if os.name != "nt":
         # If not windows (nt), then try using wgrib2
         H = Herbie(today_str, model="hrrr", product="sfc", save_dir="$TMPDIR")
         H.download()
