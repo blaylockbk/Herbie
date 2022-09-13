@@ -11,9 +11,14 @@
 <!-- Badges -->
 
 [![](https://img.shields.io/pypi/v/herbie-data)](https://pypi.python.org/pypi/herbie-data/)
-![](https://img.shields.io/github/license/blaylockbk/Herbie)
+[![Conda Version](https://img.shields.io/conda/vn/conda-forge/herbie-data.svg)](https://anaconda.org/conda-forge/herbie-data)
 [![DOI](https://zenodo.org/badge/275214142.svg)](https://zenodo.org/badge/latestdoi/275214142)
+
+![](https://img.shields.io/github/license/blaylockbk/Herbie)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+[![Conda Recipe](https://img.shields.io/badge/recipe-herbie--data-green.svg)](https://anaconda.org/conda-forge/herbie-data)
+[![Conda Downloads](https://img.shields.io/conda/dn/conda-forge/herbie-data.svg)](https://anaconda.org/conda-forge/herbie-data)
+[![Conda Platforms](https://img.shields.io/conda/pn/conda-forge/herbie-data.svg)](https://anaconda.org/conda-forge/herbie-data)
 
 <!-- (Badges) -->
 
@@ -36,11 +41,20 @@ Herbie helps you discover, download, and read data from:
 
 ## Installation
 
-The easiest way to instal Herbie and its dependencies is within a [Conda](https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html) environment. I provided an **[`environment.yml`](https://github.com/blaylockbk/Herbie/blob/main/environment.yml)** file that you may use or modify.
+The easiest way to instal Herbie and its dependencies is with [Conda](https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html) from conda-forge.
+
+```bash
+conda install -c conda-forge herbie-data
+```
+
+
+You may also create the provided Conda environment, **[`environment.yml`](https://github.com/blaylockbk/Herbie/blob/main/environment.yml)**.
 
 ```bash
 # Download environment file
 wget https://github.com/blaylockbk/Herbie/raw/main/environment.yml
+
+# Modify that file if you wish.
 
 # Create the environment
 conda env create -f environment.yml
