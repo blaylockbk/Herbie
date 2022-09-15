@@ -332,7 +332,7 @@ class Herbie:
         """Check that the GRIB2 URL exist and is of useful length."""
         head = requests.head(url)
         check_exists = head.ok
-        if check_exists:
+        if check_exists and "Content-Length" in head.raw.info():
             check_content = int(head.raw.info()["Content-Length"]) > 1_000_000
             return check_exists and check_content
         else:
@@ -528,7 +528,7 @@ class Herbie:
                 self.IDX_STYLE = "wgrib2"
             else:
                 raise ValueError(
-                    f"\nNo index file was found for . \n"
+                    f"\nNo index file was found for {self.grib}\n"
                     f"Download the full file first (with `H.download()`).\n"
                     f"You will need to remake the Herbie object (H = `Herbie()`)\n"
                     f"or delete this cached property: `del H.index_as_dataframe()`"
@@ -542,9 +542,22 @@ class Herbie:
             # https://noaa-hrrr-bdp-pds.s3.amazonaws.com/hrrr.20210101/conus/hrrr.t00z.wrfsfcf00.grib2.idx
             # Sometimes idx has more than the standard messages
             # https://noaa-nbm-grib2-pds.s3.amazonaws.com/blend.20210711/13/core/blend.t13z.core.f001.co.grib2.idx
+            idxstr = None
+            response = requests.get(self.idx)
+            if response.status_code != 200:
+                response.raise_for_status()
+                response.close()
+                raise ValueError(
+                    f"\nCant open index file {self.idx}\n"
+                    f"Download the full file first (with `H.download()`).\n"
+                    f"You will need to remake the Herbie object (H = `Herbie()`)\n"
+                    f"or delete this cached property: `del H.index_as_dataframe()`"
+                )
+            idxstr = StringIO(response.text)
+            response.close()
 
             df = pd.read_csv(
-                self.idx,
+                idxstr,
                 sep=":",
                 names=[
                     "grib_message",
@@ -605,6 +618,7 @@ class Herbie:
 
             r = requests.get(self.idx)
             idxs = [json.loads(x) for x in r.text.split("\n") if x]
+            r.close()
             df = pd.DataFrame(idxs)
 
             # Format the DataFrame
@@ -754,10 +768,11 @@ class Herbie:
             """
             chunk_progress = a * b / c * 100
             total_size_MB = c / 1000000.0
-            print(
-                f"\r🚛💨  Download Progress: {chunk_progress:.2f}% of {total_size_MB:.1f} MB\r",
-                end="",
-            )
+            if verbose:
+                print(
+                    f"\r🚛💨  Download Progress: {chunk_progress:.2f}% of {total_size_MB:.1f} MB\r",
+                    end="",
+                )
 
         def subset(searchString, outFile):
             """
