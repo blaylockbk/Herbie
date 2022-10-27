@@ -328,12 +328,25 @@ class Herbie:
             print("🤝🏻⛔ Bad handshake with pando? Am I able to move on?")
             pass
 
-    def _check_grib(self, url):
-        """Check that the GRIB2 URL exist and is of useful length."""
+    def _check_grib(self, url, min_content_length=10):
+        """
+        Check that the GRIB2 URL exist and is of useful length.
+
+        Parameters
+        ----------
+        url : str
+            Full URL path to the GRIB file
+        min_content_length : int
+            The HTTP header content-length in bytes.
+            Used to check a file is of useful size. This was once set to
+            1_000_000 (1 MB), but there was an issue with NOMADS not
+            providing this right (see #114). I decreased to 10 and
+            essentially turned off this check.
+        """
         head = requests.head(url)
         check_exists = head.ok
         if check_exists and "Content-Length" in head.raw.info():
-            check_content = int(head.raw.info()["Content-Length"]) > 1_000_000
+            check_content = int(head.raw.info()["Content-Length"]) > min_content_length
             return check_exists and check_content
         else:
             return False
