@@ -546,31 +546,34 @@ class Herbie:
                     f"You will need to remake the Herbie object (H = `Herbie()`)\n"
                     f"or delete this cached property: `del H.index_as_dataframe()`"
                 )
-
-        assert self.idx is not None, f"No index file found for {self.grib}."
+        if self.idx is None:
+            raise ValueError(f"No index file found for {self.grib}.")
 
         if self.IDX_STYLE == "wgrib2":
-            # Sometimes idx end in ':', other times it doesn't (in some Pando files).
+            # Sometimes idx lines end in ':', other times it doesn't (in some Pando files).
             # https://pando-rgw01.chpc.utah.edu/hrrr/sfc/20180101/hrrr.t00z.wrfsfcf00.grib2.idx
             # https://noaa-hrrr-bdp-pds.s3.amazonaws.com/hrrr.20210101/conus/hrrr.t00z.wrfsfcf00.grib2.idx
             # Sometimes idx has more than the standard messages
             # https://noaa-nbm-grib2-pds.s3.amazonaws.com/blend.20210711/13/core/blend.t13z.core.f001.co.grib2.idx
-            idxstr = None
-            response = requests.get(self.idx)
-            if response.status_code != 200:
-                response.raise_for_status()
+            if self.idx_source == "local":
+                read_this_idx = self.idx
+            else:
+                read_this_idx = None
+                response = requests.get(self.idx)
+                if response.status_code != 200:
+                    response.raise_for_status()
+                    response.close()
+                    raise ValueError(
+                        f"\nCant open index file {self.idx}\n"
+                        f"Download the full file first (with `H.download()`).\n"
+                        f"You will need to remake the Herbie object (H = `Herbie()`)\n"
+                        f"or delete this cached property: `del H.index_as_dataframe()`"
+                    )
+                read_this_idx = StringIO(response.text)
                 response.close()
-                raise ValueError(
-                    f"\nCant open index file {self.idx}\n"
-                    f"Download the full file first (with `H.download()`).\n"
-                    f"You will need to remake the Herbie object (H = `Herbie()`)\n"
-                    f"or delete this cached property: `del H.index_as_dataframe()`"
-                )
-            idxstr = StringIO(response.text)
-            response.close()
 
             df = pd.read_csv(
-                idxstr,
+                read_this_idx,
                 sep=":",
                 names=[
                     "grib_message",
