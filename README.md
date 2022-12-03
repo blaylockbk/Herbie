@@ -156,7 +156,7 @@ I originally released this package under the name “HRRR-B” because it only w
 The University of Utah MesoWest group now manages a [HRRR archive in Zarr format](http://hrrr.chpc.utah.edu/). Maybe someday, Herbie will be able to take advantage of that archive.
 
 ## How to Cite and Acknowledge
-If you use Herbie, please cite this software and/or include me in your acknowledgments.
+If Herbie played an important role in your work, please [tell me about it](https://github.com/blaylockbk/Herbie/discussions/categories/show-and-tell)! Also, consider including a citation or acknowledgement in your article or product.
 
 ***Suggested Citation***
 
