@@ -75,6 +75,9 @@ dependencies:
 
       # Borrow some tools from my garage
       - git+https://github.com/blaylockbk/Carpenter_Workshop.git
+
+
+      - git+https://github.com/joxtoby/beltzer.git
 ###############################################################################
 #
 # Note: Being more specific with versions *may* help speed up conda
