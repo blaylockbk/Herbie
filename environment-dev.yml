@@ -4,7 +4,7 @@ name: herbie-dev
 channels:
   - conda-forge
 dependencies:
-  - python>=3.11
+  - python>=3.10
   - pip
   - git
   - curl
@@ -70,14 +70,11 @@ dependencies:
       # Install a specific branch
       #- git+https://github.com/blaylockbk/Herbie.git@blaylockbk/issue98
 
-      # *or* the latest release from PyPI
-      #- herbie-data
-
       # Borrow some tools from my garage
       - git+https://github.com/blaylockbk/Carpenter_Workshop.git
 
-
-      - git+https://github.com/joxtoby/beltzer.git
+      # Create idx files on the fly!!  -- Waiting for package maturity
+      #- git+https://github.com/joxtoby/beltzer.git
 ###############################################################################
 #
 # Note: Being more specific with versions *may* help speed up conda
