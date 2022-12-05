@@ -11,9 +11,14 @@
 <!-- Badges -->
 
 [![](https://img.shields.io/pypi/v/herbie-data)](https://pypi.python.org/pypi/herbie-data/)
-![](https://img.shields.io/github/license/blaylockbk/Herbie)
+[![Conda Version](https://img.shields.io/conda/vn/conda-forge/herbie-data.svg)](https://anaconda.org/conda-forge/herbie-data)
 [![DOI](https://zenodo.org/badge/275214142.svg)](https://zenodo.org/badge/latestdoi/275214142)
+
+![](https://img.shields.io/github/license/blaylockbk/Herbie)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+[![Conda Recipe](https://img.shields.io/badge/recipe-herbie--data-green.svg)](https://anaconda.org/conda-forge/herbie-data)
+[![Conda Downloads](https://img.shields.io/conda/dn/conda-forge/herbie-data.svg)](https://anaconda.org/conda-forge/herbie-data)
+[![Conda Platforms](https://img.shields.io/conda/pn/conda-forge/herbie-data.svg)](https://anaconda.org/conda-forge/herbie-data)
 
 <!-- (Badges) -->
 
@@ -36,11 +41,20 @@ Herbie helps you discover, download, and read data from:
 
 ## Installation
 
-The easiest way to instal Herbie and its dependencies is within a [Conda](https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html) environment. I provided an **[`environment.yml`](https://github.com/blaylockbk/Herbie/blob/main/environment.yml)** file that you may use or modify.
+The easiest way to instal Herbie and its dependencies is with [Conda](https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html) from conda-forge.
+
+```bash
+conda install -c conda-forge herbie-data
+```
+
+
+You may also create the provided Conda environment, **[`environment.yml`](https://github.com/blaylockbk/Herbie/blob/main/environment.yml)**.
 
 ```bash
 # Download environment file
 wget https://github.com/blaylockbk/Herbie/raw/main/environment.yml
+
+# Modify that file if you wish.
 
 # Create the environment
 conda env create -f environment.yml
@@ -141,6 +155,17 @@ I originally released this package under the name “HRRR-B” because it only w
 
 The University of Utah MesoWest group now manages a [HRRR archive in Zarr format](http://hrrr.chpc.utah.edu/). Maybe someday, Herbie will be able to take advantage of that archive.
 
+## How to Cite and Acknowledge
+If Herbie played an important role in your work, please [tell me about it](https://github.com/blaylockbk/Herbie/discussions/categories/show-and-tell)! Also, consider including a citation or acknowledgement in your article or product.
+
+***Suggested Citation***
+
+> Blaylock, B. K. (2022). Herbie: Retrieve Numerical Weather Prediction Model Data (Version 2022.9.0) [Computer software]. https://github.com/blaylockbk/Herbie
+
+***Suggested Acknowledgment***
+
+> A portion of this work used code generously provided by Brian Blaylock's Herbie python package (https://github.com/blaylockbk/Herbie)
+
 ---
 
 **Thanks for using Herbie, and happy racing!**
@@ -174,3 +199,5 @@ P.S. If you like Herbie, check out my other repos:
 
 > **Note**: Alternative Download Tools  
 > As an alternative to Herbie, you can use [rclone](https://rclone.org/) to download files from AWS or GCP. I love rclone. Here is a short [rclone tutorial](https://github.com/blaylockbk/pyBKB_v3/blob/master/rclone_howto.md)
+
+| [Visualize Structure](https://mango-dune-07a8b7110.1.azurestaticapps.net/?repo=blaylockbk%2FHerbie) |

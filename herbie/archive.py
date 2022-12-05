@@ -328,12 +328,25 @@ class Herbie:
             print("🤝🏻⛔ Bad handshake with pando? Am I able to move on?")
             pass
 
-    def _check_grib(self, url):
-        """Check that the GRIB2 URL exist and is of useful length."""
+    def _check_grib(self, url, min_content_length=10):
+        """
+        Check that the GRIB2 URL exist and is of useful length.
+
+        Parameters
+        ----------
+        url : str
+            Full URL path to the GRIB file
+        min_content_length : int
+            The HTTP header content-length in bytes.
+            Used to check a file is of useful size. This was once set to
+            1_000_000 (1 MB), but there was an issue with NOMADS not
+            providing this right (see #114). I decreased to 10 and
+            essentially turned off this check.
+        """
         head = requests.head(url)
         check_exists = head.ok
-        if check_exists:
-            check_content = int(head.raw.info()["Content-Length"]) > 1_000_000
+        if check_exists and "Content-Length" in head.raw.info():
+            check_content = int(head.raw.info()["Content-Length"]) > min_content_length
             return check_exists and check_content
         else:
             return False
@@ -528,23 +541,39 @@ class Herbie:
                 self.IDX_STYLE = "wgrib2"
             else:
                 raise ValueError(
-                    f"\nNo index file was found for . \n"
+                    f"\nNo index file was found for {self.grib}\n"
                     f"Download the full file first (with `H.download()`).\n"
                     f"You will need to remake the Herbie object (H = `Herbie()`)\n"
                     f"or delete this cached property: `del H.index_as_dataframe()`"
                 )
-
-        assert self.idx is not None, f"No index file found for {self.grib}."
+        if self.idx is None:
+            raise ValueError(f"No index file found for {self.grib}.")
 
         if self.IDX_STYLE == "wgrib2":
-            # Sometimes idx end in ':', other times it doesn't (in some Pando files).
+            # Sometimes idx lines end in ':', other times it doesn't (in some Pando files).
             # https://pando-rgw01.chpc.utah.edu/hrrr/sfc/20180101/hrrr.t00z.wrfsfcf00.grib2.idx
             # https://noaa-hrrr-bdp-pds.s3.amazonaws.com/hrrr.20210101/conus/hrrr.t00z.wrfsfcf00.grib2.idx
             # Sometimes idx has more than the standard messages
             # https://noaa-nbm-grib2-pds.s3.amazonaws.com/blend.20210711/13/core/blend.t13z.core.f001.co.grib2.idx
+            if self.idx_source == "local":
+                read_this_idx = self.idx
+            else:
+                read_this_idx = None
+                response = requests.get(self.idx)
+                if response.status_code != 200:
+                    response.raise_for_status()
+                    response.close()
+                    raise ValueError(
+                        f"\nCant open index file {self.idx}\n"
+                        f"Download the full file first (with `H.download()`).\n"
+                        f"You will need to remake the Herbie object (H = `Herbie()`)\n"
+                        f"or delete this cached property: `del H.index_as_dataframe()`"
+                    )
+                read_this_idx = StringIO(response.text)
+                response.close()
 
             df = pd.read_csv(
-                self.idx,
+                read_this_idx,
                 sep=":",
                 names=[
                     "grib_message",
@@ -605,6 +634,7 @@ class Herbie:
 
             r = requests.get(self.idx)
             idxs = [json.loads(x) for x in r.text.split("\n") if x]
+            r.close()
             df = pd.DataFrame(idxs)
 
             # Format the DataFrame
@@ -754,10 +784,11 @@ class Herbie:
             """
             chunk_progress = a * b / c * 100
             total_size_MB = c / 1000000.0
-            print(
-                f"\r🚛💨  Download Progress: {chunk_progress:.2f}% of {total_size_MB:.1f} MB\r",
-                end="",
-            )
+            if verbose:
+                print(
+                    f"\r🚛💨  Download Progress: {chunk_progress:.2f}% of {total_size_MB:.1f} MB\r",
+                    end="",
+                )
 
         def subset(searchString, outFile):
             """
