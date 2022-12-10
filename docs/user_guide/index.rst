@@ -23,6 +23,7 @@ User Guide
 
    _tutorial_notebooks/index
    _model_notebooks/index
+   _bonus_notebooks/index
    searchString
    extend
 

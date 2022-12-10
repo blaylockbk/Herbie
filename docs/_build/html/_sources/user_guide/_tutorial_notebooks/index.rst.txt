@@ -9,7 +9,6 @@
    fast.ipynb
    accessors.ipynb
    demo_map.ipynb
-   bonus/index
 
 
 Other notebooks
