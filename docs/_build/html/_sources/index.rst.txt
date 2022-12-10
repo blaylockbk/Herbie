@@ -37,7 +37,7 @@ Installation
 ------------
 The easiest way to install Herbie and its dependencies is with Conda.
 
-.. code-block::bash
+.. code-block:: bash
 
    conda install -c conda-forge herbie-data
 
