@@ -7,7 +7,7 @@
 ESRL: https://rapidrefresh.noaa.gov/hrrr/
 
 
-``` {mermaid}
+```{mermaid}
 gantt
   title HRRR Version History
   axisFormat %b-%Y
@@ -28,7 +28,7 @@ NCEI: https://www.ncei.noaa.gov/products/weather-climate-models/rapid-refresh-up
 
 AWS: https://registry.opendata.aws/noaa-rap/
 
-``` {mermaid}
+```{mermaid}
 gantt
   title RAP Model Sources
   axisFormat %Y
