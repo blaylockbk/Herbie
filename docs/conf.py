@@ -100,7 +100,7 @@ html_theme_options = {
     "twitter_url": "https://twitter.com/blaylockbk",
     "navbar_end": ["theme-switcher", "navbar-icon-links.html", "search-field.html"],
     "use_edit_page_button": True,
-    "google_analytics_id": "G-PT9LX1B7B8",
+    "analytics": {"google_analytics_id": "G-PT9LX1B7B8"},
     "show_toc_level": 1,
     "external_links": [
         {

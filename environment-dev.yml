@@ -63,29 +63,45 @@ dependencies:
   - myst-parser
   - linkify-it-py
 
-  - pip:
+  #- pip:
       # Herbie: Development version from GitHub
-      - git+https://github.com/blaylockbk/Herbie.git
+      #- git+https://github.com/blaylockbk/Herbie.git
 
       # Install a specific branch
       #- git+https://github.com/blaylockbk/Herbie.git@blaylockbk/issue98
 
       # Borrow some tools from my garage
-      - git+https://github.com/blaylockbk/Carpenter_Workshop.git
+      #- git+https://github.com/blaylockbk/Carpenter_Workshop.git
 
       # Create idx files on the fly!!  -- Waiting for package maturity
       #- git+https://github.com/joxtoby/beltzer.git
-###############################################################################
+
+# =============================================================================
+#                             Extra Setup Steps
+# =============================================================================
+# conda activate herbie-dev
+# cd Herbie
+# pip install -e .
 #
-# Note: Being more specific with versions *may* help speed up conda
+# git clone https://github.com/blaylockbk/Carpenter_Workshop.git
+# cd Carpenter_Workshop
+# pi install -e .
+
+
+# =============================================================================
+#                                 Notes
+# =============================================================================
+# Being more specific with versions *may* help speed up conda
 # creating/updating environments
 # https://www.anaconda.com/blog/understanding-and-improving-condas-performance
 #
-###############################################################################
-#
+
+# =============================================================================
+#                              Conda Tips
+# =============================================================================
 # To create this environment
 #
-#     wget https://github.com/blaylockbk/Herbie/raw/main/environment-dev.yml
+#     curl -O https://raw.githubusercontent.com/blaylockbk/Herbie/main/environment-dev.yml
 #     conda env create -f environment-dev.yml
 #
 # To update this environment
@@ -96,4 +112,7 @@ dependencies:
 #
 #     conda env remove --name herbie-dev
 #
-###############################################################################
+# To do a conda clean
+#
+#     conda clean -tp
+# =============================================================================
