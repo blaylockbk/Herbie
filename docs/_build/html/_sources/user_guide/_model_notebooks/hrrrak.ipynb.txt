@@ -43,7 +43,7 @@
     "    model=\"hrrrak\",\n",
     "    product=\"sfc\",\n",
     "    fxx=6,\n",
-    ")\n"
+    ")"
    ]
   },
   {
@@ -538,10 +538,18 @@
     "ax = EasyMap(\"50m\", crs=ds.herbie.crs, figsize=[10, 8]).STATES().ax\n",
     "\n",
     "p = ax.pcolormesh(\n",
-    "    ds.longitude, ds.latitude, ds.t2m, transform=pc, **cm_tmp(units=\"K\").cmap_kwargs,\n",
+    "    ds.longitude,\n",
+    "    ds.latitude,\n",
+    "    ds.t2m,\n",
+    "    transform=pc,\n",
+    "    **cm_tmp(units=\"K\").cmap_kwargs,\n",
     ")\n",
     "plt.colorbar(\n",
-    "    p, ax=ax, orientation=\"horizontal\", pad=0.05, **cm_tmp(units=\"K\").cbar_kwargs,\n",
+    "    p,\n",
+    "    ax=ax,\n",
+    "    orientation=\"horizontal\",\n",
+    "    pad=0.05,\n",
+    "    **cm_tmp(units=\"K\").cbar_kwargs,\n",
     ")\n",
     "\n",
     "ax.set_title(ds.t2m.GRIB_name, loc=\"right\")\n",

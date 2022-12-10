@@ -21,7 +21,7 @@
     "from paint.standard2 import cm_tmp\n",
     "\n",
     "import matplotlib.pyplot as plt\n",
-    "import cartopy.crs as ccrs\n"
+    "import cartopy.crs as ccrs"
    ]
   },
   {
@@ -505,7 +505,7 @@
    ],
    "source": [
     "ds = H.xarray(\"TMP:2 m above\")\n",
-    "ds\n"
+    "ds"
    ]
   },
   {

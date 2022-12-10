@@ -204,8 +204,8 @@
     "    y=\"latitude\",\n",
     "    ax=ax,\n",
     "    transform=pc,\n",
-    "    cbar_kwargs={\"shrink\": 0.5, \"orientation\": \"horizontal\", \"pad\":.01},\n",
-    ")\n"
+    "    cbar_kwargs={\"shrink\": 0.5, \"orientation\": \"horizontal\", \"pad\": 0.01},\n",
+    ")"
    ]
   },
   {
@@ -249,7 +249,7 @@
     "    y=\"latitude\",\n",
     "    ax=ax,\n",
     "    transform=pc,\n",
-    "    cbar_kwargs={\"shrink\": 0.5, \"orientation\": \"horizontal\", \"pad\":.01},\n",
+    "    cbar_kwargs={\"shrink\": 0.5, \"orientation\": \"horizontal\", \"pad\": 0.01},\n",
     ")"
    ]
   },
@@ -294,7 +294,7 @@
     "    y=\"latitude\",\n",
     "    ax=ax,\n",
     "    transform=pc,\n",
-    "    cbar_kwargs={\"shrink\": 0.5, \"orientation\": \"horizontal\", \"pad\":.01},\n",
+    "    cbar_kwargs={\"shrink\": 0.5, \"orientation\": \"horizontal\", \"pad\": 0.01},\n",
     ")"
    ]
   },
@@ -325,16 +325,16 @@
    "source": [
     "crs = ds.herbie.crs\n",
     "\n",
-    "ax = EasyMap('50m', crs=crs).STATES().OCEAN().LAND().DOMAIN(ds).ax\n",
+    "ax = EasyMap(\"50m\", crs=crs).STATES().OCEAN().LAND().DOMAIN(ds).ax\n",
     "ds.refc.plot(\n",
     "    x=\"longitude\",\n",
     "    y=\"latitude\",\n",
     "    ax=ax,\n",
     "    transform=pc,\n",
-    "    cbar_kwargs={\"shrink\": 0.5, \"orientation\": \"horizontal\", \"pad\":.01},\n",
+    "    cbar_kwargs={\"shrink\": 0.5, \"orientation\": \"horizontal\", \"pad\": 0.01},\n",
     ")\n",
     "\n",
-    "ax.adjust_extent(); # make the map extent slightly larger"
+    "ax.adjust_extent();  # make the map extent slightly larger"
    ]
   },
   {
@@ -364,16 +364,16 @@
    "source": [
     "crs = ds.herbie.crs\n",
     "\n",
-    "ax = EasyMap('50m', crs=crs, dpi=150).STATES().STAMEN(zoom=6).ax\n",
+    "ax = EasyMap(\"50m\", crs=crs, dpi=150).STATES().STAMEN(zoom=6).ax\n",
     "ds.refc.plot(\n",
     "    x=\"longitude\",\n",
     "    y=\"latitude\",\n",
     "    ax=ax,\n",
     "    transform=pc,\n",
-    "    cmap='gist_ncar',\n",
-    "    vmin=-10, \n",
+    "    cmap=\"gist_ncar\",\n",
+    "    vmin=-10,\n",
     "    vmax=50,\n",
-    "    cbar_kwargs={\"shrink\": 0.5, \"orientation\": \"horizontal\", \"pad\":.01},\n",
+    "    cbar_kwargs={\"shrink\": 0.5, \"orientation\": \"horizontal\", \"pad\": 0.01},\n",
     ")\n",
     "\n",
     "ax.set_extent([-120, -105, 35, 45], crs=pc)"

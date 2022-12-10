@@ -57,7 +57,24 @@ More details at :ref:`🐍 Installation`.
 Capabilities
 ------------
 
-Herbie can discover data for many different numerical weather models and sources, including:
+Herbie helps you discover and use data from many different numerical weather models and sources.
+
+.. mermaid::
+
+     graph TD;
+      d1[(HRRR)] -.-> H
+      d2[(RAP)] -.-> H
+      d3[(GFS)] -.-> H
+      d33[(GEFS)] -.-> H
+      d4[(ECMWF)] -.-> H
+      d5[(NBM)] -.-> H
+      d6[(RRFS)] -.-> H
+      H((Herbie))
+      H --- .download
+      H --- .xarray
+      H --- .read_idx
+
+      style H fill:#d8c89d,stroke:#0c3576,stroke-width:4px,color:#000000
 
 - Locate GRIB2 files in the cloud.
 - Explore the content of those files.

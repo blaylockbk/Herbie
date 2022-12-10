@@ -833,9 +833,7 @@ Text(0.0, 1.0, &#39;GFS: common fields, 0.25 degree resolution&#39;)
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ax</span> <span class="o">=</span> <span class="n">EasyMap</span><span class="p">(</span>
-    <span class="n">crs</span><span class="o">=</span><span class="n">ccrs</span><span class="o">.</span><span class="n">Geostationary</span><span class="p">(</span><span class="n">central_longitude</span><span class="o">=-</span><span class="mi">100</span><span class="p">),</span> <span class="n">figsize</span><span class="o">=</span><span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">]</span>
-<span class="p">)</span><span class="o">.</span><span class="n">ax</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ax</span> <span class="o">=</span> <span class="n">EasyMap</span><span class="p">(</span><span class="n">crs</span><span class="o">=</span><span class="n">ccrs</span><span class="o">.</span><span class="n">Geostationary</span><span class="p">(</span><span class="n">central_longitude</span><span class="o">=-</span><span class="mi">100</span><span class="p">),</span> <span class="n">figsize</span><span class="o">=</span><span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">])</span><span class="o">.</span><span class="n">ax</span>
 
 <span class="n">p</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">pcolormesh</span><span class="p">(</span>
     <span class="n">ds</span><span class="o">.</span><span class="n">longitude</span><span class="p">,</span> <span class="n">ds</span><span class="o">.</span><span class="n">latitude</span><span class="p">,</span> <span class="n">ds</span><span class="o">.</span><span class="n">t2m</span><span class="p">,</span> <span class="n">transform</span><span class="o">=</span><span class="n">pc</span><span class="p">,</span> <span class="o">**</span><span class="n">cm_tmp</span><span class="p">(</span><span class="n">units</span><span class="o">=</span><span class="s2">&quot;K&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">cmap_kwargs</span>
@@ -880,7 +878,11 @@ Text(0.0, 1.0, &#39;GFS: common fields, 0.25 degree resolution&#39;)
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">crs</span> <span class="o">=</span> <span class="n">ds</span><span class="o">.</span><span class="n">metpy</span><span class="o">.</span><span class="n">parse_cf</span><span class="p">()</span><span class="o">.</span><span class="n">metpy_crs</span><span class="o">.</span><span class="n">item</span><span class="p">()</span><span class="o">.</span><span class="n">to_cartopy</span><span class="p">()</span>
 <span class="n">ax</span> <span class="o">=</span> <span class="n">EasyMap</span><span class="p">(</span><span class="n">crs</span><span class="o">=</span><span class="n">crs</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">[</span><span class="mi">8</span><span class="p">,</span> <span class="mi">8</span><span class="p">])</span><span class="o">.</span><span class="n">ax</span>
 <span class="n">p</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">pcolormesh</span><span class="p">(</span>
-    <span class="n">ds</span><span class="o">.</span><span class="n">longitude</span><span class="p">,</span> <span class="n">ds</span><span class="o">.</span><span class="n">latitude</span><span class="p">,</span> <span class="n">ds</span><span class="o">.</span><span class="n">t2m</span><span class="p">,</span> <span class="n">transform</span><span class="o">=</span><span class="n">pc</span><span class="p">,</span> <span class="o">**</span><span class="n">cm_tmp</span><span class="p">(</span><span class="n">units</span><span class="o">=</span><span class="s2">&quot;K&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">cmap_kwargs</span><span class="p">,</span>
+    <span class="n">ds</span><span class="o">.</span><span class="n">longitude</span><span class="p">,</span>
+    <span class="n">ds</span><span class="o">.</span><span class="n">latitude</span><span class="p">,</span>
+    <span class="n">ds</span><span class="o">.</span><span class="n">t2m</span><span class="p">,</span>
+    <span class="n">transform</span><span class="o">=</span><span class="n">pc</span><span class="p">,</span>
+    <span class="o">**</span><span class="n">cm_tmp</span><span class="p">(</span><span class="n">units</span><span class="o">=</span><span class="s2">&quot;K&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">cmap_kwargs</span><span class="p">,</span>
 <span class="p">)</span>
 </pre></div>
 </div>
@@ -1600,7 +1602,7 @@ Cell <span class="ansi-green-intense-fg ansi-bold">In[13], line 1</span>
     
 <p class="copyright">
 
-    &copy; Copyright 2022, Brian K. Blaylock.    ♻ Updated: 23:36 UTC 10 Dec 2022.<br>
+    &copy; Copyright 2022, Brian K. Blaylock.    ♻ Updated: 23:44 UTC 10 Dec 2022.<br>
 
 </p>
 

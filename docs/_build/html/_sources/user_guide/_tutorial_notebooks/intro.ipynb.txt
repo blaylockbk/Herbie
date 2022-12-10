@@ -81,7 +81,7 @@
    ],
    "source": [
     "# Location of GRIB file\n",
-    "H.grib\n"
+    "H.grib"
    ]
   },
   {
@@ -102,7 +102,7 @@
    ],
    "source": [
     "# Locatin of index file\n",
-    "H.idx\n"
+    "H.idx"
    ]
   },
   {
@@ -364,7 +364,7 @@
     }
    ],
    "source": [
-    "H.read_idx()\n"
+    "H.read_idx()"
    ]
   },
   {
@@ -888,7 +888,7 @@
    ],
    "source": [
     "# Winds at 500 and 800 hPa\n",
-    "H.read_idx(\"[U|V]GRD:[8|5][0|5]0 mb\")\n"
+    "H.read_idx(\"[U|V]GRD:[8|5][0|5]0 mb\")"
    ]
   },
   {
@@ -1409,7 +1409,7 @@
     }
    ],
    "source": [
-    "ds\n"
+    "ds"
    ]
   },
   {
@@ -1439,7 +1439,7 @@
     }
    ],
    "source": [
-    "ds.t2m.plot()\n"
+    "ds.t2m.plot()"
    ]
   },
   {
@@ -1566,7 +1566,7 @@
    "source": [
     "# Already have a local copy downloaded\n",
     "H = Herbie(\"2022-01-01 06\", fxx=0)\n",
-    "H.download(\":2 m above ground:\", verbose=True)\n"
+    "H.download(\":2 m above ground:\", verbose=True)"
    ]
   },
   {

@@ -827,9 +827,9 @@ div.rendered_html tbody tr:hover {
     <span class="n">y</span><span class="o">=</span><span class="s2">&quot;latitude&quot;</span><span class="p">,</span>
     <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span>
     <span class="n">transform</span><span class="o">=</span><span class="n">pc</span><span class="p">,</span>
-    <span class="n">cbar_kwargs</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;shrink&quot;</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">,</span> <span class="s2">&quot;orientation&quot;</span><span class="p">:</span> <span class="s2">&quot;horizontal&quot;</span><span class="p">,</span> <span class="s2">&quot;pad&quot;</span><span class="p">:</span><span class="mf">.01</span><span class="p">},</span>
+    <span class="n">cbar_kwargs</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;shrink&quot;</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">,</span> <span class="s2">&quot;orientation&quot;</span><span class="p">:</span> <span class="s2">&quot;horizontal&quot;</span><span class="p">,</span> <span class="s2">&quot;pad&quot;</span><span class="p">:</span> <span class="mf">0.01</span><span class="p">},</span>
 <span class="p">)</span>
-<br/></pre></div>
+</pre></div>
 </div>
 </div>
 <div class="nboutput docutils container">
@@ -859,7 +859,7 @@ div.rendered_html tbody tr:hover {
     <span class="n">y</span><span class="o">=</span><span class="s2">&quot;latitude&quot;</span><span class="p">,</span>
     <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span>
     <span class="n">transform</span><span class="o">=</span><span class="n">pc</span><span class="p">,</span>
-    <span class="n">cbar_kwargs</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;shrink&quot;</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">,</span> <span class="s2">&quot;orientation&quot;</span><span class="p">:</span> <span class="s2">&quot;horizontal&quot;</span><span class="p">,</span> <span class="s2">&quot;pad&quot;</span><span class="p">:</span><span class="mf">.01</span><span class="p">},</span>
+    <span class="n">cbar_kwargs</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;shrink&quot;</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">,</span> <span class="s2">&quot;orientation&quot;</span><span class="p">:</span> <span class="s2">&quot;horizontal&quot;</span><span class="p">,</span> <span class="s2">&quot;pad&quot;</span><span class="p">:</span> <span class="mf">0.01</span><span class="p">},</span>
 <span class="p">)</span>
 </pre></div>
 </div>
@@ -891,7 +891,7 @@ div.rendered_html tbody tr:hover {
     <span class="n">y</span><span class="o">=</span><span class="s2">&quot;latitude&quot;</span><span class="p">,</span>
     <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span>
     <span class="n">transform</span><span class="o">=</span><span class="n">pc</span><span class="p">,</span>
-    <span class="n">cbar_kwargs</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;shrink&quot;</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">,</span> <span class="s2">&quot;orientation&quot;</span><span class="p">:</span> <span class="s2">&quot;horizontal&quot;</span><span class="p">,</span> <span class="s2">&quot;pad&quot;</span><span class="p">:</span><span class="mf">.01</span><span class="p">},</span>
+    <span class="n">cbar_kwargs</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;shrink&quot;</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">,</span> <span class="s2">&quot;orientation&quot;</span><span class="p">:</span> <span class="s2">&quot;horizontal&quot;</span><span class="p">,</span> <span class="s2">&quot;pad&quot;</span><span class="p">:</span> <span class="mf">0.01</span><span class="p">},</span>
 <span class="p">)</span>
 </pre></div>
 </div>
@@ -919,16 +919,16 @@ div.rendered_html tbody tr:hover {
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">crs</span> <span class="o">=</span> <span class="n">ds</span><span class="o">.</span><span class="n">herbie</span><span class="o">.</span><span class="n">crs</span>
 
-<span class="n">ax</span> <span class="o">=</span> <span class="n">EasyMap</span><span class="p">(</span><span class="s1">&#39;50m&#39;</span><span class="p">,</span> <span class="n">crs</span><span class="o">=</span><span class="n">crs</span><span class="p">)</span><span class="o">.</span><span class="n">STATES</span><span class="p">()</span><span class="o">.</span><span class="n">OCEAN</span><span class="p">()</span><span class="o">.</span><span class="n">LAND</span><span class="p">()</span><span class="o">.</span><span class="n">DOMAIN</span><span class="p">(</span><span class="n">ds</span><span class="p">)</span><span class="o">.</span><span class="n">ax</span>
+<span class="n">ax</span> <span class="o">=</span> <span class="n">EasyMap</span><span class="p">(</span><span class="s2">&quot;50m&quot;</span><span class="p">,</span> <span class="n">crs</span><span class="o">=</span><span class="n">crs</span><span class="p">)</span><span class="o">.</span><span class="n">STATES</span><span class="p">()</span><span class="o">.</span><span class="n">OCEAN</span><span class="p">()</span><span class="o">.</span><span class="n">LAND</span><span class="p">()</span><span class="o">.</span><span class="n">DOMAIN</span><span class="p">(</span><span class="n">ds</span><span class="p">)</span><span class="o">.</span><span class="n">ax</span>
 <span class="n">ds</span><span class="o">.</span><span class="n">refc</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
     <span class="n">x</span><span class="o">=</span><span class="s2">&quot;longitude&quot;</span><span class="p">,</span>
     <span class="n">y</span><span class="o">=</span><span class="s2">&quot;latitude&quot;</span><span class="p">,</span>
     <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span>
     <span class="n">transform</span><span class="o">=</span><span class="n">pc</span><span class="p">,</span>
-    <span class="n">cbar_kwargs</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;shrink&quot;</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">,</span> <span class="s2">&quot;orientation&quot;</span><span class="p">:</span> <span class="s2">&quot;horizontal&quot;</span><span class="p">,</span> <span class="s2">&quot;pad&quot;</span><span class="p">:</span><span class="mf">.01</span><span class="p">},</span>
+    <span class="n">cbar_kwargs</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;shrink&quot;</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">,</span> <span class="s2">&quot;orientation&quot;</span><span class="p">:</span> <span class="s2">&quot;horizontal&quot;</span><span class="p">,</span> <span class="s2">&quot;pad&quot;</span><span class="p">:</span> <span class="mf">0.01</span><span class="p">},</span>
 <span class="p">)</span>
 
-<span class="n">ax</span><span class="o">.</span><span class="n">adjust_extent</span><span class="p">();</span> <span class="c1"># make the map extent slightly larger</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">adjust_extent</span><span class="p">();</span>  <span class="c1"># make the map extent slightly larger</span>
 </pre></div>
 </div>
 </div>
@@ -946,16 +946,16 @@ div.rendered_html tbody tr:hover {
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">crs</span> <span class="o">=</span> <span class="n">ds</span><span class="o">.</span><span class="n">herbie</span><span class="o">.</span><span class="n">crs</span>
 
-<span class="n">ax</span> <span class="o">=</span> <span class="n">EasyMap</span><span class="p">(</span><span class="s1">&#39;50m&#39;</span><span class="p">,</span> <span class="n">crs</span><span class="o">=</span><span class="n">crs</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">150</span><span class="p">)</span><span class="o">.</span><span class="n">STATES</span><span class="p">()</span><span class="o">.</span><span class="n">STAMEN</span><span class="p">(</span><span class="n">zoom</span><span class="o">=</span><span class="mi">6</span><span class="p">)</span><span class="o">.</span><span class="n">ax</span>
+<span class="n">ax</span> <span class="o">=</span> <span class="n">EasyMap</span><span class="p">(</span><span class="s2">&quot;50m&quot;</span><span class="p">,</span> <span class="n">crs</span><span class="o">=</span><span class="n">crs</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">150</span><span class="p">)</span><span class="o">.</span><span class="n">STATES</span><span class="p">()</span><span class="o">.</span><span class="n">STAMEN</span><span class="p">(</span><span class="n">zoom</span><span class="o">=</span><span class="mi">6</span><span class="p">)</span><span class="o">.</span><span class="n">ax</span>
 <span class="n">ds</span><span class="o">.</span><span class="n">refc</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
     <span class="n">x</span><span class="o">=</span><span class="s2">&quot;longitude&quot;</span><span class="p">,</span>
     <span class="n">y</span><span class="o">=</span><span class="s2">&quot;latitude&quot;</span><span class="p">,</span>
     <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span>
     <span class="n">transform</span><span class="o">=</span><span class="n">pc</span><span class="p">,</span>
-    <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;gist_ncar&#39;</span><span class="p">,</span>
+    <span class="n">cmap</span><span class="o">=</span><span class="s2">&quot;gist_ncar&quot;</span><span class="p">,</span>
     <span class="n">vmin</span><span class="o">=-</span><span class="mi">10</span><span class="p">,</span>
     <span class="n">vmax</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span>
-    <span class="n">cbar_kwargs</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;shrink&quot;</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">,</span> <span class="s2">&quot;orientation&quot;</span><span class="p">:</span> <span class="s2">&quot;horizontal&quot;</span><span class="p">,</span> <span class="s2">&quot;pad&quot;</span><span class="p">:</span><span class="mf">.01</span><span class="p">},</span>
+    <span class="n">cbar_kwargs</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;shrink&quot;</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">,</span> <span class="s2">&quot;orientation&quot;</span><span class="p">:</span> <span class="s2">&quot;horizontal&quot;</span><span class="p">,</span> <span class="s2">&quot;pad&quot;</span><span class="p">:</span> <span class="mf">0.01</span><span class="p">},</span>
 <span class="p">)</span>
 
 <span class="n">ax</span><span class="o">.</span><span class="n">set_extent</span><span class="p">([</span><span class="o">-</span><span class="mi">120</span><span class="p">,</span> <span class="o">-</span><span class="mi">105</span><span class="p">,</span> <span class="mi">35</span><span class="p">,</span> <span class="mi">45</span><span class="p">],</span> <span class="n">crs</span><span class="o">=</span><span class="n">pc</span><span class="p">)</span>
@@ -1054,7 +1054,7 @@ div.rendered_html tbody tr:hover {
     
 <p class="copyright">
 
-    &copy; Copyright 2022, Brian K. Blaylock.    ♻ Updated: 23:36 UTC 10 Dec 2022.<br>
+    &copy; Copyright 2022, Brian K. Blaylock.    ♻ Updated: 23:44 UTC 10 Dec 2022.<br>
 
 </p>
 
