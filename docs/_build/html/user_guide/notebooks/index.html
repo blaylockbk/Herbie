@@ -56,8 +56,8 @@
     <link rel="shortcut icon" href="../../_static/wxicon.png"/>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Quick Tutorial" href="tutorial.html" />
-    <link rel="prev" title="🔢 What is GRIB2?" href="../grib2.html" />
+    <link rel="next" title="HRRR Data" href="data_hrrr.html" />
+    <link rel="prev" title="🪂 Subset with searchString" href="../searchString.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="docsearch:language" content="en">
   </head>
@@ -352,16 +352,24 @@
     Section Navigation
   </p>
   <div class="bd-toc-item navbar-nav">
-    <ul class="current nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="../contribute.html">👨🏻‍🏭 Disclaimer and Contributing Guidelines</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../history.html">📜 History</a></li>
+    <p aria-level="2" class="caption" role="heading"><span class="caption-text">Get Started</span></p>
+<ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../install.html">🐍 Installation and Conda Environment</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../data_sources.html">☁ Data Sources</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../configure.html">🛠 Configure</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Background Knowledge</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../history.html">📜 History</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../grib2.html">🔢 What is GRIB2?</a></li>
 
+<li class="toctree-l1"><a class="reference internal" href="../data_sources.html">☁ Data Sources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../model_info.html">ℹ Model Info</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Using Herbie</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="tutorial.html">Quick Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../searchString.html">🪂 Subset with <code class="docutils literal notranslate"><span class="pre">searchString</span></code></a></li>
 <li class="toctree-l1 current active has-children"><a class="current reference internal" href="#">👨🏻‍💻 Tutorials</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="tutorial.html">Quick Tutorial</a></li>
 <li class="toctree-l2"><a class="reference internal" href="data_hrrr.html">HRRR Data</a></li>
 <li class="toctree-l2"><a class="reference internal" href="data_hrrrak.html">HRRR-Alaska Data</a></li>
 <li class="toctree-l2"><a class="reference internal" href="data_rap.html">RAP Data</a></li>
@@ -379,9 +387,12 @@
 <li class="toctree-l2"><a class="reference internal" href="data_nogaps.html">Historical NOGAPS Data</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../searchString.html">🪂 Subset with <code class="docutils literal notranslate"><span class="pre">searchString</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="../custom_template.html">👷🏻‍♂️ Extending Herbie</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../model_info.html">ℹ Model Info</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Housekeeping</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../zarr.html">HRRR in Zarr Format</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contribute.html">👨🏻‍🏭 Disclaimer and Contributing Guidelines</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../style_guide.html">🎨 Style Guide</a></li>
 </ul>
 
@@ -418,13 +429,6 @@
 <h1>👨🏻‍💻 Tutorials<a class="headerlink" href="#tutorials" title="Permalink to this heading">#</a></h1>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="tutorial.html">Quick Tutorial</a></li>
-</ul>
-</div>
-<section id="model-examples">
-<h2>👨🏻‍🔬 Model Examples<a class="headerlink" href="#model-examples" title="Permalink to this heading">#</a></h2>
-<div class="toctree-wrapper compound">
-<ul>
 <li class="toctree-l1"><a class="reference internal" href="data_hrrr.html">HRRR Data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="data_hrrrak.html">HRRR-Alaska Data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="data_rap.html">RAP Data</a></li>
@@ -442,24 +446,12 @@
 <li class="toctree-l1"><a class="reference internal" href="data_nogaps.html">Historical NOGAPS Data</a></li>
 </ul>
 </div>
-</section>
 <section id="other-notebooks">
 <h2>Other notebooks<a class="headerlink" href="#other-notebooks" title="Permalink to this heading">#</a></h2>
 <ul class="simple">
 <li><p><a class="reference external" href="https://github.com/blaylockbk/Carpenter_Workshop/blob/main/notebooks/demo_cartopy_tools.ipynb">Brian Cartopy Tools</a></p></li>
 <li><p><a class="reference external" href="https://github.com/blaylockbk/Herbie/blob/main/notebooks/demo_plot-on-map-with-common-features.ipynb">Make Cartopy maps with HRRR data</a></p></li>
 </ul>
-</section>
-<section id="hrrr-in-zarr-format">
-<h2>HRRR in Zarr Format<a class="headerlink" href="#hrrr-in-zarr-format" title="Permalink to this heading">#</a></h2>
-<p>Select parts of the HRRR archive are available in <a class="reference external" href="https://zarr.readthedocs.io/en/stable/">Zarr</a> format in the <code class="docutils literal notranslate"><span class="pre">s3://hrrrzarr</span></code> bucket on AWS developed by <a class="reference external" href="https://twitter.com/tayloragowan">Taylor Gowan</a> and managed by the MesoWest group at the University of Utah. Herbie doesn’t download this type of data yet, but might in the future. For more information about HRRR-Zarr, read the <a class="reference external" href="https://mesowest.utah.edu/html/hrrr/">documentation</a>.</p>
-<p>To get started check out these notebooks:</p>
-<ul class="simple">
-<li><p><a class="reference external" href="https://github.com/taylorgowan/zarr">Taylor Gowan: HRRR-Zarr examples</a></p></li>
-<li><p><a class="reference external" href="https://github.com/ktyle/python_pangeo_ams2021/blob/main/notebooks/03_Pangeo_HRRR.ipynb">Kevin Tyle: HRRR-Zarr AMS Short Course</a></p></li>
-</ul>
-<p>I haven’t added Zarr functionality into <cite>Herbie</cite>, but I started to explore the capability. Here is my sandbox notebook…
-- <a class="reference external" href="https://github.com/blaylockbk/Herbie/blob/main/notebooks/zarr_HRRR.ipynb">Brian Blaylock: HRRR-Zarr sandbox</a></p>
 </section>
 </section>
 
@@ -471,17 +463,17 @@
             <footer class="bd-footer-article">
                 <!-- Previous / next buttons -->
 <div class='prev-next-area'>
-  <a class='left-prev' id="prev-link" href="../grib2.html" title="previous page">
+  <a class='left-prev' id="prev-link" href="../searchString.html" title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
           <p class="prev-next-subtitle">previous</p>
-          <p class="prev-next-title">🔢 What is GRIB2?</p>
+          <p class="prev-next-title">🪂 Subset with <code class="docutils literal notranslate"><span class="pre">searchString</span></code></p>
       </div>
   </a>
-  <a class='right-next' id="next-link" href="tutorial.html" title="next page">
+  <a class='right-next' id="next-link" href="data_hrrr.html" title="next page">
   <div class="prev-next-info">
       <p class="prev-next-subtitle">next</p>
-      <p class="prev-next-title">Quick Tutorial</p>
+      <p class="prev-next-title">HRRR Data</p>
   </div>
   <i class="fa-solid fa-angle-right"></i>
   </a>
@@ -502,18 +494,8 @@
 <nav id="bd-toc-nav" class="page-toc">
     <ul class="visible nav section-nav flex-column">
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#model-examples">
-   👨🏻‍🔬 Model Examples
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#other-notebooks">
    Other notebooks
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#hrrr-in-zarr-format">
-   HRRR in Zarr Format
   </a>
  </li>
 </ul>
@@ -573,7 +555,7 @@
     
 <p class="copyright">
 
-    &copy; Copyright 2022, Brian K. Blaylock.    ♻ Updated: 03:02 UTC 10 Dec 2022.<br>
+    &copy; Copyright 2022, Brian K. Blaylock.    ♻ Updated: 03:31 UTC 10 Dec 2022.<br>
 
 </p>
 

@@ -5,15 +5,6 @@
 .. toctree::
    :maxdepth: 1
 
-   tutorial.ipynb
-
-
-👨🏻‍🔬 Model Examples
-----------------------
-
-.. toctree::
-   :maxdepth: 1
-
    data_hrrr.ipynb
    data_hrrrak.ipynb
    data_rap.ipynb
@@ -34,16 +25,4 @@ Other notebooks
 - `Make Cartopy maps with HRRR data <https://github.com/blaylockbk/Herbie/blob/main/notebooks/demo_plot-on-map-with-common-features.ipynb>`_
 
 
-HRRR in Zarr Format
--------------------
-
-Select parts of the HRRR archive are available in `Zarr <https://zarr.readthedocs.io/en/stable/>`_ format in the ``s3://hrrrzarr`` bucket on AWS developed by `Taylor Gowan <https://twitter.com/tayloragowan>`_ and managed by the MesoWest group at the University of Utah. Herbie doesn't download this type of data yet, but might in the future. For more information about HRRR-Zarr, read the `documentation <https://mesowest.utah.edu/html/hrrr/>`_.
-
-To get started check out these notebooks:
-
-- `Taylor Gowan: HRRR-Zarr examples <https://github.com/taylorgowan/zarr>`_
-- `Kevin Tyle: HRRR-Zarr AMS Short Course <https://github.com/ktyle/python_pangeo_ams2021/blob/main/notebooks/03_Pangeo_HRRR.ipynb>`_
-
-I haven't added Zarr functionality into `Herbie`, but I started to explore the capability. Here is my sandbox notebook...
-- `Brian Blaylock: HRRR-Zarr sandbox <https://github.com/blaylockbk/Herbie/blob/main/notebooks/zarr_HRRR.ipynb>`_
 
