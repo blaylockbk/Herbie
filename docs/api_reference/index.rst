@@ -1,6 +1,6 @@
-===============
-Reference Guide
-===============
+=============
+API Reference
+=============
 
 Docstring reference for the ``herbie`` module
 
