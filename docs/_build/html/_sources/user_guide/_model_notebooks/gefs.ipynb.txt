@@ -1,18 +1,18 @@
 {
  "cells": [
   {
+   "attachments": {},
    "cell_type": "markdown",
    "id": "ae136e42",
    "metadata": {},
    "source": [
-    "**Brian Blaylock**  \n",
-    "*March 14, 2022*\n",
+    "# GEFS Data\n",
     "\n",
-    "# Global Ensembele Forecast System (GEFS) reanalysis: 2000-2019\n",
+    "This demonstrates using the Global Ensembele Forecast System (GEFS) reanalysis: 2000-2019 dataset.\n",
     "\n",
     "The GEFS version 12 reanalysis is available on [Amazon Web Services ](https://registry.opendata.aws/noaa-gefs-reforecast/) and can be retrieved with Herbie.\n",
     "\n",
-    "**The GEFS directory structure is different than other models that Herbie can access, and that makes Herbie's access to these files little awkward.** Instead of grouping the GRIB fields by forecast hour where there are many different variables for the same lead time in the same file, the GEFS files are grouped into the same variable per file with each GRIB message being a different lead time. This changes the way a user would use Herbie to access GEFS data--a user will need to supply a \"variable_level\" argument to access a full file. For subsetting by specific grib messages, you will use the \"searchString\" argument to key in on the message of interest. You will still need to give a value for \"fxx\" to tell Herbie which directory to look for. \n",
+    "> Note: The GEFS directory structure is different than other models that Herbie can access, and that makes Herbie's access to these files little awkward. Instead of grouping the GRIB fields by forecast hour where there are many different variables for the same lead time in the same file, the GEFS files are grouped into the same variable per file with each GRIB message being a different lead time. This changes the way a user would use Herbie to access GEFS data--a user will need to supply a \"variable_level\" argument to access a full file. For subsetting by specific grib messages, you will use the \"searchString\" argument to key in on the message of interest. You will still need to give a value for \"fxx\" to tell Herbie which directory to look for. \n",
     "\n",
     "Yeah, it's a little different paradigm for Herbie, but we can work with it. It may be nice to write a `herbie.tool` to help make calls to Herbie a little more simple (like a custom bulk_download script)"
    ]
@@ -28,12 +28,9 @@
     "import matplotlib.pyplot as plt\n",
     "import numpy as np\n",
     "\n",
-    "from herbie.archive import Herbie\n",
-    "\n",
-    "# ! The following are imported from\n",
-    "# https://github.com/blaylockbk/Carpenter_Workshop\n",
+    "from herbie import Herbie\n",
     "from paint.standard2 import cm_tmp, cm_wind, cm_wave_height\n",
-    "from toolbox.cartopy_tools import common_features, pc"
+    "from toolbox import EasyMap, pc"
    ]
   },
   {
@@ -57,25 +54,34 @@
    "metadata": {},
    "outputs": [
     {
-     "name": "stderr",
-     "output_type": "stream",
-     "text": [
-      "C:\\Users\\blayl_depgywe\\BB_python\\Herbie\\herbie\\archive.py:287: UserWarning: `product` not specified. Will use [\"GEFSv12/reforecast\"].\n",
-      "  warnings.warn(f'`product` not specified. Will use [\"{self.product}\"].')\n"
-     ]
-    },
-    {
      "name": "stdout",
      "output_type": "stream",
      "text": [
-      "🏋🏻‍♂️ Found \u001b[32m2017-Mar-14 00:00 UTC F12\u001b[m [GEFS] [product=GEFSv12/reforecast] GRIB2 file from \u001b[31mlocal\u001b[m and index file from \u001b[31maws\u001b[m.                                                                                                                                                       \n",
-      "🌉 Already have local copy --> C:\\Users\\blayl_depgywe\\data\\gefs\\20170314\\tmp_2m_2017031400_c00.grib2\n"
+      "✅ Found ┊ model=gefs ┊ \u001b[3mproduct=GEFSv12/reforecast\u001b[0m ┊ \u001b[38;2;41;130;13m2017-Mar-14 00:00 UTC\u001b[92m F12\u001b[0m ┊ \u001b[38;2;255;153;0m\u001b[3mGRIB2 @ aws\u001b[0m ┊ \u001b[38;2;255;153;0m\u001b[3mIDX @ aws\u001b[0m\n",
+      "👨🏻‍🏭 Created directory: [C:\\Users\\blaylock\\data\\gefs\\20170314]\n"
+     ]
+    },
+    {
+     "ename": "KeyboardInterrupt",
+     "evalue": "",
+     "output_type": "error",
+     "traceback": [
+      "\u001b[1;31m---------------------------------------------------------------------------\u001b[0m",
+      "\u001b[1;31mKeyboardInterrupt\u001b[0m                         Traceback (most recent call last)",
+      "Cell \u001b[1;32mIn[2], line 2\u001b[0m\n\u001b[0;32m      1\u001b[0m H \u001b[39m=\u001b[39m Herbie(\u001b[39m\"\u001b[39m\u001b[39m2017-03-14\u001b[39m\u001b[39m\"\u001b[39m, model\u001b[39m=\u001b[39m\u001b[39m\"\u001b[39m\u001b[39mgefs\u001b[39m\u001b[39m\"\u001b[39m, fxx\u001b[39m=\u001b[39m\u001b[39m12\u001b[39m, member\u001b[39m=\u001b[39m\u001b[39m0\u001b[39m, variable_level\u001b[39m=\u001b[39m\u001b[39m\"\u001b[39m\u001b[39mtmp_2m\u001b[39m\u001b[39m\"\u001b[39m)\n\u001b[1;32m----> 2\u001b[0m H\u001b[39m.\u001b[39;49mdownload()\n",
+      "File \u001b[1;32m~\\_GITHUB\\Herbie\\herbie\\archive.py:911\u001b[0m, in \u001b[0;36mHerbie.download\u001b[1;34m(self, searchString, source, save_dir, overwrite, verbose, errors)\u001b[0m\n\u001b[0;32m    907\u001b[0m     \u001b[39mprint\u001b[39m(\u001b[39mf\u001b[39m\u001b[39m\"\u001b[39m\u001b[39m👨🏻‍🏭 Created directory: [\u001b[39m\u001b[39m{\u001b[39;00moutFile\u001b[39m.\u001b[39mparent\u001b[39m}\u001b[39;00m\u001b[39m]\u001b[39m\u001b[39m\"\u001b[39m)\n\u001b[0;32m    909\u001b[0m \u001b[39mif\u001b[39;00m searchString \u001b[39min\u001b[39;00m [\u001b[39mNone\u001b[39;00m, \u001b[39m\"\u001b[39m\u001b[39m:\u001b[39m\u001b[39m\"\u001b[39m] \u001b[39mor\u001b[39;00m \u001b[39mself\u001b[39m\u001b[39m.\u001b[39midx \u001b[39mis\u001b[39;00m \u001b[39mNone\u001b[39;00m:\n\u001b[0;32m    910\u001b[0m     \u001b[39m# Download the full file from remote source\u001b[39;00m\n\u001b[1;32m--> 911\u001b[0m     urllib\u001b[39m.\u001b[39;49mrequest\u001b[39m.\u001b[39;49murlretrieve(\u001b[39mself\u001b[39;49m\u001b[39m.\u001b[39;49mgrib, outFile, _reporthook)\n\u001b[0;32m    913\u001b[0m     \u001b[39mself\u001b[39m\u001b[39m.\u001b[39mgrib \u001b[39m=\u001b[39m outFile\n\u001b[0;32m    914\u001b[0m     \u001b[39m# self.grib_source = \"local\"\u001b[39;00m\n",
+      "File \u001b[1;32mc:\\Users\\blaylock\\Miniconda3\\envs\\herbie-dev\\lib\\urllib\\request.py:270\u001b[0m, in \u001b[0;36murlretrieve\u001b[1;34m(url, filename, reporthook, data)\u001b[0m\n\u001b[0;32m    267\u001b[0m     reporthook(blocknum, bs, size)\n\u001b[0;32m    269\u001b[0m \u001b[39mwhile\u001b[39;00m \u001b[39mTrue\u001b[39;00m:\n\u001b[1;32m--> 270\u001b[0m     block \u001b[39m=\u001b[39m fp\u001b[39m.\u001b[39;49mread(bs)\n\u001b[0;32m    271\u001b[0m     \u001b[39mif\u001b[39;00m \u001b[39mnot\u001b[39;00m block:\n\u001b[0;32m    272\u001b[0m         \u001b[39mbreak\u001b[39;00m\n",
+      "File \u001b[1;32mc:\\Users\\blaylock\\Miniconda3\\envs\\herbie-dev\\lib\\http\\client.py:465\u001b[0m, in \u001b[0;36mHTTPResponse.read\u001b[1;34m(self, amt)\u001b[0m\n\u001b[0;32m    462\u001b[0m \u001b[39mif\u001b[39;00m \u001b[39mself\u001b[39m\u001b[39m.\u001b[39mlength \u001b[39mis\u001b[39;00m \u001b[39mnot\u001b[39;00m \u001b[39mNone\u001b[39;00m \u001b[39mand\u001b[39;00m amt \u001b[39m>\u001b[39m \u001b[39mself\u001b[39m\u001b[39m.\u001b[39mlength:\n\u001b[0;32m    463\u001b[0m     \u001b[39m# clip the read to the \"end of response\"\u001b[39;00m\n\u001b[0;32m    464\u001b[0m     amt \u001b[39m=\u001b[39m \u001b[39mself\u001b[39m\u001b[39m.\u001b[39mlength\n\u001b[1;32m--> 465\u001b[0m s \u001b[39m=\u001b[39m \u001b[39mself\u001b[39;49m\u001b[39m.\u001b[39;49mfp\u001b[39m.\u001b[39;49mread(amt)\n\u001b[0;32m    466\u001b[0m \u001b[39mif\u001b[39;00m \u001b[39mnot\u001b[39;00m s \u001b[39mand\u001b[39;00m amt:\n\u001b[0;32m    467\u001b[0m     \u001b[39m# Ideally, we would raise IncompleteRead if the content-length\u001b[39;00m\n\u001b[0;32m    468\u001b[0m     \u001b[39m# wasn't satisfied, but it might break compatibility.\u001b[39;00m\n\u001b[0;32m    469\u001b[0m     \u001b[39mself\u001b[39m\u001b[39m.\u001b[39m_close_conn()\n",
+      "File \u001b[1;32mc:\\Users\\blaylock\\Miniconda3\\envs\\herbie-dev\\lib\\socket.py:705\u001b[0m, in \u001b[0;36mSocketIO.readinto\u001b[1;34m(self, b)\u001b[0m\n\u001b[0;32m    703\u001b[0m \u001b[39mwhile\u001b[39;00m \u001b[39mTrue\u001b[39;00m:\n\u001b[0;32m    704\u001b[0m     \u001b[39mtry\u001b[39;00m:\n\u001b[1;32m--> 705\u001b[0m         \u001b[39mreturn\u001b[39;00m \u001b[39mself\u001b[39;49m\u001b[39m.\u001b[39;49m_sock\u001b[39m.\u001b[39;49mrecv_into(b)\n\u001b[0;32m    706\u001b[0m     \u001b[39mexcept\u001b[39;00m timeout:\n\u001b[0;32m    707\u001b[0m         \u001b[39mself\u001b[39m\u001b[39m.\u001b[39m_timeout_occurred \u001b[39m=\u001b[39m \u001b[39mTrue\u001b[39;00m\n",
+      "File \u001b[1;32mc:\\Users\\blaylock\\Miniconda3\\envs\\herbie-dev\\lib\\ssl.py:1274\u001b[0m, in \u001b[0;36mSSLSocket.recv_into\u001b[1;34m(self, buffer, nbytes, flags)\u001b[0m\n\u001b[0;32m   1270\u001b[0m     \u001b[39mif\u001b[39;00m flags \u001b[39m!=\u001b[39m \u001b[39m0\u001b[39m:\n\u001b[0;32m   1271\u001b[0m         \u001b[39mraise\u001b[39;00m \u001b[39mValueError\u001b[39;00m(\n\u001b[0;32m   1272\u001b[0m           \u001b[39m\"\u001b[39m\u001b[39mnon-zero flags not allowed in calls to recv_into() on \u001b[39m\u001b[39m%s\u001b[39;00m\u001b[39m\"\u001b[39m \u001b[39m%\u001b[39m\n\u001b[0;32m   1273\u001b[0m           \u001b[39mself\u001b[39m\u001b[39m.\u001b[39m\u001b[39m__class__\u001b[39m)\n\u001b[1;32m-> 1274\u001b[0m     \u001b[39mreturn\u001b[39;00m \u001b[39mself\u001b[39;49m\u001b[39m.\u001b[39;49mread(nbytes, buffer)\n\u001b[0;32m   1275\u001b[0m \u001b[39melse\u001b[39;00m:\n\u001b[0;32m   1276\u001b[0m     \u001b[39mreturn\u001b[39;00m \u001b[39msuper\u001b[39m()\u001b[39m.\u001b[39mrecv_into(buffer, nbytes, flags)\n",
+      "File \u001b[1;32mc:\\Users\\blaylock\\Miniconda3\\envs\\herbie-dev\\lib\\ssl.py:1130\u001b[0m, in \u001b[0;36mSSLSocket.read\u001b[1;34m(self, len, buffer)\u001b[0m\n\u001b[0;32m   1128\u001b[0m \u001b[39mtry\u001b[39;00m:\n\u001b[0;32m   1129\u001b[0m     \u001b[39mif\u001b[39;00m buffer \u001b[39mis\u001b[39;00m \u001b[39mnot\u001b[39;00m \u001b[39mNone\u001b[39;00m:\n\u001b[1;32m-> 1130\u001b[0m         \u001b[39mreturn\u001b[39;00m \u001b[39mself\u001b[39;49m\u001b[39m.\u001b[39;49m_sslobj\u001b[39m.\u001b[39;49mread(\u001b[39mlen\u001b[39;49m, buffer)\n\u001b[0;32m   1131\u001b[0m     \u001b[39melse\u001b[39;00m:\n\u001b[0;32m   1132\u001b[0m         \u001b[39mreturn\u001b[39;00m \u001b[39mself\u001b[39m\u001b[39m.\u001b[39m_sslobj\u001b[39m.\u001b[39mread(\u001b[39mlen\u001b[39m)\n",
+      "\u001b[1;31mKeyboardInterrupt\u001b[0m: "
      ]
     }
    ],
    "source": [
     "H = Herbie(\"2017-03-14\", model=\"gefs\", fxx=12, member=0, variable_level=\"tmp_2m\")\n",
-    "H.download()"
+    "H.download(verbose=True)"
    ]
   },
   {
@@ -92,7 +98,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 3,
+   "execution_count": null,
    "id": "66a65101",
    "metadata": {},
    "outputs": [
@@ -126,7 +132,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 4,
+   "execution_count": null,
    "id": "24b519cd",
    "metadata": {},
    "outputs": [],
@@ -137,7 +143,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 5,
+   "execution_count": null,
    "id": "115e9055",
    "metadata": {},
    "outputs": [
@@ -562,16 +568,8 @@
    ]
   },
   {
-   "cell_type": "markdown",
-   "id": "2fa1a7d9",
-   "metadata": {},
-   "source": [
-    "## Plots"
-   ]
-  },
-  {
    "cell_type": "code",
-   "execution_count": 6,
+   "execution_count": null,
    "id": "4e58339a",
    "metadata": {},
    "outputs": [
@@ -607,7 +605,7 @@
     }
    ],
    "source": [
-    "ax = common_features(\"50m\", crs=ds.herbie.crs, figsize=[10, 10]).STATES().BORDERS().ax\n",
+    "ax = EasyMap(\"50m\", crs=ds.herbie.crs, figsize=[10, 10]).STATES().BORDERS().ax\n",
     "p = ax.pcolormesh(\n",
     "    ds.longitude, ds.latitude, ds.t2m, transform=pc, **cm_tmp(units=\"K\").cmap_kwargs\n",
     ")\n",
@@ -1319,11 +1317,9 @@
   }
  ],
  "metadata": {
-  "interpreter": {
-   "hash": "68b4f2e50a7ed58bfdd900fbdfdbedaaf8a3e01f45deef876033be52417a9a2d"
-  },
   "kernelspec": {
-   "display_name": "Python 3.8.10 64-bit ('herbie': conda)",
+   "display_name": "herbie-dev",
+   "language": "python",
    "name": "python3"
   },
   "language_info": {
@@ -1336,7 +1332,12 @@
    "name": "python",
    "nbconvert_exporter": "python",
    "pygments_lexer": "ipython3",
-   "version": "3.9.10"
+   "version": "3.10.8"
+  },
+  "vscode": {
+   "interpreter": {
+    "hash": "ac511961bc6976a3d289cde8fc247e6b0e9298cf513cb762aa0a7df646d192ed"
+   }
   }
  },
  "nbformat": 4,

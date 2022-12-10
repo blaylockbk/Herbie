@@ -383,17 +383,16 @@
 <li class="toctree-l2"><a class="reference internal" href="hrrrak.html">HRRR-Alaska Data</a></li>
 <li class="toctree-l2"><a class="reference internal" href="rap.html">RAP Data</a></li>
 
-
 <li class="toctree-l2 current active"><a class="current reference internal" href="#">NAM Data</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gfs.html">GFS Data</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gefs.html">Global Ensembele Forecast System (GEFS) reanalysis: 2000-2019</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gefs.html">GEFS Data</a></li>
 
-<li class="toctree-l2"><a class="reference internal" href="ecmwf.html">ECMWF Open Data – Real Time</a></li>
-<li class="toctree-l2"><a class="reference internal" href="nbm.html">National Blend of Models (NMB)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ecmwf.html">ECMWF Open Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nbm.html">NMB Data</a></li>
 <li class="toctree-l2"><a class="reference internal" href="rrfs.html">RRFS Data</a></li>
 
 <li class="toctree-l2"><a class="reference internal" href="navgem.html">NAVGEM Data</a></li>
-<li class="toctree-l2"><a class="reference internal" href="nogaps.html">Historical NOGAPS Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nogaps.html">NOGAPS Data</a></li>
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../_bonus_notebooks/index.html">Bonus Notebooks</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-3"><i class="fa-solid fa-chevron-down"></i></label><ul>
@@ -706,19 +705,15 @@ div.rendered_html tbody tr:hover {
   background: rgba(66, 165, 245, 0.2);
 }
 </style>
-<div class="line-block">
-<div class="line"><strong>Brian Blaylock</strong></div>
-<div class="line"><em>August 10, 2022</em></div>
-</div>
 <section id="NAM-Data">
 <h1>NAM Data<a class="headerlink" href="#NAM-Data" title="Permalink to this heading">#</a></h1>
 <p>This tutorial shows you how to download NAM data from Amazon (and other sources) with the Herbie Python package.</p>
-<div class="nbinput docutils container">
+<div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">herbie.archive</span> <span class="kn">import</span> <span class="n">Herbie</span>
-<span class="kn">from</span> <span class="nn">toolbox.cartopy_tools</span> <span class="kn">import</span> <span class="n">common_features</span><span class="p">,</span> <span class="n">pc</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">herbie</span> <span class="kn">import</span> <span class="n">Herbie</span>
+<span class="kn">from</span> <span class="nn">toolbox</span> <span class="kn">import</span> <span class="n">EasyMap</span><span class="p">,</span> <span class="n">pc</span>
 <span class="kn">from</span> <span class="nn">paint.standard2</span> <span class="kn">import</span> <span class="n">cm_tmp</span>
 
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
@@ -726,19 +721,11 @@ div.rendered_html tbody tr:hover {
 </pre></div>
 </div>
 </div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-🥳 Herbie loaded your custom templates.
-</pre></div></div>
-</div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">H</span> <span class="o">=</span> <span class="n">Herbie</span><span class="p">(</span><span class="s2">&quot;2022-08-10&quot;</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="s2">&quot;nam&quot;</span><span class="p">,</span> <span class="n">fxx</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">priority</span><span class="o">=</span><span class="s2">&quot;nomads&quot;</span><span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">H</span> <span class="o">=</span> <span class="n">Herbie</span><span class="p">(</span><span class="s2">&quot;2022-12-10&quot;</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="s2">&quot;nam&quot;</span><span class="p">,</span> <span class="n">fxx</span><span class="o">=</span><span class="mi">6</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -747,11 +734,33 @@ div.rendered_html tbody tr:hover {
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-✅ Found ┊ model=nam ┊ product=conusnest.hiresf ┊ <span style="color: rgb(41,130,13)">2022-Aug-10 00:00 UTC</span><span class="ansi-green-intense-fg"> F06</span> ┊ <span style="color: rgb(255,153,0)">GRIB2 @ nomads</span> ┊ <span style="color: rgb(255,153,0)">IDX @ nomads</span>
+✅ Found ┊ model=nam ┊ product=conusnest.hiresf ┊ <span style="color: rgb(41,130,13)">2022-Dec-10 00:00 UTC</span><span class="ansi-green-intense-fg"> F06</span> ┊ <span style="color: rgb(255,153,0)">GRIB2 @ aws</span> ┊ <span style="color: rgb(255,153,0)">IDX @ aws</span>
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">H</span><span class="o">.</span><span class="n">PRODUCTS</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+{&#39;conusnest.hiresf&#39;: &#39;CONUS 5 km&#39;,
+ &#39;firewxnest.hiresf&#39;: &#39;Fire Weather 1.33 km CONUS/1.5 km Alaska&#39;,
+ &#39;alaskanest.hiresf&#39;: &#39;Alaska 6 km&#39;,
+ &#39;hawaiinest.hiresf&#39;: &#39;Hawaii 6 km&#39;,
+ &#39;priconest.hiresf&#39;: &#39;Puerto Rico 3 km&#39;,
+ &#39;afwaca&#39;: &#39;Central America/Caribbean&#39;}
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ds</span> <span class="o">=</span> <span class="n">H</span><span class="o">.</span><span class="n">xarray</span><span class="p">(</span><span class="s2">&quot;TMP:2 m above&quot;</span><span class="p">)</span>
@@ -759,8 +768,25 @@ div.rendered_html tbody tr:hover {
 </pre></div>
 </div>
 </div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+👨🏻‍🏭 Created directory: [C:\Users\blaylock\data\nam\20221210]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+C:\Users\blaylock\_GITHUB\Herbie\herbie\archive.py:1041: UserWarning: sorry, on windows I couldn&#39;t remove the file.
+  warnings.warn(&#34;sorry, on windows I couldn&#39;t remove the file.&#34;)
+</pre></div></div>
+</div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
 </pre></div>
 </div>
 <div class="output_area rendered_html docutils container">
@@ -1025,6 +1051,11 @@ body.vscode-dark {
   grid-column: 4;
 }
 
+.xr-index-preview {
+  grid-column: 2 / 5;
+  color: var(--xr-font-color2);
+}
+
 .xr-var-name,
 .xr-var-dims,
 .xr-var-dtype,
@@ -1046,14 +1077,16 @@ body.vscode-dark {
 }
 
 .xr-var-attrs,
-.xr-var-data {
+.xr-var-data,
+.xr-index-data {
   display: none;
   background-color: var(--xr-background-color) !important;
   padding-bottom: 5px !important;
 }
 
 .xr-var-attrs-in:checked ~ .xr-var-attrs,
-.xr-var-data-in:checked ~ .xr-var-data {
+.xr-var-data-in:checked ~ .xr-var-data,
+.xr-index-data-in:checked ~ .xr-index-data {
   display: block;
 }
 
@@ -1063,13 +1096,16 @@ body.vscode-dark {
 
 .xr-var-name span,
 .xr-var-data,
+.xr-index-name div,
+.xr-index-data,
 .xr-attrs {
   padding-left: 25px !important;
 }
 
 .xr-attrs,
 .xr-var-attrs,
-.xr-var-data {
+.xr-var-data,
+.xr-index-data {
   grid-column: 1 / -1;
 }
 
@@ -1107,7 +1143,8 @@ dl.xr-attrs {
 }
 
 .xr-icon-database,
-.xr-icon-file-text2 {
+.xr-icon-file-text2,
+.xr-no-icon {
   display: inline-block;
   vertical-align: middle;
   width: 1em;
@@ -1119,15 +1156,15 @@ dl.xr-attrs {
 </style><pre class='xr-text-repr-fallback'>&lt;xarray.Dataset&gt;
 Dimensions:              (y: 1059, x: 1799)
 Coordinates:
-    time                 datetime64[ns] 2022-08-10
+    time                 datetime64[ns] 2022-12-10
     step                 timedelta64[ns] 06:00:00
     heightAboveGround    float64 2.0
     latitude             (y, x) float64 21.14 21.14 21.15 ... 47.86 47.85 47.84
     longitude            (y, x) float64 237.3 237.3 237.3 ... 299.0 299.0 299.1
-    valid_time           datetime64[ns] 2022-08-10T06:00:00
+    valid_time           datetime64[ns] 2022-12-10T06:00:00
 Dimensions without coordinates: y, x
 Data variables:
-    t2m                  (y, x) float32 295.0 295.0 294.9 ... 290.4 290.4 290.4
+    t2m                  (y, x) float32 292.3 291.9 292.2 ... 275.6 275.6 275.8
     gribfile_projection  object None
 Attributes:
     GRIB_edition:            2
@@ -1139,9 +1176,9 @@ Attributes:
     model:                   nam
     product:                 conusnest.hiresf
     description:             North America Mesoscale - CONUS
-    remote_grib:             https://nomads.ncep.noaa.gov/pub/data/nccf/com/n...
-    local_grib:              /p/cwfs/blaylock/data/nam/20220810/subset_6765c0...
-    searchString:            TMP:2 m above</pre><div class='xr-wrap' style='display:none'><div class='xr-header'><div class='xr-obj-type'>xarray.Dataset</div></div><ul class='xr-sections'><li class='xr-section-item'><input id='section-3c4d28ac-0999-4d25-915d-0a82a2e4ef32' class='xr-section-summary-in' type='checkbox' disabled ><label for='section-3c4d28ac-0999-4d25-915d-0a82a2e4ef32' class='xr-section-summary'  title='Expand/collapse section'>Dimensions:</label><div class='xr-section-inline-details'><ul class='xr-dim-list'><li><span>y</span>: 1059</li><li><span>x</span>: 1799</li></ul></div><div class='xr-section-details'></div></li><li class='xr-section-item'><input id='section-ee0c9d0c-8f35-4e5f-9a11-eba8630b90b6' class='xr-section-summary-in' type='checkbox'  checked><label for='section-ee0c9d0c-8f35-4e5f-9a11-eba8630b90b6' class='xr-section-summary' >Coordinates: <span>(6)</span></label><div class='xr-section-inline-details'></div><div class='xr-section-details'><ul class='xr-var-list'><li class='xr-var-item'><div class='xr-var-name'><span>time</span></div><div class='xr-var-dims'>()</div><div class='xr-var-dtype'>datetime64[ns]</div><div class='xr-var-preview xr-preview'>2022-08-10</div><input id='attrs-e011c7ba-7d5a-4adf-b7e0-3f5cb298cb29' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-e011c7ba-7d5a-4adf-b7e0-3f5cb298cb29' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-82fd88a6-6f19-443e-a52e-5d5efdc342b8' class='xr-var-data-in' type='checkbox'><label for='data-82fd88a6-6f19-443e-a52e-5d5efdc342b8' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>long_name :</span></dt><dd>initial time of forecast</dd><dt><span>standard_name :</span></dt><dd>forecast_reference_time</dd></dl></div><div class='xr-var-data'><pre>array(&#x27;2022-08-10T00:00:00.000000000&#x27;, dtype=&#x27;datetime64[ns]&#x27;)</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span>step</span></div><div class='xr-var-dims'>()</div><div class='xr-var-dtype'>timedelta64[ns]</div><div class='xr-var-preview xr-preview'>06:00:00</div><input id='attrs-6d9c8105-0c3c-4b8d-a6d3-689813a0a0e2' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-6d9c8105-0c3c-4b8d-a6d3-689813a0a0e2' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-02ce36d9-fac6-46bf-876a-ca9f8a2c2067' class='xr-var-data-in' type='checkbox'><label for='data-02ce36d9-fac6-46bf-876a-ca9f8a2c2067' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>long_name :</span></dt><dd>time since forecast_reference_time</dd><dt><span>standard_name :</span></dt><dd>forecast_period</dd></dl></div><div class='xr-var-data'><pre>array(21600000000000, dtype=&#x27;timedelta64[ns]&#x27;)</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span>heightAboveGround</span></div><div class='xr-var-dims'>()</div><div class='xr-var-dtype'>float64</div><div class='xr-var-preview xr-preview'>2.0</div><input id='attrs-19efb8c2-8ea9-42f6-9356-8175596fa2df' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-19efb8c2-8ea9-42f6-9356-8175596fa2df' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-a7fb2ef9-51e7-46c6-bcdf-da2528e6a9a2' class='xr-var-data-in' type='checkbox'><label for='data-a7fb2ef9-51e7-46c6-bcdf-da2528e6a9a2' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>long_name :</span></dt><dd>height above the surface</dd><dt><span>units :</span></dt><dd>m</dd><dt><span>positive :</span></dt><dd>up</dd><dt><span>standard_name :</span></dt><dd>height</dd></dl></div><div class='xr-var-data'><pre>array(2.)</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span>latitude</span></div><div class='xr-var-dims'>(y, x)</div><div class='xr-var-dtype'>float64</div><div class='xr-var-preview xr-preview'>21.14 21.14 21.15 ... 47.85 47.84</div><input id='attrs-48c2a6c2-2767-49df-a550-4935366ef214' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-48c2a6c2-2767-49df-a550-4935366ef214' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-def04f74-87ce-4949-9809-3837af839a39' class='xr-var-data-in' type='checkbox'><label for='data-def04f74-87ce-4949-9809-3837af839a39' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>units :</span></dt><dd>degrees_north</dd><dt><span>standard_name :</span></dt><dd>latitude</dd><dt><span>long_name :</span></dt><dd>latitude</dd></dl></div><div class='xr-var-data'><pre>array([[21.138     , 21.14498716, 21.15196735, ..., 21.15463298,
+    remote_grib:             https://noaa-nam-pds.s3.amazonaws.com/nam.202212...
+    local_grib:              C:\Users\blaylock\data\nam\20221210\subset_22b2c...
+    searchString:            TMP:2 m above</pre><div class='xr-wrap' style='display:none'><div class='xr-header'><div class='xr-obj-type'>xarray.Dataset</div></div><ul class='xr-sections'><li class='xr-section-item'><input id='section-977218cf-8ee4-4c0a-8400-584d3e3aabc6' class='xr-section-summary-in' type='checkbox' disabled ><label for='section-977218cf-8ee4-4c0a-8400-584d3e3aabc6' class='xr-section-summary'  title='Expand/collapse section'>Dimensions:</label><div class='xr-section-inline-details'><ul class='xr-dim-list'><li><span>y</span>: 1059</li><li><span>x</span>: 1799</li></ul></div><div class='xr-section-details'></div></li><li class='xr-section-item'><input id='section-40a4dfbd-425a-45ab-8629-ff197e525188' class='xr-section-summary-in' type='checkbox'  checked><label for='section-40a4dfbd-425a-45ab-8629-ff197e525188' class='xr-section-summary' >Coordinates: <span>(6)</span></label><div class='xr-section-inline-details'></div><div class='xr-section-details'><ul class='xr-var-list'><li class='xr-var-item'><div class='xr-var-name'><span>time</span></div><div class='xr-var-dims'>()</div><div class='xr-var-dtype'>datetime64[ns]</div><div class='xr-var-preview xr-preview'>2022-12-10</div><input id='attrs-56151765-0854-4dc7-b001-9c410ce09893' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-56151765-0854-4dc7-b001-9c410ce09893' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-8b1913cd-2743-42af-a6ac-add51a1f37df' class='xr-var-data-in' type='checkbox'><label for='data-8b1913cd-2743-42af-a6ac-add51a1f37df' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>long_name :</span></dt><dd>initial time of forecast</dd><dt><span>standard_name :</span></dt><dd>forecast_reference_time</dd></dl></div><div class='xr-var-data'><pre>array(&#x27;2022-12-10T00:00:00.000000000&#x27;, dtype=&#x27;datetime64[ns]&#x27;)</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span>step</span></div><div class='xr-var-dims'>()</div><div class='xr-var-dtype'>timedelta64[ns]</div><div class='xr-var-preview xr-preview'>06:00:00</div><input id='attrs-2fbe46b8-92c1-4df5-9ede-47a5375c359c' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-2fbe46b8-92c1-4df5-9ede-47a5375c359c' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-a563a4ea-0312-4b54-88a0-a5b6cc048d3c' class='xr-var-data-in' type='checkbox'><label for='data-a563a4ea-0312-4b54-88a0-a5b6cc048d3c' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>long_name :</span></dt><dd>time since forecast_reference_time</dd><dt><span>standard_name :</span></dt><dd>forecast_period</dd></dl></div><div class='xr-var-data'><pre>array(21600000000000, dtype=&#x27;timedelta64[ns]&#x27;)</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span>heightAboveGround</span></div><div class='xr-var-dims'>()</div><div class='xr-var-dtype'>float64</div><div class='xr-var-preview xr-preview'>2.0</div><input id='attrs-c98d407e-4858-4fe6-890b-f49505c7d027' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-c98d407e-4858-4fe6-890b-f49505c7d027' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-fdd4a40a-b175-4ce8-8a63-10e6b1a9214c' class='xr-var-data-in' type='checkbox'><label for='data-fdd4a40a-b175-4ce8-8a63-10e6b1a9214c' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>long_name :</span></dt><dd>height above the surface</dd><dt><span>units :</span></dt><dd>m</dd><dt><span>positive :</span></dt><dd>up</dd><dt><span>standard_name :</span></dt><dd>height</dd></dl></div><div class='xr-var-data'><pre>array(2.)</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span>latitude</span></div><div class='xr-var-dims'>(y, x)</div><div class='xr-var-dtype'>float64</div><div class='xr-var-preview xr-preview'>21.14 21.14 21.15 ... 47.85 47.84</div><input id='attrs-f8850fbc-0dc1-4e3e-b591-443654ad8737' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-f8850fbc-0dc1-4e3e-b591-443654ad8737' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-3b21da7c-0ab9-4345-910a-8db58ee89d3e' class='xr-var-data-in' type='checkbox'><label for='data-3b21da7c-0ab9-4345-910a-8db58ee89d3e' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>units :</span></dt><dd>degrees_north</dd><dt><span>standard_name :</span></dt><dd>latitude</dd><dt><span>long_name :</span></dt><dd>latitude</dd></dl></div><div class='xr-var-data'><pre>array([[21.138     , 21.14498716, 21.15196735, ..., 21.15463298,
         21.14765546, 21.14067096],
        [21.16287153, 21.16986157, 21.17684464, ..., 21.17951136,
         21.17253096, 21.16554359],
@@ -1153,7 +1190,7 @@ Attributes:
        [47.81391163, 47.82420486, 47.83448802, ..., 47.83841506,
         47.82813575, 47.81784637],
        [47.83844191, 47.84873845, 47.85902491, ..., 47.86295322,
-        47.8526706 , 47.84237791]])</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span>longitude</span></div><div class='xr-var-dims'>(y, x)</div><div class='xr-var-dtype'>float64</div><div class='xr-var-preview xr-preview'>237.3 237.3 237.3 ... 299.0 299.1</div><input id='attrs-99246055-6a14-47bb-8165-b3282acdde65' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-99246055-6a14-47bb-8165-b3282acdde65' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-b89cfdb5-0457-468e-b324-0508f17d9e17' class='xr-var-data-in' type='checkbox'><label for='data-b89cfdb5-0457-468e-b324-0508f17d9e17' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>units :</span></dt><dd>degrees_east</dd><dt><span>standard_name :</span></dt><dd>longitude</dd><dt><span>long_name :</span></dt><dd>longitude</dd></dl></div><div class='xr-var-data'><pre>array([[237.28      , 237.3066666 , 237.33333755, ..., 287.65646903,
+        47.8526706 , 47.84237791]])</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span>longitude</span></div><div class='xr-var-dims'>(y, x)</div><div class='xr-var-dtype'>float64</div><div class='xr-var-preview xr-preview'>237.3 237.3 237.3 ... 299.0 299.1</div><input id='attrs-1896cd33-9ff3-4743-86f4-cc0189e26184' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-1896cd33-9ff3-4743-86f4-cc0189e26184' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-6e8c9edc-d1ea-4eff-8ad9-fdd184efb5aa' class='xr-var-data-in' type='checkbox'><label for='data-6e8c9edc-d1ea-4eff-8ad9-fdd184efb5aa' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>units :</span></dt><dd>degrees_east</dd><dt><span>standard_name :</span></dt><dd>longitude</dd><dt><span>long_name :</span></dt><dd>longitude</dd></dl></div><div class='xr-var-data'><pre>array([[237.28      , 237.3066666 , 237.33333755, ..., 287.65646903,
         287.68314163, 287.7098099 ],
        [237.27250288, 237.29917661, 237.32585467, ..., 287.66394919,
         287.69062891, 287.71730429],
@@ -1165,20 +1202,20 @@ Attributes:
        [225.91921463, 225.95575173, 225.99230099, ..., 298.99372853,
         299.03028244, 299.06682419],
        [225.90387326, 225.94042231, 225.97698355, ..., 299.00904139,
-        299.04560728, 299.08216099]])</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span>valid_time</span></div><div class='xr-var-dims'>()</div><div class='xr-var-dtype'>datetime64[ns]</div><div class='xr-var-preview xr-preview'>2022-08-10T06:00:00</div><input id='attrs-7d1cf811-ad12-46de-8d60-9f2a861f0d6d' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-7d1cf811-ad12-46de-8d60-9f2a861f0d6d' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-be3bf1d7-2b73-4ae4-a0b4-1e18931a1a27' class='xr-var-data-in' type='checkbox'><label for='data-be3bf1d7-2b73-4ae4-a0b4-1e18931a1a27' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>standard_name :</span></dt><dd>time</dd><dt><span>long_name :</span></dt><dd>time</dd></dl></div><div class='xr-var-data'><pre>array(&#x27;2022-08-10T06:00:00.000000000&#x27;, dtype=&#x27;datetime64[ns]&#x27;)</pre></div></li></ul></div></li><li class='xr-section-item'><input id='section-f4dfe668-6074-4f0c-99ca-d516f00a52d2' class='xr-section-summary-in' type='checkbox'  checked><label for='section-f4dfe668-6074-4f0c-99ca-d516f00a52d2' class='xr-section-summary' >Data variables: <span>(2)</span></label><div class='xr-section-inline-details'></div><div class='xr-section-details'><ul class='xr-var-list'><li class='xr-var-item'><div class='xr-var-name'><span>t2m</span></div><div class='xr-var-dims'>(y, x)</div><div class='xr-var-dtype'>float32</div><div class='xr-var-preview xr-preview'>295.0 295.0 294.9 ... 290.4 290.4</div><input id='attrs-e1b6465d-53ca-403a-bddd-a6da922feb26' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-e1b6465d-53ca-403a-bddd-a6da922feb26' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-cac9ebd9-2590-40e8-8789-c22777d0b482' class='xr-var-data-in' type='checkbox'><label for='data-cac9ebd9-2590-40e8-8789-c22777d0b482' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>GRIB_paramId :</span></dt><dd>167</dd><dt><span>GRIB_dataType :</span></dt><dd>fc</dd><dt><span>GRIB_numberOfPoints :</span></dt><dd>1905141</dd><dt><span>GRIB_typeOfLevel :</span></dt><dd>heightAboveGround</dd><dt><span>GRIB_stepUnits :</span></dt><dd>1</dd><dt><span>GRIB_stepType :</span></dt><dd>instant</dd><dt><span>GRIB_gridType :</span></dt><dd>lambert</dd><dt><span>GRIB_DxInMetres :</span></dt><dd>3000.0</dd><dt><span>GRIB_DyInMetres :</span></dt><dd>3000.0</dd><dt><span>GRIB_LaDInDegrees :</span></dt><dd>38.5</dd><dt><span>GRIB_Latin1InDegrees :</span></dt><dd>38.5</dd><dt><span>GRIB_Latin2InDegrees :</span></dt><dd>38.5</dd><dt><span>GRIB_LoVInDegrees :</span></dt><dd>262.5</dd><dt><span>GRIB_NV :</span></dt><dd>0</dd><dt><span>GRIB_Nx :</span></dt><dd>1799</dd><dt><span>GRIB_Ny :</span></dt><dd>1059</dd><dt><span>GRIB_cfName :</span></dt><dd>air_temperature</dd><dt><span>GRIB_cfVarName :</span></dt><dd>t2m</dd><dt><span>GRIB_gridDefinitionDescription :</span></dt><dd>Lambert Conformal can be secant or tangent, conical or bipolar</dd><dt><span>GRIB_iScansNegatively :</span></dt><dd>0</dd><dt><span>GRIB_jPointsAreConsecutive :</span></dt><dd>0</dd><dt><span>GRIB_jScansPositively :</span></dt><dd>1</dd><dt><span>GRIB_latitudeOfFirstGridPointInDegrees :</span></dt><dd>21.138</dd><dt><span>GRIB_latitudeOfSouthernPoleInDegrees :</span></dt><dd>-90.0</dd><dt><span>GRIB_longitudeOfFirstGridPointInDegrees :</span></dt><dd>237.28</dd><dt><span>GRIB_longitudeOfSouthernPoleInDegrees :</span></dt><dd>0.0</dd><dt><span>GRIB_missingValue :</span></dt><dd>9999</dd><dt><span>GRIB_name :</span></dt><dd>2 metre temperature</dd><dt><span>GRIB_parameterName :</span></dt><dd>Temperature</dd><dt><span>GRIB_parameterUnits :</span></dt><dd>K</dd><dt><span>GRIB_shortName :</span></dt><dd>2t</dd><dt><span>GRIB_stepRange :</span></dt><dd>6</dd><dt><span>GRIB_units :</span></dt><dd>K</dd><dt><span>long_name :</span></dt><dd>2 metre temperature</dd><dt><span>units :</span></dt><dd>K</dd><dt><span>standard_name :</span></dt><dd>air_temperature</dd><dt><span>grid_mapping :</span></dt><dd>gribfile_projection</dd></dl></div><div class='xr-var-data'><pre>array([[294.99, 294.98, 294.93, ...,    nan,    nan,    nan],
-       [294.99, 294.98, 294.93, ...,    nan,    nan,    nan],
-       [294.76, 294.83, 294.74, ...,    nan,    nan,    nan],
+        299.04560728, 299.08216099]])</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span>valid_time</span></div><div class='xr-var-dims'>()</div><div class='xr-var-dtype'>datetime64[ns]</div><div class='xr-var-preview xr-preview'>2022-12-10T06:00:00</div><input id='attrs-fbe00ed0-6687-433a-9405-8d97e9e89699' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-fbe00ed0-6687-433a-9405-8d97e9e89699' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-491257ab-101a-4d21-924e-b5c3d0d3ff8a' class='xr-var-data-in' type='checkbox'><label for='data-491257ab-101a-4d21-924e-b5c3d0d3ff8a' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>standard_name :</span></dt><dd>time</dd><dt><span>long_name :</span></dt><dd>time</dd></dl></div><div class='xr-var-data'><pre>array(&#x27;2022-12-10T06:00:00.000000000&#x27;, dtype=&#x27;datetime64[ns]&#x27;)</pre></div></li></ul></div></li><li class='xr-section-item'><input id='section-4c1bf1ed-a94f-4924-a6cf-0c891caaebd5' class='xr-section-summary-in' type='checkbox'  checked><label for='section-4c1bf1ed-a94f-4924-a6cf-0c891caaebd5' class='xr-section-summary' >Data variables: <span>(2)</span></label><div class='xr-section-inline-details'></div><div class='xr-section-details'><ul class='xr-var-list'><li class='xr-var-item'><div class='xr-var-name'><span>t2m</span></div><div class='xr-var-dims'>(y, x)</div><div class='xr-var-dtype'>float32</div><div class='xr-var-preview xr-preview'>292.3 291.9 292.2 ... 275.6 275.8</div><input id='attrs-14cfacad-1191-437f-b2e7-136c21d082e9' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-14cfacad-1191-437f-b2e7-136c21d082e9' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-b4f9cdaf-171c-40b2-8415-eeaa1fd3038d' class='xr-var-data-in' type='checkbox'><label for='data-b4f9cdaf-171c-40b2-8415-eeaa1fd3038d' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>GRIB_paramId :</span></dt><dd>167</dd><dt><span>GRIB_dataType :</span></dt><dd>fc</dd><dt><span>GRIB_numberOfPoints :</span></dt><dd>1905141</dd><dt><span>GRIB_typeOfLevel :</span></dt><dd>heightAboveGround</dd><dt><span>GRIB_stepUnits :</span></dt><dd>1</dd><dt><span>GRIB_stepType :</span></dt><dd>instant</dd><dt><span>GRIB_gridType :</span></dt><dd>lambert</dd><dt><span>GRIB_DxInMetres :</span></dt><dd>3000.0</dd><dt><span>GRIB_DyInMetres :</span></dt><dd>3000.0</dd><dt><span>GRIB_LaDInDegrees :</span></dt><dd>38.5</dd><dt><span>GRIB_Latin1InDegrees :</span></dt><dd>38.5</dd><dt><span>GRIB_Latin2InDegrees :</span></dt><dd>38.5</dd><dt><span>GRIB_LoVInDegrees :</span></dt><dd>262.5</dd><dt><span>GRIB_NV :</span></dt><dd>0</dd><dt><span>GRIB_Nx :</span></dt><dd>1799</dd><dt><span>GRIB_Ny :</span></dt><dd>1059</dd><dt><span>GRIB_cfName :</span></dt><dd>air_temperature</dd><dt><span>GRIB_cfVarName :</span></dt><dd>t2m</dd><dt><span>GRIB_gridDefinitionDescription :</span></dt><dd>Lambert Conformal can be secant or tangent, conical or bipolar</dd><dt><span>GRIB_iScansNegatively :</span></dt><dd>0</dd><dt><span>GRIB_jPointsAreConsecutive :</span></dt><dd>0</dd><dt><span>GRIB_jScansPositively :</span></dt><dd>1</dd><dt><span>GRIB_latitudeOfFirstGridPointInDegrees :</span></dt><dd>21.138</dd><dt><span>GRIB_latitudeOfSouthernPoleInDegrees :</span></dt><dd>-90.0</dd><dt><span>GRIB_longitudeOfFirstGridPointInDegrees :</span></dt><dd>237.28</dd><dt><span>GRIB_longitudeOfSouthernPoleInDegrees :</span></dt><dd>0.0</dd><dt><span>GRIB_missingValue :</span></dt><dd>3.4028234663852886e+38</dd><dt><span>GRIB_name :</span></dt><dd>2 metre temperature</dd><dt><span>GRIB_parameterName :</span></dt><dd>Temperature</dd><dt><span>GRIB_parameterUnits :</span></dt><dd>K</dd><dt><span>GRIB_shortName :</span></dt><dd>2t</dd><dt><span>GRIB_stepRange :</span></dt><dd>6</dd><dt><span>GRIB_units :</span></dt><dd>K</dd><dt><span>long_name :</span></dt><dd>2 metre temperature</dd><dt><span>units :</span></dt><dd>K</dd><dt><span>standard_name :</span></dt><dd>air_temperature</dd><dt><span>grid_mapping :</span></dt><dd>gribfile_projection</dd></dl></div><div class='xr-var-data'><pre>array([[292.28, 291.93, 292.21, ...,    nan,    nan,    nan],
+       [292.28, 291.93, 292.21, ...,    nan,    nan,    nan],
+       [292.15, 292.2 , 292.22, ...,    nan,    nan,    nan],
        ...,
-       [287.02, 287.02, 287.12, ..., 290.46, 290.46, 290.46],
-       [287.06, 286.97, 286.98, ..., 290.42, 290.4 , 290.4 ],
-       [286.97, 286.88, 286.95, ..., 290.4 , 290.4 , 290.4 ]],
-      dtype=float32)</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span>gribfile_projection</span></div><div class='xr-var-dims'>()</div><div class='xr-var-dtype'>object</div><div class='xr-var-preview xr-preview'>None</div><input id='attrs-44147ad9-e8f2-4161-9153-af05fec8605a' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-44147ad9-e8f2-4161-9153-af05fec8605a' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-09a9a4fd-1565-4ac7-86a9-941142e5dd37' class='xr-var-data-in' type='checkbox'><label for='data-09a9a4fd-1565-4ac7-86a9-941142e5dd37' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>crs_wkt :</span></dt><dd>PROJCRS[&quot;unknown&quot;,BASEGEOGCRS[&quot;unknown&quot;,DATUM[&quot;unknown&quot;,ELLIPSOID[&quot;unknown&quot;,6371229,0,LENGTHUNIT[&quot;metre&quot;,1,ID[&quot;EPSG&quot;,9001]]]],PRIMEM[&quot;Greenwich&quot;,0,ANGLEUNIT[&quot;degree&quot;,0.0174532925199433],ID[&quot;EPSG&quot;,8901]]],CONVERSION[&quot;unknown&quot;,METHOD[&quot;Lambert Conic Conformal (2SP)&quot;,ID[&quot;EPSG&quot;,9802]],PARAMETER[&quot;Latitude of false origin&quot;,38.5,ANGLEUNIT[&quot;degree&quot;,0.0174532925199433],ID[&quot;EPSG&quot;,8821]],PARAMETER[&quot;Longitude of false origin&quot;,262.5,ANGLEUNIT[&quot;degree&quot;,0.0174532925199433],ID[&quot;EPSG&quot;,8822]],PARAMETER[&quot;Latitude of 1st standard parallel&quot;,38.5,ANGLEUNIT[&quot;degree&quot;,0.0174532925199433],ID[&quot;EPSG&quot;,8823]],PARAMETER[&quot;Latitude of 2nd standard parallel&quot;,38.5,ANGLEUNIT[&quot;degree&quot;,0.0174532925199433],ID[&quot;EPSG&quot;,8824]],PARAMETER[&quot;Easting at false origin&quot;,0,LENGTHUNIT[&quot;metre&quot;,1],ID[&quot;EPSG&quot;,8826]],PARAMETER[&quot;Northing at false origin&quot;,0,LENGTHUNIT[&quot;metre&quot;,1],ID[&quot;EPSG&quot;,8827]]],CS[Cartesian,2],AXIS[&quot;(E)&quot;,east,ORDER[1],LENGTHUNIT[&quot;metre&quot;,1,ID[&quot;EPSG&quot;,9001]]],AXIS[&quot;(N)&quot;,north,ORDER[2],LENGTHUNIT[&quot;metre&quot;,1,ID[&quot;EPSG&quot;,9001]]]]</dd><dt><span>semi_major_axis :</span></dt><dd>6371229.0</dd><dt><span>semi_minor_axis :</span></dt><dd>6371229.0</dd><dt><span>inverse_flattening :</span></dt><dd>0.0</dd><dt><span>reference_ellipsoid_name :</span></dt><dd>unknown</dd><dt><span>longitude_of_prime_meridian :</span></dt><dd>0.0</dd><dt><span>prime_meridian_name :</span></dt><dd>Greenwich</dd><dt><span>geographic_crs_name :</span></dt><dd>unknown</dd><dt><span>horizontal_datum_name :</span></dt><dd>unknown</dd><dt><span>projected_crs_name :</span></dt><dd>unknown</dd><dt><span>grid_mapping_name :</span></dt><dd>lambert_conformal_conic</dd><dt><span>standard_parallel :</span></dt><dd>(38.5, 38.5)</dd><dt><span>latitude_of_projection_origin :</span></dt><dd>38.5</dd><dt><span>longitude_of_central_meridian :</span></dt><dd>262.5</dd><dt><span>false_easting :</span></dt><dd>0.0</dd><dt><span>false_northing :</span></dt><dd>0.0</dd><dt><span>long_name :</span></dt><dd>NAM model grid projection</dd></dl></div><div class='xr-var-data'><pre>array(None, dtype=object)</pre></div></li></ul></div></li><li class='xr-section-item'><input id='section-18943c84-fbcd-4603-a359-11baf2d52136' class='xr-section-summary-in' type='checkbox'  ><label for='section-18943c84-fbcd-4603-a359-11baf2d52136' class='xr-section-summary' >Attributes: <span>(12)</span></label><div class='xr-section-inline-details'></div><div class='xr-section-details'><dl class='xr-attrs'><dt><span>GRIB_edition :</span></dt><dd>2</dd><dt><span>GRIB_centre :</span></dt><dd>kwbc</dd><dt><span>GRIB_centreDescription :</span></dt><dd>US National Weather Service - NCEP</dd><dt><span>GRIB_subCentre :</span></dt><dd>0</dd><dt><span>Conventions :</span></dt><dd>CF-1.7</dd><dt><span>institution :</span></dt><dd>US National Weather Service - NCEP</dd><dt><span>model :</span></dt><dd>nam</dd><dt><span>product :</span></dt><dd>conusnest.hiresf</dd><dt><span>description :</span></dt><dd>North America Mesoscale - CONUS</dd><dt><span>remote_grib :</span></dt><dd>https://nomads.ncep.noaa.gov/pub/data/nccf/com/nam/prod/nam.20220810/nam.t00z.conusnest.hiresf06.tm00.grib2</dd><dt><span>local_grib :</span></dt><dd>/p/cwfs/blaylock/data/nam/20220810/subset_6765c043a097743fe613e347c1cd7f770096750d__nam.t00z.conusnest.hiresf06.tm00.grib2</dd><dt><span>searchString :</span></dt><dd>TMP:2 m above</dd></dl></div></li></ul></div></div></div>
+       [280.8 , 280.8 , 280.83, ..., 275.59, 275.7 , 275.8 ],
+       [280.72, 280.76, 280.82, ..., 275.61, 275.73, 275.73],
+       [280.71, 280.69, 280.76, ..., 275.62, 275.62, 275.75]],
+      dtype=float32)</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span>gribfile_projection</span></div><div class='xr-var-dims'>()</div><div class='xr-var-dtype'>object</div><div class='xr-var-preview xr-preview'>None</div><input id='attrs-6e934821-2ef0-423a-b065-d184b53f9740' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-6e934821-2ef0-423a-b065-d184b53f9740' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-707ae703-1fd1-4da6-8507-a21c75bb94d5' class='xr-var-data-in' type='checkbox'><label for='data-707ae703-1fd1-4da6-8507-a21c75bb94d5' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>crs_wkt :</span></dt><dd>PROJCRS[&quot;unknown&quot;,BASEGEOGCRS[&quot;unknown&quot;,DATUM[&quot;unknown&quot;,ELLIPSOID[&quot;unknown&quot;,6371229,0,LENGTHUNIT[&quot;metre&quot;,1,ID[&quot;EPSG&quot;,9001]]]],PRIMEM[&quot;Greenwich&quot;,0,ANGLEUNIT[&quot;degree&quot;,0.0174532925199433],ID[&quot;EPSG&quot;,8901]]],CONVERSION[&quot;unknown&quot;,METHOD[&quot;Lambert Conic Conformal (2SP)&quot;,ID[&quot;EPSG&quot;,9802]],PARAMETER[&quot;Latitude of false origin&quot;,38.5,ANGLEUNIT[&quot;degree&quot;,0.0174532925199433],ID[&quot;EPSG&quot;,8821]],PARAMETER[&quot;Longitude of false origin&quot;,262.5,ANGLEUNIT[&quot;degree&quot;,0.0174532925199433],ID[&quot;EPSG&quot;,8822]],PARAMETER[&quot;Latitude of 1st standard parallel&quot;,38.5,ANGLEUNIT[&quot;degree&quot;,0.0174532925199433],ID[&quot;EPSG&quot;,8823]],PARAMETER[&quot;Latitude of 2nd standard parallel&quot;,38.5,ANGLEUNIT[&quot;degree&quot;,0.0174532925199433],ID[&quot;EPSG&quot;,8824]],PARAMETER[&quot;Easting at false origin&quot;,0,LENGTHUNIT[&quot;metre&quot;,1],ID[&quot;EPSG&quot;,8826]],PARAMETER[&quot;Northing at false origin&quot;,0,LENGTHUNIT[&quot;metre&quot;,1],ID[&quot;EPSG&quot;,8827]]],CS[Cartesian,2],AXIS[&quot;(E)&quot;,east,ORDER[1],LENGTHUNIT[&quot;metre&quot;,1,ID[&quot;EPSG&quot;,9001]]],AXIS[&quot;(N)&quot;,north,ORDER[2],LENGTHUNIT[&quot;metre&quot;,1,ID[&quot;EPSG&quot;,9001]]]]</dd><dt><span>semi_major_axis :</span></dt><dd>6371229.0</dd><dt><span>semi_minor_axis :</span></dt><dd>6371229.0</dd><dt><span>inverse_flattening :</span></dt><dd>0.0</dd><dt><span>reference_ellipsoid_name :</span></dt><dd>unknown</dd><dt><span>longitude_of_prime_meridian :</span></dt><dd>0.0</dd><dt><span>prime_meridian_name :</span></dt><dd>Greenwich</dd><dt><span>geographic_crs_name :</span></dt><dd>unknown</dd><dt><span>horizontal_datum_name :</span></dt><dd>unknown</dd><dt><span>projected_crs_name :</span></dt><dd>unknown</dd><dt><span>grid_mapping_name :</span></dt><dd>lambert_conformal_conic</dd><dt><span>standard_parallel :</span></dt><dd>(38.5, 38.5)</dd><dt><span>latitude_of_projection_origin :</span></dt><dd>38.5</dd><dt><span>longitude_of_central_meridian :</span></dt><dd>262.5</dd><dt><span>false_easting :</span></dt><dd>0.0</dd><dt><span>false_northing :</span></dt><dd>0.0</dd><dt><span>long_name :</span></dt><dd>NAM model grid projection</dd></dl></div><div class='xr-var-data'><pre>array(None, dtype=object)</pre></div></li></ul></div></li><li class='xr-section-item'><input id='section-9cb004e1-9ac4-4399-8e3a-b90b5bb912b0' class='xr-section-summary-in' type='checkbox' disabled ><label for='section-9cb004e1-9ac4-4399-8e3a-b90b5bb912b0' class='xr-section-summary'  title='Expand/collapse section'>Indexes: <span>(0)</span></label><div class='xr-section-inline-details'></div><div class='xr-section-details'><ul class='xr-var-list'></ul></div></li><li class='xr-section-item'><input id='section-ab9387a0-01c9-4cbf-9888-7ae4c894862a' class='xr-section-summary-in' type='checkbox'  ><label for='section-ab9387a0-01c9-4cbf-9888-7ae4c894862a' class='xr-section-summary' >Attributes: <span>(12)</span></label><div class='xr-section-inline-details'></div><div class='xr-section-details'><dl class='xr-attrs'><dt><span>GRIB_edition :</span></dt><dd>2</dd><dt><span>GRIB_centre :</span></dt><dd>kwbc</dd><dt><span>GRIB_centreDescription :</span></dt><dd>US National Weather Service - NCEP</dd><dt><span>GRIB_subCentre :</span></dt><dd>0</dd><dt><span>Conventions :</span></dt><dd>CF-1.7</dd><dt><span>institution :</span></dt><dd>US National Weather Service - NCEP</dd><dt><span>model :</span></dt><dd>nam</dd><dt><span>product :</span></dt><dd>conusnest.hiresf</dd><dt><span>description :</span></dt><dd>North America Mesoscale - CONUS</dd><dt><span>remote_grib :</span></dt><dd>https://noaa-nam-pds.s3.amazonaws.com/nam.20221210/nam.t00z.conusnest.hiresf06.tm00.grib2</dd><dt><span>local_grib :</span></dt><dd>C:\Users\blaylock\data\nam\20221210\subset_22b2c01a__nam.t00z.conusnest.hiresf06.tm00.grib2</dd><dt><span>searchString :</span></dt><dd>TMP:2 m above</dd></dl></div></li></ul></div></div></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ax</span> <span class="o">=</span> <span class="n">common_features</span><span class="p">(</span><span class="s2">&quot;50m&quot;</span><span class="p">,</span> <span class="n">crs</span><span class="o">=</span><span class="n">ds</span><span class="o">.</span><span class="n">herbie</span><span class="o">.</span><span class="n">crs</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">[</span><span class="mi">8</span><span class="p">,</span> <span class="mi">8</span><span class="p">])</span><span class="o">.</span><span class="n">STATES</span><span class="p">()</span><span class="o">.</span><span class="n">ax</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ax</span> <span class="o">=</span> <span class="n">EasyMap</span><span class="p">(</span><span class="s2">&quot;50m&quot;</span><span class="p">,</span> <span class="n">crs</span><span class="o">=</span><span class="n">ds</span><span class="o">.</span><span class="n">herbie</span><span class="o">.</span><span class="n">crs</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">[</span><span class="mi">8</span><span class="p">,</span> <span class="mi">8</span><span class="p">])</span><span class="o">.</span><span class="n">STATES</span><span class="p">()</span><span class="o">.</span><span class="n">ax</span>
 <span class="n">p</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">pcolormesh</span><span class="p">(</span>
     <span class="n">ds</span><span class="o">.</span><span class="n">longitude</span><span class="p">,</span> <span class="n">ds</span><span class="o">.</span><span class="n">latitude</span><span class="p">,</span> <span class="n">ds</span><span class="o">.</span><span class="n">t2m</span><span class="p">,</span> <span class="n">transform</span><span class="o">=</span><span class="n">pc</span><span class="p">,</span> <span class="o">**</span><span class="n">cm_tmp</span><span class="p">(</span><span class="n">units</span><span class="o">=</span><span class="s2">&quot;K&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">cmap_kwargs</span>
 <span class="p">)</span>
@@ -1195,7 +1232,7 @@ Attributes:
 </div>
 </div>
 <div class="nboutput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
@@ -1207,21 +1244,21 @@ Text(1.0, 1.0, &#39;2 metre temperature&#39;)
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../../_images/user_guide__model_notebooks_nam_4_1.png" src="../../_images/user_guide__model_notebooks_nam_4_1.png" />
+<img alt="../../_images/user_guide__model_notebooks_nam_5_1.png" src="../../_images/user_guide__model_notebooks_nam_5_1.png" />
 </div>
 </div>
-<section id="Cycle-through-all-products:">
-<h2>Cycle through all products:<a class="headerlink" href="#Cycle-through-all-products:" title="Permalink to this heading">#</a></h2>
+<section id="Additional-products">
+<h2>Additional products<a class="headerlink" href="#Additional-products" title="Permalink to this heading">#</a></h2>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[44]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">plot_product</span><span class="p">(</span><span class="n">product</span><span class="p">):</span>
-    <span class="n">H</span> <span class="o">=</span> <span class="n">Herbie</span><span class="p">(</span><span class="s2">&quot;2022-08-10&quot;</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="s2">&quot;nam&quot;</span><span class="p">,</span> <span class="n">fxx</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">product</span><span class="o">=</span><span class="n">product</span><span class="p">)</span>
+    <span class="n">H</span> <span class="o">=</span> <span class="n">Herbie</span><span class="p">(</span><span class="s2">&quot;2022-12-10&quot;</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="s2">&quot;nam&quot;</span><span class="p">,</span> <span class="n">fxx</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">product</span><span class="o">=</span><span class="n">product</span><span class="p">)</span>
 
     <span class="n">ds</span> <span class="o">=</span> <span class="n">H</span><span class="o">.</span><span class="n">xarray</span><span class="p">(</span><span class="s2">&quot;TMP:2 m above&quot;</span><span class="p">)</span>
 
-    <span class="n">ax</span> <span class="o">=</span> <span class="n">common_features</span><span class="p">(</span><span class="s2">&quot;50m&quot;</span><span class="p">,</span> <span class="n">crs</span><span class="o">=</span><span class="n">ds</span><span class="o">.</span><span class="n">herbie</span><span class="o">.</span><span class="n">crs</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">[</span><span class="mi">8</span><span class="p">,</span> <span class="mi">8</span><span class="p">])</span><span class="o">.</span><span class="n">STATES</span><span class="p">()</span><span class="o">.</span><span class="n">ax</span>
+    <span class="n">ax</span> <span class="o">=</span> <span class="n">EasyMap</span><span class="p">(</span><span class="s2">&quot;50m&quot;</span><span class="p">,</span> <span class="n">crs</span><span class="o">=</span><span class="n">ds</span><span class="o">.</span><span class="n">herbie</span><span class="o">.</span><span class="n">crs</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">[</span><span class="mi">8</span><span class="p">,</span> <span class="mi">8</span><span class="p">])</span><span class="o">.</span><span class="n">STATES</span><span class="p">()</span><span class="o">.</span><span class="n">ax</span>
     <span class="n">p</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">pcolormesh</span><span class="p">(</span>
         <span class="n">ds</span><span class="o">.</span><span class="n">longitude</span><span class="p">,</span> <span class="n">ds</span><span class="o">.</span><span class="n">latitude</span><span class="p">,</span> <span class="n">ds</span><span class="o">.</span><span class="n">t2m</span><span class="p">,</span> <span class="n">transform</span><span class="o">=</span><span class="n">pc</span><span class="p">,</span> <span class="o">**</span><span class="n">cm_tmp</span><span class="p">(</span><span class="n">units</span><span class="o">=</span><span class="s2">&quot;K&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">cmap_kwargs</span>
     <span class="p">)</span>
@@ -1239,7 +1276,7 @@ Text(1.0, 1.0, &#39;2 metre temperature&#39;)
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[45]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">H</span><span class="o">.</span><span class="n">PRODUCTS</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
@@ -1247,7 +1284,7 @@ Text(1.0, 1.0, &#39;2 metre temperature&#39;)
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[45]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
@@ -1256,7 +1293,7 @@ dict_keys([&#39;conusnest.hiresf&#39;, &#39;firewxnest.hiresf&#39;, &#39;alaskan
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">H</span><span class="p">,</span> <span class="n">ds</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plot_product</span><span class="p">(</span><span class="s2">&quot;conusnest.hiresf&quot;</span><span class="p">)</span>
@@ -1268,18 +1305,18 @@ dict_keys([&#39;conusnest.hiresf&#39;, &#39;firewxnest.hiresf&#39;, &#39;alaskan
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-✅ Found ┊ model=nam ┊ product=conusnest.hiresf ┊ <span style="color: rgb(41,130,13)">2022-Aug-10 00:00 UTC</span><span class="ansi-green-intense-fg"> F06</span> ┊ <span style="color: rgb(255,153,0)">GRIB2 @ aws</span> ┊ <span style="color: rgb(255,153,0)">IDX @ aws</span>
+✅ Found ┊ model=nam ┊ product=conusnest.hiresf ┊ <span style="color: rgb(41,130,13)">2022-Dec-10 00:00 UTC</span><span class="ansi-green-intense-fg"> F06</span> ┊ <span style="color: rgb(255,153,0)">GRIB2 @ aws</span> ┊ <span style="color: rgb(255,153,0)">IDX @ aws</span>
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../../_images/user_guide__model_notebooks_nam_8_1.png" src="../../_images/user_guide__model_notebooks_nam_8_1.png" />
+<img alt="../../_images/user_guide__model_notebooks_nam_9_1.png" src="../../_images/user_guide__model_notebooks_nam_9_1.png" />
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">H</span><span class="p">,</span> <span class="n">ds</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plot_product</span><span class="p">(</span><span class="s2">&quot;firewxnest.hiresf&quot;</span><span class="p">)</span>
@@ -1291,18 +1328,27 @@ dict_keys([&#39;conusnest.hiresf&#39;, &#39;firewxnest.hiresf&#39;, &#39;alaskan
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-✅ Found ┊ model=nam ┊ product=firewxnest.hiresf ┊ <span style="color: rgb(41,130,13)">2022-Aug-10 00:00 UTC</span><span class="ansi-green-intense-fg"> F06</span> ┊ <span style="color: rgb(255,153,0)">GRIB2 @ aws</span> ┊ <span style="color: rgb(255,153,0)">IDX @ aws</span>
+✅ Found ┊ model=nam ┊ product=firewxnest.hiresf ┊ <span style="color: rgb(41,130,13)">2022-Dec-10 00:00 UTC</span><span class="ansi-green-intense-fg"> F06</span> ┊ <span style="color: rgb(255,153,0)">GRIB2 @ aws</span> ┊ <span style="color: rgb(255,153,0)">IDX @ aws</span>
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+C:\Users\blaylock\_GITHUB\Herbie\herbie\archive.py:1041: UserWarning: sorry, on windows I couldn&#39;t remove the file.
+  warnings.warn(&#34;sorry, on windows I couldn&#39;t remove the file.&#34;)
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../../_images/user_guide__model_notebooks_nam_9_1.png" src="../../_images/user_guide__model_notebooks_nam_9_1.png" />
+<img alt="../../_images/user_guide__model_notebooks_nam_10_2.png" src="../../_images/user_guide__model_notebooks_nam_10_2.png" />
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[25]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">H</span><span class="p">,</span> <span class="n">ds</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plot_product</span><span class="p">(</span><span class="s2">&quot;alaskanest.hiresf&quot;</span><span class="p">)</span>
@@ -1314,18 +1360,27 @@ dict_keys([&#39;conusnest.hiresf&#39;, &#39;firewxnest.hiresf&#39;, &#39;alaskan
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-✅ Found ┊ model=nam ┊ product=alaskanest.hiresf ┊ <span style="color: rgb(41,130,13)">2022-Aug-10 00:00 UTC</span><span class="ansi-green-intense-fg"> F06</span> ┊ <span style="color: rgb(255,153,0)">GRIB2 @ aws</span> ┊ <span style="color: rgb(255,153,0)">IDX @ aws</span>
+✅ Found ┊ model=nam ┊ product=alaskanest.hiresf ┊ <span style="color: rgb(41,130,13)">2022-Dec-10 00:00 UTC</span><span class="ansi-green-intense-fg"> F06</span> ┊ <span style="color: rgb(255,153,0)">GRIB2 @ aws</span> ┊ <span style="color: rgb(255,153,0)">IDX @ aws</span>
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+C:\Users\blaylock\_GITHUB\Herbie\herbie\archive.py:1041: UserWarning: sorry, on windows I couldn&#39;t remove the file.
+  warnings.warn(&#34;sorry, on windows I couldn&#39;t remove the file.&#34;)
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../../_images/user_guide__model_notebooks_nam_10_1.png" src="../../_images/user_guide__model_notebooks_nam_10_1.png" />
+<img alt="../../_images/user_guide__model_notebooks_nam_11_2.png" src="../../_images/user_guide__model_notebooks_nam_11_2.png" />
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[27]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># NOTE: Weirdness with Hawaii not returning as a grid, but as a line</span>
@@ -1340,7 +1395,16 @@ dict_keys([&#39;conusnest.hiresf&#39;, &#39;firewxnest.hiresf&#39;, &#39;alaskan
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-✅ Found ┊ model=nam ┊ product=hawaiinest.hiresf ┊ <span style="color: rgb(41,130,13)">2022-Aug-10 00:00 UTC</span><span class="ansi-green-intense-fg"> F06</span> ┊ <span style="color: rgb(255,153,0)">GRIB2 @ aws</span> ┊ <span style="color: rgb(255,153,0)">IDX @ aws</span>
+✅ Found ┊ model=nam ┊ product=hawaiinest.hiresf ┊ <span style="color: rgb(41,130,13)">2022-Dec-10 00:00 UTC</span><span class="ansi-green-intense-fg"> F06</span> ┊ <span style="color: rgb(255,153,0)">GRIB2 @ aws</span> ┊ <span style="color: rgb(255,153,0)">IDX @ aws</span>
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+C:\Users\blaylock\_GITHUB\Herbie\herbie\archive.py:1041: UserWarning: sorry, on windows I couldn&#39;t remove the file.
+  warnings.warn(&#34;sorry, on windows I couldn&#39;t remove the file.&#34;)
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -1348,64 +1412,66 @@ dict_keys([&#39;conusnest.hiresf&#39;, &#39;firewxnest.hiresf&#39;, &#39;alaskan
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-<span class="ansi-red-fg">---------------------------------------------------------------------------</span>
-<span class="ansi-red-fg">ValueError</span>                                Traceback (most recent call last)
-<span class="ansi-green-intense-fg ansi-bold">/p/home/blaylock/BB_python/Herbie/docs/user_guide/notebooks/data_nam.ipynb Cell 13</span> in <span class="ansi-cyan-fg">&lt;cell line: 1&gt;</span><span class="ansi-blue-fg">()</span>
-<span class="ansi-green-fg">----&gt; &lt;a href=&#39;vscode-notebook-cell://ssh-remote%2Bkoehr03.navydsrc.hpc.mil/p/home/blaylock/BB_python/Herbie/docs/user_guide/notebooks/data_nam.ipynb#X30sdnNjb2RlLXJlbW90ZQ%3D%3D?line=0&#39;&gt;1&lt;/a&gt;</span> H, ds, ax = plot_product(&#39;hawaiinest.hiresf&#39;)
+<span class="ansi-red-intense-fg ansi-bold">---------------------------------------------------------------------------</span>
+<span class="ansi-red-intense-fg ansi-bold">ValueError</span>                                Traceback (most recent call last)
+Cell <span class="ansi-green-intense-fg ansi-bold">In[17], line 4</span>
+<span class="ansi-green-fg">      1</span> # NOTE: Weirdness with Hawaii not returning as a grid, but as a line
+<span class="ansi-green-fg">      2</span> # NOTE: NEEDS TO BE RESHAPED
+<span class="ansi-green-intense-fg ansi-bold">----&gt; 4</span> H, ds, ax = plot_product(&#34;hawaiinest.hiresf&#34;)
 
-<span class="ansi-green-intense-fg ansi-bold">/p/home/blaylock/BB_python/Herbie/docs/user_guide/notebooks/data_nam.ipynb Cell 13</span> in <span class="ansi-cyan-fg">plot_product</span><span class="ansi-blue-fg">(product)</span>
-<span class="ansi-green-intense-fg ansi-bold">      &lt;a href=&#39;vscode-notebook-cell://ssh-remote%2Bkoehr03.navydsrc.hpc.mil/p/home/blaylock/BB_python/Herbie/docs/user_guide/notebooks/data_nam.ipynb#X30sdnNjb2RlLXJlbW90ZQ%3D%3D?line=3&#39;&gt;4&lt;/a&gt;</span> ds = H.xarray(&#34;TMP:2 m&#34;)
-<span class="ansi-green-intense-fg ansi-bold">      &lt;a href=&#39;vscode-notebook-cell://ssh-remote%2Bkoehr03.navydsrc.hpc.mil/p/home/blaylock/BB_python/Herbie/docs/user_guide/notebooks/data_nam.ipynb#X30sdnNjb2RlLXJlbW90ZQ%3D%3D?line=5&#39;&gt;6&lt;/a&gt;</span> ax = common_features(&#34;50m&#34;, crs=ds.herbie.crs, figsize=[8, 8]).STATES().ax
-<span class="ansi-green-fg">----&gt; &lt;a href=&#39;vscode-notebook-cell://ssh-remote%2Bkoehr03.navydsrc.hpc.mil/p/home/blaylock/BB_python/Herbie/docs/user_guide/notebooks/data_nam.ipynb#X30sdnNjb2RlLXJlbW90ZQ%3D%3D?line=6&#39;&gt;7&lt;/a&gt;</span> p = ax.pcolormesh(
-<span class="ansi-green-intense-fg ansi-bold">      &lt;a href=&#39;vscode-notebook-cell://ssh-remote%2Bkoehr03.navydsrc.hpc.mil/p/home/blaylock/BB_python/Herbie/docs/user_guide/notebooks/data_nam.ipynb#X30sdnNjb2RlLXJlbW90ZQ%3D%3D?line=7&#39;&gt;8&lt;/a&gt;</span>     ds.longitude, ds.latitude, ds.t2m, transform=pc, **cm_tmp(units=&#34;K&#34;).cmap_kwargs
-<span class="ansi-green-intense-fg ansi-bold">      &lt;a href=&#39;vscode-notebook-cell://ssh-remote%2Bkoehr03.navydsrc.hpc.mil/p/home/blaylock/BB_python/Herbie/docs/user_guide/notebooks/data_nam.ipynb#X30sdnNjb2RlLXJlbW90ZQ%3D%3D?line=8&#39;&gt;9&lt;/a&gt;</span> )
-<span class="ansi-green-intense-fg ansi-bold">     &lt;a href=&#39;vscode-notebook-cell://ssh-remote%2Bkoehr03.navydsrc.hpc.mil/p/home/blaylock/BB_python/Herbie/docs/user_guide/notebooks/data_nam.ipynb#X30sdnNjb2RlLXJlbW90ZQ%3D%3D?line=9&#39;&gt;10&lt;/a&gt;</span> plt.colorbar(
-<span class="ansi-green-intense-fg ansi-bold">     &lt;a href=&#39;vscode-notebook-cell://ssh-remote%2Bkoehr03.navydsrc.hpc.mil/p/home/blaylock/BB_python/Herbie/docs/user_guide/notebooks/data_nam.ipynb#X30sdnNjb2RlLXJlbW90ZQ%3D%3D?line=10&#39;&gt;11&lt;/a&gt;</span>     p, ax=ax, orientation=&#34;horizontal&#34;, pad=0.05, **cm_tmp(units=&#34;K&#34;).cbar_kwargs
-<span class="ansi-green-intense-fg ansi-bold">     &lt;a href=&#39;vscode-notebook-cell://ssh-remote%2Bkoehr03.navydsrc.hpc.mil/p/home/blaylock/BB_python/Herbie/docs/user_guide/notebooks/data_nam.ipynb#X30sdnNjb2RlLXJlbW90ZQ%3D%3D?line=11&#39;&gt;12&lt;/a&gt;</span> )
-<span class="ansi-green-intense-fg ansi-bold">     &lt;a href=&#39;vscode-notebook-cell://ssh-remote%2Bkoehr03.navydsrc.hpc.mil/p/home/blaylock/BB_python/Herbie/docs/user_guide/notebooks/data_nam.ipynb#X30sdnNjb2RlLXJlbW90ZQ%3D%3D?line=13&#39;&gt;14&lt;/a&gt;</span> ax.set_title(
-<span class="ansi-green-intense-fg ansi-bold">     &lt;a href=&#39;vscode-notebook-cell://ssh-remote%2Bkoehr03.navydsrc.hpc.mil/p/home/blaylock/BB_python/Herbie/docs/user_guide/notebooks/data_nam.ipynb#X30sdnNjb2RlLXJlbW90ZQ%3D%3D?line=14&#39;&gt;15&lt;/a&gt;</span>     f&#34;{ds.model.upper()}: {H.product_description} ({product})\nValid: {ds.valid_time.dt.strftime(&#39;%H:%M UTC %d %b %Y&#39;).item()}&#34;,
-<span class="ansi-green-intense-fg ansi-bold">     &lt;a href=&#39;vscode-notebook-cell://ssh-remote%2Bkoehr03.navydsrc.hpc.mil/p/home/blaylock/BB_python/Herbie/docs/user_guide/notebooks/data_nam.ipynb#X30sdnNjb2RlLXJlbW90ZQ%3D%3D?line=15&#39;&gt;16&lt;/a&gt;</span>     loc=&#34;left&#34;,
-<span class="ansi-green-intense-fg ansi-bold">     &lt;a href=&#39;vscode-notebook-cell://ssh-remote%2Bkoehr03.navydsrc.hpc.mil/p/home/blaylock/BB_python/Herbie/docs/user_guide/notebooks/data_nam.ipynb#X30sdnNjb2RlLXJlbW90ZQ%3D%3D?line=16&#39;&gt;17&lt;/a&gt;</span> )
+Cell <span class="ansi-green-intense-fg ansi-bold">In[12], line 7</span>, in <span class="ansi-cyan-fg">plot_product</span><span class="ansi-blue-intense-fg ansi-bold">(product)</span>
+<span class="ansi-green-fg">      4</span> ds = H.xarray(&#34;TMP:2 m above&#34;)
+<span class="ansi-green-fg">      6</span> ax = EasyMap(&#34;50m&#34;, crs=ds.herbie.crs, figsize=[8, 8]).STATES().ax
+<span class="ansi-green-intense-fg ansi-bold">----&gt; 7</span> p = ax.pcolormesh(
+<span class="ansi-green-fg">      8</span>     ds.longitude, ds.latitude, ds.t2m, transform=pc, **cm_tmp(units=&#34;K&#34;).cmap_kwargs
+<span class="ansi-green-fg">      9</span> )
+<span class="ansi-green-fg">     10</span> plt.colorbar(
+<span class="ansi-green-fg">     11</span>     p, ax=ax, orientation=&#34;horizontal&#34;, pad=0.05, **cm_tmp(units=&#34;K&#34;).cbar_kwargs
+<span class="ansi-green-fg">     12</span> )
+<span class="ansi-green-fg">     14</span> ax.set_title(
+<span class="ansi-green-fg">     15</span>     f&#34;{ds.model.upper()}: {H.product_description} ({product})\nValid: {ds.valid_time.dt.strftime(&#39;%H:%M UTC %d %b %Y&#39;).item()}&#34;,
+<span class="ansi-green-fg">     16</span>     loc=&#34;left&#34;,
+<span class="ansi-green-fg">     17</span> )
 
-File <span class="ansi-green-fg">~/anaconda3/envs/herbie/lib/python3.10/site-packages/cartopy/mpl/geoaxes.py:318</span>, in <span class="ansi-cyan-fg">_add_transform.&lt;locals&gt;.wrapper</span><span class="ansi-blue-fg">(self, *args, **kwargs)</span>
-<span class="ansi-green-intense-fg ansi-bold">    313</span>     raise ValueError(f&#39;Invalid transform: Spherical {func.__name__} &#39;
-<span class="ansi-green-intense-fg ansi-bold">    314</span>                      &#39;is not supported - consider using &#39;
-<span class="ansi-green-intense-fg ansi-bold">    315</span>                      &#39;PlateCarree/RotatedPole.&#39;)
-<span class="ansi-green-intense-fg ansi-bold">    317</span> kwargs[&#39;transform&#39;] = transform
-<span class="ansi-green-fg">--&gt; 318</span> return func(self, *args, **kwargs)
+File <span class="ansi-green-intense-fg ansi-bold">c:\Users\blaylock\Miniconda3\envs\herbie-dev\lib\site-packages\cartopy\mpl\geoaxes.py:318</span>, in <span class="ansi-cyan-fg">_add_transform.&lt;locals&gt;.wrapper</span><span class="ansi-blue-intense-fg ansi-bold">(self, *args, **kwargs)</span>
+<span class="ansi-green-fg">    313</span>     raise ValueError(f&#39;Invalid transform: Spherical {func.__name__} &#39;
+<span class="ansi-green-fg">    314</span>                      &#39;is not supported - consider using &#39;
+<span class="ansi-green-fg">    315</span>                      &#39;PlateCarree/RotatedPole.&#39;)
+<span class="ansi-green-fg">    317</span> kwargs[&#39;transform&#39;] = transform
+<span class="ansi-green-intense-fg ansi-bold">--&gt; 318</span> return func(self, *args, **kwargs)
 
-File <span class="ansi-green-fg">~/anaconda3/envs/herbie/lib/python3.10/site-packages/cartopy/mpl/geoaxes.py:1796</span>, in <span class="ansi-cyan-fg">GeoAxes.pcolormesh</span><span class="ansi-blue-fg">(self, *args, **kwargs)</span>
-<span class="ansi-green-intense-fg ansi-bold">   1785</span> &#34;&#34;&#34;
-<span class="ansi-green-intense-fg ansi-bold">   1786</span> Add the &#34;transform&#34; keyword to :func:`~matplotlib.pyplot.pcolormesh`.
-<span class="ansi-green-intense-fg ansi-bold">   1787</span>
-<span class="ansi-green-fg">   (...)</span>
-<span class="ansi-green-intense-fg ansi-bold">   1792</span>
-<span class="ansi-green-intense-fg ansi-bold">   1793</span> &#34;&#34;&#34;
-<span class="ansi-green-intense-fg ansi-bold">   1794</span> # Add in an argument checker to handle Matplotlib&#39;s potential
-<span class="ansi-green-intense-fg ansi-bold">   1795</span> # interpolation when coordinate wraps are involved
-<span class="ansi-green-fg">-&gt; 1796</span> args, kwargs = self._wrap_args(*args, **kwargs)
-<span class="ansi-green-intense-fg ansi-bold">   1797</span> result = matplotlib.axes.Axes.pcolormesh(self, *args, **kwargs)
-<span class="ansi-green-intense-fg ansi-bold">   1798</span> # Wrap the quadrilaterals if necessary
+File <span class="ansi-green-intense-fg ansi-bold">c:\Users\blaylock\Miniconda3\envs\herbie-dev\lib\site-packages\cartopy\mpl\geoaxes.py:1784</span>, in <span class="ansi-cyan-fg">GeoAxes.pcolormesh</span><span class="ansi-blue-intense-fg ansi-bold">(self, *args, **kwargs)</span>
+<span class="ansi-green-fg">   1773</span> &#34;&#34;&#34;
+<span class="ansi-green-fg">   1774</span> Add the &#34;transform&#34; keyword to :func:`~matplotlib.pyplot.pcolormesh`.
+<span class="ansi-green-fg">   1775</span>
+<span class="ansi-green-intense-fg ansi-bold">   (...)</span>
+<span class="ansi-green-fg">   1780</span>
+<span class="ansi-green-fg">   1781</span> &#34;&#34;&#34;
+<span class="ansi-green-fg">   1782</span> # Add in an argument checker to handle Matplotlib&#39;s potential
+<span class="ansi-green-fg">   1783</span> # interpolation when coordinate wraps are involved
+<span class="ansi-green-intense-fg ansi-bold">-&gt; 1784</span> args, kwargs = self._wrap_args(*args, **kwargs)
+<span class="ansi-green-fg">   1785</span> result = super().pcolormesh(*args, **kwargs)
+<span class="ansi-green-fg">   1786</span> # Wrap the quadrilaterals if necessary
 
-File <span class="ansi-green-fg">~/anaconda3/envs/herbie/lib/python3.10/site-packages/cartopy/mpl/geoaxes.py:1825</span>, in <span class="ansi-cyan-fg">GeoAxes._wrap_args</span><span class="ansi-blue-fg">(self, *args, **kwargs)</span>
-<span class="ansi-green-intense-fg ansi-bold">   1823</span> X = np.asanyarray(args[0])
-<span class="ansi-green-intense-fg ansi-bold">   1824</span> Y = np.asanyarray(args[1])
-<span class="ansi-green-fg">-&gt; 1825</span> nrows, ncols = np.asanyarray(args[2]).shape
-<span class="ansi-green-intense-fg ansi-bold">   1826</span> Nx = X.shape[-1]
-<span class="ansi-green-intense-fg ansi-bold">   1827</span> Ny = Y.shape[0]
+File <span class="ansi-green-intense-fg ansi-bold">c:\Users\blaylock\Miniconda3\envs\herbie-dev\lib\site-packages\cartopy\mpl\geoaxes.py:1813</span>, in <span class="ansi-cyan-fg">GeoAxes._wrap_args</span><span class="ansi-blue-intense-fg ansi-bold">(self, *args, **kwargs)</span>
+<span class="ansi-green-fg">   1811</span> X = np.asanyarray(args[0])
+<span class="ansi-green-fg">   1812</span> Y = np.asanyarray(args[1])
+<span class="ansi-green-intense-fg ansi-bold">-&gt; 1813</span> nrows, ncols = np.asanyarray(args[2]).shape
+<span class="ansi-green-fg">   1814</span> Nx = X.shape[-1]
+<span class="ansi-green-fg">   1815</span> Ny = Y.shape[0]
 
-<span class="ansi-red-fg">ValueError</span>: not enough values to unpack (expected 2, got 1)
+<span class="ansi-red-intense-fg ansi-bold">ValueError</span>: not enough values to unpack (expected 2, got 1)
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../../_images/user_guide__model_notebooks_nam_11_2.png" src="../../_images/user_guide__model_notebooks_nam_11_2.png" />
+<img alt="../../_images/user_guide__model_notebooks_nam_12_3.png" src="../../_images/user_guide__model_notebooks_nam_12_3.png" />
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[29]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ds</span> <span class="o">=</span> <span class="n">Herbie</span><span class="p">(</span><span class="s2">&quot;2022-08-10&quot;</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="s2">&quot;nam&quot;</span><span class="p">,</span> <span class="n">product</span><span class="o">=</span><span class="s2">&quot;hawaiinest.hiresf&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">xarray</span><span class="p">(</span><span class="s2">&quot;TMP:2 m&quot;</span><span class="p">)</span>
@@ -1422,8 +1488,7 @@ File <span class="ansi-green-fg">~/anaconda3/envs/herbie/lib/python3.10/site-pac
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[29]:
-</pre></div>
+<div class="prompt empty docutils container">
 </div>
 <div class="output_area rendered_html docutils container">
 <div><svg style="position: absolute; width: 0; height: 0; overflow: hidden">
@@ -1808,7 +1873,7 @@ Attributes:
        206.10710423, 206.13102932])</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span>valid_time</span></div><div class='xr-var-dims'>()</div><div class='xr-var-dtype'>datetime64[ns]</div><div class='xr-var-preview xr-preview'>2022-08-10</div><input id='attrs-c2ab49dd-0fb6-4dbd-8aa6-f5b26cae37fa' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-c2ab49dd-0fb6-4dbd-8aa6-f5b26cae37fa' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-5b486e5a-13be-427f-9088-7ece66f4e086' class='xr-var-data-in' type='checkbox'><label for='data-5b486e5a-13be-427f-9088-7ece66f4e086' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>standard_name :</span></dt><dd>time</dd><dt><span>long_name :</span></dt><dd>time</dd></dl></div><div class='xr-var-data'><pre>array(&#x27;2022-08-10T00:00:00.000000000&#x27;, dtype=&#x27;datetime64[ns]&#x27;)</pre></div></li></ul></div></li><li class='xr-section-item'><input id='section-f2aedace-e6db-47b2-96d1-23bc8a504e5d' class='xr-section-summary-in' type='checkbox'  checked><label for='section-f2aedace-e6db-47b2-96d1-23bc8a504e5d' class='xr-section-summary' >Data variables: <span>(2)</span></label><div class='xr-section-inline-details'></div><div class='xr-section-details'><ul class='xr-var-list'><li class='xr-var-item'><div class='xr-var-name'><span>t2m</span></div><div class='xr-var-dims'>(values)</div><div class='xr-var-dtype'>float32</div><div class='xr-var-preview xr-preview'>299.8 299.8 299.8 ... 299.0 299.0</div><input id='attrs-8f98c50e-f97e-4307-8b94-6deb37d81c82' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-8f98c50e-f97e-4307-8b94-6deb37d81c82' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-73416105-60da-4328-b644-40800669dbce' class='xr-var-data-in' type='checkbox'><label for='data-73416105-60da-4328-b644-40800669dbce' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>GRIB_paramId :</span></dt><dd>167</dd><dt><span>GRIB_dataType :</span></dt><dd>fc</dd><dt><span>GRIB_numberOfPoints :</span></dt><dd>72225</dd><dt><span>GRIB_typeOfLevel :</span></dt><dd>heightAboveGround</dd><dt><span>GRIB_stepUnits :</span></dt><dd>1</dd><dt><span>GRIB_stepType :</span></dt><dd>instant</dd><dt><span>GRIB_gridType :</span></dt><dd>mercator</dd><dt><span>GRIB_NV :</span></dt><dd>0</dd><dt><span>GRIB_cfName :</span></dt><dd>air_temperature</dd><dt><span>GRIB_cfVarName :</span></dt><dd>t2m</dd><dt><span>GRIB_gridDefinitionDescription :</span></dt><dd>Mercator</dd><dt><span>GRIB_missingValue :</span></dt><dd>9999</dd><dt><span>GRIB_name :</span></dt><dd>2 metre temperature</dd><dt><span>GRIB_parameterName :</span></dt><dd>Temperature</dd><dt><span>GRIB_parameterUnits :</span></dt><dd>K</dd><dt><span>GRIB_shortName :</span></dt><dd>2t</dd><dt><span>GRIB_stepRange :</span></dt><dd>0</dd><dt><span>GRIB_units :</span></dt><dd>K</dd><dt><span>long_name :</span></dt><dd>2 metre temperature</dd><dt><span>units :</span></dt><dd>K</dd><dt><span>standard_name :</span></dt><dd>air_temperature</dd><dt><span>grid_mapping :</span></dt><dd>gribfile_projection</dd></dl></div><div class='xr-var-data'><pre>array([299.78, 299.78, 299.8 , ..., 299.  , 298.99, 298.99], dtype=float32)</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span>gribfile_projection</span></div><div class='xr-var-dims'>()</div><div class='xr-var-dtype'>object</div><div class='xr-var-preview xr-preview'>None</div><input id='attrs-8605219e-1122-484b-b121-fce667ffd299' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-8605219e-1122-484b-b121-fce667ffd299' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-1454163d-f780-4e2b-9b5c-be10355222a0' class='xr-var-data-in' type='checkbox'><label for='data-1454163d-f780-4e2b-9b5c-be10355222a0' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>crs_wkt :</span></dt><dd>PROJCRS[&quot;unknown&quot;,BASEGEOGCRS[&quot;unknown&quot;,DATUM[&quot;unknown&quot;,ELLIPSOID[&quot;unknown&quot;,6371229,0,LENGTHUNIT[&quot;metre&quot;,1,ID[&quot;EPSG&quot;,9001]]]],PRIMEM[&quot;Greenwich&quot;,0,ANGLEUNIT[&quot;degree&quot;,0.0174532925199433],ID[&quot;EPSG&quot;,8901]]],CONVERSION[&quot;unknown&quot;,METHOD[&quot;Mercator (variant B)&quot;,ID[&quot;EPSG&quot;,9805]],PARAMETER[&quot;Latitude of 1st standard parallel&quot;,20,ANGLEUNIT[&quot;degree&quot;,0.0174532925199433],ID[&quot;EPSG&quot;,8823]],PARAMETER[&quot;Longitude of natural origin&quot;,202.303,ANGLEUNIT[&quot;degree&quot;,0.0174532925199433],ID[&quot;EPSG&quot;,8802]],PARAMETER[&quot;False easting&quot;,0,LENGTHUNIT[&quot;metre&quot;,1],ID[&quot;EPSG&quot;,8806]],PARAMETER[&quot;False northing&quot;,0,LENGTHUNIT[&quot;metre&quot;,1],ID[&quot;EPSG&quot;,8807]]],CS[Cartesian,2],AXIS[&quot;(E)&quot;,east,ORDER[1],LENGTHUNIT[&quot;metre&quot;,1,ID[&quot;EPSG&quot;,9001]]],AXIS[&quot;(N)&quot;,north,ORDER[2],LENGTHUNIT[&quot;metre&quot;,1,ID[&quot;EPSG&quot;,9001]]]]</dd><dt><span>semi_major_axis :</span></dt><dd>6371229.0</dd><dt><span>semi_minor_axis :</span></dt><dd>6371229.0</dd><dt><span>inverse_flattening :</span></dt><dd>0.0</dd><dt><span>reference_ellipsoid_name :</span></dt><dd>unknown</dd><dt><span>longitude_of_prime_meridian :</span></dt><dd>0.0</dd><dt><span>prime_meridian_name :</span></dt><dd>Greenwich</dd><dt><span>geographic_crs_name :</span></dt><dd>unknown</dd><dt><span>horizontal_datum_name :</span></dt><dd>unknown</dd><dt><span>projected_crs_name :</span></dt><dd>unknown</dd><dt><span>grid_mapping_name :</span></dt><dd>mercator</dd><dt><span>standard_parallel :</span></dt><dd>20.0</dd><dt><span>longitude_of_projection_origin :</span></dt><dd>202.303</dd><dt><span>false_easting :</span></dt><dd>0.0</dd><dt><span>false_northing :</span></dt><dd>0.0</dd><dt><span>long_name :</span></dt><dd>NAM model grid projection</dd></dl></div><div class='xr-var-data'><pre>array(None, dtype=object)</pre></div></li></ul></div></li><li class='xr-section-item'><input id='section-1b08483e-110d-4a14-b67b-66434f7c83b4' class='xr-section-summary-in' type='checkbox'  ><label for='section-1b08483e-110d-4a14-b67b-66434f7c83b4' class='xr-section-summary' >Attributes: <span>(12)</span></label><div class='xr-section-inline-details'></div><div class='xr-section-details'><dl class='xr-attrs'><dt><span>GRIB_edition :</span></dt><dd>2</dd><dt><span>GRIB_centre :</span></dt><dd>kwbc</dd><dt><span>GRIB_centreDescription :</span></dt><dd>US National Weather Service - NCEP</dd><dt><span>GRIB_subCentre :</span></dt><dd>0</dd><dt><span>Conventions :</span></dt><dd>CF-1.7</dd><dt><span>institution :</span></dt><dd>US National Weather Service - NCEP</dd><dt><span>model :</span></dt><dd>nam</dd><dt><span>product :</span></dt><dd>hawaiinest.hiresf</dd><dt><span>description :</span></dt><dd>North America Mesoscale - CONUS</dd><dt><span>remote_grib :</span></dt><dd>https://noaa-nam-pds.s3.amazonaws.com/nam.20220810/nam.t00z.hawaiinest.hiresf00.tm00.grib2</dd><dt><span>local_grib :</span></dt><dd>/p/cwfs/blaylock/data/nam/20220810/subset_93f271ad5efd7ea64a800c9acfe0b34fc19f58e3__nam.t00z.hawaiinest.hiresf00.tm00.grib2</dd><dt><span>searchString :</span></dt><dd>TMP:2 m</dd></dl></div></li></ul></div></div></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[35]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">ds</span><span class="o">.</span><span class="n">longitude</span><span class="p">,</span> <span class="n">ds</span><span class="o">.</span><span class="n">latitude</span><span class="p">,</span> <span class="n">ds</span><span class="o">.</span><span class="n">t2m</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="n">ds</span><span class="o">.</span><span class="n">t2m</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s2">&quot;.&quot;</span><span class="p">)</span>
@@ -1816,23 +1881,23 @@ Attributes:
 </div>
 </div>
 <div class="nboutput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[35]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-&lt;matplotlib.collections.PathCollection at 0x2b9d74366350&gt;
+&lt;matplotlib.collections.PathCollection at 0x26fb0ee5690&gt;
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../../_images/user_guide__model_notebooks_nam_13_1.png" src="../../_images/user_guide__model_notebooks_nam_13_1.png" />
+<img alt="../../_images/user_guide__model_notebooks_nam_14_1.png" src="../../_images/user_guide__model_notebooks_nam_14_1.png" />
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[46]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># NOTE: Weirdness with Puerto Rico not returning as a grid, but as a line</span>
@@ -1846,7 +1911,16 @@ Attributes:
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-✅ Found ┊ model=nam ┊ product=priconest.hiresf ┊ <span style="color: rgb(41,130,13)">2022-Aug-10 00:00 UTC</span><span class="ansi-green-intense-fg"> F06</span> ┊ <span style="color: rgb(255,153,0)">GRIB2 @ aws</span> ┊ <span style="color: rgb(255,153,0)">IDX @ aws</span>
+✅ Found ┊ model=nam ┊ product=priconest.hiresf ┊ <span style="color: rgb(41,130,13)">2022-Dec-10 00:00 UTC</span><span class="ansi-green-intense-fg"> F06</span> ┊ <span style="color: rgb(255,153,0)">GRIB2 @ aws</span> ┊ <span style="color: rgb(255,153,0)">IDX @ aws</span>
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+C:\Users\blaylock\_GITHUB\Herbie\herbie\archive.py:1041: UserWarning: sorry, on windows I couldn&#39;t remove the file.
+  warnings.warn(&#34;sorry, on windows I couldn&#39;t remove the file.&#34;)
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -1854,65 +1928,65 @@ Attributes:
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-<span class="ansi-red-fg">---------------------------------------------------------------------------</span>
-<span class="ansi-red-fg">ValueError</span>                                Traceback (most recent call last)
-<span class="ansi-green-intense-fg ansi-bold">/p/home/blaylock/BB_python/Herbie/docs/user_guide/notebooks/data_nam.ipynb Cell 16</span> in <span class="ansi-cyan-fg">&lt;cell line: 3&gt;</span><span class="ansi-blue-fg">()</span>
-<span class="ansi-green-intense-fg ansi-bold">      &lt;a href=&#39;vscode-notebook-cell://ssh-remote%2Bkoehr03.navydsrc.hpc.mil/p/home/blaylock/BB_python/Herbie/docs/user_guide/notebooks/data_nam.ipynb#X33sdnNjb2RlLXJlbW90ZQ%3D%3D?line=0&#39;&gt;1&lt;/a&gt;</span> # NOTE: Weirdness with Puerto Rico not returning as a grid, but as a line
-<span class="ansi-green-fg">----&gt; &lt;a href=&#39;vscode-notebook-cell://ssh-remote%2Bkoehr03.navydsrc.hpc.mil/p/home/blaylock/BB_python/Herbie/docs/user_guide/notebooks/data_nam.ipynb#X33sdnNjb2RlLXJlbW90ZQ%3D%3D?line=2&#39;&gt;3&lt;/a&gt;</span> H, ds, ax = plot_product(&#39;priconest.hiresf&#39;)
+<span class="ansi-red-intense-fg ansi-bold">---------------------------------------------------------------------------</span>
+<span class="ansi-red-intense-fg ansi-bold">ValueError</span>                                Traceback (most recent call last)
+Cell <span class="ansi-green-intense-fg ansi-bold">In[19], line 3</span>
+<span class="ansi-green-fg">      1</span> # NOTE: Weirdness with Puerto Rico not returning as a grid, but as a line
+<span class="ansi-green-intense-fg ansi-bold">----&gt; 3</span> H, ds, ax = plot_product(&#34;priconest.hiresf&#34;)
 
-<span class="ansi-green-intense-fg ansi-bold">/p/home/blaylock/BB_python/Herbie/docs/user_guide/notebooks/data_nam.ipynb Cell 16</span> in <span class="ansi-cyan-fg">plot_product</span><span class="ansi-blue-fg">(product)</span>
-<span class="ansi-green-intense-fg ansi-bold">      &lt;a href=&#39;vscode-notebook-cell://ssh-remote%2Bkoehr03.navydsrc.hpc.mil/p/home/blaylock/BB_python/Herbie/docs/user_guide/notebooks/data_nam.ipynb#X33sdnNjb2RlLXJlbW90ZQ%3D%3D?line=3&#39;&gt;4&lt;/a&gt;</span> ds = H.xarray(&#34;TMP:2 m above&#34;)
-<span class="ansi-green-intense-fg ansi-bold">      &lt;a href=&#39;vscode-notebook-cell://ssh-remote%2Bkoehr03.navydsrc.hpc.mil/p/home/blaylock/BB_python/Herbie/docs/user_guide/notebooks/data_nam.ipynb#X33sdnNjb2RlLXJlbW90ZQ%3D%3D?line=5&#39;&gt;6&lt;/a&gt;</span> ax = common_features(&#34;50m&#34;, crs=ds.herbie.crs, figsize=[8, 8]).STATES().ax
-<span class="ansi-green-fg">----&gt; &lt;a href=&#39;vscode-notebook-cell://ssh-remote%2Bkoehr03.navydsrc.hpc.mil/p/home/blaylock/BB_python/Herbie/docs/user_guide/notebooks/data_nam.ipynb#X33sdnNjb2RlLXJlbW90ZQ%3D%3D?line=6&#39;&gt;7&lt;/a&gt;</span> p = ax.pcolormesh(
-<span class="ansi-green-intense-fg ansi-bold">      &lt;a href=&#39;vscode-notebook-cell://ssh-remote%2Bkoehr03.navydsrc.hpc.mil/p/home/blaylock/BB_python/Herbie/docs/user_guide/notebooks/data_nam.ipynb#X33sdnNjb2RlLXJlbW90ZQ%3D%3D?line=7&#39;&gt;8&lt;/a&gt;</span>     ds.longitude, ds.latitude, ds.t2m, transform=pc, **cm_tmp(units=&#34;K&#34;).cmap_kwargs
-<span class="ansi-green-intense-fg ansi-bold">      &lt;a href=&#39;vscode-notebook-cell://ssh-remote%2Bkoehr03.navydsrc.hpc.mil/p/home/blaylock/BB_python/Herbie/docs/user_guide/notebooks/data_nam.ipynb#X33sdnNjb2RlLXJlbW90ZQ%3D%3D?line=8&#39;&gt;9&lt;/a&gt;</span> )
-<span class="ansi-green-intense-fg ansi-bold">     &lt;a href=&#39;vscode-notebook-cell://ssh-remote%2Bkoehr03.navydsrc.hpc.mil/p/home/blaylock/BB_python/Herbie/docs/user_guide/notebooks/data_nam.ipynb#X33sdnNjb2RlLXJlbW90ZQ%3D%3D?line=9&#39;&gt;10&lt;/a&gt;</span> plt.colorbar(
-<span class="ansi-green-intense-fg ansi-bold">     &lt;a href=&#39;vscode-notebook-cell://ssh-remote%2Bkoehr03.navydsrc.hpc.mil/p/home/blaylock/BB_python/Herbie/docs/user_guide/notebooks/data_nam.ipynb#X33sdnNjb2RlLXJlbW90ZQ%3D%3D?line=10&#39;&gt;11&lt;/a&gt;</span>     p, ax=ax, orientation=&#34;horizontal&#34;, pad=0.05, **cm_tmp(units=&#34;K&#34;).cbar_kwargs
-<span class="ansi-green-intense-fg ansi-bold">     &lt;a href=&#39;vscode-notebook-cell://ssh-remote%2Bkoehr03.navydsrc.hpc.mil/p/home/blaylock/BB_python/Herbie/docs/user_guide/notebooks/data_nam.ipynb#X33sdnNjb2RlLXJlbW90ZQ%3D%3D?line=11&#39;&gt;12&lt;/a&gt;</span> )
-<span class="ansi-green-intense-fg ansi-bold">     &lt;a href=&#39;vscode-notebook-cell://ssh-remote%2Bkoehr03.navydsrc.hpc.mil/p/home/blaylock/BB_python/Herbie/docs/user_guide/notebooks/data_nam.ipynb#X33sdnNjb2RlLXJlbW90ZQ%3D%3D?line=13&#39;&gt;14&lt;/a&gt;</span> ax.set_title(
-<span class="ansi-green-intense-fg ansi-bold">     &lt;a href=&#39;vscode-notebook-cell://ssh-remote%2Bkoehr03.navydsrc.hpc.mil/p/home/blaylock/BB_python/Herbie/docs/user_guide/notebooks/data_nam.ipynb#X33sdnNjb2RlLXJlbW90ZQ%3D%3D?line=14&#39;&gt;15&lt;/a&gt;</span>     f&#34;{ds.model.upper()}: {H.product_description} ({product})\nValid: {ds.valid_time.dt.strftime(&#39;%H:%M UTC %d %b %Y&#39;).item()}&#34;,
-<span class="ansi-green-intense-fg ansi-bold">     &lt;a href=&#39;vscode-notebook-cell://ssh-remote%2Bkoehr03.navydsrc.hpc.mil/p/home/blaylock/BB_python/Herbie/docs/user_guide/notebooks/data_nam.ipynb#X33sdnNjb2RlLXJlbW90ZQ%3D%3D?line=15&#39;&gt;16&lt;/a&gt;</span>     loc=&#34;left&#34;,
-<span class="ansi-green-intense-fg ansi-bold">     &lt;a href=&#39;vscode-notebook-cell://ssh-remote%2Bkoehr03.navydsrc.hpc.mil/p/home/blaylock/BB_python/Herbie/docs/user_guide/notebooks/data_nam.ipynb#X33sdnNjb2RlLXJlbW90ZQ%3D%3D?line=16&#39;&gt;17&lt;/a&gt;</span> )
+Cell <span class="ansi-green-intense-fg ansi-bold">In[12], line 7</span>, in <span class="ansi-cyan-fg">plot_product</span><span class="ansi-blue-intense-fg ansi-bold">(product)</span>
+<span class="ansi-green-fg">      4</span> ds = H.xarray(&#34;TMP:2 m above&#34;)
+<span class="ansi-green-fg">      6</span> ax = EasyMap(&#34;50m&#34;, crs=ds.herbie.crs, figsize=[8, 8]).STATES().ax
+<span class="ansi-green-intense-fg ansi-bold">----&gt; 7</span> p = ax.pcolormesh(
+<span class="ansi-green-fg">      8</span>     ds.longitude, ds.latitude, ds.t2m, transform=pc, **cm_tmp(units=&#34;K&#34;).cmap_kwargs
+<span class="ansi-green-fg">      9</span> )
+<span class="ansi-green-fg">     10</span> plt.colorbar(
+<span class="ansi-green-fg">     11</span>     p, ax=ax, orientation=&#34;horizontal&#34;, pad=0.05, **cm_tmp(units=&#34;K&#34;).cbar_kwargs
+<span class="ansi-green-fg">     12</span> )
+<span class="ansi-green-fg">     14</span> ax.set_title(
+<span class="ansi-green-fg">     15</span>     f&#34;{ds.model.upper()}: {H.product_description} ({product})\nValid: {ds.valid_time.dt.strftime(&#39;%H:%M UTC %d %b %Y&#39;).item()}&#34;,
+<span class="ansi-green-fg">     16</span>     loc=&#34;left&#34;,
+<span class="ansi-green-fg">     17</span> )
 
-File <span class="ansi-green-fg">~/anaconda3/envs/herbie/lib/python3.10/site-packages/cartopy/mpl/geoaxes.py:318</span>, in <span class="ansi-cyan-fg">_add_transform.&lt;locals&gt;.wrapper</span><span class="ansi-blue-fg">(self, *args, **kwargs)</span>
-<span class="ansi-green-intense-fg ansi-bold">    313</span>     raise ValueError(f&#39;Invalid transform: Spherical {func.__name__} &#39;
-<span class="ansi-green-intense-fg ansi-bold">    314</span>                      &#39;is not supported - consider using &#39;
-<span class="ansi-green-intense-fg ansi-bold">    315</span>                      &#39;PlateCarree/RotatedPole.&#39;)
-<span class="ansi-green-intense-fg ansi-bold">    317</span> kwargs[&#39;transform&#39;] = transform
-<span class="ansi-green-fg">--&gt; 318</span> return func(self, *args, **kwargs)
+File <span class="ansi-green-intense-fg ansi-bold">c:\Users\blaylock\Miniconda3\envs\herbie-dev\lib\site-packages\cartopy\mpl\geoaxes.py:318</span>, in <span class="ansi-cyan-fg">_add_transform.&lt;locals&gt;.wrapper</span><span class="ansi-blue-intense-fg ansi-bold">(self, *args, **kwargs)</span>
+<span class="ansi-green-fg">    313</span>     raise ValueError(f&#39;Invalid transform: Spherical {func.__name__} &#39;
+<span class="ansi-green-fg">    314</span>                      &#39;is not supported - consider using &#39;
+<span class="ansi-green-fg">    315</span>                      &#39;PlateCarree/RotatedPole.&#39;)
+<span class="ansi-green-fg">    317</span> kwargs[&#39;transform&#39;] = transform
+<span class="ansi-green-intense-fg ansi-bold">--&gt; 318</span> return func(self, *args, **kwargs)
 
-File <span class="ansi-green-fg">~/anaconda3/envs/herbie/lib/python3.10/site-packages/cartopy/mpl/geoaxes.py:1796</span>, in <span class="ansi-cyan-fg">GeoAxes.pcolormesh</span><span class="ansi-blue-fg">(self, *args, **kwargs)</span>
-<span class="ansi-green-intense-fg ansi-bold">   1785</span> &#34;&#34;&#34;
-<span class="ansi-green-intense-fg ansi-bold">   1786</span> Add the &#34;transform&#34; keyword to :func:`~matplotlib.pyplot.pcolormesh`.
-<span class="ansi-green-intense-fg ansi-bold">   1787</span>
-<span class="ansi-green-fg">   (...)</span>
-<span class="ansi-green-intense-fg ansi-bold">   1792</span>
-<span class="ansi-green-intense-fg ansi-bold">   1793</span> &#34;&#34;&#34;
-<span class="ansi-green-intense-fg ansi-bold">   1794</span> # Add in an argument checker to handle Matplotlib&#39;s potential
-<span class="ansi-green-intense-fg ansi-bold">   1795</span> # interpolation when coordinate wraps are involved
-<span class="ansi-green-fg">-&gt; 1796</span> args, kwargs = self._wrap_args(*args, **kwargs)
-<span class="ansi-green-intense-fg ansi-bold">   1797</span> result = matplotlib.axes.Axes.pcolormesh(self, *args, **kwargs)
-<span class="ansi-green-intense-fg ansi-bold">   1798</span> # Wrap the quadrilaterals if necessary
+File <span class="ansi-green-intense-fg ansi-bold">c:\Users\blaylock\Miniconda3\envs\herbie-dev\lib\site-packages\cartopy\mpl\geoaxes.py:1784</span>, in <span class="ansi-cyan-fg">GeoAxes.pcolormesh</span><span class="ansi-blue-intense-fg ansi-bold">(self, *args, **kwargs)</span>
+<span class="ansi-green-fg">   1773</span> &#34;&#34;&#34;
+<span class="ansi-green-fg">   1774</span> Add the &#34;transform&#34; keyword to :func:`~matplotlib.pyplot.pcolormesh`.
+<span class="ansi-green-fg">   1775</span>
+<span class="ansi-green-intense-fg ansi-bold">   (...)</span>
+<span class="ansi-green-fg">   1780</span>
+<span class="ansi-green-fg">   1781</span> &#34;&#34;&#34;
+<span class="ansi-green-fg">   1782</span> # Add in an argument checker to handle Matplotlib&#39;s potential
+<span class="ansi-green-fg">   1783</span> # interpolation when coordinate wraps are involved
+<span class="ansi-green-intense-fg ansi-bold">-&gt; 1784</span> args, kwargs = self._wrap_args(*args, **kwargs)
+<span class="ansi-green-fg">   1785</span> result = super().pcolormesh(*args, **kwargs)
+<span class="ansi-green-fg">   1786</span> # Wrap the quadrilaterals if necessary
 
-File <span class="ansi-green-fg">~/anaconda3/envs/herbie/lib/python3.10/site-packages/cartopy/mpl/geoaxes.py:1825</span>, in <span class="ansi-cyan-fg">GeoAxes._wrap_args</span><span class="ansi-blue-fg">(self, *args, **kwargs)</span>
-<span class="ansi-green-intense-fg ansi-bold">   1823</span> X = np.asanyarray(args[0])
-<span class="ansi-green-intense-fg ansi-bold">   1824</span> Y = np.asanyarray(args[1])
-<span class="ansi-green-fg">-&gt; 1825</span> nrows, ncols = np.asanyarray(args[2]).shape
-<span class="ansi-green-intense-fg ansi-bold">   1826</span> Nx = X.shape[-1]
-<span class="ansi-green-intense-fg ansi-bold">   1827</span> Ny = Y.shape[0]
+File <span class="ansi-green-intense-fg ansi-bold">c:\Users\blaylock\Miniconda3\envs\herbie-dev\lib\site-packages\cartopy\mpl\geoaxes.py:1813</span>, in <span class="ansi-cyan-fg">GeoAxes._wrap_args</span><span class="ansi-blue-intense-fg ansi-bold">(self, *args, **kwargs)</span>
+<span class="ansi-green-fg">   1811</span> X = np.asanyarray(args[0])
+<span class="ansi-green-fg">   1812</span> Y = np.asanyarray(args[1])
+<span class="ansi-green-intense-fg ansi-bold">-&gt; 1813</span> nrows, ncols = np.asanyarray(args[2]).shape
+<span class="ansi-green-fg">   1814</span> Nx = X.shape[-1]
+<span class="ansi-green-fg">   1815</span> Ny = Y.shape[0]
 
-<span class="ansi-red-fg">ValueError</span>: not enough values to unpack (expected 2, got 1)
+<span class="ansi-red-intense-fg ansi-bold">ValueError</span>: not enough values to unpack (expected 2, got 1)
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../../_images/user_guide__model_notebooks_nam_14_2.png" src="../../_images/user_guide__model_notebooks_nam_14_2.png" />
+<img alt="../../_images/user_guide__model_notebooks_nam_15_3.png" src="../../_images/user_guide__model_notebooks_nam_15_3.png" />
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[43]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ds</span> <span class="o">=</span> <span class="n">Herbie</span><span class="p">(</span><span class="s2">&quot;2022-08-10&quot;</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="s2">&quot;nam&quot;</span><span class="p">,</span> <span class="n">product</span><span class="o">=</span><span class="s2">&quot;priconest.hiresf&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">xarray</span><span class="p">(</span>
@@ -1931,8 +2005,7 @@ File <span class="ansi-green-fg">~/anaconda3/envs/herbie/lib/python3.10/site-pac
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[43]:
-</pre></div>
+<div class="prompt empty docutils container">
 </div>
 <div class="output_area rendered_html docutils container">
 <div><svg style="position: absolute; width: 0; height: 0; overflow: hidden">
@@ -2317,7 +2390,7 @@ Attributes:
        297.46739966, 297.49132475])</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span>valid_time</span></div><div class='xr-var-dims'>()</div><div class='xr-var-dtype'>datetime64[ns]</div><div class='xr-var-preview xr-preview'>2022-08-10</div><input id='attrs-62d615b3-e42d-4563-a18b-11e69298a221' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-62d615b3-e42d-4563-a18b-11e69298a221' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-0037e95e-ba3e-4ebe-a2b0-0245874c03dd' class='xr-var-data-in' type='checkbox'><label for='data-0037e95e-ba3e-4ebe-a2b0-0245874c03dd' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>standard_name :</span></dt><dd>time</dd><dt><span>long_name :</span></dt><dd>time</dd></dl></div><div class='xr-var-data'><pre>array(&#x27;2022-08-10T00:00:00.000000000&#x27;, dtype=&#x27;datetime64[ns]&#x27;)</pre></div></li></ul></div></li><li class='xr-section-item'><input id='section-c2fe67fa-8572-4f49-b26c-f1c2b23b0936' class='xr-section-summary-in' type='checkbox'  checked><label for='section-c2fe67fa-8572-4f49-b26c-f1c2b23b0936' class='xr-section-summary' >Data variables: <span>(2)</span></label><div class='xr-section-inline-details'></div><div class='xr-section-details'><ul class='xr-var-list'><li class='xr-var-item'><div class='xr-var-name'><span>t2m</span></div><div class='xr-var-dims'>(values)</div><div class='xr-var-dtype'>float32</div><div class='xr-var-preview xr-preview'>nan nan nan nan ... nan nan nan nan</div><input id='attrs-f7d7ee5e-ca6d-4a58-89a7-6bff667a2964' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-f7d7ee5e-ca6d-4a58-89a7-6bff667a2964' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-5470b160-d98d-44e4-a15b-76781e16382c' class='xr-var-data-in' type='checkbox'><label for='data-5470b160-d98d-44e4-a15b-76781e16382c' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>GRIB_paramId :</span></dt><dd>167</dd><dt><span>GRIB_dataType :</span></dt><dd>fc</dd><dt><span>GRIB_numberOfPoints :</span></dt><dd>168640</dd><dt><span>GRIB_typeOfLevel :</span></dt><dd>heightAboveGround</dd><dt><span>GRIB_stepUnits :</span></dt><dd>1</dd><dt><span>GRIB_stepType :</span></dt><dd>instant</dd><dt><span>GRIB_gridType :</span></dt><dd>mercator</dd><dt><span>GRIB_NV :</span></dt><dd>0</dd><dt><span>GRIB_cfName :</span></dt><dd>air_temperature</dd><dt><span>GRIB_cfVarName :</span></dt><dd>t2m</dd><dt><span>GRIB_gridDefinitionDescription :</span></dt><dd>Mercator</dd><dt><span>GRIB_missingValue :</span></dt><dd>9999</dd><dt><span>GRIB_name :</span></dt><dd>2 metre temperature</dd><dt><span>GRIB_parameterName :</span></dt><dd>Temperature</dd><dt><span>GRIB_parameterUnits :</span></dt><dd>K</dd><dt><span>GRIB_shortName :</span></dt><dd>2t</dd><dt><span>GRIB_stepRange :</span></dt><dd>0</dd><dt><span>GRIB_units :</span></dt><dd>K</dd><dt><span>long_name :</span></dt><dd>2 metre temperature</dd><dt><span>units :</span></dt><dd>K</dd><dt><span>standard_name :</span></dt><dd>air_temperature</dd><dt><span>grid_mapping :</span></dt><dd>gribfile_projection</dd></dl></div><div class='xr-var-data'><pre>array([nan, nan, nan, ..., nan, nan, nan], dtype=float32)</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span>gribfile_projection</span></div><div class='xr-var-dims'>()</div><div class='xr-var-dtype'>object</div><div class='xr-var-preview xr-preview'>None</div><input id='attrs-00042e55-6d43-4df6-a3f9-a34f53285141' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-00042e55-6d43-4df6-a3f9-a34f53285141' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-b1d67433-deb5-4fa5-9f6a-5f67cfca8047' class='xr-var-data-in' type='checkbox'><label for='data-b1d67433-deb5-4fa5-9f6a-5f67cfca8047' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>crs_wkt :</span></dt><dd>PROJCRS[&quot;unknown&quot;,BASEGEOGCRS[&quot;unknown&quot;,DATUM[&quot;unknown&quot;,ELLIPSOID[&quot;unknown&quot;,6371229,0,LENGTHUNIT[&quot;metre&quot;,1,ID[&quot;EPSG&quot;,9001]]]],PRIMEM[&quot;Greenwich&quot;,0,ANGLEUNIT[&quot;degree&quot;,0.0174532925199433],ID[&quot;EPSG&quot;,8901]]],CONVERSION[&quot;unknown&quot;,METHOD[&quot;Mercator (variant B)&quot;,ID[&quot;EPSG&quot;,9805]],PARAMETER[&quot;Latitude of 1st standard parallel&quot;,20,ANGLEUNIT[&quot;degree&quot;,0.0174532925199433],ID[&quot;EPSG&quot;,8823]],PARAMETER[&quot;Longitude of natural origin&quot;,290.9955,ANGLEUNIT[&quot;degree&quot;,0.0174532925199433],ID[&quot;EPSG&quot;,8802]],PARAMETER[&quot;False easting&quot;,0,LENGTHUNIT[&quot;metre&quot;,1],ID[&quot;EPSG&quot;,8806]],PARAMETER[&quot;False northing&quot;,0,LENGTHUNIT[&quot;metre&quot;,1],ID[&quot;EPSG&quot;,8807]]],CS[Cartesian,2],AXIS[&quot;(E)&quot;,east,ORDER[1],LENGTHUNIT[&quot;metre&quot;,1,ID[&quot;EPSG&quot;,9001]]],AXIS[&quot;(N)&quot;,north,ORDER[2],LENGTHUNIT[&quot;metre&quot;,1,ID[&quot;EPSG&quot;,9001]]]]</dd><dt><span>semi_major_axis :</span></dt><dd>6371229.0</dd><dt><span>semi_minor_axis :</span></dt><dd>6371229.0</dd><dt><span>inverse_flattening :</span></dt><dd>0.0</dd><dt><span>reference_ellipsoid_name :</span></dt><dd>unknown</dd><dt><span>longitude_of_prime_meridian :</span></dt><dd>0.0</dd><dt><span>prime_meridian_name :</span></dt><dd>Greenwich</dd><dt><span>geographic_crs_name :</span></dt><dd>unknown</dd><dt><span>horizontal_datum_name :</span></dt><dd>unknown</dd><dt><span>projected_crs_name :</span></dt><dd>unknown</dd><dt><span>grid_mapping_name :</span></dt><dd>mercator</dd><dt><span>standard_parallel :</span></dt><dd>20.0</dd><dt><span>longitude_of_projection_origin :</span></dt><dd>290.9955</dd><dt><span>false_easting :</span></dt><dd>0.0</dd><dt><span>false_northing :</span></dt><dd>0.0</dd><dt><span>long_name :</span></dt><dd>NAM model grid projection</dd></dl></div><div class='xr-var-data'><pre>array(None, dtype=object)</pre></div></li></ul></div></li><li class='xr-section-item'><input id='section-a9de02ed-4e46-4986-b990-231f6e440338' class='xr-section-summary-in' type='checkbox'  ><label for='section-a9de02ed-4e46-4986-b990-231f6e440338' class='xr-section-summary' >Attributes: <span>(12)</span></label><div class='xr-section-inline-details'></div><div class='xr-section-details'><dl class='xr-attrs'><dt><span>GRIB_edition :</span></dt><dd>2</dd><dt><span>GRIB_centre :</span></dt><dd>kwbc</dd><dt><span>GRIB_centreDescription :</span></dt><dd>US National Weather Service - NCEP</dd><dt><span>GRIB_subCentre :</span></dt><dd>0</dd><dt><span>Conventions :</span></dt><dd>CF-1.7</dd><dt><span>institution :</span></dt><dd>US National Weather Service - NCEP</dd><dt><span>model :</span></dt><dd>nam</dd><dt><span>product :</span></dt><dd>priconest.hiresf</dd><dt><span>description :</span></dt><dd>North America Mesoscale - CONUS</dd><dt><span>remote_grib :</span></dt><dd>https://noaa-nam-pds.s3.amazonaws.com/nam.20220810/nam.t00z.priconest.hiresf00.tm00.grib2</dd><dt><span>local_grib :</span></dt><dd>/p/cwfs/blaylock/data/nam/20220810/subset_93f271ad5efd7ea64a800c9acfe0b34fc19f58e3__nam.t00z.priconest.hiresf00.tm00.grib2</dd><dt><span>searchString :</span></dt><dd>TMP:2 m above</dd></dl></div></li></ul></div></div></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[47]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">H</span><span class="p">,</span> <span class="n">ds</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plot_product</span><span class="p">(</span><span class="s2">&quot;afwaca&quot;</span><span class="p">)</span>
@@ -2336,7 +2409,7 @@ Attributes:
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../../_images/user_guide__model_notebooks_nam_16_1.png" src="../../_images/user_guide__model_notebooks_nam_16_1.png" />
+<img alt="../../_images/user_guide__model_notebooks_nam_17_1.png" src="../../_images/user_guide__model_notebooks_nam_17_1.png" />
 </div>
 </div>
 <div class="nbinput nblast docutils container">
@@ -2389,8 +2462,8 @@ Attributes:
 <nav id="bd-toc-nav" class="page-toc">
     <ul class="visible nav section-nav flex-column">
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#Cycle-through-all-products:">
-   Cycle through all products:
+  <a class="reference internal nav-link" href="#Additional-products">
+   Additional products
   </a>
  </li>
 </ul>
@@ -2450,7 +2523,7 @@ Attributes:
     
 <p class="copyright">
 
-    &copy; Copyright 2022, Brian K. Blaylock.    ♻ Updated: 22:24 UTC 10 Dec 2022.<br>
+    &copy; Copyright 2022, Brian K. Blaylock.    ♻ Updated: 23:28 UTC 10 Dec 2022.<br>
 
 </p>
 

@@ -58,7 +58,7 @@
     <link rel="shortcut icon" href="../../_static/wxicon.png"/>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Historical NOGAPS Data" href="nogaps.html" />
+    <link rel="next" title="NOGAPS Data" href="nogaps.html" />
     <link rel="prev" title="RRFS Data" href="rrfs.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="docsearch:language" content="en">
@@ -383,17 +383,16 @@
 <li class="toctree-l2"><a class="reference internal" href="hrrrak.html">HRRR-Alaska Data</a></li>
 <li class="toctree-l2"><a class="reference internal" href="rap.html">RAP Data</a></li>
 
-
 <li class="toctree-l2"><a class="reference internal" href="nam.html">NAM Data</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gfs.html">GFS Data</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gefs.html">Global Ensembele Forecast System (GEFS) reanalysis: 2000-2019</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gefs.html">GEFS Data</a></li>
 
-<li class="toctree-l2"><a class="reference internal" href="ecmwf.html">ECMWF Open Data – Real Time</a></li>
-<li class="toctree-l2"><a class="reference internal" href="nbm.html">National Blend of Models (NMB)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ecmwf.html">ECMWF Open Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nbm.html">NMB Data</a></li>
 <li class="toctree-l2"><a class="reference internal" href="rrfs.html">RRFS Data</a></li>
 
 <li class="toctree-l2 current active"><a class="current reference internal" href="#">NAVGEM Data</a></li>
-<li class="toctree-l2"><a class="reference internal" href="nogaps.html">Historical NOGAPS Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nogaps.html">NOGAPS Data</a></li>
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../_bonus_notebooks/index.html">Bonus Notebooks</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-3"><i class="fa-solid fa-chevron-down"></i></label><ul>
@@ -706,19 +705,18 @@ div.rendered_html tbody tr:hover {
   background: rgba(66, 165, 245, 0.2);
 }
 </style>
-<div class="line-block">
-<div class="line"><strong>Brian Blaylock</strong></div>
-<div class="line"><em>July 20, 2021</em></div>
-</div>
 <section id="NAVGEM-Data">
 <h1>NAVGEM Data<a class="headerlink" href="#NAVGEM-Data" title="Permalink to this heading">#</a></h1>
-<p>There are different products available on the cloud.</p>
+<p>This demonstrates how to use data from the NAVGEM model from NOMADS.</p>
+<blockquote>
+<div><p>Note: there are not .idx files provided, so you have to download the full file and generate the .idx file with wgrib2 (requires Linux).</p>
+</div></blockquote>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">herbie.archive</span> <span class="kn">import</span> <span class="n">Herbie</span>
-<span class="kn">from</span> <span class="nn">toolbox.cartopy_tools_OLD</span> <span class="kn">import</span> <span class="n">common_features</span><span class="p">,</span> <span class="n">pc</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">herbie</span> <span class="kn">import</span> <span class="n">Herbie</span>
+<span class="kn">from</span> <span class="nn">toolbox</span> <span class="kn">import</span> <span class="n">EasyMap</span><span class="p">,</span> <span class="n">pc</span>
 <span class="kn">from</span> <span class="nn">paint.standard2</span> <span class="kn">import</span> <span class="n">cm_tmp</span>
 
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
@@ -727,10 +725,10 @@ div.rendered_html tbody tr:hover {
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">H</span> <span class="o">=</span> <span class="n">Herbie</span><span class="p">(</span><span class="s2">&quot;2021-07-28&quot;</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="s2">&quot;navgem&quot;</span><span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">H</span> <span class="o">=</span> <span class="n">Herbie</span><span class="p">(</span><span class="s2">&quot;2022-12-10&quot;</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="s2">&quot;navgem&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -739,11 +737,45 @@ div.rendered_html tbody tr:hover {
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-🏋🏻‍♂️ Found <span class="ansi-green-fg">2021-Jul-28 00:00 UTC F00</span> [NAVGEM] [product=none] GRIB2 file from <span style="color: rgb(255,95,0)">nomads</span> and index file from <span style="color: rgb(255,95,0)">None</span>.
+✅ Found ┊ model=navgem ┊ product=none ┊ <span style="color: rgb(41,130,13)">2022-Dec-10 00:00 UTC</span><span class="ansi-green-intense-fg"> F00</span> ┊ <span style="color: rgb(255,153,0)">GRIB2 @ local</span> ┊ <span style="color: rgb(255,153,0)">IDX @ None</span>
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">H</span><span class="o">.</span><span class="n">PRODUCTS</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+{&#39;none&#39;: &#39;&#39;}
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">H</span><span class="o">.</span><span class="n">SOURCES</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+{&#39;nomads&#39;: &#39;https://nomads.ncep.noaa.gov/pub/data/nccf/com/fnmoc/prod/navgem.20221210/navgem_2022121000f000.grib2&#39;}
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># no index file available. Have to download the full file.</span>
@@ -756,14 +788,44 @@ div.rendered_html tbody tr:hover {
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-👨🏻‍🏭 Created directory: [/p/cwfs/blaylock/data/navgem/20210728]
-✅ Success! Downloaded NAVGEM from <span style="color: rgb(255,95,0)">nomads              </span>
-        src: https://nomads.ncep.noaa.gov/pub/data/nccf/com/fnmoc/prod/navgem.20210728/navgem_2021072800f000.grib2
-        dst: /p/cwfs/blaylock/data/navgem/20210728/navgem_2021072800f000.grib2
+<span class="ansi-red-intense-fg ansi-bold">---------------------------------------------------------------------------</span>
+<span class="ansi-red-intense-fg ansi-bold">TypeError</span>                                 Traceback (most recent call last)
+Cell <span class="ansi-green-intense-fg ansi-bold">In[20], line 2</span>
+<span class="ansi-green-fg">      1</span> # no index file available. Have to download the full file.
+<span class="ansi-green-intense-fg ansi-bold">----&gt; 2</span> H.download()
+
+File <span class="ansi-green-intense-fg ansi-bold">~\_GITHUB\Herbie\herbie\archive.py:911</span>, in <span class="ansi-cyan-fg">Herbie.download</span><span class="ansi-blue-intense-fg ansi-bold">(self, searchString, source, save_dir, overwrite, verbose, errors)</span>
+<span class="ansi-green-fg">    907</span>     print(f&#34;👨🏻‍🏭 Created directory: [{outFile.parent}]&#34;)
+<span class="ansi-green-fg">    909</span> if searchString in [None, &#34;:&#34;] or self.idx is None:
+<span class="ansi-green-fg">    910</span>     # Download the full file from remote source
+<span class="ansi-green-intense-fg ansi-bold">--&gt; 911</span>     urllib.request.urlretrieve(self.grib, outFile, _reporthook)
+<span class="ansi-green-fg">    913</span>     self.grib = outFile
+<span class="ansi-green-fg">    914</span>     # self.grib_source = &#34;local&#34;
+
+File <span class="ansi-green-intense-fg ansi-bold">c:\Users\blaylock\Miniconda3\envs\herbie-dev\lib\urllib\request.py:239</span>, in <span class="ansi-cyan-fg">urlretrieve</span><span class="ansi-blue-intense-fg ansi-bold">(url, filename, reporthook, data)</span>
+<span class="ansi-green-fg">    223</span> def urlretrieve(url, filename=None, reporthook=None, data=None):
+<span class="ansi-green-fg">    224</span>     &#34;&#34;&#34;
+<span class="ansi-green-fg">    225</span>     Retrieve a URL into a temporary location on disk.
+<span class="ansi-green-fg">    226</span>
+<span class="ansi-green-intense-fg ansi-bold">   (...)</span>
+<span class="ansi-green-fg">    237</span>     data file as well as the resulting HTTPMessage object.
+<span class="ansi-green-fg">    238</span>     &#34;&#34;&#34;
+<span class="ansi-green-intense-fg ansi-bold">--&gt; 239</span>     url_type, path = _splittype(url)
+<span class="ansi-green-fg">    241</span>     with contextlib.closing(urlopen(url, data)) as fp:
+<span class="ansi-green-fg">    242</span>         headers = fp.info()
+
+File <span class="ansi-green-intense-fg ansi-bold">c:\Users\blaylock\Miniconda3\envs\herbie-dev\lib\urllib\parse.py:1039</span>, in <span class="ansi-cyan-fg">_splittype</span><span class="ansi-blue-intense-fg ansi-bold">(url)</span>
+<span class="ansi-green-fg">   1036</span> if _typeprog is None:
+<span class="ansi-green-fg">   1037</span>     _typeprog = re.compile(&#39;([^/:]+):(.*)&#39;, re.DOTALL)
+<span class="ansi-green-intense-fg ansi-bold">-&gt; 1039</span> match = _typeprog.match(url)
+<span class="ansi-green-fg">   1040</span> if match:
+<span class="ansi-green-fg">   1041</span>     scheme, data = match.groups()
+
+<span class="ansi-red-intense-fg ansi-bold">TypeError</span>: expected string or bytes-like object
 </pre></div></div>
 </div>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">xarray</span>
@@ -787,10 +849,10 @@ div.rendered_html tbody tr:hover {
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ax</span> <span class="o">=</span> <span class="n">common_features</span><span class="p">(</span><span class="n">crs</span><span class="o">=</span><span class="n">x</span><span class="o">.</span><span class="n">herbie</span><span class="o">.</span><span class="n">crs</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">[</span><span class="mi">8</span><span class="p">,</span> <span class="mi">8</span><span class="p">])</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ax</span> <span class="o">=</span> <span class="n">EasyMap</span><span class="p">(</span><span class="n">crs</span><span class="o">=</span><span class="n">x</span><span class="o">.</span><span class="n">herbie</span><span class="o">.</span><span class="n">crs</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">8</span><span class="p">])</span><span class="o">.</span><span class="n">ax</span>
 <span class="n">p</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">pcolormesh</span><span class="p">(</span>
     <span class="n">x</span><span class="o">.</span><span class="n">longitude</span><span class="p">,</span> <span class="n">x</span><span class="o">.</span><span class="n">latitude</span><span class="p">,</span> <span class="n">x</span><span class="o">.</span><span class="n">t2m</span><span class="p">,</span> <span class="n">transform</span><span class="o">=</span><span class="n">pc</span><span class="p">,</span> <span class="o">**</span><span class="n">cm_tmp</span><span class="p">(</span><span class="n">units</span><span class="o">=</span><span class="s2">&quot;K&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">cmap_kwargs</span>
 <span class="p">)</span>
@@ -804,27 +866,39 @@ div.rendered_html tbody tr:hover {
 </div>
 </div>
 <div class="nboutput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
-</pre></div>
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+c:\Users\blaylock\Miniconda3\envs\herbie-dev\lib\site-packages\metpy\xarray.py:355: UserWarning: More than one time coordinate present for variable &#34;t2m&#34;.
+  warnings.warn(&#39;More than one &#39; + axis + &#39; coordinate present for variable&#39;
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Text(0.0, 1.0, &#39;NAVGEM: &#39;)
+<span class="ansi-red-intense-fg ansi-bold">---------------------------------------------------------------------------</span>
+<span class="ansi-red-intense-fg ansi-bold">AttributeError</span>                            Traceback (most recent call last)
+Cell <span class="ansi-green-intense-fg ansi-bold">In[17], line 2</span>
+<span class="ansi-green-fg">      1</span> ax = EasyMap(crs=x.herbie.crs, figsize=[8, 8])
+<span class="ansi-green-intense-fg ansi-bold">----&gt; 2</span> p = ax.pcolormesh(
+<span class="ansi-green-fg">      3</span>     x.longitude, x.latitude, x.t2m, transform=pc, **cm_tmp(units=&#34;K&#34;).cmap_kwargs
+<span class="ansi-green-fg">      4</span> )
+<span class="ansi-green-fg">      5</span> plt.colorbar(
+<span class="ansi-green-fg">      6</span>     p, ax=ax, orientation=&#34;horizontal&#34;, pad=0.05, **cm_tmp(units=&#34;K&#34;).cbar_kwargs
+<span class="ansi-green-fg">      7</span> )
+<span class="ansi-green-fg">      9</span> ax.set_title(x.t2m.GRIB_name, loc=&#34;right&#34;)
+
+<span class="ansi-red-intense-fg ansi-bold">AttributeError</span>: &#39;common_features&#39; object has no attribute &#39;pcolormesh&#39;
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../../_images/user_guide__model_notebooks_navgem_6_1.png" src="../../_images/user_guide__model_notebooks_navgem_6_1.png" />
-</div>
-</div>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>
-</pre></div>
+<img alt="../../_images/user_guide__model_notebooks_navgem_8_2.png" src="../../_images/user_guide__model_notebooks_navgem_8_2.png" />
 </div>
 </div>
 <div class="nbinput nblast docutils container">
@@ -855,7 +929,7 @@ Text(0.0, 1.0, &#39;NAVGEM: &#39;)
   <a class='right-next' id="next-link" href="nogaps.html" title="next page">
   <div class="prev-next-info">
       <p class="prev-next-subtitle">next</p>
-      <p class="prev-next-title">Historical NOGAPS Data</p>
+      <p class="prev-next-title">NOGAPS Data</p>
   </div>
   <i class="fa-solid fa-angle-right"></i>
   </a>
@@ -920,7 +994,7 @@ Text(0.0, 1.0, &#39;NAVGEM: &#39;)
     
 <p class="copyright">
 
-    &copy; Copyright 2022, Brian K. Blaylock.    ♻ Updated: 22:24 UTC 10 Dec 2022.<br>
+    &copy; Copyright 2022, Brian K. Blaylock.    ♻ Updated: 23:28 UTC 10 Dec 2022.<br>
 
 </p>
 
