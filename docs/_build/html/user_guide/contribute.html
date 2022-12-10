@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>👨🏻‍🏭 Disclaimer and Contributing Guidelines &#8212; Herbie 2022.9.0 documentation</title>
+    <title>👨🏻‍🏭 Disclaimer &#8212; Herbie 2022.9.0 documentation</title>
   
   
   
@@ -57,7 +57,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="🎨 Style Guide" href="style_guide.html" />
-    <link rel="prev" title="HRRR in Zarr Format" href="zarr.html" />
+    <link rel="prev" title="How to Cite" href="citation.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="docsearch:language" content="en">
   </head>
@@ -354,7 +354,8 @@
   <div class="bd-toc-item navbar-nav">
     <p aria-level="2" class="caption" role="heading"><span class="caption-text">Get Started</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="install.html">🐍 Installation and Conda Environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="install.html">🐍 Installation</a></li>
+
 <li class="toctree-l1"><a class="reference internal" href="configure.html">🛠 Configure</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Background Knowledge</span></p>
@@ -364,6 +365,7 @@
 
 <li class="toctree-l1"><a class="reference internal" href="data_sources.html">☁ Data Sources</a></li>
 <li class="toctree-l1"><a class="reference internal" href="model_info.html">ℹ Model Info</a></li>
+<li class="toctree-l1"><a class="reference internal" href="zarr.html">⚡ What about Zarr?</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Using Herbie</span></p>
 <ul class="nav bd-sidenav">
@@ -391,9 +393,12 @@
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Housekeeping</span></p>
 <ul class="current nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="zarr.html">HRRR in Zarr Format</a></li>
-<li class="toctree-l1 current active"><a class="current reference internal" href="#">👨🏻‍🏭 Disclaimer and Contributing Guidelines</a></li>
+<li class="toctree-l1"><a class="reference internal" href="citation.html">How to Cite</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">👨🏻‍🏭 Disclaimer</a></li>
 <li class="toctree-l1"><a class="reference internal" href="style_guide.html">🎨 Style Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="rclone.html">🤖 Rclone</a></li>
+
+
 </ul>
 
   </div>
@@ -425,29 +430,16 @@
             
             <article class="bd-article" role="main">
               
-  <section id="disclaimer-and-contributing-guidelines">
-<h1>👨🏻‍🏭 Disclaimer and Contributing Guidelines<a class="headerlink" href="#disclaimer-and-contributing-guidelines" title="Permalink to this heading">#</a></h1>
-<p>The intent of this package is to serve as an <em>example</em> of how you can download archived NWP data, but it still might be useful to you.</p>
-<p>This package continues to evolve and is distributed <em>as is</em>. I do not make any guarantee it will work for you out of the box or is tailored to your needs. This package is essentially my playground for developing my python skills and testing new ideas. In fact, this is my first experience publishing a package to PyPI. Any revisions I make are purely for my benefit. I usually only push updates to GitHub if the code is in a reasonably functional state (at least, in the way I use it), so sorry if I break something you used.</p>
-<p>With that said, I am happy to share this project with you. You are welcome to <a class="reference external" href="https://github.com/blaylockbk/Herbie/issues">open issues</a>, <a class="reference external" href="https://github.com/blaylockbk/Herbie/discussions">ask questions in the discussion</a>, submit pull requests, but know that I may or may not get around to doing anything about it. If this is helpful to you in any way, I’m glad.</p>
+  <section id="disclaimer">
+<h1>👨🏻‍🏭 Disclaimer<a class="headerlink" href="#disclaimer" title="Permalink to this heading">#</a></h1>
+<p>Herbie continues to evolve and is distributed <em>as is</em>. I do not make any guarantee it will work for you out of the box or is tailored to your needs. Honestly, this package is my playground for developing my python skills and testing new ideas in my free time.</p>
+<p>With that said, I am happy to share this project with you. If this is helpful to you in any way, I’m glad.</p>
+<p>You are welcome to <a class="reference external" href="https://github.com/blaylockbk/Herbie/issues">open issues</a>, <a class="reference external" href="https://github.com/blaylockbk/Herbie/discussions">ask questions in the discussion</a>, submit pull requests.</p>
+<p>🙋🏻‍♂️ Questions: <a class="reference external" href="https://github.com/blaylockbk/Herbie/discussions">GitHub Discussions</a><br />
+🚑 Support: <a class="reference external" href="https://github.com/blaylockbk/Herbie/issues">GitHub Issues</a></p>
 <p><strong>Thanks for using Herbie, and happy racing 🏁</strong><br />
 - Brian</p>
 <p><img alt="" src="https://raw.githubusercontent.com/blaylockbk/Herbie/master/images/herbie.jpg" /></p>
-<section id="alternative">
-<h2>Alternative<a class="headerlink" href="#alternative" title="Permalink to this heading">#</a></h2>
-<p>As an alternative, you can use <a class="reference external" href="https://rclone.org/">rclone</a> to download files from cloud platforms. I quite like rclone. Here is a <a class="reference external" href="https://github.com/blaylockbk/pyBKB_v3/blob/master/rclone_howto.md">short rclone tutorial</a></p>
-</section>
-<section id="other-information">
-<h2>Other Information<a class="headerlink" href="#other-information" title="Permalink to this heading">#</a></h2>
-<p>🌐 University of Utah HRRR Archive: <a class="reference external" href="http://hrrr.chpc.utah.edu/">http://hrrr.chpc.utah.edu/</a><br />
-🙋🏻‍♂️ Questions: <a class="reference external" href="https://github.com/blaylockbk/Herbie/discussions">GitHub Discussions</a><br />
-🚑 Support: <a class="reference external" href="https://github.com/blaylockbk/Herbie/issues">GitHub Issues</a> or <a class="reference external" href="mailto:atmos-mesowest&#37;&#52;&#48;lists&#46;utah&#46;edu">atmos-mesowest<span>&#64;</span>lists<span>&#46;</span>utah<span>&#46;</span>edu</a><br />
-📧 Email Brian Blaylock: <a class="reference external" href="mailto:blaylockbk&#37;&#52;&#48;gmail&#46;com">blaylockbk<span>&#64;</span>gmail<span>&#46;</span>com</a></p>
-<p>✒ I wrote a paper about archiving HRRR data in the cloud</p>
-<blockquote>
-<div><p>Blaylock B., J. Horel and S. Liston, 2017: Cloud Archiving and Data Mining of High Resolution Rapid Refresh Model Output. Computers and Geosciences. 109, 43-50. <a class="reference external" href="https://doi.org/10.1016/j.cageo.2017.08.005">https://doi.org/10.1016/j.cageo.2017.08.005</a></p>
-</div></blockquote>
-</section>
 </section>
 
 
@@ -458,11 +450,11 @@
             <footer class="bd-footer-article">
                 <!-- Previous / next buttons -->
 <div class='prev-next-area'>
-  <a class='left-prev' id="prev-link" href="zarr.html" title="previous page">
+  <a class='left-prev' id="prev-link" href="citation.html" title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
           <p class="prev-next-subtitle">previous</p>
-          <p class="prev-next-title">HRRR in Zarr Format</p>
+          <p class="prev-next-title">How to Cite</p>
       </div>
   </a>
   <a class='right-next' id="next-link" href="style_guide.html" title="next page">
@@ -481,28 +473,6 @@
           
             <div class="bd-sidebar-secondary bd-toc">
               
-<div class="toc-item">
-  
-<div class="tocsection onthispage">
-    <i class="fa-solid fa-list"></i> On this page
-</div>
-<nav id="bd-toc-nav" class="page-toc">
-    <ul class="visible nav section-nav flex-column">
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#alternative">
-   Alternative
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#other-information">
-   Other Information
-  </a>
- </li>
-</ul>
-
-</nav>
-</div>
-
 <div class="toc-item">
   
 <div id="searchbox"></div>
@@ -555,7 +525,7 @@
     
 <p class="copyright">
 
-    &copy; Copyright 2022, Brian K. Blaylock.    ♻ Updated: 03:31 UTC 10 Dec 2022.<br>
+    &copy; Copyright 2022, Brian K. Blaylock.    ♻ Updated: 05:06 UTC 10 Dec 2022.<br>
 
 </p>
 

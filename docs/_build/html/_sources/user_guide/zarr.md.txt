@@ -1,9 +1,14 @@
-# HRRR in Zarr Format
+# ⚡ What about Zarr?
 
-Select parts of the HRRR archive are available in [Zarr](https://zarr.readthedocs.io/en/stable/) format in the `s3://hrrrzarr` bucket on AWS developed by [Taylor Gowan](https://twitter.com/tayloragowan) and managed by the MesoWest group at the University of Utah. *Herbie doesn't download this type of data yet*, but it might in the future. For more information about HRRR-Zarr, read the [documentation](https://mesowest.utah.edu/html/hrrr/).
+When it comes to subsetting large datasets, GRIB has some limitations. The [Zarr](https://zarr.readthedocs.io/en/stable/) data format, however, makes downloading small chunks of large gridded dataset easy. Herbie does not download Zarr data, but could in the future (pull request anyone?). 
 
-Additional Resources
+Unfortunately, numerical weather prediction data is not widely available in Zarr format, except for at lease one model. 
 
-- [HRRR-Zarr examples](https://github.com/taylorgowan/zarr) by *Taylor Gowan* 
+## HRRR-Zarr
+
+Select parts of the HRRR model archive are available in Zarr format in the `s3://hrrrzarr` bucket on AWS developed by [Taylor Gowan](https://twitter.com/tayloragowan) and managed by the MesoWest group at the University of Utah. If you are using large amounts of the HRRR dataset and need to do a lot of subsetting, you might find this dataset useful. 
+
+- [HRRR-Zarr Documentation](https://mesowest.utah.edu/html/hrrr/) by *University of Utah - Mesowest*
+- [HRRR-Zarr Examples](https://github.com/taylorgowan/zarr) by *Taylor Gowan* 
 - [HRRR-Zarr AMS Short Course](https://github.com/ktyle/python_pangeo_ams2021/blob/main/notebooks/03_Pangeo_HRRR.ipynb) by *Kevin Tyle*
 - [HRRR-Zarr Sandbox](https://github.com/blaylockbk/Herbie/blob/main/notebooks/zarr_HRRR.ipynb) by *Brian Blaylock*

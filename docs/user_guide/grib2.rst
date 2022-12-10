@@ -7,7 +7,7 @@ GRIB stands for "gridded binary" and is an international standard for meteorolog
 Yes, GRIB is notoriously difficult to work with and has a steep learning curve for those unfamiliar with the format. I won't discuss here the good, bad, and ugly of GRIB frankly because I'm not an expert and probably will say something wrong. However, even seasoned meteorologists complain about GRIB. Since complaining won't fix the problem, I choose to embrace it because, for now, NWP data is widely distributed as GRIB2.
 
 - `Wikipedia: GRIB <https://en.wikipedia.org/wiki/GRIB>`_
-
+- `ECMWF: What are GRIB files and how can I read them? <https://confluence.ecmwf.int/display/CKB/What+are+GRIB+files+and+how+can+I+read+them>`_
 
 Command Line Tools
 ^^^^^^^^^^^^^^^^^^
@@ -16,17 +16,25 @@ There are two command-line tools for looking at GRIB file contents.
 1. *wgrib2* is a product of NOAA/NCEP and can be installed via conda-forge in your environment (linux only). | `wrgib2 documentation <https://www.cpc.ncep.noaa.gov/products/wesley/wgrib2/>`_ |
 2. *grib_ls* in the ecCodes package is a product of ECMWF. Since ecCodes is a dependency of cfgrib, this utility is included when you install cfgrib in your conda environment. | `grib_ls documentation <https://confluence.ecmwf.int/display/ECC/grib_ls>`_
 
+.. code-bloc:: bash
+
+   conda install -c conda-forge wgrib2 eccodes
+
 For a sample GRIB2 file with precipitation data, below is the output using both tools
 
 .. code-block:: bash
 
    $ wgrib2 subset_20201214_hrrr.t00z.wrfsfcf12.grib2
+
+   OUT:
    1:0:d=2020121400:APCP:surface:0-12 hour acc fcst:
    2:887244:d=2020121400:APCP:surface:11-12 hour acc fcst:
 
 .. code-block:: bash
 
    $ grib_ls subset_20201214_hrrr.t00z.wrfsfcf12.grib2
+
+   OUT:
    subset_20201214_hrrr.t00z.wrfsfcf12.grib2
    edition      centre       date         dataType     gridType     typeOfLevel  level        stepRange    shortName    packingType
    2            kwbc         20201214     fc           lambert      surface      0            0-12         tp           grid_complex_spatial_differencing
@@ -35,6 +43,8 @@ For a sample GRIB2 file with precipitation data, below is the output using both 
 
    2 of 2 total messages in 1 files
 
+Of course, there are many more command line options to get more data than was returned in this example.
+
 Python Tools
 ^^^^^^^^^^^^
 There are two key python packages for reading GRIB2 files. Both can be installed via conda-forge.
@@ -42,13 +52,20 @@ There are two key python packages for reading GRIB2 files. Both can be installed
 - **pygrib** is what I started to learn and still use sometimes. | `Video Demo <https://youtu.be/yLoudFv3hAY>`_ |  `pygrib GitHub <https://github.com/jswhit/pygrib>`_ |
 - **cfgrib** works well reading GRIB2 data as xarray datasets. Make sure you have the latest version (>0.9.8) |  `cfgrib GitHub <https://github.com/ecmwf/cfgrib>`_
 
+.. code-bloc:: bash
+
+   conda install -c conda-forge pygrib cfgrib
+
+
 How GRIB subsetting works in Herbie
 -----------------------------------
-GRIB files are gridded binary. GRIB _messages_ or _fields_ are stacked on top of each other in a file; I like to think of each message as a "layer" in the file. Each field contains data for one variable at a specific level across the gridded model domain. Because the file is made up of individual "messages," it is possible to download portions of GRIB2 file by retrieving just specific messages using HTTP `Byte-Range request <https://www.keycdn.com/support/byte-range-requests>`_.
+GRIB files are gridded binary where GRIB _messages_ or _fields_ are stacked on top of each other in a file. A message might contain temperature data for a level (e.g. surface, 500 hPa) at a specific time across the United States. I like to think of each message as a "layer" in the file.
+
+Because the file is made up of individual "messages," it is possible to download portions of GRIB2 file by retrieving just specific messages using HTTP `Byte-Range request <https://www.keycdn.com/support/byte-range-requests>`_.
 
 Herbie supports **subsetting GRIB2 files by GRIB message**, provided that an _inventory_ or _index_ (.idx) file exists. The index file tells us the beginning byte of each GRIB message. To download a subset, Herbie uses the **cURL** command which allows you to download a range of bytes from a file. By repeating the cURL command and appending the messages you a file, you can subset a full file on the remote server and download only the fields you need. Keep in mind that a GRIB message represents the variable over the full grid. It is only possible to subset the file by GRIB message and not by geographical region (i.e., you cannot do a regional subset).
 
-Why would you want to subset GRIB2 files? Well, GRIB files provided by operational forecast centers are usually very large because they can contain hundred of model output variables, and each variable is its own GRIB message. For example, native grid HRRR files can be ~700 MB each! That adds up quick if you need a lot of days and forecasts and all you are interested in surface temperature. Often, you only need some of the data in the file. The size of a single HRRR message is about 1 MB. If you subset the data as you download it, you will save a lot of disk space and improve your data aquisition time by reducing the download time.
+Why would you want to subset GRIB2 files? Well, GRIB files provided by operational forecast centers are usually very large because they can contain hundred of model output variables, and each variable is its own GRIB message. For example, native grid HRRR files can be ~700 MB each! That adds up quick if you need a lot of days and forecasts and all you are interested in surface temperature. Often, you only need some of the data in the file. The size of a single HRRR message is about 1 MB. If you subset the data as you download it, you will save a lot of disk space and improve your data acquisition time by reducing the download time.
 
 .. figure:: ../_static/diagrams/GRIB2_file_cURL.png
 
@@ -85,7 +102,7 @@ Each part has meaning as described in the figure
 
 ECMWF products use a different pattern for their index files (I believe created with the ecCodes/grib_ls tool). The important thing here is that these also tell us what variable is in each GRIB message and the start and end byte. Here is an example of one of the ECMWF index files:
 
-.. code-block::
+.. code-block:: json
 
    {"domain": "g", "date": "20220125", "time": "1800", "expver": "0001", "class": "od", "type": "pf", "stream": "enfo", "levtype": "sfc", "number": "4", "step": "0", "param": "tp", "_offset": 0, "_length": 243}
    {"domain": "g", "date": "20220125", "time": "1800", "expver": "0001", "class": "od", "type": "pf", "stream": "enfo", "levtype": "sfc", "number": "2", "step": "0", "param": "tp", "_offset": 243, "_length": 243}

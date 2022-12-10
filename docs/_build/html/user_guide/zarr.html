@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>HRRR in Zarr Format &#8212; Herbie 2022.9.0 documentation</title>
+    <title>⚡ What about Zarr? &#8212; Herbie 2022.9.0 documentation</title>
   
   
   
@@ -56,8 +56,8 @@
     <link rel="shortcut icon" href="../_static/wxicon.png"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="👨🏻‍🏭 Disclaimer and Contributing Guidelines" href="contribute.html" />
-    <link rel="prev" title="👷🏻‍♂️ Extending Herbie" href="custom_template.html" />
+    <link rel="next" title="Quick Tutorial" href="notebooks/tutorial.html" />
+    <link rel="prev" title="ℹ Model Info" href="model_info.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="docsearch:language" content="en">
   </head>
@@ -354,16 +354,18 @@
   <div class="bd-toc-item navbar-nav">
     <p aria-level="2" class="caption" role="heading"><span class="caption-text">Get Started</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="install.html">🐍 Installation and Conda Environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="install.html">🐍 Installation</a></li>
+
 <li class="toctree-l1"><a class="reference internal" href="configure.html">🛠 Configure</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Background Knowledge</span></p>
-<ul class="nav bd-sidenav">
+<ul class="current nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="history.html">📜 History</a></li>
 <li class="toctree-l1"><a class="reference internal" href="grib2.html">🔢 What is GRIB2?</a></li>
 
 <li class="toctree-l1"><a class="reference internal" href="data_sources.html">☁ Data Sources</a></li>
 <li class="toctree-l1"><a class="reference internal" href="model_info.html">ℹ Model Info</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">⚡ What about Zarr?</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Using Herbie</span></p>
 <ul class="nav bd-sidenav">
@@ -390,10 +392,13 @@
 <li class="toctree-l1"><a class="reference internal" href="custom_template.html">👷🏻‍♂️ Extending Herbie</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Housekeeping</span></p>
-<ul class="current nav bd-sidenav">
-<li class="toctree-l1 current active"><a class="current reference internal" href="#">HRRR in Zarr Format</a></li>
-<li class="toctree-l1"><a class="reference internal" href="contribute.html">👨🏻‍🏭 Disclaimer and Contributing Guidelines</a></li>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="citation.html">How to Cite</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contribute.html">👨🏻‍🏭 Disclaimer</a></li>
 <li class="toctree-l1"><a class="reference internal" href="style_guide.html">🎨 Style Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="rclone.html">🤖 Rclone</a></li>
+
+
 </ul>
 
   </div>
@@ -425,15 +430,20 @@
             
             <article class="bd-article" role="main">
               
-  <section id="hrrr-in-zarr-format">
-<h1>HRRR in Zarr Format<a class="headerlink" href="#hrrr-in-zarr-format" title="Permalink to this heading">#</a></h1>
-<p>Select parts of the HRRR archive are available in <a class="reference external" href="https://zarr.readthedocs.io/en/stable/">Zarr</a> format in the <code class="docutils literal notranslate"><span class="pre">s3://hrrrzarr</span></code> bucket on AWS developed by <a class="reference external" href="https://twitter.com/tayloragowan">Taylor Gowan</a> and managed by the MesoWest group at the University of Utah. <em>Herbie doesn’t download this type of data yet</em>, but it might in the future. For more information about HRRR-Zarr, read the <a class="reference external" href="https://mesowest.utah.edu/html/hrrr/">documentation</a>.</p>
-<p>Additional Resources</p>
+  <section id="what-about-zarr">
+<h1>⚡ What about Zarr?<a class="headerlink" href="#what-about-zarr" title="Permalink to this heading">#</a></h1>
+<p>When it comes to subsetting large datasets, GRIB has some limitations. The <a class="reference external" href="https://zarr.readthedocs.io/en/stable/">Zarr</a> data format, however, makes downloading small chunks of large gridded dataset easy. Herbie does not download Zarr data, but could in the future (pull request anyone?).</p>
+<p>Unfortunately, numerical weather prediction data is not widely available in Zarr format, except for at lease one model.</p>
+<section id="hrrr-zarr">
+<h2>HRRR-Zarr<a class="headerlink" href="#hrrr-zarr" title="Permalink to this heading">#</a></h2>
+<p>Select parts of the HRRR model archive are available in Zarr format in the <code class="docutils literal notranslate"><span class="pre">s3://hrrrzarr</span></code> bucket on AWS developed by <a class="reference external" href="https://twitter.com/tayloragowan">Taylor Gowan</a> and managed by the MesoWest group at the University of Utah. If you are using large amounts of the HRRR dataset and need to do a lot of subsetting, you might find this dataset useful.</p>
 <ul class="simple">
-<li><p><a class="reference external" href="https://github.com/taylorgowan/zarr">HRRR-Zarr examples</a> by <em>Taylor Gowan</em></p></li>
+<li><p><a class="reference external" href="https://mesowest.utah.edu/html/hrrr/">HRRR-Zarr Documentation</a> by <em>University of Utah - Mesowest</em></p></li>
+<li><p><a class="reference external" href="https://github.com/taylorgowan/zarr">HRRR-Zarr Examples</a> by <em>Taylor Gowan</em></p></li>
 <li><p><a class="reference external" href="https://github.com/ktyle/python_pangeo_ams2021/blob/main/notebooks/03_Pangeo_HRRR.ipynb">HRRR-Zarr AMS Short Course</a> by <em>Kevin Tyle</em></p></li>
 <li><p><a class="reference external" href="https://github.com/blaylockbk/Herbie/blob/main/notebooks/zarr_HRRR.ipynb">HRRR-Zarr Sandbox</a> by <em>Brian Blaylock</em></p></li>
 </ul>
+</section>
 </section>
 
 
@@ -444,17 +454,17 @@
             <footer class="bd-footer-article">
                 <!-- Previous / next buttons -->
 <div class='prev-next-area'>
-  <a class='left-prev' id="prev-link" href="custom_template.html" title="previous page">
+  <a class='left-prev' id="prev-link" href="model_info.html" title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
           <p class="prev-next-subtitle">previous</p>
-          <p class="prev-next-title">👷🏻‍♂️ Extending Herbie</p>
+          <p class="prev-next-title">ℹ Model Info</p>
       </div>
   </a>
-  <a class='right-next' id="next-link" href="contribute.html" title="next page">
+  <a class='right-next' id="next-link" href="notebooks/tutorial.html" title="next page">
   <div class="prev-next-info">
       <p class="prev-next-subtitle">next</p>
-      <p class="prev-next-title">👨🏻‍🏭 Disclaimer and Contributing Guidelines</p>
+      <p class="prev-next-title">Quick Tutorial</p>
   </div>
   <i class="fa-solid fa-angle-right"></i>
   </a>
@@ -467,6 +477,23 @@
           
             <div class="bd-sidebar-secondary bd-toc">
               
+<div class="toc-item">
+  
+<div class="tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+</div>
+<nav id="bd-toc-nav" class="page-toc">
+    <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#hrrr-zarr">
+   HRRR-Zarr
+  </a>
+ </li>
+</ul>
+
+</nav>
+</div>
+
 <div class="toc-item">
   
 <div id="searchbox"></div>
@@ -519,7 +546,7 @@
     
 <p class="copyright">
 
-    &copy; Copyright 2022, Brian K. Blaylock.    ♻ Updated: 03:31 UTC 10 Dec 2022.<br>
+    &copy; Copyright 2022, Brian K. Blaylock.    ♻ Updated: 05:06 UTC 10 Dec 2022.<br>
 
 </p>
 

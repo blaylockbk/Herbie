@@ -16,6 +16,7 @@ User Guide
    grib2
    data_sources
    model_info
+   zarr
 
 .. toctree::
    :caption: Using Herbie
@@ -28,7 +29,8 @@ User Guide
 .. toctree::
    :caption: Housekeeping
 
-   zarr
+   citation
    contribute
    style_guide
+   rclone
 
