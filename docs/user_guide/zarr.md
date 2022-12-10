@@ -1,8 +1,8 @@
 # ⚡ What about Zarr?
 
-When it comes to subsetting large datasets, GRIB has some limitations. The [Zarr](https://zarr.readthedocs.io/en/stable/) data format, however, makes downloading small chunks of large gridded dataset easy. Herbie does not download Zarr data, but could in the future (pull request anyone?). 
+When it comes to subsetting large datasets, GRIB has some limitations. The [Zarr](https://zarr.readthedocs.io/en/stable/) data format, however, makes downloading small chunks of large, gridded dataset easy. Herbie does not download Zarr data, but it could in the future (pull request anyone?). 
 
-Unfortunately, numerical weather prediction data is not widely available in Zarr format, except for at lease one model. 
+Unfortunately, weather data is not widely available in Zarr format—except for at least one model. 
 
 ## HRRR-Zarr
 

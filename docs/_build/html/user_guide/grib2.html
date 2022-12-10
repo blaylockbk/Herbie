@@ -395,12 +395,12 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="searchString.html">🪂 Subset with <code class="docutils literal notranslate"><span class="pre">searchString</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="custom_template.html">👷🏻‍♂️ Extending Herbie</a></li>
+<li class="toctree-l1"><a class="reference internal" href="extend.html">👷🏻‍♂️ Extending Herbie</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Housekeeping</span></p>
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="citation.html">🖋 How to Cite</a></li>
-<li class="toctree-l1"><a class="reference internal" href="contribute.html">👨🏻‍🏭 Disclaimer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="disclaimer.html">👨🏻‍🏭 Disclaimer</a></li>
 <li class="toctree-l1"><a class="reference internal" href="style_guide.html">🎨 Style Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="other_tools.html">⚒ Other Tools</a></li>
 
@@ -447,9 +447,12 @@
 <h2>Command Line Tools<a class="headerlink" href="#command-line-tools" title="Permalink to this heading">#</a></h2>
 <p>There are two command-line tools for looking at GRIB file contents.</p>
 <ol class="arabic simple">
-<li><p><em>wgrib2</em> is a product of NOAA/NCEP and can be installed via conda-forge in your environment (linux only). | <a class="reference external" href="https://www.cpc.ncep.noaa.gov/products/wesley/wgrib2/">wrgib2 documentation</a> |</p></li>
+<li><p><em>wgrib2</em> is a product of NOAA/NCEP and can be installed via conda-forge in your environment (Linux only). | <a class="reference external" href="https://www.cpc.ncep.noaa.gov/products/wesley/wgrib2/">wrgib2 documentation</a> |</p></li>
 <li><p><em>grib_ls</em> in the ecCodes package is a product of ECMWF. Since ecCodes is a dependency of cfgrib, this utility is included when you install cfgrib in your conda environment. | <a class="reference external" href="https://confluence.ecmwf.int/display/ECC/grib_ls">grib_ls documentation</a></p></li>
 </ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda install -c conda-forge wgrib2 eccodes
+</pre></div>
+</div>
 <p>For a sample GRIB2 file with precipitation data, below is the output using both tools</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ wgrib2 subset_20201214_hrrr.t00z.wrfsfcf12.grib2
 
@@ -483,10 +486,10 @@ edition      centre       date         dataType     gridType     typeOfLevel  le
 </section>
 <section id="how-grib-subsetting-works-in-herbie">
 <h1>How GRIB subsetting works in Herbie<a class="headerlink" href="#how-grib-subsetting-works-in-herbie" title="Permalink to this heading">#</a></h1>
-<p>GRIB files are gridded binary where GRIB _messages_ or _fields_ are stacked on top of each other in a file. A message might contain temperature data for a level (e.g. surface, 500 hPa) at a specific time across the United States. I like to think of each message as a “layer” in the file.</p>
+<p>GRIB files are gridded binary where GRIB _messages_ or _fields_ are stacked on top of each other in a file. A message might contain temperature data for a level (e.g., surface, 500 hPa) at a specific time across the United States. I like to think of each message as a “layer” in the file.</p>
 <p>Because the file is made up of individual “messages,” it is possible to download portions of GRIB2 file by retrieving just specific messages using HTTP <a class="reference external" href="https://www.keycdn.com/support/byte-range-requests">Byte-Range request</a>.</p>
 <p>Herbie supports <strong>subsetting GRIB2 files by GRIB message</strong>, provided that an _inventory_ or _index_ (.idx) file exists. The index file tells us the beginning byte of each GRIB message. To download a subset, Herbie uses the <strong>cURL</strong> command which allows you to download a range of bytes from a file. By repeating the cURL command and appending the messages you a file, you can subset a full file on the remote server and download only the fields you need. Keep in mind that a GRIB message represents the variable over the full grid. It is only possible to subset the file by GRIB message and not by geographical region (i.e., you cannot do a regional subset).</p>
-<p>Why would you want to subset GRIB2 files? Well, GRIB files provided by operational forecast centers are usually very large because they can contain hundred of model output variables, and each variable is its own GRIB message. For example, native grid HRRR files can be ~700 MB each! That adds up quick if you need a lot of days and forecasts and all you are interested in surface temperature. Often, you only need some of the data in the file. The size of a single HRRR message is about 1 MB. If you subset the data as you download it, you will save a lot of disk space and improve your data acquisition time by reducing the download time.</p>
+<p>Why would you want to subset GRIB2 files? Well, GRIB files provided by operational forecast centers are usually very large because they can contain hundreds of model output variables, and each variable is its own GRIB message. For example, native grid HRRR files can be ~700 MB each! That adds up quick if you need a lot of days and forecasts and all you are interested in surface temperature. Often, you only need some of the data in the file. The size of a single HRRR message is about 1 MB. If you subset the data as you download it, you will save a lot of disk space and improve your data acquisition time by reducing the download time.</p>
 <figure class="align-default" id="id1">
 <img alt="../_images/GRIB2_file_cURL.png" src="../_images/GRIB2_file_cURL.png" />
 <figcaption>
@@ -529,7 +532,7 @@ edition      centre       date         dataType     gridType     typeOfLevel  le
 <span class="p">{</span><span class="nt">&quot;domain&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;g&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;date&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;20220125&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;time&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;1800&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;expver&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;0001&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;class&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;od&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;pf&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;stream&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;enfo&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;levtype&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sfc&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;number&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;23&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;step&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;0&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;param&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;tp&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;_offset&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">610284</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;_length&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">243</span><span class="p">}</span><span class="w"></span>
 </pre></div>
 </div>
-<p>From these index files, we know the byte range of specific GRIB messages. This enables us to do a byte-range request. For example, we can call the cURL command to download a valid GRIB2 file with only the 2 meter temperature variable.</p>
+<p>From these index files, we know the byte range of specific GRIB messages. This enables us to do a byte-range request. For example, we can call the cURL command to download a valid GRIB2 file with only the 2-meter temperature variable.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl -o outFile.grib2 --range <span class="m">34884036</span>-36136433 https://pando-rgw01.chpc.utah.edu/hrrr/sfc/20180101/hrrr.t00z.wrfsfcf00.grib2
 </pre></div>
 </div>
@@ -537,7 +540,7 @@ edition      centre       date         dataType     gridType     typeOfLevel  le
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl --range <span class="c1">######-###### &gt;&gt; outFile.grib2</span>
 </pre></div>
 </div>
-<p>For Herbie to download a subset of the file, this index file must exist on a remote server. Without the index file, it is impossible to know the byte range for each variable. If the index files do not exists, ask the data provider to generate the inventory files and host them on the remote server. The wgrib2-style index files can be created using wgrib2 with the following command:</p>
+<p>For Herbie to download a subset of the file, this index file must exist on a remote server. Without the index file, it is impossible to know the byte range for each variable. If the index files do not exist, ask the data provider to generate the inventory files and host them on the remote server. The wgrib2-style index files can be created using wgrib2 with the following command:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>wgrib2 -s file.grib2 &gt; file.grib2.idx
 </pre></div>
 </div>
@@ -564,7 +567,7 @@ count        offset       date         hour         level        typeOfLevel  na
 5 of 5 messages in file.grib2
 </pre></div>
 </div>
-<p>_I’m not sure how the ECMWF index files are generated, so if you know, please share._ This is close, but not exact.</p>
+<p><em>I’m not sure how the ECMWF index files are generated, so if you know, please share.</em> This is close, but not exact.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>grib_ls someGRIBfile.grib2 -p domain,date,time,expver,class,type,stream,levtype,number,step,param,offset,length -j
 </pre></div>
 </div>
@@ -688,7 +691,7 @@ count        offset       date         hour         level        typeOfLevel  na
     
 <p class="copyright">
 
-    &copy; Copyright 2022, Brian K. Blaylock.    ♻ Updated: 07:11 UTC 10 Dec 2022.<br>
+    &copy; Copyright 2022, Brian K. Blaylock.    ♻ Updated: 19:27 UTC 10 Dec 2022.<br>
 
 </p>
 

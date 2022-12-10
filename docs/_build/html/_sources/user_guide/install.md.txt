@@ -1,6 +1,6 @@
 # 🐍 Installation
 
-The easiest way to instal Herbie and its dependencies is with [Conda](https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html) from conda-forge.
+The easiest way to install Herbie and its dependencies is with [Conda](https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html) from conda-forge.
 
 ```bash
 conda install -c conda-forge herbie-data

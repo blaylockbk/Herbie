@@ -18,7 +18,7 @@ The default settings are
 Any of the default options can be overwritten when creating a new Herbie object.
 
 model
-    Model name as defined in the models template folder. CASE INSENSITIVE
+    Model name as defined in the `models <https://github.com/blaylockbk/Herbie/tree/main/herbie/models>`_ template folder. CASE INSENSITIVE
 
     Some examples:
 
@@ -33,7 +33,7 @@ model
 fxx
     Forecast lead time in hours. Available lead times depend on
     the model type and model version. Range is model and run
-    dependant.
+    dependent.
 
 product
     Output variable product file type. If not specified, will
@@ -47,7 +47,7 @@ product
     - ``'subh'`` subhourly fields
 
 member
-    Some ensemble models (e.g. the future RRFS) will need to
+    Some ensemble models (e.g., the future RRFS) will need to
     specify an ensemble member.
 
 priority
@@ -81,10 +81,10 @@ verbose
 
 Default Download Priority Rational
 ----------------------------------
-The default download priority is controled by the order of the SOURCES listed in each model's template file. Take a look at the order of the `HRRR data sources <https://github.com/blaylockbk/Herbie/blob/main/herbie/models/hrrr.py>`_: ``['aws', 'nomads', 'google', 'azure', 'pando', 'pando2']``. The reason for this default order is that I anticipate most often a user will request model output from the recent past or earlier rather than relying on Herbie for operational, real-time needs.
+The default download priority is controlled by the order of the SOURCES listed in each model's template file. For example, the `HRRR data sources <https://github.com/blaylockbk/Herbie/blob/main/herbie/models/hrrr.py>`_ are ``['aws', 'nomads', 'google', 'azure', 'pando', 'pando2']``. Herbie tries to find the GRIB file at the first source, and then looks at subsequent sources until the file is found. The reason HRRR has this default search order is that I anticipate most often a user will request model output from the recent past or earlier rather than relying on Herbie for operational, real-time needs.
 
-Much of the past data and near real-time data is archived at one of NOAA's Big Data partners. Amazon AWS in particular hosts many of these datasets. While, NOMADS is the official operational source of model output data and has the most recent model output available, NOMADS only retains data for a few days, they throttle the download speed, and will block users who violate their usage agreement and download too much data within an hour.
+Much of the past data and near real-time data is archived at one of NOAA's Big Data partners. Amazon AWS in particular hosts many of these datasets. While NOMADS is the official operational source of model output data and has the most recent model output available, NOMADS only retains data for a few days, they throttle the download speed, and will block users who violate their usage agreement and download too much data within an hour.
 
-To prevent being blocked by NOMADS, the default is to first look for data on AWS. If the data requested is within the last few hours and was not found on AWS, then Herbie will look for the data at NOMADS. If the data is still not found on NOMADS, the file may be on google, azure, or pando.
+To prevent being blocked by NOMADS, the default is to first look for data on AWS. If the data requested is within the last few hours and was not found on AWS, then Herbie will look for the data at NOMADS. If the data is still not found on NOMADS, Herbie will then search `google`, `azure`, and then `pando`.
 
-If you _really_ want to download the real-time data from NOMADS first and not a Big Data Project partner, you may change the priority order in the herbie config file or set the priority argument when creating the Herbie object (e.g., ``priority=['nomads', ...]``).
+If you *really* want to download the real-time data from NOMADS first and not a Big Data Project partner, you may change the priority order in the Herbie config file or set the priority argument when creating the Herbie object (e.g., ``priority=['nomads', ...]``).

@@ -395,12 +395,12 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="searchString.html">🪂 Subset with <code class="docutils literal notranslate"><span class="pre">searchString</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="custom_template.html">👷🏻‍♂️ Extending Herbie</a></li>
+<li class="toctree-l1"><a class="reference internal" href="extend.html">👷🏻‍♂️ Extending Herbie</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Housekeeping</span></p>
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="citation.html">🖋 How to Cite</a></li>
-<li class="toctree-l1"><a class="reference internal" href="contribute.html">👨🏻‍🏭 Disclaimer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="disclaimer.html">👨🏻‍🏭 Disclaimer</a></li>
 <li class="toctree-l1"><a class="reference internal" href="style_guide.html">🎨 Style Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="other_tools.html">⚒ Other Tools</a></li>
 
@@ -449,7 +449,7 @@
 </div>
 <p>Any of the default options can be overwritten when creating a new Herbie object.</p>
 <dl>
-<dt>model</dt><dd><p>Model name as defined in the models template folder. CASE INSENSITIVE</p>
+<dt>model</dt><dd><p>Model name as defined in the <a class="reference external" href="https://github.com/blaylockbk/Herbie/tree/main/herbie/models">models</a> template folder. CASE INSENSITIVE</p>
 <p>Some examples:</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">'hrrr'</span></code> HRRR contiguous United States model</p></li>
@@ -463,7 +463,7 @@
 </dd>
 <dt>fxx</dt><dd><p>Forecast lead time in hours. Available lead times depend on
 the model type and model version. Range is model and run
-dependant.</p>
+dependent.</p>
 </dd>
 <dt>product</dt><dd><p>Output variable product file type. If not specified, will
 use first product in model template file. CASE SENSITIVE.</p>
@@ -475,7 +475,7 @@ use first product in model template file. CASE SENSITIVE.</p>
 <li><p><code class="docutils literal notranslate"><span class="pre">'subh'</span></code> subhourly fields</p></li>
 </ul>
 </dd>
-<dt>member</dt><dd><p>Some ensemble models (e.g. the future RRFS) will need to
+<dt>member</dt><dd><p>Some ensemble models (e.g., the future RRFS) will need to
 specify an ensemble member.</p>
 </dd>
 <dt>priority</dt><dd><p>List of data sources in the order of download priority. CASE INSENSITIVE.</p>
@@ -504,10 +504,10 @@ If false, do not print extra info to screen.</p>
 </dl>
 <section id="default-download-priority-rational">
 <h2>Default Download Priority Rational<a class="headerlink" href="#default-download-priority-rational" title="Permalink to this heading">#</a></h2>
-<p>The default download priority is controled by the order of the SOURCES listed in each model’s template file. Take a look at the order of the <a class="reference external" href="https://github.com/blaylockbk/Herbie/blob/main/herbie/models/hrrr.py">HRRR data sources</a>: <code class="docutils literal notranslate"><span class="pre">['aws',</span> <span class="pre">'nomads',</span> <span class="pre">'google',</span> <span class="pre">'azure',</span> <span class="pre">'pando',</span> <span class="pre">'pando2']</span></code>. The reason for this default order is that I anticipate most often a user will request model output from the recent past or earlier rather than relying on Herbie for operational, real-time needs.</p>
-<p>Much of the past data and near real-time data is archived at one of NOAA’s Big Data partners. Amazon AWS in particular hosts many of these datasets. While, NOMADS is the official operational source of model output data and has the most recent model output available, NOMADS only retains data for a few days, they throttle the download speed, and will block users who violate their usage agreement and download too much data within an hour.</p>
-<p>To prevent being blocked by NOMADS, the default is to first look for data on AWS. If the data requested is within the last few hours and was not found on AWS, then Herbie will look for the data at NOMADS. If the data is still not found on NOMADS, the file may be on google, azure, or pando.</p>
-<p>If you _really_ want to download the real-time data from NOMADS first and not a Big Data Project partner, you may change the priority order in the herbie config file or set the priority argument when creating the Herbie object (e.g., <code class="docutils literal notranslate"><span class="pre">priority=['nomads',</span> <span class="pre">...]</span></code>).</p>
+<p>The default download priority is controlled by the order of the SOURCES listed in each model’s template file. For example, the <a class="reference external" href="https://github.com/blaylockbk/Herbie/blob/main/herbie/models/hrrr.py">HRRR data sources</a> are <code class="docutils literal notranslate"><span class="pre">['aws',</span> <span class="pre">'nomads',</span> <span class="pre">'google',</span> <span class="pre">'azure',</span> <span class="pre">'pando',</span> <span class="pre">'pando2']</span></code>. Herbie tries to find the GRIB file at the first source, and then looks at subsequent sources until the file is found. The reason HRRR has this default search order is that I anticipate most often a user will request model output from the recent past or earlier rather than relying on Herbie for operational, real-time needs.</p>
+<p>Much of the past data and near real-time data is archived at one of NOAA’s Big Data partners. Amazon AWS in particular hosts many of these datasets. While NOMADS is the official operational source of model output data and has the most recent model output available, NOMADS only retains data for a few days, they throttle the download speed, and will block users who violate their usage agreement and download too much data within an hour.</p>
+<p>To prevent being blocked by NOMADS, the default is to first look for data on AWS. If the data requested is within the last few hours and was not found on AWS, then Herbie will look for the data at NOMADS. If the data is still not found on NOMADS, Herbie will then search <cite>google</cite>, <cite>azure</cite>, and then <cite>pando</cite>.</p>
+<p>If you <em>really</em> want to download the real-time data from NOMADS first and not a Big Data Project partner, you may change the priority order in the Herbie config file or set the priority argument when creating the Herbie object (e.g., <code class="docutils literal notranslate"><span class="pre">priority=['nomads',</span> <span class="pre">...]</span></code>).</p>
 </section>
 </section>
 
@@ -611,7 +611,7 @@ If false, do not print extra info to screen.</p>
     
 <p class="copyright">
 
-    &copy; Copyright 2022, Brian K. Blaylock.    ♻ Updated: 07:11 UTC 10 Dec 2022.<br>
+    &copy; Copyright 2022, Brian K. Blaylock.    ♻ Updated: 19:27 UTC 10 Dec 2022.<br>
 
 </p>
 

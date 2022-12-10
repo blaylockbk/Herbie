@@ -24,13 +24,13 @@ User Guide
    _tutorial_notebooks/index
    _model_notebooks/index
    searchString
-   custom_template
+   extend
 
 .. toctree::
    :caption: Housekeeping
 
    citation
-   contribute
+   disclaimer
    style_guide
    other_tools
 

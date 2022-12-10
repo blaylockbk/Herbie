@@ -13,10 +13,10 @@ Command Line Tools
 ^^^^^^^^^^^^^^^^^^
 There are two command-line tools for looking at GRIB file contents.
 
-1. *wgrib2* is a product of NOAA/NCEP and can be installed via conda-forge in your environment (linux only). | `wrgib2 documentation <https://www.cpc.ncep.noaa.gov/products/wesley/wgrib2/>`_ |
+1. *wgrib2* is a product of NOAA/NCEP and can be installed via conda-forge in your environment (Linux only). | `wrgib2 documentation <https://www.cpc.ncep.noaa.gov/products/wesley/wgrib2/>`_ |
 2. *grib_ls* in the ecCodes package is a product of ECMWF. Since ecCodes is a dependency of cfgrib, this utility is included when you install cfgrib in your conda environment. | `grib_ls documentation <https://confluence.ecmwf.int/display/ECC/grib_ls>`_
 
-.. code-bloc:: bash
+.. code-block:: bash
 
    conda install -c conda-forge wgrib2 eccodes
 
@@ -59,13 +59,13 @@ There are two key python packages for reading GRIB2 files. Both can be installed
 
 How GRIB subsetting works in Herbie
 -----------------------------------
-GRIB files are gridded binary where GRIB _messages_ or _fields_ are stacked on top of each other in a file. A message might contain temperature data for a level (e.g. surface, 500 hPa) at a specific time across the United States. I like to think of each message as a "layer" in the file.
+GRIB files are gridded binary where GRIB _messages_ or _fields_ are stacked on top of each other in a file. A message might contain temperature data for a level (e.g., surface, 500 hPa) at a specific time across the United States. I like to think of each message as a "layer" in the file.
 
 Because the file is made up of individual "messages," it is possible to download portions of GRIB2 file by retrieving just specific messages using HTTP `Byte-Range request <https://www.keycdn.com/support/byte-range-requests>`_.
 
 Herbie supports **subsetting GRIB2 files by GRIB message**, provided that an _inventory_ or _index_ (.idx) file exists. The index file tells us the beginning byte of each GRIB message. To download a subset, Herbie uses the **cURL** command which allows you to download a range of bytes from a file. By repeating the cURL command and appending the messages you a file, you can subset a full file on the remote server and download only the fields you need. Keep in mind that a GRIB message represents the variable over the full grid. It is only possible to subset the file by GRIB message and not by geographical region (i.e., you cannot do a regional subset).
 
-Why would you want to subset GRIB2 files? Well, GRIB files provided by operational forecast centers are usually very large because they can contain hundred of model output variables, and each variable is its own GRIB message. For example, native grid HRRR files can be ~700 MB each! That adds up quick if you need a lot of days and forecasts and all you are interested in surface temperature. Often, you only need some of the data in the file. The size of a single HRRR message is about 1 MB. If you subset the data as you download it, you will save a lot of disk space and improve your data acquisition time by reducing the download time.
+Why would you want to subset GRIB2 files? Well, GRIB files provided by operational forecast centers are usually very large because they can contain hundreds of model output variables, and each variable is its own GRIB message. For example, native grid HRRR files can be ~700 MB each! That adds up quick if you need a lot of days and forecasts and all you are interested in surface temperature. Often, you only need some of the data in the file. The size of a single HRRR message is about 1 MB. If you subset the data as you download it, you will save a lot of disk space and improve your data acquisition time by reducing the download time.
 
 .. figure:: ../_static/diagrams/GRIB2_file_cURL.png
 
@@ -114,7 +114,7 @@ ECMWF products use a different pattern for their index files (I believe created 
 
 
 
-From these index files, we know the byte range of specific GRIB messages. This enables us to do a byte-range request. For example, we can call the cURL command to download a valid GRIB2 file with only the 2 meter temperature variable.
+From these index files, we know the byte range of specific GRIB messages. This enables us to do a byte-range request. For example, we can call the cURL command to download a valid GRIB2 file with only the 2-meter temperature variable.
 
 .. code-block:: bash
 
@@ -126,7 +126,7 @@ You could repeat the cURL download for different ranges append several variables
 
    curl --range ######-###### >> outFile.grib2
 
-For Herbie to download a subset of the file, this index file must exist on a remote server. Without the index file, it is impossible to know the byte range for each variable. If the index files do not exists, ask the data provider to generate the inventory files and host them on the remote server. The wgrib2-style index files can be created using wgrib2 with the following command:
+For Herbie to download a subset of the file, this index file must exist on a remote server. Without the index file, it is impossible to know the byte range for each variable. If the index files do not exist, ask the data provider to generate the inventory files and host them on the remote server. The wgrib2-style index files can be created using wgrib2 with the following command:
 
 .. code-block:: bash
 
@@ -155,7 +155,7 @@ Generally speaking, index files share the same URL as the GRIB2 file except with
       5            2.80253e+06  20210101     12           500          isobaricInhPa  V component of wind  6
       5 of 5 messages in file.grib2
 
-   _I'm not sure how the ECMWF index files are generated, so if you know, please share._ This is close, but not exact.
+   *I'm not sure how the ECMWF index files are generated, so if you know, please share.* This is close, but not exact.
 
    .. code-block::
       bash

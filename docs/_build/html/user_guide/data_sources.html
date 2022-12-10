@@ -395,12 +395,12 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="searchString.html">🪂 Subset with <code class="docutils literal notranslate"><span class="pre">searchString</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="custom_template.html">👷🏻‍♂️ Extending Herbie</a></li>
+<li class="toctree-l1"><a class="reference internal" href="extend.html">👷🏻‍♂️ Extending Herbie</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Housekeeping</span></p>
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="citation.html">🖋 How to Cite</a></li>
-<li class="toctree-l1"><a class="reference internal" href="contribute.html">👨🏻‍🏭 Disclaimer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="disclaimer.html">👨🏻‍🏭 Disclaimer</a></li>
 <li class="toctree-l1"><a class="reference internal" href="style_guide.html">🎨 Style Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="other_tools.html">⚒ Other Tools</a></li>
 
@@ -437,69 +437,58 @@
               
   <section id="data-sources">
 <h1>☁ Data Sources<a class="headerlink" href="#data-sources" title="Permalink to this heading">#</a></h1>
-<p>Thanks to the NOAA Big Data Project, more meteorological data is more easily accessible than ever before. Herbie enables you to download NWP model output from different data sources, wherever the data you are interested in is available. Because NWP data can be hosted on different remote servers, Herbie will look at different sources to find where a file exists. This is important when working with real-time versus archived data. For instance, model output on NOAMDS is only there for 2-14 days, depending on the model.</p>
-<p>Herbie sets a default “priority” that tells Herbie the order to search different sources for a file. The available data sources is defined for each model by the <a class="reference external" href="https://github.com/blaylockbk/Herbie/tree/master/herbie/models">model template file</a> and additional sources can be added. The default search order is <cite>aws</cite>, <cite>nomads</cite>, <cite>google</cite>, <cite>azure</cite>, <cite>pando</cite>, <cite>pando2</cite>.</p>
+<p>Thanks to the <a class="reference external" href="https://www.noaa.gov/nodd/about">NOAA Open Data Dissemination (NODD) Program</a>, meteorological data is made more easily accessible than ever before. Herbie enables you to discover and download NWP model output from different data sources. Because NWP data can be hosted on different remote servers with different availalbility, Herbie will look at different sources to find where a file you request exists. This is important when working with real-time versus archived data. For instance, model output on NOAMDS is only available for 2-14 days, depending on the model.</p>
+<p>Herbie sets a default “priority” that tells Herbie the order to search different sources for a file. The available data sources are defined for each model by the <a class="reference external" href="https://github.com/blaylockbk/Herbie/tree/master/herbie/models">model template file</a> and additional sources can be added. The default search order is <code class="docutils literal notranslate"><span class="pre">aws</span></code>, <code class="docutils literal notranslate"><span class="pre">nomads</span></code>, <code class="docutils literal notranslate"><span class="pre">google</span></code>, <code class="docutils literal notranslate"><span class="pre">azure</span></code>, <code class="docutils literal notranslate"><span class="pre">pando</span></code>, <code class="docutils literal notranslate"><span class="pre">pando2</span></code>.</p>
 <p>For example, the following are the most popular data sources:</p>
 <ol class="arabic simple">
-<li><dl class="simple">
-<dt><a class="reference external" href="https://noaa-hrrr-bdp-pds.s3.amazonaws.com/">AWS: Amazon Web Services</a></dt><dd><ul class="simple">
-<li><p>Herbie string, <code class="docutils literal notranslate"><span class="pre">'aws'</span></code>.</p></li>
-<li><p>NOAA Big Data Program</p></li>
+<li><p>AWS: Amazon Web Services</p>
+<ul class="simple">
+<li><p>Herbie source string, <code class="docutils literal notranslate"><span class="pre">&quot;aws&quot;</span></code>.</p></li>
+<li><p>Website: <a class="reference external" href="https://registry.opendata.aws/">https://registry.opendata.aws/</a></p></li>
+<li><p>NODD Program</p></li>
 <li><p>Slight latency for real-time products.</p></li>
 </ul>
-</dd>
-</dl>
 </li>
-<li><dl class="simple">
-<dt><a class="reference external" href="https://nomads.ncep.noaa.gov/">NOMADS: NOAA Operational Model Archive and Distribution System</a></dt><dd><ul class="simple">
-<li><p>Herbie string, <code class="docutils literal notranslate"><span class="pre">'nomads'</span></code>.</p></li>
-<li><p>Original data source. All available data included.</p></li>
-<li><p>Newest forecast products.</p></li>
-<li><p>Available for today’s and yesterday’s runs for HRRR.</p></li>
-<li><p>🚨 Download limits.</p></li>
+<li><p>NOMADS: NOAA Operational Model Archive and Distribution System</p>
+<ul class="simple">
+<li><p>Herbie source string, <code class="docutils literal notranslate"><span class="pre">&quot;nomads&quot;</span></code>.</p></li>
+<li><p>Website: <a class="reference external" href="https://nomads.ncep.noaa.gov/">https://nomads.ncep.noaa.gov/</a></p></li>
+<li><p>Original data source for NCEP models.</p></li>
+<li><p>Lowest latency.</p></li>
+<li><p>Limited archive period.</p></li>
+<li><p>🚨 <em><strong>Download limits.</strong></em></p></li>
 </ul>
-</dd>
-</dl>
 </li>
-<li><dl class="simple">
-<dt><a class="reference external" href="https://console.cloud.google.com/storage/browser/high-resolution-rapid-refresh">Google: Google Cloud Platform Earth</a></dt><dd><ul class="simple">
-<li><p>Herbie string, <code class="docutils literal notranslate"><span class="pre">'google'</span></code>.</p></li>
-<li><p>NOAA Big Data Program</p></li>
+<li><p>Google: Google Cloud Platform Earth</p>
+<ul class="simple">
+<li><p>Herbie source string, <code class="docutils literal notranslate"><span class="pre">&quot;google&quot;</span></code>.</p></li>
+<li><p>Website: <a class="reference external" href="https://cloud.google.com/datasets">https://cloud.google.com/datasets</a></p></li>
+<li><p>NODD Program</p></li>
 <li><p>Slight latency for real-time products.</p></li>
 </ul>
-</dd>
-</dl>
 </li>
-<li><dl class="simple">
-<dt><a class="reference external" href="https://github.com/microsoft/AIforEarthDataSets/blob/main/data/noaa-hrrr.md">Azure: Microsoft Azure</a></dt><dd><ul class="simple">
-<li><p>Herbie string, <code class="docutils literal notranslate"><span class="pre">'azure'</span></code>.</p></li>
-<li><dl class="simple">
-<dt>NOAA Big Data Program</dt><dd><ul>
-<li><p>Only recent HRRR and RAP data? Subset?</p></li>
+<li><p>Azure: Microsoft Azure</p>
+<ul class="simple">
+<li><p>Herbie source string, <code class="docutils literal notranslate"><span class="pre">&quot;azure&quot;</span></code>.</p></li>
+<li><p>Website: <a class="github reference external" href="https://github.com/microsoft/AIforEarthDataSets/">microsoft/AIforEarthDataSets</a></p></li>
+<li><p>NODD Program</p></li>
+<li><p>ECMWF Open Data Program</p></li>
 </ul>
-</dd>
-</dl>
 </li>
-<li><p>ECMWF open data forecast and wave products</p></li>
+<li><p>Pando: The University of Utah HRRR archive</p>
+<ul class="simple">
+<li><p>Herbie source string, <code class="docutils literal notranslate"><span class="pre">&quot;pando&quot;</span></code> and <code class="docutils literal notranslate"><span class="pre">&quot;pando2&quot;</span></code>.</p></li>
+<li><p>Website: <a class="reference external" href="http://hrrr.chpc.utah.edu/">http://hrrr.chpc.utah.edu/</a></p></li>
+<li><p>Research archive.</p></li>
+<li><p>Older files are being removed.</p></li>
 </ul>
-</dd>
-</dl>
 </li>
-<li><dl class="simple">
-<dt><a class="reference external" href="http://hrrr.chpc.utah.edu/">Pando: The University of Utah HRRR archive</a></dt><dd><ul class="simple">
-<li><p>Herbie string, <code class="docutils literal notranslate"><span class="pre">'pando'</span></code> and <code class="docutils literal notranslate"><span class="pre">'pando2'</span></code>.</p></li>
-<li><p>Research archive. Older files being removed.</p></li>
+<li><p>ECMWF Open Data</p>
+<ul class="simple">
+<li><p>Herbie source string, <code class="docutils literal notranslate"><span class="pre">&quot;ecmwf&quot;</span></code></p></li>
+<li><p>Website: <a class="reference external" href="https://confluence.ecmwf.int/display/UDOC/ECMWF+Open+Data+-+Real+Time">https://confluence.ecmwf.int/display/UDOC/ECMWF+Open+Data+-+Real+Time</a></p></li>
+<li><p>ECMWF Open Data Program</p></li>
 </ul>
-</dd>
-</dl>
-</li>
-<li><dl class="simple">
-<dt><a class="reference external" href="https://confluence.ecmwf.int/display/UDOC/ECMWF+Open+Data+-+Real+Time">ECMWF Open Data</a></dt><dd><ul class="simple">
-<li><p>Herbie string, <code class="docutils literal notranslate"><span class="pre">'ecmwf'</span></code></p></li>
-<li><p>ECMWF open data forecast and wave products</p></li>
-</ul>
-</dd>
-</dl>
 </li>
 </ol>
 </section>
@@ -544,7 +533,7 @@
   
 
 <div class="tocsection editthispage">
-    <a href="https://github.com/blaylockbk/Herbie/edit/main/docs/user_guide/data_sources.rst">
+    <a href="https://github.com/blaylockbk/Herbie/edit/main/docs/user_guide/data_sources.md">
         <i class="fa-solid fa-pencil"></i> Edit this page
     </a>
 </div>
@@ -554,7 +543,7 @@
 <div class="toc-item">
   
 <div class="tocsection sourcelink">
-    <a href="../_sources/user_guide/data_sources.rst.txt">
+    <a href="../_sources/user_guide/data_sources.md.txt">
         <i class="fa-solid fa-file-lines"></i> Show Source
     </a>
 </div>
@@ -587,7 +576,7 @@
     
 <p class="copyright">
 
-    &copy; Copyright 2022, Brian K. Blaylock.    ♻ Updated: 07:11 UTC 10 Dec 2022.<br>
+    &copy; Copyright 2022, Brian K. Blaylock.    ♻ Updated: 19:27 UTC 10 Dec 2022.<br>
 
 </p>
 

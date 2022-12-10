@@ -4,14 +4,14 @@
 
 Herbie can be extended to download additional types of model data from the internet. The requirements are:
 
-- The model data must exists on an http server.
+- The model data must exist on an http server.
 - File names must be predictable (i.e., consistent naming with date, model name, forecast lead time, product, etc.)
 - Subetting of a GRIB2 file requires an index or inventory file
 
 Parts of a Herbie Template Class
 --------------------------------
 
-As an example of what a template class looks like, look at the heavily-commented `hrrr.py template <https://github.com/blaylockbk/Herbie/blob/main/herbie/models/hrrr.py>`_.
+As an example of what a template class looks like, look at the heavily commented `hrrr.py template <https://github.com/blaylockbk/Herbie/blob/main/herbie/models/hrrr.py>`_.
 
 
 The model class template function must include the properties
@@ -24,7 +24,7 @@ The model class template function must include the properties
 
 The following are optional
 
-- ``IDX_SUFFIX`` List of strings. Default is ``[".grib2.idx"]``.
+- ``IDX_SUFFIX`` List of strings. The default is ``[".grib2.idx"]``.
 - ``IDX_STYLE`` String. Default is ``"wgrib2"``. Options: ``"wgrib2"`` or ``"eccodes"``
 
 
@@ -38,4 +38,4 @@ There are two ways to add a custom template to Herbie:
 2. **Private Template**: To include a template private to yourself, you can add a custom template to your home config directory. You would want to make a private class for locally stored model data or some special handling of public URLs. First, create the file ``~/.config/herbie/custom_template.py`` and write a template Class. Second, create the empty file ``~/.config/herbie/__init__.py``.
 
 .. note::
-    **Special Case for local model data:** If you have model data stored locally, such as from a WRF simulation, and you have an index file accompanying each GRIB2 file, you can use Herbie to subset the data and open with xarray. Follow the `local.py <https://github.com/blaylockbk/Herbie/blob/main/herbie/models/local.py>`_ template to create a custom class using the Private template method described.
+    **Special Case for local model data:** If you have model data stored locally, such as from a WRF simulation, and you have an index file accompanying each GRIB2 file, you can use Herbie to subset the data and open it with xarray. Follow the `local.py <https://github.com/blaylockbk/Herbie/blob/main/herbie/models/local.py>`_ template to create a custom class using the Private template method described.

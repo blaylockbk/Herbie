@@ -2,9 +2,14 @@
 
 If you like Herbie, check out these other tools I authored.
 
-**🛰 GOES ABI and GLM** data can be downloaded from AWS with my [GOES-2-go](https://github.com/blaylockbk/goes2go) package.
+> **[🌎 GOES-2-go](https://github.com/blaylockbk/goes2go)**   
+> A python package to download GOES-East/West ABI and GLM data and make RGB composites.
 
-**🌡 Synoptic API** data can be retrieved with my [SynopticPy](https://github.com/blaylockbk/SynopticPy) package.
+> **[🌡 SynopticPy](https://github.com/blaylockbk/SynopticPy)**  
+> A python package to download mesonet data from the Synoptic API.
+
+<br>
+<br>
 
 # 🤖 Rclone
 
