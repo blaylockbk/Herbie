@@ -1,4 +1,4 @@
-# How to Cite
+# 🖋 How to Cite
 
 If Herbie played an important role in your work, please [tell me about it](https://github.com/blaylockbk/Herbie/discussions/categories/show-and-tell)! Also, consider including a citation or acknowledgement in your article or product.
 

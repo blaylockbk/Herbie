@@ -1,3 +1,11 @@
+# ⚒ Other Tools
+
+If you like Herbie, check out these other tools I authored.
+
+**🛰 GOES ABI and GLM** data can be downloaded from AWS with my [GOES-2-go](https://github.com/blaylockbk/goes2go) package.
+
+**🌡 Synoptic API** data can be retrieved with my [SynopticPy](https://github.com/blaylockbk/SynopticPy) package.
+
 # 🤖 Rclone
 
 If you just need to download files from the cloud, I will direct you to [rclone](https://rclone.org/). I love rclone! Below is a brief tutorial to help you get started.
@@ -8,15 +16,15 @@ If you just need to download files from the cloud, I will direct you to [rclone]
 
 As part of NOAA's Big Data Project, the NEXRAD radar, GOES satellite, HRRR model, and other dataset are publicly available via Amazon Web Services (AWS). You can use `rclone` to access these datasets and download. (You can even use rclone to access personal OneDrive, Google Drive, Box, and other types of cloud storage.)
 
-# Install and Setup
+## Install and Setup
 
-## 1. Download and install `rclone` on your linux machine
+### 1. Download and install `rclone` on your linux machine
 
 Download from https://rclone.org/downloads/ or install with conda.
 
     conda install -c conda-forge rclone
 
-## 2. Configure `rclone` to access **Amazon S3**
+### 2. Configure `rclone` to access **Amazon S3**
 After `rclone` has been downloaded and installed, configure a remote by typing `rclone config`. Then type `n` for `new remote`.
 
 Name the remote anything you like, but use a name that will remind you it accesses the public Amazon S3 buckets. I named mine `publicAWS`. 
@@ -46,7 +54,7 @@ If it looks right, accept with `y` and exit the setup.
 
 This configuration is saved in the `~/.config/rclone.config` file.
 
-# CLI Usage
+## CLI Usage
 
 You will use the remote you just configured to access NOAA's public buckets on Amazon Web Services S3. Below are the names of some of NOAA's public buckets. 
 

@@ -21,9 +21,9 @@ User Guide
 .. toctree::
    :caption: Using Herbie
 
-   notebooks/tutorial.ipynb
+   _tutorial_notebooks/index
+   _model_notebooks/index
    searchString
-   notebooks/index
    custom_template
 
 .. toctree::
@@ -32,5 +32,5 @@ User Guide
    citation
    contribute
    style_guide
-   rclone
+   other_tools
 
