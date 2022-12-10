@@ -8,7 +8,7 @@
    intro.ipynb
    fast.ipynb
    accessors.ipynb
-   tutorial.ipynb
+   demo_map.ipynb
 
 
 Other notebooks

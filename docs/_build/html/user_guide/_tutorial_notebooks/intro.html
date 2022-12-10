@@ -375,25 +375,25 @@
 <li class="toctree-l2 current active"><a class="current reference internal" href="#">Introduction</a></li>
 <li class="toctree-l2"><a class="reference internal" href="fast.html">FastHerbie</a></li>
 <li class="toctree-l2"><a class="reference internal" href="accessors.html">Herbie Accessors</a></li>
-<li class="toctree-l2"><a class="reference internal" href="tutorial.html">Full Walk Through</a></li>
+<li class="toctree-l2"><a class="reference internal" href="demo_map.html">Brian’s Maps</a></li>
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../_model_notebooks/index.html">🗺 Model Tutorials</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-2"><i class="fa-solid fa-chevron-down"></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="../_model_notebooks/data_hrrr.html">HRRR Data</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../_model_notebooks/data_hrrrak.html">HRRR-Alaska Data</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../_model_notebooks/data_rap.html">RAP Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../_model_notebooks/hrrr.html">HRRR Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../_model_notebooks/hrrrak.html">HRRR-Alaska Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../_model_notebooks/rap.html">RAP Data</a></li>
 
 
-<li class="toctree-l2"><a class="reference internal" href="../_model_notebooks/data_nam.html">NAM Data</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../_model_notebooks/data_gfs.html">GFS Data</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../_model_notebooks/data_gefs.html">Global Ensembele Forecast System (GEFS) reanalysis: 2000-2019</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../_model_notebooks/nam.html">NAM Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../_model_notebooks/gfs.html">GFS Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../_model_notebooks/gefs.html">Global Ensembele Forecast System (GEFS) reanalysis: 2000-2019</a></li>
 
-<li class="toctree-l2"><a class="reference internal" href="../_model_notebooks/data_ecmwf.html">ECMWF Open Data – Real Time</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../_model_notebooks/data_nbm.html">National Blend of Models (NMB)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../_model_notebooks/data_rrfs.html">RRFS Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../_model_notebooks/ecmwf.html">ECMWF Open Data – Real Time</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../_model_notebooks/nbm.html">National Blend of Models (NMB)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../_model_notebooks/rrfs.html">RRFS Data</a></li>
 
-<li class="toctree-l2"><a class="reference internal" href="../_model_notebooks/data_navgem.html">NAVGEM Data</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../_model_notebooks/data_nogaps.html">Historical NOGAPS Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../_model_notebooks/navgem.html">NAVGEM Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../_model_notebooks/nogaps.html">Historical NOGAPS Data</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../searchString.html">🪂 Subset with <code class="docutils literal notranslate"><span class="pre">searchString</span></code></a></li>
@@ -696,8 +696,7 @@ div.rendered_html tbody tr:hover {
 </style>
 <section id="Introduction">
 <h1>Introduction<a class="headerlink" href="#Introduction" title="Permalink to this heading">#</a></h1>
-<p>The most important aspect of Herbie is the <strong>Herbie class</strong> which represents a single model output file.</p>
-<p>When you create a <strong>Herbie object</strong>, Herbie looks for model data at different sources until the requested file is found.</p>
+<p>The most important aspect of Herbie is the <strong>Herbie class</strong> which represents a single model output file. When you create a <strong>Herbie object</strong>, Herbie looks for model data at different sources until the requested file is found.</p>
 <p>Herbie can discover data for many different models and sources, including:</p>
 <ul class="simple">
 <li><p><a class="reference external" href="https://blaylockbk.github.io/Herbie/_build/html/user_guide/notebooks/data_hrrr.html">High Resolution Rapid Refresh (HRRR)</a></p></li>
@@ -711,7 +710,7 @@ div.rendered_html tbody tr:hover {
 </ul>
 <p>This example shows how to create a Herbie object for the HRRR model <code class="docutils literal notranslate"><span class="pre">sfc</span></code> product and 6 hour forecast. The file was found an Amazon Web Services.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">herbie</span> <span class="kn">import</span> <span class="n">Herbie</span>
@@ -719,16 +718,16 @@ div.rendered_html tbody tr:hover {
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">H</span> <span class="o">=</span> <span class="n">Herbie</span><span class="p">(</span>
     <span class="s2">&quot;2021-07-01 12:00&quot;</span><span class="p">,</span>  <span class="c1"># model run date</span>
-    <span class="n">model</span><span class="o">=</span><span class="s2">&quot;hrrr&quot;</span><span class="p">,</span>        <span class="c1"># model name</span>
-    <span class="n">product</span><span class="o">=</span><span class="s2">&quot;sfc&quot;</span><span class="p">,</span>       <span class="c1"># model produce name (model dependent)</span>
-    <span class="n">fxx</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span>               <span class="c1"># forecast lead time</span>
+    <span class="n">model</span><span class="o">=</span><span class="s2">&quot;hrrr&quot;</span><span class="p">,</span>  <span class="c1"># model name</span>
+    <span class="n">product</span><span class="o">=</span><span class="s2">&quot;sfc&quot;</span><span class="p">,</span>  <span class="c1"># model produce name (model dependent)</span>
+    <span class="n">fxx</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span>  <span class="c1"># forecast lead time</span>
 <span class="p">)</span>
-<br/></pre></div>
+</pre></div>
 </div>
 </div>
 <div class="nboutput nblast docutils container">
@@ -739,20 +738,56 @@ div.rendered_html tbody tr:hover {
 ✅ Found ┊ model=hrrr ┊ product=sfc ┊ <span style="color: rgb(41,130,13)">2021-Jul-01 12:00 UTC</span><span class="ansi-green-intense-fg"> F06</span> ┊ <span style="color: rgb(255,153,0)">GRIB2 @ aws</span> ┊ <span style="color: rgb(255,153,0)">IDX @ aws</span>
 </pre></div></div>
 </div>
-<p>This Herbie object tells us the file we requested is located on Amazon Web Services (<code class="docutils literal notranslate"><span class="pre">aws</span></code>).</p>
-<section id="Inventory-data">
-<h2>Inventory data<a class="headerlink" href="#Inventory-data" title="Permalink to this heading">#</a></h2>
-<p>Herbie can read the GRIB <code class="docutils literal notranslate"><span class="pre">.idx</span></code> file and show us the file contents. Pay attention to the “search_this” column; this will help you locate data you want to get.</p>
+<p>This Herbie object tells us the file we requested is located on Amazon Web Services (<code class="docutils literal notranslate"><span class="pre">aws</span></code>). We can get the specific file locations like this</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Location of GRIB file</span>
+<span class="n">H</span><span class="o">.</span><span class="n">grib</span>
+<br/></pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&#39;https://noaa-hrrr-bdp-pds.s3.amazonaws.com/hrrr.20210701/conus/hrrr.t12z.wrfsfcf06.grib2&#39;
+</pre></div></div>
+</div>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">H</span><span class="o">.</span><span class="n">read_idx</span><span class="p">()</span>
-</pre></div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Locatin of index file</span>
+<span class="n">H</span><span class="o">.</span><span class="n">idx</span>
+<br/></pre></div>
 </div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&#39;https://noaa-hrrr-bdp-pds.s3.amazonaws.com/hrrr.20210701/conus/hrrr.t12z.wrfsfcf06.grib2.idx&#39;
+</pre></div></div>
+</div>
+<section id="Inventory-data">
+<h2>Inventory data<a class="headerlink" href="#Inventory-data" title="Permalink to this heading">#</a></h2>
+<p>Herbie can read the GRIB <code class="docutils literal notranslate"><span class="pre">.idx</span></code> file and show us the file contents. Pay attention to the “search_this” column; this will help you locate data you want to get.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">H</span><span class="o">.</span><span class="n">read_idx</span><span class="p">()</span>
+<br/></pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
 </pre></div>
 </div>
 <div class="output_area rendered_html docutils container">
@@ -937,7 +972,7 @@ div.rendered_html tbody tr:hover {
 </div>
 <p>To filter the data, we pass a regular expersion to the <code class="docutils literal notranslate"><span class="pre">searchString</span></code> argument to narrow down the data we are looking at.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># All fields at 2-m above ground level</span>
@@ -946,7 +981,7 @@ div.rendered_html tbody tr:hover {
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
 </pre></div>
 </div>
 <div class="output_area rendered_html docutils container">
@@ -1064,7 +1099,7 @@ div.rendered_html tbody tr:hover {
 </div></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># All fields at 500 hPa</span>
@@ -1073,7 +1108,7 @@ div.rendered_html tbody tr:hover {
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
 </pre></div>
 </div>
 <div class="output_area rendered_html docutils container">
@@ -1178,7 +1213,7 @@ div.rendered_html tbody tr:hover {
 </div></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># U and V wind at 10-m above ground</span>
@@ -1187,7 +1222,7 @@ div.rendered_html tbody tr:hover {
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
 </pre></div>
 </div>
 <div class="output_area rendered_html docutils container">
@@ -1252,13 +1287,175 @@ div.rendered_html tbody tr:hover {
 </table>
 </div></div>
 </div>
-<p>This ability to filter the GRIB messages is powerful, because it can also help you download subsets of the data.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Winds at 500 and 800 hPa</span>
+<span class="n">H</span><span class="o">.</span><span class="n">read_idx</span><span class="p">(</span><span class="s2">&quot;[U|V]GRD:[8|5][0|5]0 mb&quot;</span><span class="p">)</span>
+<br/></pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>grib_message</th>
+      <th>start_byte</th>
+      <th>end_byte</th>
+      <th>range</th>
+      <th>reference_time</th>
+      <th>valid_time</th>
+      <th>variable</th>
+      <th>level</th>
+      <th>forecast_time</th>
+      <th>search_this</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>16</th>
+      <td>17</td>
+      <td>10740730</td>
+      <td>11334832</td>
+      <td>10740730-11334832</td>
+      <td>2021-07-01 12:00:00</td>
+      <td>2021-07-01 18:00:00</td>
+      <td>UGRD</td>
+      <td>500 mb</td>
+      <td>6 hour fcst</td>
+      <td>:UGRD:500 mb:6 hour fcst</td>
+    </tr>
+    <tr>
+      <th>17</th>
+      <td>18</td>
+      <td>11334832</td>
+      <td>11929655</td>
+      <td>11334832-11929655</td>
+      <td>2021-07-01 12:00:00</td>
+      <td>2021-07-01 18:00:00</td>
+      <td>VGRD</td>
+      <td>500 mb</td>
+      <td>6 hour fcst</td>
+      <td>:VGRD:500 mb:6 hour fcst</td>
+    </tr>
+    <tr>
+      <th>27</th>
+      <td>28</td>
+      <td>18875970</td>
+      <td>19498869</td>
+      <td>18875970-19498869</td>
+      <td>2021-07-01 12:00:00</td>
+      <td>2021-07-01 18:00:00</td>
+      <td>UGRD</td>
+      <td>850 mb</td>
+      <td>6 hour fcst</td>
+      <td>:UGRD:850 mb:6 hour fcst</td>
+    </tr>
+    <tr>
+      <th>28</th>
+      <td>29</td>
+      <td>19498869</td>
+      <td>20112882</td>
+      <td>19498869-20112882</td>
+      <td>2021-07-01 12:00:00</td>
+      <td>2021-07-01 18:00:00</td>
+      <td>VGRD</td>
+      <td>850 mb</td>
+      <td>6 hour fcst</td>
+      <td>:VGRD:850 mb:6 hour fcst</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+<p>This ability to filter the GRIB messages is powerful, because it can also help you download subsets of the data. Here are some other useful examples.</p>
+<table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p><code class="docutils literal notranslate"><span class="pre">searchString</span></code></p></th>
+<th class="head"><p>Messages that will be downloaded</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">&quot;:TMP:2</span> <span class="pre">m&quot;</span></code></p></td>
+<td><p>Temperature at 2 m.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">&quot;:TMP:&quot;</span></code></p></td>
+<td><p>Temperature fields at all levels.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">&quot;:UGRD:.*</span> <span class="pre">mb&quot;</span></code></p></td>
+<td><p>U Wind at all pressure levels.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">&quot;:500</span> <span class="pre">mb:&quot;</span></code></p></td>
+<td><p>All variables on the 500 mb level.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">&quot;:APCP:&quot;</span></code></p></td>
+<td><p>All accumulated precipitation fiel</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">&quot;:APCP:surface:0-[1-9]*&quot;</span></code></p></td>
+<td><p>Accumulated precip since initializ</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">&quot;:APCP:surface:[1-9]*-[1-9]*&quot;</span></code></p></td>
+<td><p>Accumulated precip over last hour</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">&quot;:UGRD:10</span> <span class="pre">m&quot;</span></code></p></td>
+<td><p>U wind component at 10 meters.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">&quot;:(?:U\|V)GRD:(?:10\|80)</span> <span class="pre">m&quot;</span></code></p></td>
+<td><p>U and V wind component at 10 and 8</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">&quot;:(?:U\|V)GRD:&quot;</span></code></p></td>
+<td><p>U and V wind component at all leve</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">&quot;:.GRD:&quot;</span></code></p></td>
+<td><p>(Same as above)</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">&quot;:(?:TMP\|DPT):&quot;</span></code></p></td>
+<td><p>Temperature and Dew Point for all</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">&quot;:(?:TMP\|DPT\|RH):&quot;</span></code></p></td>
+<td><p>TMP, DPT, and Relative Humidity fo</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">&quot;:REFC:&quot;</span></code></p></td>
+<td><p>Composite Reflectivity</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">&quot;:surface:&quot;</span></code></p></td>
+<td><p>All variables at the surface.</p></td>
+</tr>
+</tbody>
+</table>
+<p>If you need help with regular expression, search the web or look at this <a class="reference external" href="https://www.petefreitag.com/cheatsheets/regex/">cheatsheet</a>.</p>
 </section>
 <section id="Read-data-with-xarray">
 <h2>Read data with xarray<a class="headerlink" href="#Read-data-with-xarray" title="Permalink to this heading">#</a></h2>
+<blockquote>
+<div><p>Note: You should <em>always</em> subset the file before reading it with xarray else you will likely load too much data into memory.</p>
+</div></blockquote>
+<blockquote>
+<div><p>Note: If you request data on conflicting levels (e.g., 2-m above ground and 500 mb), cfgrib will return the data as a list of datasets where each dataset is a compatible hypercube.</p>
+</div></blockquote>
 <p>Let’s download the 2-m Temperature and 2-m Relative Humidity fields, and read them with xarray.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ds</span> <span class="o">=</span> <span class="n">H</span><span class="o">.</span><span class="n">xarray</span><span class="p">(</span><span class="s2">&quot;:(?:TMP|RH):2 m&quot;</span><span class="p">,</span> <span class="n">remove_grib</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
@@ -1279,15 +1476,15 @@ div.rendered_html tbody tr:hover {
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ds</span>
-</pre></div>
+<br/></pre></div>
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
 </pre></div>
 </div>
 <div class="output_area rendered_html docutils container">
@@ -1680,7 +1877,7 @@ Attributes:
     description:             High-Resolution Rapid Refresh - CONUS
     remote_grib:             https://noaa-hrrr-bdp-pds.s3.amazonaws.com/hrrr....
     local_grib:              C:\Users\blaylock\data\hrrr\20210701\subset_e7b2...
-    searchString:            :(?:TMP|RH):2 m</pre><div class='xr-wrap' style='display:none'><div class='xr-header'><div class='xr-obj-type'>xarray.Dataset</div></div><ul class='xr-sections'><li class='xr-section-item'><input id='section-679b1d1c-85e3-4635-ad2a-6884d7b0e55d' class='xr-section-summary-in' type='checkbox' disabled ><label for='section-679b1d1c-85e3-4635-ad2a-6884d7b0e55d' class='xr-section-summary'  title='Expand/collapse section'>Dimensions:</label><div class='xr-section-inline-details'><ul class='xr-dim-list'><li><span>y</span>: 1059</li><li><span>x</span>: 1799</li></ul></div><div class='xr-section-details'></div></li><li class='xr-section-item'><input id='section-a8f54bfa-e471-4024-b055-3d8be82b6094' class='xr-section-summary-in' type='checkbox'  checked><label for='section-a8f54bfa-e471-4024-b055-3d8be82b6094' class='xr-section-summary' >Coordinates: <span>(6)</span></label><div class='xr-section-inline-details'></div><div class='xr-section-details'><ul class='xr-var-list'><li class='xr-var-item'><div class='xr-var-name'><span>time</span></div><div class='xr-var-dims'>()</div><div class='xr-var-dtype'>datetime64[ns]</div><div class='xr-var-preview xr-preview'>2021-07-01T12:00:00</div><input id='attrs-06ae1dad-3551-4085-b68f-8d8691bb0f9a' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-06ae1dad-3551-4085-b68f-8d8691bb0f9a' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-446c486e-d8d2-4646-8b95-e0f80bcf9a2f' class='xr-var-data-in' type='checkbox'><label for='data-446c486e-d8d2-4646-8b95-e0f80bcf9a2f' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>long_name :</span></dt><dd>initial time of forecast</dd><dt><span>standard_name :</span></dt><dd>forecast_reference_time</dd></dl></div><div class='xr-var-data'><pre>array(&#x27;2021-07-01T12:00:00.000000000&#x27;, dtype=&#x27;datetime64[ns]&#x27;)</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span>step</span></div><div class='xr-var-dims'>()</div><div class='xr-var-dtype'>timedelta64[ns]</div><div class='xr-var-preview xr-preview'>06:00:00</div><input id='attrs-6cc2701c-699e-4d17-921a-7c130fba01a3' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-6cc2701c-699e-4d17-921a-7c130fba01a3' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-45cf1041-3ea9-4dd0-bb18-7ad624349763' class='xr-var-data-in' type='checkbox'><label for='data-45cf1041-3ea9-4dd0-bb18-7ad624349763' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>long_name :</span></dt><dd>time since forecast_reference_time</dd><dt><span>standard_name :</span></dt><dd>forecast_period</dd></dl></div><div class='xr-var-data'><pre>array(21600000000000, dtype=&#x27;timedelta64[ns]&#x27;)</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span>heightAboveGround</span></div><div class='xr-var-dims'>()</div><div class='xr-var-dtype'>float64</div><div class='xr-var-preview xr-preview'>2.0</div><input id='attrs-6019bad4-315c-4c4c-8747-b3a625ba5bcb' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-6019bad4-315c-4c4c-8747-b3a625ba5bcb' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-a83d7971-ffd7-4f59-85fe-0b747b080d1e' class='xr-var-data-in' type='checkbox'><label for='data-a83d7971-ffd7-4f59-85fe-0b747b080d1e' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>long_name :</span></dt><dd>height above the surface</dd><dt><span>units :</span></dt><dd>m</dd><dt><span>positive :</span></dt><dd>up</dd><dt><span>standard_name :</span></dt><dd>height</dd></dl></div><div class='xr-var-data'><pre>array(2.)</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span>latitude</span></div><div class='xr-var-dims'>(y, x)</div><div class='xr-var-dtype'>float64</div><div class='xr-var-preview xr-preview'>21.14 21.15 21.15 ... 47.85 47.84</div><input id='attrs-149277f0-532f-4bd4-9e2b-32da3e8d521f' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-149277f0-532f-4bd4-9e2b-32da3e8d521f' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-ce3a4ffe-1398-45d8-8039-b64e7053c5bf' class='xr-var-data-in' type='checkbox'><label for='data-ce3a4ffe-1398-45d8-8039-b64e7053c5bf' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>units :</span></dt><dd>degrees_north</dd><dt><span>standard_name :</span></dt><dd>latitude</dd><dt><span>long_name :</span></dt><dd>latitude</dd></dl></div><div class='xr-var-data'><pre>array([[21.138123  , 21.14511004, 21.1520901 , ..., 21.1545089 ,
+    searchString:            :(?:TMP|RH):2 m</pre><div class='xr-wrap' style='display:none'><div class='xr-header'><div class='xr-obj-type'>xarray.Dataset</div></div><ul class='xr-sections'><li class='xr-section-item'><input id='section-647f22ea-bfbe-4822-8386-cf7055f12c2f' class='xr-section-summary-in' type='checkbox' disabled ><label for='section-647f22ea-bfbe-4822-8386-cf7055f12c2f' class='xr-section-summary'  title='Expand/collapse section'>Dimensions:</label><div class='xr-section-inline-details'><ul class='xr-dim-list'><li><span>y</span>: 1059</li><li><span>x</span>: 1799</li></ul></div><div class='xr-section-details'></div></li><li class='xr-section-item'><input id='section-ab283b98-e11a-4afe-83ea-b82c18648f51' class='xr-section-summary-in' type='checkbox'  checked><label for='section-ab283b98-e11a-4afe-83ea-b82c18648f51' class='xr-section-summary' >Coordinates: <span>(6)</span></label><div class='xr-section-inline-details'></div><div class='xr-section-details'><ul class='xr-var-list'><li class='xr-var-item'><div class='xr-var-name'><span>time</span></div><div class='xr-var-dims'>()</div><div class='xr-var-dtype'>datetime64[ns]</div><div class='xr-var-preview xr-preview'>2021-07-01T12:00:00</div><input id='attrs-fcbb01e9-611d-4c42-8b44-8ccc7ba98ed2' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-fcbb01e9-611d-4c42-8b44-8ccc7ba98ed2' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-7671bf7c-da37-4cbd-b221-a484e7c525b3' class='xr-var-data-in' type='checkbox'><label for='data-7671bf7c-da37-4cbd-b221-a484e7c525b3' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>long_name :</span></dt><dd>initial time of forecast</dd><dt><span>standard_name :</span></dt><dd>forecast_reference_time</dd></dl></div><div class='xr-var-data'><pre>array(&#x27;2021-07-01T12:00:00.000000000&#x27;, dtype=&#x27;datetime64[ns]&#x27;)</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span>step</span></div><div class='xr-var-dims'>()</div><div class='xr-var-dtype'>timedelta64[ns]</div><div class='xr-var-preview xr-preview'>06:00:00</div><input id='attrs-45b0a61b-c61c-4d78-9f90-d3471fb9cd66' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-45b0a61b-c61c-4d78-9f90-d3471fb9cd66' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-be5c06b0-e4ee-404a-9310-7c3d9cb06015' class='xr-var-data-in' type='checkbox'><label for='data-be5c06b0-e4ee-404a-9310-7c3d9cb06015' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>long_name :</span></dt><dd>time since forecast_reference_time</dd><dt><span>standard_name :</span></dt><dd>forecast_period</dd></dl></div><div class='xr-var-data'><pre>array(21600000000000, dtype=&#x27;timedelta64[ns]&#x27;)</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span>heightAboveGround</span></div><div class='xr-var-dims'>()</div><div class='xr-var-dtype'>float64</div><div class='xr-var-preview xr-preview'>2.0</div><input id='attrs-3f7f75e5-427c-47c0-a2b5-57f18b3223e6' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-3f7f75e5-427c-47c0-a2b5-57f18b3223e6' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-02f42ec8-4cfe-4905-8efe-7012600488d9' class='xr-var-data-in' type='checkbox'><label for='data-02f42ec8-4cfe-4905-8efe-7012600488d9' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>long_name :</span></dt><dd>height above the surface</dd><dt><span>units :</span></dt><dd>m</dd><dt><span>positive :</span></dt><dd>up</dd><dt><span>standard_name :</span></dt><dd>height</dd></dl></div><div class='xr-var-data'><pre>array(2.)</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span>latitude</span></div><div class='xr-var-dims'>(y, x)</div><div class='xr-var-dtype'>float64</div><div class='xr-var-preview xr-preview'>21.14 21.15 21.15 ... 47.85 47.84</div><input id='attrs-c727ce2b-1246-44e3-97b2-2e6031419d3f' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-c727ce2b-1246-44e3-97b2-2e6031419d3f' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-59133dc8-7372-471e-b895-58228db19c07' class='xr-var-data-in' type='checkbox'><label for='data-59133dc8-7372-471e-b895-58228db19c07' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>units :</span></dt><dd>degrees_north</dd><dt><span>standard_name :</span></dt><dd>latitude</dd><dt><span>long_name :</span></dt><dd>latitude</dd></dl></div><div class='xr-var-data'><pre>array([[21.138123  , 21.14511004, 21.1520901 , ..., 21.1545089 ,
         21.14753125, 21.14054663],
        [21.16299459, 21.1699845 , 21.17696744, ..., 21.17938723,
         21.1724067 , 21.16541921],
@@ -1692,7 +1889,7 @@ Attributes:
        [47.81409316, 47.82438621, 47.8346692 , ..., 47.83823259,
         47.8279531 , 47.81766354],
        [47.8386235 , 47.84891986, 47.85920615, ..., 47.86277069,
-        47.85248789, 47.84219502]])</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span>longitude</span></div><div class='xr-var-dims'>(y, x)</div><div class='xr-var-dtype'>float64</div><div class='xr-var-preview xr-preview'>237.3 237.3 237.3 ... 299.0 299.1</div><input id='attrs-e17ddcd8-da82-4ffe-8143-716dc5370983' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-e17ddcd8-da82-4ffe-8143-716dc5370983' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-2ffea321-c44f-4459-ada1-6c34dd7bd754' class='xr-var-data-in' type='checkbox'><label for='data-2ffea321-c44f-4459-ada1-6c34dd7bd754' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>units :</span></dt><dd>degrees_east</dd><dt><span>standard_name :</span></dt><dd>longitude</dd><dt><span>long_name :</span></dt><dd>longitude</dd></dl></div><div class='xr-var-data'><pre>array([[237.280472  , 237.30713868, 237.3338097 , ..., 287.6569408 ,
+        47.85248789, 47.84219502]])</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span>longitude</span></div><div class='xr-var-dims'>(y, x)</div><div class='xr-var-dtype'>float64</div><div class='xr-var-preview xr-preview'>237.3 237.3 237.3 ... 299.0 299.1</div><input id='attrs-b411e1b4-3745-4b65-8c51-bbfd10345fb1' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-b411e1b4-3745-4b65-8c51-bbfd10345fb1' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-e971b4e7-792f-4863-87a4-e3e7e9261dc5' class='xr-var-data-in' type='checkbox'><label for='data-e971b4e7-792f-4863-87a4-e3e7e9261dc5' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>units :</span></dt><dd>degrees_east</dd><dt><span>standard_name :</span></dt><dd>longitude</dd><dt><span>long_name :</span></dt><dd>longitude</dd></dl></div><div class='xr-var-data'><pre>array([[237.280472  , 237.30713868, 237.3338097 , ..., 287.6569408 ,
         287.68361332, 287.71028151],
        [237.27297501, 237.29964881, 237.32632695, ..., 287.66442108,
         287.69110073, 287.71777603],
@@ -1704,46 +1901,46 @@ Attributes:
        [225.91986142, 225.95639874, 225.99294822, ..., 298.99437498,
         299.03092868, 299.06747022],
        [225.90452027, 225.94106954, 225.97763099, ..., 299.00968806,
-        299.04625373, 299.08280723]])</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span>valid_time</span></div><div class='xr-var-dims'>()</div><div class='xr-var-dtype'>datetime64[ns]</div><div class='xr-var-preview xr-preview'>2021-07-01T18:00:00</div><input id='attrs-3ad3b093-f827-4082-bd2c-b7ab3efefba0' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-3ad3b093-f827-4082-bd2c-b7ab3efefba0' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-ba24e7fc-b5d5-42fe-938f-ad03a1af0cb8' class='xr-var-data-in' type='checkbox'><label for='data-ba24e7fc-b5d5-42fe-938f-ad03a1af0cb8' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>standard_name :</span></dt><dd>time</dd><dt><span>long_name :</span></dt><dd>time</dd></dl></div><div class='xr-var-data'><pre>array(&#x27;2021-07-01T18:00:00.000000000&#x27;, dtype=&#x27;datetime64[ns]&#x27;)</pre></div></li></ul></div></li><li class='xr-section-item'><input id='section-6bbd2c56-9480-4bf7-a9c4-ce3b89f79ac1' class='xr-section-summary-in' type='checkbox'  checked><label for='section-6bbd2c56-9480-4bf7-a9c4-ce3b89f79ac1' class='xr-section-summary' >Data variables: <span>(3)</span></label><div class='xr-section-inline-details'></div><div class='xr-section-details'><ul class='xr-var-list'><li class='xr-var-item'><div class='xr-var-name'><span>t2m</span></div><div class='xr-var-dims'>(y, x)</div><div class='xr-var-dtype'>float32</div><div class='xr-var-preview xr-preview'>...</div><input id='attrs-80ada758-4f4f-4775-9bc5-bdad8cf60d57' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-80ada758-4f4f-4775-9bc5-bdad8cf60d57' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-62217256-7f05-464e-8cfa-c7c59d20a270' class='xr-var-data-in' type='checkbox'><label for='data-62217256-7f05-464e-8cfa-c7c59d20a270' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>GRIB_paramId :</span></dt><dd>167</dd><dt><span>GRIB_dataType :</span></dt><dd>fc</dd><dt><span>GRIB_numberOfPoints :</span></dt><dd>1905141</dd><dt><span>GRIB_typeOfLevel :</span></dt><dd>heightAboveGround</dd><dt><span>GRIB_stepUnits :</span></dt><dd>1</dd><dt><span>GRIB_stepType :</span></dt><dd>instant</dd><dt><span>GRIB_gridType :</span></dt><dd>lambert</dd><dt><span>GRIB_DxInMetres :</span></dt><dd>3000.0</dd><dt><span>GRIB_DyInMetres :</span></dt><dd>3000.0</dd><dt><span>GRIB_LaDInDegrees :</span></dt><dd>38.5</dd><dt><span>GRIB_Latin1InDegrees :</span></dt><dd>38.5</dd><dt><span>GRIB_Latin2InDegrees :</span></dt><dd>38.5</dd><dt><span>GRIB_LoVInDegrees :</span></dt><dd>262.5</dd><dt><span>GRIB_NV :</span></dt><dd>0</dd><dt><span>GRIB_Nx :</span></dt><dd>1799</dd><dt><span>GRIB_Ny :</span></dt><dd>1059</dd><dt><span>GRIB_cfName :</span></dt><dd>air_temperature</dd><dt><span>GRIB_cfVarName :</span></dt><dd>t2m</dd><dt><span>GRIB_gridDefinitionDescription :</span></dt><dd>Lambert Conformal can be secant or tangent, conical or bipolar</dd><dt><span>GRIB_iScansNegatively :</span></dt><dd>0</dd><dt><span>GRIB_jPointsAreConsecutive :</span></dt><dd>0</dd><dt><span>GRIB_jScansPositively :</span></dt><dd>1</dd><dt><span>GRIB_latitudeOfFirstGridPointInDegrees :</span></dt><dd>21.138123</dd><dt><span>GRIB_latitudeOfSouthernPoleInDegrees :</span></dt><dd>0.0</dd><dt><span>GRIB_longitudeOfFirstGridPointInDegrees :</span></dt><dd>237.280472</dd><dt><span>GRIB_longitudeOfSouthernPoleInDegrees :</span></dt><dd>0.0</dd><dt><span>GRIB_missingValue :</span></dt><dd>3.4028234663852886e+38</dd><dt><span>GRIB_name :</span></dt><dd>2 metre temperature</dd><dt><span>GRIB_parameterName :</span></dt><dd>Temperature</dd><dt><span>GRIB_parameterUnits :</span></dt><dd>K</dd><dt><span>GRIB_shortName :</span></dt><dd>2t</dd><dt><span>GRIB_stepRange :</span></dt><dd>6</dd><dt><span>GRIB_units :</span></dt><dd>K</dd><dt><span>long_name :</span></dt><dd>2 metre temperature</dd><dt><span>units :</span></dt><dd>K</dd><dt><span>standard_name :</span></dt><dd>air_temperature</dd><dt><span>grid_mapping :</span></dt><dd>gribfile_projection</dd></dl></div><div class='xr-var-data'><pre>[1905141 values with dtype=float32]</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span>r2</span></div><div class='xr-var-dims'>(y, x)</div><div class='xr-var-dtype'>float32</div><div class='xr-var-preview xr-preview'>...</div><input id='attrs-839d249e-8cf7-4e73-8ff1-9d0238926b39' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-839d249e-8cf7-4e73-8ff1-9d0238926b39' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-ae4d5da4-6b70-405e-ae56-8ec34560c134' class='xr-var-data-in' type='checkbox'><label for='data-ae4d5da4-6b70-405e-ae56-8ec34560c134' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>GRIB_paramId :</span></dt><dd>260242</dd><dt><span>GRIB_dataType :</span></dt><dd>fc</dd><dt><span>GRIB_numberOfPoints :</span></dt><dd>1905141</dd><dt><span>GRIB_typeOfLevel :</span></dt><dd>heightAboveGround</dd><dt><span>GRIB_stepUnits :</span></dt><dd>1</dd><dt><span>GRIB_stepType :</span></dt><dd>instant</dd><dt><span>GRIB_gridType :</span></dt><dd>lambert</dd><dt><span>GRIB_DxInMetres :</span></dt><dd>3000.0</dd><dt><span>GRIB_DyInMetres :</span></dt><dd>3000.0</dd><dt><span>GRIB_LaDInDegrees :</span></dt><dd>38.5</dd><dt><span>GRIB_Latin1InDegrees :</span></dt><dd>38.5</dd><dt><span>GRIB_Latin2InDegrees :</span></dt><dd>38.5</dd><dt><span>GRIB_LoVInDegrees :</span></dt><dd>262.5</dd><dt><span>GRIB_NV :</span></dt><dd>0</dd><dt><span>GRIB_Nx :</span></dt><dd>1799</dd><dt><span>GRIB_Ny :</span></dt><dd>1059</dd><dt><span>GRIB_cfName :</span></dt><dd>relative_humidity</dd><dt><span>GRIB_cfVarName :</span></dt><dd>r2</dd><dt><span>GRIB_gridDefinitionDescription :</span></dt><dd>Lambert Conformal can be secant or tangent, conical or bipolar</dd><dt><span>GRIB_iScansNegatively :</span></dt><dd>0</dd><dt><span>GRIB_jPointsAreConsecutive :</span></dt><dd>0</dd><dt><span>GRIB_jScansPositively :</span></dt><dd>1</dd><dt><span>GRIB_latitudeOfFirstGridPointInDegrees :</span></dt><dd>21.138123</dd><dt><span>GRIB_latitudeOfSouthernPoleInDegrees :</span></dt><dd>0.0</dd><dt><span>GRIB_longitudeOfFirstGridPointInDegrees :</span></dt><dd>237.280472</dd><dt><span>GRIB_longitudeOfSouthernPoleInDegrees :</span></dt><dd>0.0</dd><dt><span>GRIB_missingValue :</span></dt><dd>3.4028234663852886e+38</dd><dt><span>GRIB_name :</span></dt><dd>2 metre relative humidity</dd><dt><span>GRIB_parameterName :</span></dt><dd>Relative humidity</dd><dt><span>GRIB_parameterUnits :</span></dt><dd>%</dd><dt><span>GRIB_shortName :</span></dt><dd>2r</dd><dt><span>GRIB_stepRange :</span></dt><dd>6</dd><dt><span>GRIB_units :</span></dt><dd>%</dd><dt><span>long_name :</span></dt><dd>2 metre relative humidity</dd><dt><span>units :</span></dt><dd>%</dd><dt><span>standard_name :</span></dt><dd>relative_humidity</dd><dt><span>grid_mapping :</span></dt><dd>gribfile_projection</dd></dl></div><div class='xr-var-data'><pre>[1905141 values with dtype=float32]</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span>gribfile_projection</span></div><div class='xr-var-dims'>()</div><div class='xr-var-dtype'>object</div><div class='xr-var-preview xr-preview'>None</div><input id='attrs-2d6abb37-4c50-475e-8ad4-73420b45eee8' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-2d6abb37-4c50-475e-8ad4-73420b45eee8' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-a076150b-3cdf-4db8-a32a-7824b87f7b42' class='xr-var-data-in' type='checkbox'><label for='data-a076150b-3cdf-4db8-a32a-7824b87f7b42' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>crs_wkt :</span></dt><dd>PROJCRS[&quot;unknown&quot;,BASEGEOGCRS[&quot;unknown&quot;,DATUM[&quot;unknown&quot;,ELLIPSOID[&quot;unknown&quot;,6371229,0,LENGTHUNIT[&quot;metre&quot;,1,ID[&quot;EPSG&quot;,9001]]]],PRIMEM[&quot;Greenwich&quot;,0,ANGLEUNIT[&quot;degree&quot;,0.0174532925199433],ID[&quot;EPSG&quot;,8901]]],CONVERSION[&quot;unknown&quot;,METHOD[&quot;Lambert Conic Conformal (2SP)&quot;,ID[&quot;EPSG&quot;,9802]],PARAMETER[&quot;Latitude of false origin&quot;,38.5,ANGLEUNIT[&quot;degree&quot;,0.0174532925199433],ID[&quot;EPSG&quot;,8821]],PARAMETER[&quot;Longitude of false origin&quot;,262.5,ANGLEUNIT[&quot;degree&quot;,0.0174532925199433],ID[&quot;EPSG&quot;,8822]],PARAMETER[&quot;Latitude of 1st standard parallel&quot;,38.5,ANGLEUNIT[&quot;degree&quot;,0.0174532925199433],ID[&quot;EPSG&quot;,8823]],PARAMETER[&quot;Latitude of 2nd standard parallel&quot;,38.5,ANGLEUNIT[&quot;degree&quot;,0.0174532925199433],ID[&quot;EPSG&quot;,8824]],PARAMETER[&quot;Easting at false origin&quot;,0,LENGTHUNIT[&quot;metre&quot;,1],ID[&quot;EPSG&quot;,8826]],PARAMETER[&quot;Northing at false origin&quot;,0,LENGTHUNIT[&quot;metre&quot;,1],ID[&quot;EPSG&quot;,8827]]],CS[Cartesian,2],AXIS[&quot;(E)&quot;,east,ORDER[1],LENGTHUNIT[&quot;metre&quot;,1,ID[&quot;EPSG&quot;,9001]]],AXIS[&quot;(N)&quot;,north,ORDER[2],LENGTHUNIT[&quot;metre&quot;,1,ID[&quot;EPSG&quot;,9001]]]]</dd><dt><span>semi_major_axis :</span></dt><dd>6371229.0</dd><dt><span>semi_minor_axis :</span></dt><dd>6371229.0</dd><dt><span>inverse_flattening :</span></dt><dd>0.0</dd><dt><span>reference_ellipsoid_name :</span></dt><dd>unknown</dd><dt><span>longitude_of_prime_meridian :</span></dt><dd>0.0</dd><dt><span>prime_meridian_name :</span></dt><dd>Greenwich</dd><dt><span>geographic_crs_name :</span></dt><dd>unknown</dd><dt><span>horizontal_datum_name :</span></dt><dd>unknown</dd><dt><span>projected_crs_name :</span></dt><dd>unknown</dd><dt><span>grid_mapping_name :</span></dt><dd>lambert_conformal_conic</dd><dt><span>standard_parallel :</span></dt><dd>(38.5, 38.5)</dd><dt><span>latitude_of_projection_origin :</span></dt><dd>38.5</dd><dt><span>longitude_of_central_meridian :</span></dt><dd>262.5</dd><dt><span>false_easting :</span></dt><dd>0.0</dd><dt><span>false_northing :</span></dt><dd>0.0</dd><dt><span>long_name :</span></dt><dd>HRRR model grid projection</dd></dl></div><div class='xr-var-data'><pre>array(None, dtype=object)</pre></div></li></ul></div></li><li class='xr-section-item'><input id='section-10db245c-a2dd-4960-a180-8048dc1b060b' class='xr-section-summary-in' type='checkbox' disabled ><label for='section-10db245c-a2dd-4960-a180-8048dc1b060b' class='xr-section-summary'  title='Expand/collapse section'>Indexes: <span>(0)</span></label><div class='xr-section-inline-details'></div><div class='xr-section-details'><ul class='xr-var-list'></ul></div></li><li class='xr-section-item'><input id='section-a225f246-7557-4cac-84b2-6d7327faf052' class='xr-section-summary-in' type='checkbox'  ><label for='section-a225f246-7557-4cac-84b2-6d7327faf052' class='xr-section-summary' >Attributes: <span>(12)</span></label><div class='xr-section-inline-details'></div><div class='xr-section-details'><dl class='xr-attrs'><dt><span>GRIB_edition :</span></dt><dd>2</dd><dt><span>GRIB_centre :</span></dt><dd>kwbc</dd><dt><span>GRIB_centreDescription :</span></dt><dd>US National Weather Service - NCEP</dd><dt><span>GRIB_subCentre :</span></dt><dd>0</dd><dt><span>Conventions :</span></dt><dd>CF-1.7</dd><dt><span>institution :</span></dt><dd>US National Weather Service - NCEP</dd><dt><span>model :</span></dt><dd>hrrr</dd><dt><span>product :</span></dt><dd>sfc</dd><dt><span>description :</span></dt><dd>High-Resolution Rapid Refresh - CONUS</dd><dt><span>remote_grib :</span></dt><dd>https://noaa-hrrr-bdp-pds.s3.amazonaws.com/hrrr.20210701/conus/hrrr.t12z.wrfsfcf06.grib2</dd><dt><span>local_grib :</span></dt><dd>C:\Users\blaylock\data\hrrr\20210701\subset_e7b2db67__hrrr.t12z.wrfsfcf06.grib2</dd><dt><span>searchString :</span></dt><dd>:(?:TMP|RH):2 m</dd></dl></div></li></ul></div></div></div>
+        299.04625373, 299.08280723]])</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span>valid_time</span></div><div class='xr-var-dims'>()</div><div class='xr-var-dtype'>datetime64[ns]</div><div class='xr-var-preview xr-preview'>2021-07-01T18:00:00</div><input id='attrs-f01b2971-466b-4eec-a7b7-6170992550a9' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-f01b2971-466b-4eec-a7b7-6170992550a9' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-d0ae71ef-6005-4c47-b4a2-1374dd2e105f' class='xr-var-data-in' type='checkbox'><label for='data-d0ae71ef-6005-4c47-b4a2-1374dd2e105f' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>standard_name :</span></dt><dd>time</dd><dt><span>long_name :</span></dt><dd>time</dd></dl></div><div class='xr-var-data'><pre>array(&#x27;2021-07-01T18:00:00.000000000&#x27;, dtype=&#x27;datetime64[ns]&#x27;)</pre></div></li></ul></div></li><li class='xr-section-item'><input id='section-211d00b3-c2a9-49a6-87e0-9b685f01275d' class='xr-section-summary-in' type='checkbox'  checked><label for='section-211d00b3-c2a9-49a6-87e0-9b685f01275d' class='xr-section-summary' >Data variables: <span>(3)</span></label><div class='xr-section-inline-details'></div><div class='xr-section-details'><ul class='xr-var-list'><li class='xr-var-item'><div class='xr-var-name'><span>t2m</span></div><div class='xr-var-dims'>(y, x)</div><div class='xr-var-dtype'>float32</div><div class='xr-var-preview xr-preview'>...</div><input id='attrs-2a3185a1-a54d-40a2-acf7-f7de6a8ca4c5' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-2a3185a1-a54d-40a2-acf7-f7de6a8ca4c5' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-435ecb0b-616a-4fec-99de-664f31aedc53' class='xr-var-data-in' type='checkbox'><label for='data-435ecb0b-616a-4fec-99de-664f31aedc53' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>GRIB_paramId :</span></dt><dd>167</dd><dt><span>GRIB_dataType :</span></dt><dd>fc</dd><dt><span>GRIB_numberOfPoints :</span></dt><dd>1905141</dd><dt><span>GRIB_typeOfLevel :</span></dt><dd>heightAboveGround</dd><dt><span>GRIB_stepUnits :</span></dt><dd>1</dd><dt><span>GRIB_stepType :</span></dt><dd>instant</dd><dt><span>GRIB_gridType :</span></dt><dd>lambert</dd><dt><span>GRIB_DxInMetres :</span></dt><dd>3000.0</dd><dt><span>GRIB_DyInMetres :</span></dt><dd>3000.0</dd><dt><span>GRIB_LaDInDegrees :</span></dt><dd>38.5</dd><dt><span>GRIB_Latin1InDegrees :</span></dt><dd>38.5</dd><dt><span>GRIB_Latin2InDegrees :</span></dt><dd>38.5</dd><dt><span>GRIB_LoVInDegrees :</span></dt><dd>262.5</dd><dt><span>GRIB_NV :</span></dt><dd>0</dd><dt><span>GRIB_Nx :</span></dt><dd>1799</dd><dt><span>GRIB_Ny :</span></dt><dd>1059</dd><dt><span>GRIB_cfName :</span></dt><dd>air_temperature</dd><dt><span>GRIB_cfVarName :</span></dt><dd>t2m</dd><dt><span>GRIB_gridDefinitionDescription :</span></dt><dd>Lambert Conformal can be secant or tangent, conical or bipolar</dd><dt><span>GRIB_iScansNegatively :</span></dt><dd>0</dd><dt><span>GRIB_jPointsAreConsecutive :</span></dt><dd>0</dd><dt><span>GRIB_jScansPositively :</span></dt><dd>1</dd><dt><span>GRIB_latitudeOfFirstGridPointInDegrees :</span></dt><dd>21.138123</dd><dt><span>GRIB_latitudeOfSouthernPoleInDegrees :</span></dt><dd>0.0</dd><dt><span>GRIB_longitudeOfFirstGridPointInDegrees :</span></dt><dd>237.280472</dd><dt><span>GRIB_longitudeOfSouthernPoleInDegrees :</span></dt><dd>0.0</dd><dt><span>GRIB_missingValue :</span></dt><dd>3.4028234663852886e+38</dd><dt><span>GRIB_name :</span></dt><dd>2 metre temperature</dd><dt><span>GRIB_parameterName :</span></dt><dd>Temperature</dd><dt><span>GRIB_parameterUnits :</span></dt><dd>K</dd><dt><span>GRIB_shortName :</span></dt><dd>2t</dd><dt><span>GRIB_stepRange :</span></dt><dd>6</dd><dt><span>GRIB_units :</span></dt><dd>K</dd><dt><span>long_name :</span></dt><dd>2 metre temperature</dd><dt><span>units :</span></dt><dd>K</dd><dt><span>standard_name :</span></dt><dd>air_temperature</dd><dt><span>grid_mapping :</span></dt><dd>gribfile_projection</dd></dl></div><div class='xr-var-data'><pre>[1905141 values with dtype=float32]</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span>r2</span></div><div class='xr-var-dims'>(y, x)</div><div class='xr-var-dtype'>float32</div><div class='xr-var-preview xr-preview'>...</div><input id='attrs-cb506332-3333-4e29-917a-db59f59d5ae1' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-cb506332-3333-4e29-917a-db59f59d5ae1' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-f5b5d18c-8b3d-4625-88d8-4a6c23005d56' class='xr-var-data-in' type='checkbox'><label for='data-f5b5d18c-8b3d-4625-88d8-4a6c23005d56' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>GRIB_paramId :</span></dt><dd>260242</dd><dt><span>GRIB_dataType :</span></dt><dd>fc</dd><dt><span>GRIB_numberOfPoints :</span></dt><dd>1905141</dd><dt><span>GRIB_typeOfLevel :</span></dt><dd>heightAboveGround</dd><dt><span>GRIB_stepUnits :</span></dt><dd>1</dd><dt><span>GRIB_stepType :</span></dt><dd>instant</dd><dt><span>GRIB_gridType :</span></dt><dd>lambert</dd><dt><span>GRIB_DxInMetres :</span></dt><dd>3000.0</dd><dt><span>GRIB_DyInMetres :</span></dt><dd>3000.0</dd><dt><span>GRIB_LaDInDegrees :</span></dt><dd>38.5</dd><dt><span>GRIB_Latin1InDegrees :</span></dt><dd>38.5</dd><dt><span>GRIB_Latin2InDegrees :</span></dt><dd>38.5</dd><dt><span>GRIB_LoVInDegrees :</span></dt><dd>262.5</dd><dt><span>GRIB_NV :</span></dt><dd>0</dd><dt><span>GRIB_Nx :</span></dt><dd>1799</dd><dt><span>GRIB_Ny :</span></dt><dd>1059</dd><dt><span>GRIB_cfName :</span></dt><dd>relative_humidity</dd><dt><span>GRIB_cfVarName :</span></dt><dd>r2</dd><dt><span>GRIB_gridDefinitionDescription :</span></dt><dd>Lambert Conformal can be secant or tangent, conical or bipolar</dd><dt><span>GRIB_iScansNegatively :</span></dt><dd>0</dd><dt><span>GRIB_jPointsAreConsecutive :</span></dt><dd>0</dd><dt><span>GRIB_jScansPositively :</span></dt><dd>1</dd><dt><span>GRIB_latitudeOfFirstGridPointInDegrees :</span></dt><dd>21.138123</dd><dt><span>GRIB_latitudeOfSouthernPoleInDegrees :</span></dt><dd>0.0</dd><dt><span>GRIB_longitudeOfFirstGridPointInDegrees :</span></dt><dd>237.280472</dd><dt><span>GRIB_longitudeOfSouthernPoleInDegrees :</span></dt><dd>0.0</dd><dt><span>GRIB_missingValue :</span></dt><dd>3.4028234663852886e+38</dd><dt><span>GRIB_name :</span></dt><dd>2 metre relative humidity</dd><dt><span>GRIB_parameterName :</span></dt><dd>Relative humidity</dd><dt><span>GRIB_parameterUnits :</span></dt><dd>%</dd><dt><span>GRIB_shortName :</span></dt><dd>2r</dd><dt><span>GRIB_stepRange :</span></dt><dd>6</dd><dt><span>GRIB_units :</span></dt><dd>%</dd><dt><span>long_name :</span></dt><dd>2 metre relative humidity</dd><dt><span>units :</span></dt><dd>%</dd><dt><span>standard_name :</span></dt><dd>relative_humidity</dd><dt><span>grid_mapping :</span></dt><dd>gribfile_projection</dd></dl></div><div class='xr-var-data'><pre>[1905141 values with dtype=float32]</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span>gribfile_projection</span></div><div class='xr-var-dims'>()</div><div class='xr-var-dtype'>object</div><div class='xr-var-preview xr-preview'>None</div><input id='attrs-3d66f6e1-8e44-4c6d-ae77-9e2a13856ed4' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-3d66f6e1-8e44-4c6d-ae77-9e2a13856ed4' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-99a7b492-7a80-495a-a7a6-737d05d8304f' class='xr-var-data-in' type='checkbox'><label for='data-99a7b492-7a80-495a-a7a6-737d05d8304f' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>crs_wkt :</span></dt><dd>PROJCRS[&quot;unknown&quot;,BASEGEOGCRS[&quot;unknown&quot;,DATUM[&quot;unknown&quot;,ELLIPSOID[&quot;unknown&quot;,6371229,0,LENGTHUNIT[&quot;metre&quot;,1,ID[&quot;EPSG&quot;,9001]]]],PRIMEM[&quot;Greenwich&quot;,0,ANGLEUNIT[&quot;degree&quot;,0.0174532925199433],ID[&quot;EPSG&quot;,8901]]],CONVERSION[&quot;unknown&quot;,METHOD[&quot;Lambert Conic Conformal (2SP)&quot;,ID[&quot;EPSG&quot;,9802]],PARAMETER[&quot;Latitude of false origin&quot;,38.5,ANGLEUNIT[&quot;degree&quot;,0.0174532925199433],ID[&quot;EPSG&quot;,8821]],PARAMETER[&quot;Longitude of false origin&quot;,262.5,ANGLEUNIT[&quot;degree&quot;,0.0174532925199433],ID[&quot;EPSG&quot;,8822]],PARAMETER[&quot;Latitude of 1st standard parallel&quot;,38.5,ANGLEUNIT[&quot;degree&quot;,0.0174532925199433],ID[&quot;EPSG&quot;,8823]],PARAMETER[&quot;Latitude of 2nd standard parallel&quot;,38.5,ANGLEUNIT[&quot;degree&quot;,0.0174532925199433],ID[&quot;EPSG&quot;,8824]],PARAMETER[&quot;Easting at false origin&quot;,0,LENGTHUNIT[&quot;metre&quot;,1],ID[&quot;EPSG&quot;,8826]],PARAMETER[&quot;Northing at false origin&quot;,0,LENGTHUNIT[&quot;metre&quot;,1],ID[&quot;EPSG&quot;,8827]]],CS[Cartesian,2],AXIS[&quot;(E)&quot;,east,ORDER[1],LENGTHUNIT[&quot;metre&quot;,1,ID[&quot;EPSG&quot;,9001]]],AXIS[&quot;(N)&quot;,north,ORDER[2],LENGTHUNIT[&quot;metre&quot;,1,ID[&quot;EPSG&quot;,9001]]]]</dd><dt><span>semi_major_axis :</span></dt><dd>6371229.0</dd><dt><span>semi_minor_axis :</span></dt><dd>6371229.0</dd><dt><span>inverse_flattening :</span></dt><dd>0.0</dd><dt><span>reference_ellipsoid_name :</span></dt><dd>unknown</dd><dt><span>longitude_of_prime_meridian :</span></dt><dd>0.0</dd><dt><span>prime_meridian_name :</span></dt><dd>Greenwich</dd><dt><span>geographic_crs_name :</span></dt><dd>unknown</dd><dt><span>horizontal_datum_name :</span></dt><dd>unknown</dd><dt><span>projected_crs_name :</span></dt><dd>unknown</dd><dt><span>grid_mapping_name :</span></dt><dd>lambert_conformal_conic</dd><dt><span>standard_parallel :</span></dt><dd>(38.5, 38.5)</dd><dt><span>latitude_of_projection_origin :</span></dt><dd>38.5</dd><dt><span>longitude_of_central_meridian :</span></dt><dd>262.5</dd><dt><span>false_easting :</span></dt><dd>0.0</dd><dt><span>false_northing :</span></dt><dd>0.0</dd><dt><span>long_name :</span></dt><dd>HRRR model grid projection</dd></dl></div><div class='xr-var-data'><pre>array(None, dtype=object)</pre></div></li></ul></div></li><li class='xr-section-item'><input id='section-9129af34-2346-4146-83f3-90b4aa89fc2f' class='xr-section-summary-in' type='checkbox' disabled ><label for='section-9129af34-2346-4146-83f3-90b4aa89fc2f' class='xr-section-summary'  title='Expand/collapse section'>Indexes: <span>(0)</span></label><div class='xr-section-inline-details'></div><div class='xr-section-details'><ul class='xr-var-list'></ul></div></li><li class='xr-section-item'><input id='section-dcefc993-6906-49d3-b57d-69004859cafd' class='xr-section-summary-in' type='checkbox'  ><label for='section-dcefc993-6906-49d3-b57d-69004859cafd' class='xr-section-summary' >Attributes: <span>(12)</span></label><div class='xr-section-inline-details'></div><div class='xr-section-details'><dl class='xr-attrs'><dt><span>GRIB_edition :</span></dt><dd>2</dd><dt><span>GRIB_centre :</span></dt><dd>kwbc</dd><dt><span>GRIB_centreDescription :</span></dt><dd>US National Weather Service - NCEP</dd><dt><span>GRIB_subCentre :</span></dt><dd>0</dd><dt><span>Conventions :</span></dt><dd>CF-1.7</dd><dt><span>institution :</span></dt><dd>US National Weather Service - NCEP</dd><dt><span>model :</span></dt><dd>hrrr</dd><dt><span>product :</span></dt><dd>sfc</dd><dt><span>description :</span></dt><dd>High-Resolution Rapid Refresh - CONUS</dd><dt><span>remote_grib :</span></dt><dd>https://noaa-hrrr-bdp-pds.s3.amazonaws.com/hrrr.20210701/conus/hrrr.t12z.wrfsfcf06.grib2</dd><dt><span>local_grib :</span></dt><dd>C:\Users\blaylock\data\hrrr\20210701\subset_e7b2db67__hrrr.t12z.wrfsfcf06.grib2</dd><dt><span>searchString :</span></dt><dd>:(?:TMP|RH):2 m</dd></dl></div></li></ul></div></div></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ds</span><span class="o">.</span><span class="n">t2m</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
-</pre></div>
+<br/></pre></div>
 </div>
 </div>
 <div class="nboutput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-&lt;matplotlib.collections.QuadMesh at 0x1ad9c6b8850&gt;
+&lt;matplotlib.collections.QuadMesh at 0x2581c091930&gt;
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../../_images/user_guide__tutorial_notebooks_intro_12_1.png" src="../../_images/user_guide__tutorial_notebooks_intro_12_1.png" />
+<img alt="../../_images/user_guide__tutorial_notebooks_intro_16_1.png" src="../../_images/user_guide__tutorial_notebooks_intro_16_1.png" />
 </div>
 </div>
-<p>Check out some Cartopy and Metpy tutorials to plot this data on a map.</p>
+<p>I won’t go into detail here about plotting this data on a map, but check out some Cartopy and Metpy tutorials.</p>
 </section>
-<section id="Download-Full-File">
-<h2>Download Full File<a class="headerlink" href="#Download-Full-File" title="Permalink to this heading">#</a></h2>
-<p>Of course, you don’t have to use xarray. You can use Herbie to just download the full file or a subset of the file.</p>
+<section id="Downloading-Data">
+<h2>Downloading Data<a class="headerlink" href="#Downloading-Data" title="Permalink to this heading">#</a></h2>
+<p>You don’t have to use the xarray method to get the data. Maybe you have another tool you like for reading GRIB data. You can still use Herbie to download the full file or a subset of the file locally.</p>
 <blockquote>
 <div><p>Hopefully you have a good internet connection, some files are large.</p>
 </div></blockquote>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Download a full file</span>
-<span class="n">H</span> <span class="o">=</span> <span class="n">Herbie</span><span class="p">(</span><span class="s1">&#39;2022-01-01 06&#39;</span><span class="p">,</span> <span class="n">fxx</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">H</span> <span class="o">=</span> <span class="n">Herbie</span><span class="p">(</span><span class="s2">&quot;2022-01-01 06&quot;</span><span class="p">,</span> <span class="n">fxx</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 <span class="n">H</span><span class="o">.</span><span class="n">download</span><span class="p">()</span>
 </pre></div>
 </div>
@@ -1758,75 +1955,22 @@ Attributes:
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+</pre></div>
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-<span class="ansi-red-intense-fg ansi-bold">---------------------------------------------------------------------------</span>
-<span class="ansi-red-intense-fg ansi-bold">KeyboardInterrupt</span>                         Traceback (most recent call last)
-Cell <span class="ansi-green-intense-fg ansi-bold">In[19], line 3</span>
-<span class="ansi-green-fg">      1</span> # Download a full file
-<span class="ansi-green-fg">      2</span> H = Herbie(&#39;2022-01-01 06&#39;, fxx=0)
-<span class="ansi-green-intense-fg ansi-bold">----&gt; 3</span> H.download()
-
-File <span class="ansi-green-intense-fg ansi-bold">~\_GITHUB\Herbie\herbie\archive.py:911</span>, in <span class="ansi-cyan-fg">Herbie.download</span><span class="ansi-blue-intense-fg ansi-bold">(self, searchString, source, save_dir, overwrite, verbose, errors)</span>
-<span class="ansi-green-fg">    907</span>     print(f&#34;👨🏻‍🏭 Created directory: [{outFile.parent}]&#34;)
-<span class="ansi-green-fg">    909</span> if searchString in [None, &#34;:&#34;] or self.idx is None:
-<span class="ansi-green-fg">    910</span>     # Download the full file from remote source
-<span class="ansi-green-intense-fg ansi-bold">--&gt; 911</span>     urllib.request.urlretrieve(self.grib, outFile, _reporthook)
-<span class="ansi-green-fg">    913</span>     self.grib = outFile
-<span class="ansi-green-fg">    914</span>     # self.grib_source = &#34;local&#34;
-
-File <span class="ansi-green-intense-fg ansi-bold">c:\Users\blaylock\Miniconda3\envs\herbie-dev\lib\urllib\request.py:270</span>, in <span class="ansi-cyan-fg">urlretrieve</span><span class="ansi-blue-intense-fg ansi-bold">(url, filename, reporthook, data)</span>
-<span class="ansi-green-fg">    267</span>     reporthook(blocknum, bs, size)
-<span class="ansi-green-fg">    269</span> while True:
-<span class="ansi-green-intense-fg ansi-bold">--&gt; 270</span>     block = fp.read(bs)
-<span class="ansi-green-fg">    271</span>     if not block:
-<span class="ansi-green-fg">    272</span>         break
-
-File <span class="ansi-green-intense-fg ansi-bold">c:\Users\blaylock\Miniconda3\envs\herbie-dev\lib\http\client.py:465</span>, in <span class="ansi-cyan-fg">HTTPResponse.read</span><span class="ansi-blue-intense-fg ansi-bold">(self, amt)</span>
-<span class="ansi-green-fg">    462</span> if self.length is not None and amt &gt; self.length:
-<span class="ansi-green-fg">    463</span>     # clip the read to the &#34;end of response&#34;
-<span class="ansi-green-fg">    464</span>     amt = self.length
-<span class="ansi-green-intense-fg ansi-bold">--&gt; 465</span> s = self.fp.read(amt)
-<span class="ansi-green-fg">    466</span> if not s and amt:
-<span class="ansi-green-fg">    467</span>     # Ideally, we would raise IncompleteRead if the content-length
-<span class="ansi-green-fg">    468</span>     # wasn&#39;t satisfied, but it might break compatibility.
-<span class="ansi-green-fg">    469</span>     self._close_conn()
-
-File <span class="ansi-green-intense-fg ansi-bold">c:\Users\blaylock\Miniconda3\envs\herbie-dev\lib\socket.py:705</span>, in <span class="ansi-cyan-fg">SocketIO.readinto</span><span class="ansi-blue-intense-fg ansi-bold">(self, b)</span>
-<span class="ansi-green-fg">    703</span> while True:
-<span class="ansi-green-fg">    704</span>     try:
-<span class="ansi-green-intense-fg ansi-bold">--&gt; 705</span>         return self._sock.recv_into(b)
-<span class="ansi-green-fg">    706</span>     except timeout:
-<span class="ansi-green-fg">    707</span>         self._timeout_occurred = True
-
-File <span class="ansi-green-intense-fg ansi-bold">c:\Users\blaylock\Miniconda3\envs\herbie-dev\lib\ssl.py:1274</span>, in <span class="ansi-cyan-fg">SSLSocket.recv_into</span><span class="ansi-blue-intense-fg ansi-bold">(self, buffer, nbytes, flags)</span>
-<span class="ansi-green-fg">   1270</span>     if flags != 0:
-<span class="ansi-green-fg">   1271</span>         raise ValueError(
-<span class="ansi-green-fg">   1272</span>           &#34;non-zero flags not allowed in calls to recv_into() on %s&#34; %
-<span class="ansi-green-fg">   1273</span>           self.__class__)
-<span class="ansi-green-intense-fg ansi-bold">-&gt; 1274</span>     return self.read(nbytes, buffer)
-<span class="ansi-green-fg">   1275</span> else:
-<span class="ansi-green-fg">   1276</span>     return super().recv_into(buffer, nbytes, flags)
-
-File <span class="ansi-green-intense-fg ansi-bold">c:\Users\blaylock\Miniconda3\envs\herbie-dev\lib\ssl.py:1130</span>, in <span class="ansi-cyan-fg">SSLSocket.read</span><span class="ansi-blue-intense-fg ansi-bold">(self, len, buffer)</span>
-<span class="ansi-green-fg">   1128</span> try:
-<span class="ansi-green-fg">   1129</span>     if buffer is not None:
-<span class="ansi-green-intense-fg ansi-bold">-&gt; 1130</span>         return self._sslobj.read(len, buffer)
-<span class="ansi-green-fg">   1131</span>     else:
-<span class="ansi-green-fg">   1132</span>         return self._sslobj.read(len)
-
-<span class="ansi-red-intense-fg ansi-bold">KeyboardInterrupt</span>:
+WindowsPath(&#39;C:/Users/blaylock/data/hrrr/20220101/hrrr.t06z.wrfsfcf00.grib2&#39;)
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Download a subset file</span>
-<span class="n">H</span> <span class="o">=</span> <span class="n">Herbie</span><span class="p">(</span><span class="s1">&#39;2022-01-01 06&#39;</span><span class="p">,</span> <span class="n">fxx</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-<span class="n">H</span><span class="o">.</span><span class="n">download</span><span class="p">(</span><span class="s2">&quot;TMP:2 m&quot;</span><span class="p">)</span>
+<span class="c1"># All variables at 2-m above ground</span>
+<span class="n">H</span> <span class="o">=</span> <span class="n">Herbie</span><span class="p">(</span><span class="s2">&quot;2022-01-01 06&quot;</span><span class="p">,</span> <span class="n">fxx</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">H</span><span class="o">.</span><span class="n">download</span><span class="p">(</span><span class="s2">&quot;:2 m above ground:&quot;</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1836,15 +1980,53 @@ File <span class="ansi-green-intense-fg ansi-bold">c:\Users\blaylock\Miniconda3\
 <div class="output_area docutils container">
 <div class="highlight"><pre>
 ✅ Found ┊ model=hrrr ┊ product=sfc ┊ <span style="color: rgb(41,130,13)">2022-Jan-01 06:00 UTC</span><span class="ansi-green-intense-fg"> F00</span> ┊ <span style="color: rgb(255,153,0)">GRIB2 @ local</span> ┊ <span style="color: rgb(255,153,0)">IDX @ aws</span>
+📇 Download subset: <span style="color: rgb(136,33,27); background-color: rgb(255,255,255)">▌</span><span style="color: rgb(12,53,118); background-color: rgb(240,234,210)">▌</span><span class="ansi-bold" style="color: rgb(0,0,0); background-color: rgb(240,234,210)">Herbie</span> HRRR model sfc product initialized <span style="color: rgb(41,130,13)">2022-Jan-01 06:00 UTC</span><span class="ansi-green-intense-fg"> F00</span> ┊ <span style="color: rgb(255,153,0)">source=local</span>
+ cURL from file://C:\Users\blaylock\data\hrrr\20220101\hrrr.t06z.wrfsfcf00.grib2
+  58  <span style="color: rgb(255,153,0)">:var discipline=0 master_table=2 parmcat=17 parm=1:2 m above ground:anl</span>
+  71  <span style="color: rgb(255,153,0)">:TMP:2 m above ground:anl</span>
+  72  <span style="color: rgb(255,153,0)">:POT:2 m above ground:anl</span>
+  73  <span style="color: rgb(255,153,0)">:SPFH:2 m above ground:anl</span>
+  74  <span style="color: rgb(255,153,0)">:DPT:2 m above ground:anl</span>
+  75  <span style="color: rgb(255,153,0)">:RH:2 m above ground:anl</span>
+💾 Saved the subset to C:\Users\blaylock\data\hrrr\20220101\subset_1bef7d97__hrrr.t06z.wrfsfcf00.grib2
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-WindowsPath(&#39;C:/Users/blaylock/data/hrrr/20220101/subset_1beffd54__hrrr.t06z.wrfsfcf00.grib2&#39;)
+WindowsPath(&#39;C:/Users/blaylock/data/hrrr/20220101/subset_1bef7d97__hrrr.t06z.wrfsfcf00.grib2&#39;)
+</pre></div></div>
+</div>
+<p>If we ask to download this file again, Herbie tells us we already have a local copy. But we can overwrite if you need to using the <code class="docutils literal notranslate"><span class="pre">overwrite=True</span></code> argument.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Already have a local copy downloaded</span>
+<span class="n">H</span> <span class="o">=</span> <span class="n">Herbie</span><span class="p">(</span><span class="s2">&quot;2022-01-01 06&quot;</span><span class="p">,</span> <span class="n">fxx</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">H</span><span class="o">.</span><span class="n">download</span><span class="p">(</span><span class="s2">&quot;:2 m above ground:&quot;</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<br/></pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+✅ Found ┊ model=hrrr ┊ product=sfc ┊ <span style="color: rgb(41,130,13)">2022-Jan-01 06:00 UTC</span><span class="ansi-green-intense-fg"> F00</span> ┊ <span style="color: rgb(255,153,0)">GRIB2 @ local</span> ┊ <span style="color: rgb(255,153,0)">IDX @ aws</span>
+🌉 Already have local copy --&gt; C:\Users\blaylock\data\hrrr\20220101\subset_1bef7d97__hrrr.t06z.wrfsfcf00.grib2
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+WindowsPath(&#39;C:/Users/blaylock/data/hrrr/20220101/subset_1bef7d97__hrrr.t06z.wrfsfcf00.grib2&#39;)
 </pre></div></div>
 </div>
 <hr class="docutils" />
@@ -1901,8 +2083,8 @@ WindowsPath(&#39;C:/Users/blaylock/data/hrrr/20220101/subset_1beffd54__hrrr.t06z
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#Download-Full-File">
-   Download Full File
+  <a class="reference internal nav-link" href="#Downloading-Data">
+   Downloading Data
   </a>
  </li>
 </ul>
@@ -1962,7 +2144,7 @@ WindowsPath(&#39;C:/Users/blaylock/data/hrrr/20220101/subset_1beffd54__hrrr.t06z
     
 <p class="copyright">
 
-    &copy; Copyright 2022, Brian K. Blaylock.    ♻ Updated: 19:27 UTC 10 Dec 2022.<br>
+    &copy; Copyright 2022, Brian K. Blaylock.    ♻ Updated: 21:27 UTC 10 Dec 2022.<br>
 
 </p>
 

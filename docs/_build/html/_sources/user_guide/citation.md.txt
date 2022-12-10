@@ -12,6 +12,6 @@ If Herbie played an important role in your work, please [tell me about it](https
 
 ---
 
-Also, I wrote a paper about archiving HRRR data in the cloud. You also may find that a useful reference.
+Also, I wrote a paper about archiving and accessing weather data in the cloud. You also may find that a useful reference.
 
 > Blaylock B., J. Horel and S. Liston, 2017: Cloud Archiving and Data Mining of High Resolution Rapid Refresh Model Output. Computers and Geosciences. 109, 43-50. <https://doi.org/10.1016/j.cageo.2017.08.005>
