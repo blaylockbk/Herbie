@@ -60,8 +60,8 @@ Capabilities
 Herbie helps you discover and use data from many different numerical weather models and sources.
 
 .. figure:: _static/diagrams/mermaid-capabilities.png
-
-.. figure:: _static/diagrams/mermaid-capabilities.svg
+   :class: img-fluid
+   :width: 66%
 
 Specifically, Herbie can
 
