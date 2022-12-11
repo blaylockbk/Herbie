@@ -41,6 +41,13 @@
     <script src="../../_static/sphinx_highlight.js"></script>
     <script src="../../_static/design-tabs.js"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script async="async" src="https://www.googletagmanager.com/gtag/js?id=G-PT9LX1B7B8"></script>
+    <script>
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){ dataLayer.push(arguments); }
+                gtag('js', new Date());
+                gtag('config', 'G-PT9LX1B7B8');
+            </script>
     <script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
     <script>mermaid.initialize({startOnLoad:true});</script>
     <script>DOCUMENTATION_OPTIONS.pagename = '_modules/herbie/archive';</script>
@@ -129,8 +136,8 @@
                 
 
                     <li class="nav-item">
-                      <a class="nav-link nav-internal" href="../../reference_guide/index.html">
-                        Reference Guide
+                      <a class="nav-link nav-internal" href="../../api_reference/index.html">
+                        API Reference
                       </a>
                     </li>
                 
@@ -257,8 +264,8 @@
                 
 
                     <li class="nav-item">
-                      <a class="nav-link nav-internal" href="../../reference_guide/index.html">
-                        Reference Guide
+                      <a class="nav-link nav-internal" href="../../api_reference/index.html">
+                        API Reference
                       </a>
                     </li>
                 
@@ -460,7 +467,7 @@
     <span class="k">return</span> <span class="n">out</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="Herbie"><a class="viewcode-back" href="../../reference_guide/_autosummary/herbie.archive.Herbie.html#herbie.archive.Herbie">[docs]</a><span class="k">class</span> <span class="nc">Herbie</span><span class="p">:</span>
+<div class="viewcode-block" id="Herbie"><a class="viewcode-back" href="../../api_reference/_autosummary/herbie.archive.Herbie.html#herbie.archive.Herbie">[docs]</a><span class="k">class</span> <span class="nc">Herbie</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Locate GRIB2 file at one of the archive sources.</span>
 
@@ -516,7 +523,7 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-<div class="viewcode-block" id="Herbie.__init__"><a class="viewcode-back" href="../../reference_guide/_autosummary/herbie.archive.Herbie.html#herbie.archive.Herbie.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+<div class="viewcode-block" id="Herbie.__init__"><a class="viewcode-back" href="../../api_reference/_autosummary/herbie.archive.Herbie.html#herbie.archive.Herbie.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">date</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
@@ -637,7 +644,7 @@
         <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;║HERBIE╠ </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">product</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,)</span>
         <span class="k">return</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
 
-<div class="viewcode-block" id="Herbie.tell_me_everything"><a class="viewcode-back" href="../../reference_guide/_autosummary/herbie.archive.Herbie.html#herbie.archive.Herbie.tell_me_everything">[docs]</a>    <span class="k">def</span> <span class="nf">tell_me_everything</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Herbie.tell_me_everything"><a class="viewcode-back" href="../../api_reference/_autosummary/herbie.archive.Herbie.html#herbie.archive.Herbie.tell_me_everything">[docs]</a>    <span class="k">def</span> <span class="nf">tell_me_everything</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Print all the attributes of the Herbie object&quot;&quot;&quot;</span>
         <span class="n">msg</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">dir</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -744,7 +751,7 @@
             <span class="p">)</span>
         <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">None</span>
 
-<div class="viewcode-block" id="Herbie.find_grib"><a class="viewcode-back" href="../../reference_guide/_autosummary/herbie.archive.Herbie.html#herbie.archive.Herbie.find_grib">[docs]</a>    <span class="k">def</span> <span class="nf">find_grib</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="Herbie.find_grib"><a class="viewcode-back" href="../../api_reference/_autosummary/herbie.archive.Herbie.html#herbie.archive.Herbie.find_grib">[docs]</a>    <span class="k">def</span> <span class="nf">find_grib</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Find a GRIB file from the archive sources</span>
 
 <span class="sd">        Returns</span>
@@ -787,7 +794,7 @@
 
         <span class="k">return</span> <span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span></div>
 
-<div class="viewcode-block" id="Herbie.find_idx"><a class="viewcode-back" href="../../reference_guide/_autosummary/herbie.archive.Herbie.html#herbie.archive.Herbie.find_idx">[docs]</a>    <span class="k">def</span> <span class="nf">find_idx</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Herbie.find_idx"><a class="viewcode-back" href="../../api_reference/_autosummary/herbie.archive.Herbie.html#herbie.archive.Herbie.find_idx">[docs]</a>    <span class="k">def</span> <span class="nf">find_idx</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Find an index file for the GRIB file&quot;&quot;&quot;</span>
         <span class="c1"># If priority list is set, we want to search SOURCES in that</span>
         <span class="c1"># priority order. If priority is None, then search all SOURCES</span>
@@ -835,7 +842,7 @@
         <span class="sd">&quot;&quot;&quot;Predict Local File Name of the full file&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">LOCALFILE</span>
 
-<div class="viewcode-block" id="Herbie.get_localFilePath"><a class="viewcode-back" href="../../reference_guide/_autosummary/herbie.archive.Herbie.html#herbie.archive.Herbie.get_localFilePath">[docs]</a>    <span class="k">def</span> <span class="nf">get_localFilePath</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">searchString</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="Herbie.get_localFilePath"><a class="viewcode-back" href="../../api_reference/_autosummary/herbie.archive.Herbie.html#herbie.archive.Herbie.get_localFilePath">[docs]</a>    <span class="k">def</span> <span class="nf">get_localFilePath</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">searchString</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Get path to local file&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">SOURCES</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;local&quot;</span><span class="p">:</span>
             <span class="c1"># TODO: An experimental special case for locally stored GRIB2.</span>
@@ -1057,7 +1064,7 @@
 
         <span class="k">return</span> <span class="n">df</span>
 
-<div class="viewcode-block" id="Herbie.read_idx"><a class="viewcode-back" href="../../reference_guide/_autosummary/herbie.archive.Herbie.html#herbie.archive.Herbie.read_idx">[docs]</a>    <span class="k">def</span> <span class="nf">read_idx</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">searchString</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="Herbie.read_idx"><a class="viewcode-back" href="../../api_reference/_autosummary/herbie.archive.Herbie.html#herbie.archive.Herbie.read_idx">[docs]</a>    <span class="k">def</span> <span class="nf">read_idx</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">searchString</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Inspect the GRIB2 file contents by reading the index file.</span>
 
@@ -1091,7 +1098,7 @@
             <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">logic</span><span class="p">]</span>
         <span class="k">return</span> <span class="n">df</span></div>
 
-<div class="viewcode-block" id="Herbie.download"><a class="viewcode-back" href="../../reference_guide/_autosummary/herbie.archive.Herbie.html#herbie.archive.Herbie.download">[docs]</a>    <span class="k">def</span> <span class="nf">download</span><span class="p">(</span>
+<div class="viewcode-block" id="Herbie.download"><a class="viewcode-back" href="../../api_reference/_autosummary/herbie.archive.Herbie.html#herbie.archive.Herbie.download">[docs]</a>    <span class="k">def</span> <span class="nf">download</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">searchString</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
@@ -1287,7 +1294,7 @@
 
         <span class="k">return</span> <span class="n">outFile</span></div>
 
-<div class="viewcode-block" id="Herbie.xarray"><a class="viewcode-back" href="../../reference_guide/_autosummary/herbie.archive.Herbie.html#herbie.archive.Herbie.xarray">[docs]</a>    <span class="k">def</span> <span class="nf">xarray</span><span class="p">(</span>
+<div class="viewcode-block" id="Herbie.xarray"><a class="viewcode-back" href="../../api_reference/_autosummary/herbie.archive.Herbie.html#herbie.archive.Herbie.xarray">[docs]</a>    <span class="k">def</span> <span class="nf">xarray</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">searchString</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">backend_kwargs</span><span class="o">=</span><span class="p">{},</span>
@@ -1416,7 +1423,14 @@
                 <span class="nb">print</span><span class="p">(</span>
                     <span class="sa">f</span><span class="s2">&quot;Note: Returning a list of [</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">Hxr</span><span class="p">)</span><span class="si">}</span><span class="s2">] xarray.Datasets because cfgrib opened with multiple hypercubes.&quot;</span>
                 <span class="p">)</span>
-            <span class="k">return</span> <span class="n">Hxr</span></div></div>
+            <span class="k">return</span> <span class="n">Hxr</span></div>
+
+    <span class="c1"># Shortcut Methods below</span>
+<div class="viewcode-block" id="Herbie.terrain"><a class="viewcode-back" href="../../api_reference/_autosummary/herbie.archive.Herbie.html#herbie.archive.Herbie.terrain">[docs]</a>    <span class="k">def</span> <span class="nf">terrain</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return terrain field with sea masked as an xarray.Dataset&quot;&quot;&quot;</span>
+        <span class="n">ds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">xarray</span><span class="p">(</span><span class="s2">&quot;:(?:HGT|LAND):surface&quot;</span><span class="p">)</span>
+        <span class="n">ds</span><span class="p">[</span><span class="s2">&quot;orog&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ds</span><span class="o">.</span><span class="n">orog</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">ds</span><span class="o">.</span><span class="n">lsm</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">ds</span></div></div>
 </pre></div>
 
             </article>
@@ -1474,7 +1488,7 @@
     
 <p class="copyright">
 
-    &copy; Copyright 2022, Brian K. Blaylock.    ♻ Updated: 02:57 UTC 10 Dec 2022.<br>
+    &copy; Copyright 2022, Brian K. Blaylock.    ♻ Updated: 05:59 UTC 11 Dec 2022.<br>
 
 </p>
 

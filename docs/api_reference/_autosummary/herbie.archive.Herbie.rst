@@ -20,6 +20,7 @@
       ~Herbie.get_localFilePath
       ~Herbie.read_idx
       ~Herbie.tell_me_everything
+      ~Herbie.terrain
       ~Herbie.xarray
    
    
