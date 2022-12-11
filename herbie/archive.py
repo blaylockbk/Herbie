@@ -1056,9 +1056,9 @@ class Herbie:
             return Hxr
 
     # Shortcut Methods below
-    def terrain(self, sea_mask=True):
+    def terrain(self, water_masked=True):
         """Return model terrain as an xarray.Dataset"""
         ds = self.xarray(":(?:HGT|LAND):surface")
-        if sea_mask:
+        if water_masked:
             ds["orog"] = ds.orog.where(ds.lsm > 0)
         return ds
