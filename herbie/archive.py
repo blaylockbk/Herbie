@@ -1054,3 +1054,11 @@ class Herbie:
                     f"Note: Returning a list of [{len(Hxr)}] xarray.Datasets because cfgrib opened with multiple hypercubes."
                 )
             return Hxr
+
+    # Shortcut Methods below
+    def terrain(self, sea_mask=True):
+        """Return model terrain as an xarray.Dataset"""
+        ds = self.xarray(":(?:HGT|LAND):surface")
+        if sea_mask:
+            ds["orog"] = ds.orog.where(ds.lsm > 0)
+        return ds
