@@ -2,9 +2,7 @@
   align="center"
 >
 
-<img 
-  src="https://github.com/blaylockbk/Herbie/raw/main/images/Herbie_transparent_tan.svg" 
-  style="filter: drop-shadow(0px 0px 5px #000000)">
+<img src="images/logo_new/Herbie-logo.png">  
 
 # Herbie: Retrieve NWP Model Data 🏁
 

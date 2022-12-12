@@ -113,14 +113,14 @@ html_theme_options = {
         },
     ],
     "logo": {
-        "image_light": "HerbieLogo2_tan_transparent.png",
-        "image_dark": "HerbieLogo2_white_transparent.png",
+        "image_light": "logo_new/Herbie-logo.png",
+        "image_dark": "logo_new/Herbie-logo.png",
     },
 }
 
 html_sidebars = {}
 
-html_favicon = "_static/wxicon.png"
+html_favicon = "_static/logo_new/Herbie-icon.ico"
 
 html_context = {
     "github_user": "blaylockbk",
