@@ -59,6 +59,8 @@ import pygrib
 import requests
 import xarray as xr
 from pyproj import CRS
+import subprocess
+from shutil import which
 
 import herbie.models as model_templates
 from herbie import Path, config
@@ -83,18 +85,30 @@ except:
 
 log = logging.getLogger(__name__)
 
+# Location of wgrib2 command, if it exists
+wgrib2 = which("wgrib2")
 
-def wgrib2_idx_to_str(GRIB2_FILEPATH):
-    """Produce the index file as a string with wgrib2"""
-    import subprocess
-    from shutil import which
 
-    if which("wgrib2") is None:
+def wgrib2_idx(grib2filepath):
+    """
+    Produce the GRIB2 inventory index with wgrib2.
+
+    Parameters
+    ----------
+    grib2filepath : Path
+        Path to a grib2 file.
+    """
+    if wgrib2:
+        p = subprocess.run(
+            f"{wgrib2} -s {grib2filepath}",
+            shell=True,
+            capture_output=True,
+            encoding="utf-8",
+            check=True,
+        )
+        return p.stdout
+    else:
         raise RuntimeError("wgrib2 command was not found.")
-
-    cmd = f"wgrib2 -s {GRIB2_FILEPATH}"
-    out = subprocess.run(cmd, shell=True, capture_output=True, check=True)
-    return out.stdout.decode("utf-8")
 
 
 class Herbie:
@@ -533,11 +547,17 @@ class Herbie:
         # If the index file does not exists on the archive, but we have
         # downloaded the full file (it is local), then we can use wgrib2
         # to get the index file.
-        if self.idx is None:
+
+        if self.grib_source == "local" and wgrib2:
+            # Generate IDX with wgrib2
+            self.idx = StringIO(wgrib2_idx(self.get_localFilePath()))
+            self.idx_source = "generated"
+            self.IDX_STYLE = "wgrib2"
+        elif self.idx is None:
             if self.grib_source == "local":
                 # Use wgrib2 to get the index file if the file is local
                 log.info("🧙🏻‍♂️ I'll use wgrib2 to create the missing index file.")
-                self.idx = StringIO(wgrib2_idx_to_str(self.get_localFilePath()))
+                self.idx = StringIO(wgrib2_idx(self.get_localFilePath()))
                 self.IDX_STYLE = "wgrib2"
             else:
                 raise ValueError(
@@ -555,7 +575,7 @@ class Herbie:
             # https://noaa-hrrr-bdp-pds.s3.amazonaws.com/hrrr.20210101/conus/hrrr.t00z.wrfsfcf00.grib2.idx
             # Sometimes idx has more than the standard messages
             # https://noaa-nbm-grib2-pds.s3.amazonaws.com/blend.20210711/13/core/blend.t13z.core.f001.co.grib2.idx
-            if self.idx_source == "local":
+            if self.idx_source in ["local", "generated"]:
                 read_this_idx = self.idx
             else:
                 read_this_idx = None

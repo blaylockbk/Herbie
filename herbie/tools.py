@@ -15,7 +15,7 @@ import numpy as np
 import pandas as pd
 import xarray as xr
 
-from herbie.archive import Herbie, wgrib2_idx_to_str
+from herbie.archive import Herbie, wgrib2_idx
 from . import Path
 
 # Multithreading :)
@@ -341,7 +341,7 @@ def create_index_files(path, overwrite=False):
         if not f_idx.exists() or overwrite:
             # Create an index using wgrib2's simple inventory option
             # if it doesn't already exist or if overwrite is True.
-            index_data = wgrib2_idx_to_str(Path(f))
+            index_data = wgrib2_idx(Path(f))
             with open(f_idx, "w+") as out_idx:
                 out_idx.write(index_data)
 
