@@ -36,10 +36,8 @@ For more details, see https://blaylockbk.github.io/Herbie/_build/html/user_guide
 
 .. note:: Updates since the ``Herbie 0.0.9`` release
 
-    - TODO: Rename 'searchString' to 'subset' (and rename subset function)
+    - TODO: Rename 'searchString' to 'subset' (and rename subset function to??)
     - TODO: add `idx_to_df()` and `df_to_idx()` methods.
-    - TODO: clean up document examples. It's kind of scattered now.
-
 """
 import functools
 import hashlib
@@ -476,28 +474,44 @@ class Herbie:
 
     @property
     def get_remoteFileName(self, source=None):
-        """Predict Remote File Name"""
+        """Predict remote file name (assumes all sources are named the same)."""
         if source is None:
             source = list(self.SOURCES)[0]
         return self.SOURCES[source].split("/")[-1]
 
     @property
     def get_localFileName(self):
-        """Predict Local File Name of the full file"""
+        """Predict the local file name."""
         return self.LOCALFILE
 
     def get_localFilePath(self, searchString=None):
-        """Get path to local file"""
-        if list(self.SOURCES)[0].startswith("local"):
-            # TODO: An experimental special case for locally stored GRIB2.                  # TODO: What about this!
-            outFile = Path(self.SOURCES["local"]).expand()
-        else:
-            outFile = (
-                self.save_dir.expand()
-                / self.model
-                / f"{self.date:%Y%m%d}"
-                / self.get_localFileName
-            )
+        """Get full path to the local file"""
+
+        # First, attempt to locate local file from custom template.
+        # Experimental special case for locally stored GRIB files...
+        # get first local file that exists.
+        # (as defined in model template file).
+        localFilePath = next(
+            (
+                Path(self.SOURCES[i]).expand()
+                for i in self.SOURCES
+                if i.startswith("local") and Path(self.SOURCES[i]).exists()
+            ),
+            None,
+        )
+
+        if localFilePath:
+            # Return the local file path.
+            return localFilePath
+
+        # Ok, so no local files were defined in the model template.
+        # Let's predict the localFileName from the remote sources template.
+        localFilePath = (
+            self.save_dir.expand()
+            / self.model
+            / f"{self.date:%Y%m%d}"
+            / self.get_localFileName
+        )
 
         if searchString is not None:
             # Reassign the index DataFrame with the requested searchString
