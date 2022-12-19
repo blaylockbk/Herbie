@@ -547,12 +547,12 @@ class Herbie:
             # Prepend the filename with the hash label to distinguish it
             # from the full file. The hash label is a cryptic
             # representation of the GRIB messages in the subset.
-            outFile = (
-                outFile.parent
-                / f"subset_{hash_date}{hash_fxx}{hash_label}__{outFile.name}"
+            localFilePath = (
+                localFilePath.parent
+                / f"subset_{hash_date}{hash_fxx}{hash_label}__{localFilePath.name}"
             )
 
-        return outFile
+        return localFilePath
 
     @functools.cached_property
     def index_as_dataframe(self):
