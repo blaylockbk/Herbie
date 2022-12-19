@@ -462,7 +462,7 @@ class Herbie:
             # URL for the GRIB2 file and the .idx file.
             grib_url = self.SOURCES[source]
 
-            if source == "local":
+            if source.startswith("local"):
                 local_grib = Path(grib_url).expand()
                 local_idx = local_grib.with_suffix(self.IDX_SUFFIX[0])
                 return [local_idx, "local"]
@@ -488,8 +488,8 @@ class Herbie:
 
     def get_localFilePath(self, searchString=None):
         """Get path to local file"""
-        if list(self.SOURCES)[0] == "local":
-            # TODO: An experimental special case for locally stored GRIB2.
+        if list(self.SOURCES)[0].startswith("local"):
+            # TODO: An experimental special case for locally stored GRIB2.                  # TODO: What about this!
             outFile = Path(self.SOURCES["local"]).expand()
         else:
             outFile = (
@@ -549,7 +549,7 @@ class Herbie:
         # to get the index file.
 
         if self.grib_source == "local" and wgrib2:
-            # Generate IDX with wgrib2
+            # Generate IDX inventory with wgrib2
             self.idx = StringIO(wgrib2_idx(self.get_localFilePath()))
             self.idx_source = "generated"
             self.IDX_STYLE = "wgrib2"
@@ -887,7 +887,7 @@ class Herbie:
                 print(f"🌉 Already have local copy --> {outFile}")
             return outFile
 
-        if self.overwrite and self.grib_source == "local":
+        if self.overwrite and self.grib_source.startswith("local"):
             # Search for the grib files on the remote archives again
             self.grib, self.grib_source = self.find_grib(overwrite=True)
             self.idx, self.idx_source = self.find_idx()
@@ -973,7 +973,7 @@ class Herbie:
         remove_grib = not local_file.exists() and remove_grib
 
         # ! \/ Fail-safe; Never remove a file if the source is 'local'
-        if self.grib_source == "local":
+        if self.grib_source.startswith("local"):
             remove_grib = False
 
         if not local_file.exists() or download_kwargs["overwrite"]:
@@ -1035,7 +1035,7 @@ class Herbie:
 
         # ! DO NOT REMOVE GRIB FILES IF THE SOURCE IS LOCAL
         # ! (I know I already checked this; I am just so worried about erasing my local data)
-        if self.grib_source != "local":
+        if not self.grib_source.startswith("local"):
             if remove_grib:
                 # Load the datasets into memory before removing the file
                 Hxr = [ds.load() for ds in Hxr]
