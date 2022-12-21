@@ -11,10 +11,16 @@ from herbie import Herbie
 now = datetime.now()
 yesterday = datetime(now.year, now.month, now.day - 1)
 today_str = yesterday.strftime("%Y-%m-%d %H:%M")
+save_dir = "$TMPDIR/Herbie-Tests/"
 
 
 def test_ecmwf():
-    H = Herbie(yesterday, model="ecmwf", product="oper")
+    H = Herbie(
+        yesterday,
+        model="ecmwf",
+        product="oper",
+        save_dir=save_dir,
+    )
 
     # Test full file download
     H.download()
