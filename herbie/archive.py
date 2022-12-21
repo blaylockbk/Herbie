@@ -160,6 +160,8 @@ class Herbie:
         model template file (e.g., nest=2, other_label='run2')
     """
 
+    config = config
+
     def __init__(
         self,
         date=None,
@@ -944,7 +946,7 @@ class Herbie:
             urllib.request.urlretrieve(self.grib, outFile, _reporthook)
 
             self.grib = outFile
-            # self.grib_source = "local"
+            # self.grib_source = "local"  # ?? Why did I turn this off?
 
             if verbose:
                 print(
@@ -990,22 +992,26 @@ class Herbie:
                 / local_file.name
             )
 
-        # Download file if local file does not exists
-        if not local_file.exists() or download_kwargs["overwrite"]:
-            self.download(searchString=searchString, **download_kwargs)
-
         #!==============================================================
         #!                        ⚠ CRITICAL ⚠
         #!==============================================================
         #! File cannot be removed if it previously existed.
         #! (We don't want to remove previously downloaded content).
-        if local_file.exists():
+        if local_file.exists() and remove_grib:
+            warnings.warn("Will not remove GRIB file because it previously existed.")
             remove_grib = False
         #! File can only be be removed if it is a subsetted file.
         #! (We don't want to remove full local files.)
-        if searchString is None:
+        if searchString is None and remove_grib:
+            warnings.warn(
+                "Will not remove GRIB file because Herbie will only remove subsetted files (not full files)."
+            )
             remove_grib = False
         #!==============================================================
+
+        # Download file if local file does not exists
+        if not local_file.exists() or download_kwargs["overwrite"]:
+            self.download(searchString=searchString, **download_kwargs)
 
         # Backend kwargs for cfgrib
         backend_kwargs.setdefault("indexpath", "")
