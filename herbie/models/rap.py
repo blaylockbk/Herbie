@@ -1,6 +1,6 @@
 ## Added by Brian Blaylock
 ## July 26, 2021
-
+__all__ = ["rap", "rap_historical", "rap_ncei"]
 
 class rap:
     """

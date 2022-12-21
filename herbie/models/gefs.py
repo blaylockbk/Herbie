@@ -16,7 +16,6 @@ directory to look for. Yeah, it's a little different paradigm for Herbie,
 but we can work with it.
 """
 
-
 class gefs:
     """Template for GEFS data
 

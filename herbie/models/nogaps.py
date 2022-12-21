@@ -1,7 +1,6 @@
 ## Added by Brian Blaylock
 ## May 6, 2022
 
-
 class nogaps:
     def template(self):
         self.DESCRIPTION = (

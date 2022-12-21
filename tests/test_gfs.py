@@ -5,12 +5,12 @@
 Tests for downloading GFS model
 """
 
-from datetime import datetime
+from datetime import datetime, timedelta
 
-from herbie.archive import Herbie
+from herbie import Herbie
 
 now = datetime.now()
-today = datetime(now.year, now.month, now.day)
+today = datetime(now.year, now.month, now.day) - timedelta(hours=12)
 today_str = today.strftime("%Y-%m-%d %H:%M")
 
 

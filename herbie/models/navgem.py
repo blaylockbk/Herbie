@@ -1,6 +1,6 @@
 ## Added by Brian Blaylock
 ## July 28, 2021
-
+__all__ = ["navgem"]
 
 class navgem:
     def template(self):

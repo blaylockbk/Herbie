@@ -1,7 +1,6 @@
 ## Added by Brian Blaylock
 ## July 26, 2021
 
-
 class gdas:
     def template(self):
         self.DESCRIPTION = "Global Data Assimilation System"

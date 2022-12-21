@@ -1,7 +1,6 @@
 ## Added by Brian Blaylock
 ## July 27, 2021
 
-
 class nbm:
     def template(self):
         self.DESCRIPTION = "National Blend of Models"
