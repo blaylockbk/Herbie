@@ -66,11 +66,13 @@ def test_do_not_remove_file():
     H.xarray(var, remove_grib=True)
     assert H.get_localFilePath(var).exists()
 
+
 def test_make_idx_with_wgrib():
     import shutil
+
     if shutil.which("wgrib2"):
         H = Herbie(
-            '2022-12-13 6:00',
+            "2022-12-13 6:00",
             model="hrrr",
             product="sfc",
             save_dir=save_dir,
@@ -86,6 +88,7 @@ def test_make_idx_with_wgrib():
         df = H.read_idx()
         assert len(df), "Length of index file is 0."
         assert H.idx_source == "generated", "Doesn't look like a generated idx file."
+
 
 def test_create_idx_with_wgrib2():
     """Test that Herbie can make an index file with wgrib2 when an index file is not found"""

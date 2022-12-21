@@ -54,6 +54,7 @@ class model1:
         }
         self.LOCALFILE = f"{self.get_remoteFileName}"
 
+
 class model2:
     def template(self):
         self.DESCRIPTION = "Local GRIB Files for model2"

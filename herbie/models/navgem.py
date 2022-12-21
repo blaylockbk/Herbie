@@ -2,6 +2,7 @@
 ## July 28, 2021
 __all__ = ["navgem"]
 
+
 class navgem:
     def template(self):
         self.DESCRIPTION = "Navy Global Environment Model"

@@ -5,6 +5,7 @@
 A Herbie template for the NAM model.
 """
 
+
 class nam:
     def template(self):
         self.DESCRIPTION = "North America Mesoscale - CONUS"

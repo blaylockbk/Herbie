@@ -3,6 +3,7 @@
 
 # NOTE: The Rapid Refresh Forecast System is rapidly changing
 
+
 class rrfs:
     def template(self):
         self.DESCRIPTION = "Rapid Refresh Forecast System (RRFS) Ensemble"

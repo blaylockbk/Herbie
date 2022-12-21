@@ -122,7 +122,7 @@ if not _config_path.exists():
     _init_path = _config_path.parent / "__init__.py"
     _custom_path = _config_path.parent / "custom_template.py"
     if not _init_path.exists():
-        with open(_init_path, 'w') as f:
+        with open(_init_path, "w") as f:
             pass
     if not _custom_path.exists():
         with open(_custom_path, "w") as f:
@@ -136,8 +136,6 @@ if not _config_path.exists():
         f" ╰╥────────────────────────────────────────────────╯\n"
         f" 👷🏻‍♂️"
     )
-
-
 
 
 ########################################################################

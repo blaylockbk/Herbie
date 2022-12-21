@@ -13,6 +13,7 @@ See the `media release <https://www.ecmwf.int/en/about/media-centre/news/2022/ec
 
 """
 
+
 class ecmwf:
     def template(self):
 
