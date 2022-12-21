@@ -56,6 +56,8 @@ IDX_STYLE : {'wgrib2', 'eccodes'}
     - NCEP products use ``wgrib2`` to create index files.
     - ECMWF products use ``eccodes`` to create index files.
 """
+__all__ = ["hrrr", "hrrrak"]
+
 from datetime import datetime
 
 

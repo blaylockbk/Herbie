@@ -15,11 +15,17 @@ today = datetime(now.year, now.month, now.day, now.hour) - timedelta(hours=6)
 yesterday = today - timedelta(days=1)
 today_str = today.strftime("%Y-%m-%d %H:%M")
 yesterday_str = yesterday.strftime("%Y-%m-%d %H:%M")
+save_dir = "$TMPDIR/Herbie-Tests/"
 
 
 def test_hrrr_aws1():
     # Test HRRR with datetime.datetime date
-    H = Herbie(today, model="hrrr", product="sfc", save_dir="$TMPDIR")
+    H = Herbie(
+        today,
+        model="hrrr",
+        product="sfc",
+        save_dir=save_dir,
+    )
     H.download()
     assert H.get_localFilePath().exists()
     H.xarray("TMP:2 m", remove_grib=False)
@@ -29,7 +35,12 @@ def test_hrrr_aws1():
 def test_hrrr_aws2():
 
     # Test HRRR with string date
-    H = Herbie(yesterday_str, model="hrrr", product="prs", save_dir="$TMPDIR")
+    H = Herbie(
+        yesterday_str,
+        model="hrrr",
+        product="prs",
+        save_dir=save_dir,
+    )
     H.xarray("(?:U|V)GRD:10 m")
 
     if os.name != "nt":
@@ -38,11 +49,57 @@ def test_hrrr_aws2():
         assert not H.get_localFilePath("(?:U|V)GRD:10 m").exists()
 
 
+def test_do_not_remove_file():
+    # Test HRRR with datetime.datetime date
+    H = Herbie(
+        today,
+        model="hrrr",
+        product="sfc",
+        save_dir=save_dir,
+    )
+    # Download a subset file
+    var = "TMP:2 m"
+    H.download(var)
+    assert H.get_localFilePath(var).exists()
+
+    # Read with xarray, and try to remove it
+    H.xarray(var, remove_grib=True)
+    assert H.get_localFilePath(var).exists()
+
+
+def test_make_idx_with_wgrib():
+    import shutil
+
+    if shutil.which("wgrib2"):
+        H = Herbie(
+            "2022-12-13 6:00",
+            model="hrrr",
+            product="sfc",
+            save_dir=save_dir,
+        )
+        H.download(verbose=True)
+
+        # Pretent this was a local file
+        H.idx = None
+        H.idx_source = None
+        H.grib_source = "local"
+
+        # Generate IDX file
+        df = H.read_idx()
+        assert len(df), "Length of index file is 0."
+        assert H.idx_source == "generated", "Doesn't look like a generated idx file."
+
+
 def test_create_idx_with_wgrib2():
     """Test that Herbie can make an index file with wgrib2 when an index file is not found"""
     if os.name != "nt":
         # If not windows (nt), then try using wgrib2
-        H = Herbie(today_str, model="hrrr", product="sfc", save_dir="$TMPDIR")
+        H = Herbie(
+            today_str,
+            model="hrrr",
+            product="sfc",
+            save_dir=save_dir,
+        )
         H.download()
         H.idx = None
         assert len(H.index_as_dataframe) > 0

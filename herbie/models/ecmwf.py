@@ -12,7 +12,6 @@ See the `media release <https://www.ecmwf.int/en/about/media-centre/news/2022/ec
 - Disclaimer: ECMWF does not accept any liability whatsoever for any error or omission in the data, their availability, or for any loss or damage arising from their use.
 
 """
-from datetime import datetime
 
 
 class ecmwf:

@@ -4,10 +4,11 @@
 """
 
 .. warning ::
-    ! This is an experimental feature
+    This is an experimental feature.
 
 This is a special case template for GRIB2 model data that is stored on
 your local machine rather than retrieving data from remote sources.
+For example, you may have output from some WRF simulations you did.
 
 .. attention ::
     Rather than editing this file, this class should be copied to a
@@ -15,10 +16,11 @@ your local machine rather than retrieving data from remote sources.
     Don't forget to create the file ``~/.config/herbie/__init__.py``.
 
 Index files are assumed to be in the same directory as the file with
-".idx" appended to the file name. If you don't have these, you will need
-to generate them with wgrib2 (required for xarray subsetting).
+".idx" appended to the file name. If you don't have these inventory
+files then they can be generated on-the-fly if you have wgrib2 installed
+in your PATH or conda environment.
 
-Only one item is allowed in the SOURCES dict, and the key is "local".
+The keys in the SOURCES dictionary should start with "local".
 
 Since Herbie accepts kwargs and passes them to self, you can template
 the local file path with any parameter, just remember to pass that
@@ -26,19 +28,18 @@ parameter to the Herbie class 😋
 
 To ask Herbie to find files with the template below you would type
 
-..code-block::
-    python
+.. code-block:: python
 
-    Herbie('2021-9-21', model="my_model", fxx=0, ...)
+    Herbie('2021-9-21', model="model1", fxx=0, ...)
 
-    Herbie('2021-9-21', model="my_second_model", fxx=0, ...)
+    Herbie('2021-9-21', model="model2", fxx=0, ...)
 
 """
 
 
-class my_model:
+class model1:
     def template(self):
-        self.DESCRIPTION = "Local GRIB Files"
+        self.DESCRIPTION = "Local GRIB Files for model1"
         self.DETAILS = {
             "local": "These GRIB2 files are from a locally-stored modeling experiments."
         }
@@ -48,14 +49,15 @@ class my_model:
             "sfc": "Surface level fields",
         }
         self.SOURCES = {
-            "local": f"/path/to/your/model/templated/with/{self.model}/gribfiles/{self.date:%Y%m%d%H}/nest{self.nest}/the_file.t{self.date:%H}z.{self.product}.f{self.fxx:02d}.grib2",
+            "local_main": f"/path/to/your/model1/templated/with/{self.model}/gribfiles/{self.date:%Y%m%d%H}/nest{self.nest}/the_file.t{self.date:%H}z.{self.product}.f{self.fxx:02d}.grib2",
+            "local_alt": f"/alternative/path/to/your/model1/templated/with/{self.model}/gribfiles/{self.date:%Y%m%d%H}/nest{self.nest}/the_file.t{self.date:%H}z.{self.product}.f{self.fxx:02d}.grib2",
         }
         self.LOCALFILE = f"{self.get_remoteFileName}"
 
 
-class my_second_model:
+class model2:
     def template(self):
-        self.DESCRIPTION = "Local GRIB Files"
+        self.DESCRIPTION = "Local GRIB Files for model2"
         self.DETAILS = {
             "local": "These GRIB2 files are from a locally-stored modeling experiments."
         }
@@ -65,6 +67,7 @@ class my_second_model:
             "sfc": "Surface level fields",
         }
         self.SOURCES = {
-            "local": f"/path/to/your/second/model/templated/with/{self.model}/gribfiles/{self.date:%Y%m%d%H}/nest{self.nest}/the_file.t{self.date:%H}z.{self.product}.f{self.fxx:02d}.grib2",
+            "local_main": f"/path/to/your/model2/templated/with/{self.model}/gribfiles/{self.date:%Y%m%d%H}/nest{self.nest}/the_file.t{self.date:%H}z.{self.product}.f{self.fxx:02d}.grib2",
+            "local_alt": f"/alternative/path/to/your/model2/templated/with/{self.model}/gribfiles/{self.date:%Y%m%d%H}/nest{self.nest}/the_file.t{self.date:%H}z.{self.product}.f{self.fxx:02d}.grib2",
         }
         self.LOCALFILE = f"{self.get_remoteFileName}"

@@ -36,10 +36,8 @@ For more details, see https://blaylockbk.github.io/Herbie/_build/html/user_guide
 
 .. note:: Updates since the ``Herbie 0.0.9`` release
 
-    - TODO: Rename 'searchString' to 'subset' (and rename subset function)
+    - TODO: Rename 'searchString' to 'subset' (and rename subset function to??)
     - TODO: add `idx_to_df()` and `df_to_idx()` methods.
-    - TODO: clean up document examples. It's kind of scattered now.
-
 """
 import functools
 import hashlib
@@ -59,6 +57,8 @@ import pygrib
 import requests
 import xarray as xr
 from pyproj import CRS
+import subprocess
+from shutil import which
 
 import herbie.models as model_templates
 from herbie import Path, config
@@ -83,18 +83,30 @@ except:
 
 log = logging.getLogger(__name__)
 
+# Location of wgrib2 command, if it exists
+wgrib2 = which("wgrib2")
 
-def wgrib2_idx_to_str(GRIB2_FILEPATH):
-    """Produce the index file as a string with wgrib2"""
-    import subprocess
-    from shutil import which
 
-    if which("wgrib2") is None:
+def wgrib2_idx(grib2filepath):
+    """
+    Produce the GRIB2 inventory index with wgrib2.
+
+    Parameters
+    ----------
+    grib2filepath : Path
+        Path to a grib2 file.
+    """
+    if wgrib2:
+        p = subprocess.run(
+            f"{wgrib2} -s {grib2filepath}",
+            shell=True,
+            capture_output=True,
+            encoding="utf-8",
+            check=True,
+        )
+        return p.stdout
+    else:
         raise RuntimeError("wgrib2 command was not found.")
-
-    cmd = f"wgrib2 -s {GRIB2_FILEPATH}"
-    out = subprocess.run(cmd, shell=True, capture_output=True, check=True)
-    return out.stdout.decode("utf-8")
 
 
 class Herbie:
@@ -104,22 +116,17 @@ class Herbie:
     Parameters
     ----------
     date : pandas-parsable datetime
-        *Model initialization datetime*.
-        If None, then must set ``valid_date``.
+        Model *initialization* datetime. If None, then must set
+        ``valid_date``.
     valid_date : pandas-parsable datetime
-        Model valid datetime. Must set when ``date`` is None.
+        Model *valid* datetime. Must set when ``date`` is None.
     fxx : int
         Forecast lead time in hours. Available lead times depend on
-        the model type and model version. Range is model and run
-        dependant.
-    model : {'hrrr', 'hrrrak', 'rap', 'gfs', 'gfs_wave', 'ecmwf', 'rrfs', etc.}
-        Model name as defined in the models template folder. CASE INSENSITIVE
-        Some examples:
-        - ``'hrrr'`` HRRR contiguous United States model
-        - ``'hrrrak'`` HRRR Alaska model (alias ``'alaska'``)
-        - ``'rap'`` RAP model
-        - ``'ecmwf'`` ECMWF open data forecat products
-    product : {'sfc', 'prs', 'nat', 'subh'}
+        the model type and model version.
+    model : {'hrrr', 'hrrrak', 'rap', 'gfs', 'ecmwf', etc.}
+        Model name as defined in the models template folder.
+        CASE INSENSITIVE; e.g., "HRRR" is the same as "hrrr".
+    product : {'sfc', 'prs', 'nat', 'subh', etc.}
         Output variable product file type. If not specified, will
         use first product in model template file. CASE SENSITIVE.
         For example, the HRRR model has these products:
@@ -143,15 +150,17 @@ class Herbie:
     save_dir : str or pathlib.Path
         Location to save GRIB2 files locally. Default save directory
         is set in ``~/.config/herbie/config.cfg``.
-    Overwrite : bool
-        If True, look for GRIB2 files even if local copy exists.
-        If False (default), use the local copy (still need to find
-        the idx file).
+    overwrite : bool
+        If True, look for GRIB2 files on remote servers even if a local
+        copy exists. If False (default), use the GRIB local copy if it
+        exits. Note: it will still look for the idx file on the remote
+        or try to generate the idx file if wgrib2 is installed.
     **kwargs
-        Any other paremeter needed to satisfy the conditions in the
+        Any other parameter needed to satisfy the conditions in the
         model template file (e.g., nest=2, other_label='run2')
-
     """
+
+    config = config
 
     def __init__(
         self,
@@ -381,7 +390,7 @@ class Herbie:
             )
         return False, None
 
-    def find_grib(self, overwrite=False):
+    def find_grib(self):
         """Find a GRIB file from the archive sources
 
         Returns
@@ -419,7 +428,11 @@ class Herbie:
             # URL for the GRIB2 file and the .idx file.
             grib_url = self.SOURCES[source]
 
-            if self._check_grib(grib_url):
+            if source.startswith("local"):
+                grib_path = Path(grib_url).expand()
+                if grib_path.exists():
+                    return [grib_path, source]
+            elif self._check_grib(grib_url):
                 return [grib_url, source]
 
         return [None, None]
@@ -448,41 +461,52 @@ class Herbie:
             # URL for the GRIB2 file and the .idx file.
             grib_url = self.SOURCES[source]
 
-            if source == "local":
+            if source.startswith("local"):
                 local_grib = Path(grib_url).expand()
                 local_idx = local_grib.with_suffix(self.IDX_SUFFIX[0])
-                return [local_idx, "local"]
+                if local_idx.exists():
+                    return [local_idx, "local"]
+            else:
+                idx_exists, idx_url = self._check_idx(grib_url)
 
-            idx_exists, idx_url = self._check_idx(grib_url)
-
-            if idx_exists:
-                return [idx_url, source]
+                if idx_exists:
+                    return [idx_url, source]
 
         return [None, None]
 
     @property
     def get_remoteFileName(self, source=None):
-        """Predict Remote File Name"""
+        """Predict remote file name (assumes all sources are named the same)."""
         if source is None:
             source = list(self.SOURCES)[0]
         return self.SOURCES[source].split("/")[-1]
 
     @property
     def get_localFileName(self):
-        """Predict Local File Name of the full file"""
+        """Predict the local file name."""
         return self.LOCALFILE
 
     def get_localFilePath(self, searchString=None):
-        """Get path to local file"""
-        if list(self.SOURCES)[0] == "local":
-            # TODO: An experimental special case for locally stored GRIB2.
-            outFile = Path(self.SOURCES["local"]).expand()
-        else:
-            outFile = (
-                self.save_dir.expand()
-                / self.model
-                / f"{self.date:%Y%m%d}"
-                / self.get_localFileName
+        """Get full path to the local file"""
+
+        # Predict the localFileName from the first model template SOURCE.
+        localFilePath = (
+            self.save_dir.expand()
+            / self.model
+            / f"{self.date:%Y%m%d}"
+            / self.get_localFileName
+        )
+
+        # Check if any sources in a model template are "local"
+        # (i.e., a custom template file)
+        if any([i.startswith("local") for i in self.SOURCES.keys()]):
+            localFilePath = next(
+                (
+                    Path(self.SOURCES[i]).expand()
+                    for i in self.SOURCES
+                    if i.startswith("local") and Path(self.SOURCES[i]).expand().exists()
+                ),
+                localFilePath,
             )
 
         if searchString is not None:
@@ -519,25 +543,27 @@ class Herbie:
             # Prepend the filename with the hash label to distinguish it
             # from the full file. The hash label is a cryptic
             # representation of the GRIB messages in the subset.
-            outFile = (
-                outFile.parent
-                / f"subset_{hash_date}{hash_fxx}{hash_label}__{outFile.name}"
+            localFilePath = (
+                localFilePath.parent
+                / f"subset_{hash_date}{hash_fxx}{hash_label}__{localFilePath.name}"
             )
 
-        return outFile
+        return localFilePath
 
     @functools.cached_property
     def index_as_dataframe(self):
         """Read and cache the full index file"""
 
-        # If the index file does not exists on the archive, but we have
-        # downloaded the full file (it is local), then we can use wgrib2
-        # to get the index file.
-        if self.idx is None:
+        if self.grib_source == "local" and wgrib2:
+            # Generate IDX inventory with wgrib2
+            self.idx = StringIO(wgrib2_idx(self.get_localFilePath()))
+            self.idx_source = "generated"
+            self.IDX_STYLE = "wgrib2"
+        elif self.idx is None:
             if self.grib_source == "local":
                 # Use wgrib2 to get the index file if the file is local
                 log.info("🧙🏻‍♂️ I'll use wgrib2 to create the missing index file.")
-                self.idx = StringIO(wgrib2_idx_to_str(self.get_localFilePath()))
+                self.idx = StringIO(wgrib2_idx(self.get_localFilePath()))
                 self.IDX_STYLE = "wgrib2"
             else:
                 raise ValueError(
@@ -555,7 +581,7 @@ class Herbie:
             # https://noaa-hrrr-bdp-pds.s3.amazonaws.com/hrrr.20210101/conus/hrrr.t00z.wrfsfcf00.grib2.idx
             # Sometimes idx has more than the standard messages
             # https://noaa-nbm-grib2-pds.s3.amazonaws.com/blend.20210711/13/core/blend.t13z.core.f001.co.grib2.idx
-            if self.idx_source == "local":
+            if self.idx_source in ["local", "generated"]:
                 read_this_idx = self.idx
             else:
                 read_this_idx = None
@@ -850,9 +876,25 @@ class Herbie:
             if verbose:
                 print(f"💾 Saved the subset to {outFile}")
 
+        # This overrides the save_dir specified in __init__
+        if save_dir is not None:
+            self.save_dir = Path(save_dir).expand()
+
+        if not hasattr(Path(self.save_dir).expand(), "exists"):
+            self.save_dir = Path(self.save_dir).expand()
+
         # If the file exists in the localPath and we don't want to
         # overwrite, then we don't need to download it.
         outFile = self.get_localFilePath(searchString=searchString)
+
+        if save_dir is not None:
+            # Looks like the save_dir was changed.
+            outFile = (
+                self.save_dir.expand()
+                / self.model
+                / f"{self.date:%Y%m%d}"
+                / outFile.name
+            )
 
         # This overrides the overwrite specified in __init__
         if overwrite is not None:
@@ -867,18 +909,11 @@ class Herbie:
                 print(f"🌉 Already have local copy --> {outFile}")
             return outFile
 
-        if self.overwrite and self.grib_source == "local":
+        if self.overwrite and self.grib_source.startswith("local"):
             # Search for the grib files on the remote archives again
             self.grib, self.grib_source = self.find_grib(overwrite=True)
             self.idx, self.idx_source = self.find_idx()
             print(f"Overwrite local file with file from [{self.grib_source}]")
-
-        # This overrides the save_dir specified in __init__
-        if save_dir is not None:
-            self.save_dir = Path(save_dir).expand()
-
-        if not hasattr(Path(self.save_dir).expand(), "exists"):
-            self.save_dir = Path(self.save_dir).expand()
 
         # Check that data exists
         if self.grib is None:
@@ -911,7 +946,7 @@ class Herbie:
             urllib.request.urlretrieve(self.grib, outFile, _reporthook)
 
             self.grib = outFile
-            # self.grib_source = "local"
+            # self.grib_source = "local"  # ?? Why did I turn this off?
 
             if verbose:
                 print(
@@ -945,17 +980,36 @@ class Herbie:
 
         download_kwargs = {**dict(overwrite=False), **download_kwargs}
 
-        # Download file if local file does not exists
         local_file = self.get_localFilePath(searchString=searchString)
 
-        # ! \/ This is critical...
-        # Only remove file if it did n0t exists before we download it
-        remove_grib = not local_file.exists() and remove_grib
+        if "save_dir" in download_kwargs:
+            # Looks like the save_dir was changed.
+            self.save_dir = Path(download_kwargs["save_dir"]).expand()
+            local_file = (
+                self.save_dir.expand()
+                / self.model
+                / f"{self.date:%Y%m%d}"
+                / local_file.name
+            )
 
-        # ! \/ Fail-safe; Never remove a file if the source is 'local'
-        if self.grib_source == "local":
+        #!==============================================================
+        #!                        ⚠ CRITICAL ⚠
+        #!==============================================================
+        #! File cannot be removed if it previously existed.
+        #! (We don't want to remove previously downloaded content).
+        if local_file.exists() and remove_grib:
+            warnings.warn("Will not remove GRIB file because it previously existed.")
             remove_grib = False
+        #! File can only be be removed if it is a subsetted file.
+        #! (We don't want to remove full local files.)
+        if searchString is None and remove_grib:
+            warnings.warn(
+                "Will not remove GRIB file because Herbie will only remove subsetted files (not full files)."
+            )
+            remove_grib = False
+        #!==============================================================
 
+        # Download file if local file does not exists
         if not local_file.exists() or download_kwargs["overwrite"]:
             self.download(searchString=searchString, **download_kwargs)
 
@@ -1013,32 +1067,29 @@ class Herbie:
                     continue
                 ds[var].attrs["grid_mapping"] = "gribfile_projection"
 
-        # ! DO NOT REMOVE GRIB FILES IF THE SOURCE IS LOCAL
-        # ! (I know I already checked this; I am just so worried about erasing my local data)
-        if self.grib_source != "local":
-            if remove_grib:
-                # Load the datasets into memory before removing the file
-                Hxr = [ds.load() for ds in Hxr]
-                _ = [ds.close() for ds in Hxr]
+        if remove_grib:
+            # Load the datasets into memory before removing the file
+            Hxr = [ds.load() for ds in Hxr]
+            _ = [ds.close() for ds in Hxr]
 
-                # TODO:
-                # Forcefully close the files so it can be removed
-                # (this is a WindowsOS specific requirement).
-                # os.close(?WHAT IS THE FILE HANDLER?)
-                """
-                https://docs.python.org/3/library/os.html#os.remove
-                On Windows, attempting to remove a file that is in use
-                causes an exception to be raised; on Unix, the directory
-                entry is removed but the storage allocated to the file is
-                not made available until the original file is no longer in
-                use.
-                >> HOW DO I COMPLETELY CLOSE THE FILE OPENED BY CFGRIB??
-                """
-                if not sys.platform == "win32":
-                    # Removes file
-                    local_file.unlink()
-                else:
-                    warnings.warn("sorry, on windows I couldn't remove the file.")
+            # TODO:
+            # Forcefully close the files so it can be removed
+            # (this is a WindowsOS specific requirement).
+            # os.close(?WHAT IS THE FILE HANDLER?)
+            """
+            https://docs.python.org/3/library/os.html#os.remove
+            On Windows, attempting to remove a file that is in use
+            causes an exception to be raised; on Unix, the directory
+            entry is removed but the storage allocated to the file is
+            not made available until the original file is no longer in
+            use.
+            >> HOW DO I COMPLETELY CLOSE THE FILE OPENED BY CFGRIB??
+            """
+            if not sys.platform == "win32":
+                # Removes file
+                local_file.unlink()
+            else:
+                warnings.warn("sorry, on windows I couldn't remove the file.")
 
         if len(Hxr) == 1:
             return Hxr[0]
