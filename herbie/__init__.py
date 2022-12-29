@@ -33,16 +33,27 @@ __movie_clips__ = "https://youtube.com/playlist?list=PLrSOkJxBTv53gvwbw9pVlMm-1C
 ########################################################################
 # Append Path object with my custom expand method so user can use
 # environment variables in the config file (e.g., ${HOME}).
-def _expand(self):
+def _expand(self, resolve=False, absolute=False):
     """
-    Fully expand and resolve the Path with the given environment variables.
+    Fully expand the Path with the given environment variables.
+
+    Optionally, resolve the path.
 
     Example
     -------
     >>> Path('$HOME').expand()
-    >>> PosixPath('/p/home/blaylock')
+    Results in PosixPath('/p/home/blaylock')
     """
-    return Path(os.path.expandvars(self)).expanduser().resolve()
+    p = Path(os.path.expandvars(self)).expanduser()
+
+    if resolve:
+        # TODO Why does this get stuck sometimes??
+        p = p.resolve()
+
+    if absolute:
+        p = p.absolute()
+
+    return p
 
 
 Path.expand = _expand
