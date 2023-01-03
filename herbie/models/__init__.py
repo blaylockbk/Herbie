@@ -24,6 +24,7 @@ from .rap import *
 from .rrfs import *
 from .ecmwf import *
 from .gefs import *
+from .rtma import *
 
 # ======================================================================
 #                     Import Private Model Templates

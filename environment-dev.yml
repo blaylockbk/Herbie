@@ -4,12 +4,12 @@ name: herbie-dev
 channels:
   - conda-forge
 dependencies:
-  - python>=3.10
+  - python>=3.11
   - pip
   - git
   - curl
   - rclone # Not required, but is an awesome alternative (https://rclone.org/)
-  #- wgrib2 # ONLY AVAILABLE ON LINUX. Comment if not using Linux.
+  - wgrib2 # ONLY AVAILABLE ON LINUX. Comment if not using Linux.
 
   # ===========
   # Handy Tools
