@@ -8,6 +8,7 @@
    hrrr.ipynb
    hrrrak.ipynb
    rap.ipynb
+   rtma.ipynb
    nam.ipynb
    gfs.ipynb
    gefs.ipynb

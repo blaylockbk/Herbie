@@ -381,6 +381,7 @@
 <li class="toctree-l2"><a class="reference internal" href="_model_notebooks/hrrrak.html">HRRR-Alaska Data</a></li>
 <li class="toctree-l2"><a class="reference internal" href="_model_notebooks/rap.html">RAP Data</a></li>
 
+<li class="toctree-l2"><a class="reference internal" href="_model_notebooks/rtma.html">RTMA Data</a></li>
 <li class="toctree-l2"><a class="reference internal" href="_model_notebooks/nam.html">NAM Data</a></li>
 <li class="toctree-l2"><a class="reference internal" href="_model_notebooks/gfs.html">GFS Data</a></li>
 <li class="toctree-l2"><a class="reference internal" href="_model_notebooks/gefs.html">GEFS Data</a></li>
@@ -542,19 +543,19 @@ storage_class =
 </div>
 <p>Documentation for all the commands and options can be found on the <a class="reference external" href="https://rclone.org/">rclone</a> website.</p>
 <p>List bucket directories</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>rclone lsd publicAWS:noaa-goes16/
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>rclone<span class="w"> </span>lsd<span class="w"> </span>publicAWS:noaa-goes16/
 </pre></div>
 </div>
 <p>List bucket directories for specific folders</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>rclone lsd publicAWS:noaa-hrrr-bdp-pds/hrrr.20210101
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>rclone<span class="w"> </span>lsd<span class="w"> </span>publicAWS:noaa-hrrr-bdp-pds/hrrr.20210101
 </pre></div>
 </div>
 <p>List files in bucket</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>rclone ls publicAWS:noaa-hrrr-bdp-pds/hrrr.20210101/conus
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>rclone<span class="w"> </span>ls<span class="w"> </span>publicAWS:noaa-hrrr-bdp-pds/hrrr.20210101/conus
 </pre></div>
 </div>
 <p>Copy file or files to your local machine</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>rclone copy publicAWS:noaa-goes16/ABI-L2-MCMIPC/2018/283/00/OR_ABI-L2-MCMIPC-M3_G16_s20182830057203_e20182830059576_c20182830100076.nc ./
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>rclone<span class="w"> </span>copy<span class="w"> </span>publicAWS:noaa-goes16/ABI-L2-MCMIPC/2018/283/00/OR_ABI-L2-MCMIPC-M3_G16_s20182830057203_e20182830059576_c20182830100076.nc<span class="w"> </span>./
 </pre></div>
 </div>
 </section>
@@ -704,7 +705,7 @@ storage_class =
     
 <p class="copyright">
 
-    &copy; Copyright 2022, Brian K. Blaylock.    ♻ Updated: 16:49 UTC 12 Dec 2022.<br>
+    &copy; Copyright 2023, Brian K. Blaylock.    ♻ Updated: 21:54 UTC 03 Jan 2023.<br>
 
 </p>
 

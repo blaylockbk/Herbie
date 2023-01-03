@@ -4,7 +4,7 @@
 ## December 31, 2020
 
 eval "$(conda shell.bash hook)"
-conda activate herbie
+conda activate herbie-dev
 
 # Commit everything before we make Docs
 git add -A

@@ -31,6 +31,7 @@
 
    .. autosummary::
    
+      ~Herbie.config
       ~Herbie.get_localFileName
       ~Herbie.get_remoteFileName
       ~Herbie.index_as_dataframe

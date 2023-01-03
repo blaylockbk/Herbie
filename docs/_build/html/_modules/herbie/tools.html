@@ -41,11 +41,18 @@
     <script src="../../_static/sphinx_highlight.js"></script>
     <script src="../../_static/design-tabs.js"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script async="async" src="https://www.googletagmanager.com/gtag/js?id=G-PT9LX1B7B8"></script>
+    <script>
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){ dataLayer.push(arguments); }
+                gtag('js', new Date());
+                gtag('config', 'G-PT9LX1B7B8');
+            </script>
     <script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
     <script>mermaid.initialize({startOnLoad:true});</script>
     <script>DOCUMENTATION_OPTIONS.pagename = '_modules/herbie/tools';</script>
     <script src="https://kit.fontawesome.com/f6cc126dcc.js"></script>
-    <link rel="shortcut icon" href="../../_static/wxicon.png"/>
+    <link rel="shortcut icon" href="../../_static/Herbie-icon.ico"/>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -102,8 +109,8 @@
   
 
   
-    <img src="../../_static/HerbieLogo2_tan_transparent.png" class="logo__image only-light" alt="Logo image">
-    <img src="../../_static/HerbieLogo2_white_transparent.png" class="logo__image only-dark" alt="Logo image">
+    <img src="../../_static/logo_new/Herbie-logo.png" class="logo__image only-light" alt="Logo image">
+    <img src="../../_static/logo_new/Herbie-logo.png" class="logo__image only-dark" alt="Logo image">
   
   
 </a>
@@ -129,8 +136,8 @@
                 
 
                     <li class="nav-item">
-                      <a class="nav-link nav-internal" href="../../reference_guide/index.html">
-                        Reference Guide
+                      <a class="nav-link nav-internal" href="../../api_reference/index.html">
+                        API Reference
                       </a>
                     </li>
                 
@@ -257,8 +264,8 @@
                 
 
                     <li class="nav-item">
-                      <a class="nav-link nav-internal" href="../../reference_guide/index.html">
-                        Reference Guide
+                      <a class="nav-link nav-internal" href="../../api_reference/index.html">
+                        API Reference
                       </a>
                     </li>
                 
@@ -378,7 +385,7 @@
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">import</span> <span class="nn">xarray</span> <span class="k">as</span> <span class="nn">xr</span>
 
-<span class="kn">from</span> <span class="nn">herbie.archive</span> <span class="kn">import</span> <span class="n">Herbie</span><span class="p">,</span> <span class="n">wgrib2_idx_to_str</span>
+<span class="kn">from</span> <span class="nn">herbie.archive</span> <span class="kn">import</span> <span class="n">Herbie</span><span class="p">,</span> <span class="n">wgrib2_idx</span>
 <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">Path</span>
 
 <span class="c1"># Multithreading :)</span>
@@ -399,7 +406,7 @@
 
 
 <span class="k">def</span> <span class="nf">_validate_fxx</span><span class="p">(</span><span class="n">fxx</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Fast Herbie requires fxx as a list-like&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Fast Herbie requires fxx as a list-like&quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">fxx</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
         <span class="n">fxx</span> <span class="o">=</span> <span class="p">[</span><span class="n">fxx</span><span class="p">]</span>
 
@@ -410,7 +417,7 @@
 
 
 <span class="k">def</span> <span class="nf">_validate_DATES</span><span class="p">(</span><span class="n">DATES</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Fast Herbie requires DATES as a list-like&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Fast Herbie requires DATES as a list-like&quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">DATES</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
         <span class="n">DATES</span> <span class="o">=</span> <span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">DATES</span><span class="p">)]</span>
     <span class="k">elif</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">DATES</span><span class="p">,</span> <span class="s2">&quot;__len__&quot;</span><span class="p">):</span>
@@ -425,7 +432,7 @@
 
 
 <span class="k">def</span> <span class="nf">Herbie_latest</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">freq</span><span class="o">=</span><span class="s2">&quot;1H&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Search for the most recent GRIB2 file (using multithreading).</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Search for the most recent GRIB2 file (using multithreading).</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -452,9 +459,9 @@
     <span class="k">return</span> <span class="n">FH</span><span class="o">.</span><span class="n">file_exists</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
 
 
-<div class="viewcode-block" id="FastHerbie"><a class="viewcode-back" href="../../reference_guide/_autosummary/herbie.tools.FastHerbie.html#herbie.tools.FastHerbie">[docs]</a><span class="k">class</span> <span class="nc">FastHerbie</span><span class="p">:</span>
-<div class="viewcode-block" id="FastHerbie.__init__"><a class="viewcode-back" href="../../reference_guide/_autosummary/herbie.tools.FastHerbie.html#herbie.tools.FastHerbie.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">DATES</span><span class="p">,</span> <span class="n">fxx</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="o">*</span><span class="p">,</span> <span class="n">max_threads</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Create many Herbie objects with methods to download or read with xarray.</span>
+<div class="viewcode-block" id="FastHerbie"><a class="viewcode-back" href="../../api_reference/_autosummary/herbie.tools.FastHerbie.html#herbie.tools.FastHerbie">[docs]</a><span class="k">class</span> <span class="nc">FastHerbie</span><span class="p">:</span>
+<div class="viewcode-block" id="FastHerbie.__init__"><a class="viewcode-back" href="../../api_reference/_autosummary/herbie.tools.FastHerbie.html#herbie.tools.FastHerbie.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">DATES</span><span class="p">,</span> <span class="n">fxx</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="o">*</span><span class="p">,</span> <span class="n">max_threads</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create many Herbie objects with methods to download or read with xarray.</span>
 
 <span class="sd">        Uses multithreading.</span>
 
@@ -527,8 +534,8 @@
     <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">objects</span><span class="p">)</span>
 
-<div class="viewcode-block" id="FastHerbie.df"><a class="viewcode-back" href="../../reference_guide/_autosummary/herbie.tools.FastHerbie.html#herbie.tools.FastHerbie.df">[docs]</a>    <span class="k">def</span> <span class="nf">df</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Organize Herbie objects into a DataFrame.</span>
+<div class="viewcode-block" id="FastHerbie.df"><a class="viewcode-back" href="../../api_reference/_autosummary/herbie.tools.FastHerbie.html#herbie.tools.FastHerbie.df">[docs]</a>    <span class="k">def</span> <span class="nf">df</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Organize Herbie objects into a DataFrame.</span>
 
 <span class="sd">        #? Why is this inefficient? Takes several seconds to display because the __str__ does a lot.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -540,8 +547,8 @@
             <span class="n">ds_list</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">DATES</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;F</span><span class="si">{</span><span class="n">i</span><span class="si">:</span><span class="s2">02d</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">fxx</span><span class="p">]</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="FastHerbie.download"><a class="viewcode-back" href="../../reference_guide/_autosummary/herbie.tools.FastHerbie.html#herbie.tools.FastHerbie.download">[docs]</a>    <span class="k">def</span> <span class="nf">download</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">searchString</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">max_threads</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="o">**</span><span class="n">download_kwargs</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Download many Herbie objects</span>
+<div class="viewcode-block" id="FastHerbie.download"><a class="viewcode-back" href="../../api_reference/_autosummary/herbie.tools.FastHerbie.html#herbie.tools.FastHerbie.download">[docs]</a>    <span class="k">def</span> <span class="nf">download</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">searchString</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">max_threads</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="o">**</span><span class="n">download_kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Download many Herbie objects</span>
 
 <span class="sd">        Uses multithreading.</span>
 
@@ -583,14 +590,14 @@
 
         <span class="k">return</span> <span class="n">outFiles</span></div>
 
-<div class="viewcode-block" id="FastHerbie.xarray"><a class="viewcode-back" href="../../reference_guide/_autosummary/herbie.tools.FastHerbie.html#herbie.tools.FastHerbie.xarray">[docs]</a>    <span class="k">def</span> <span class="nf">xarray</span><span class="p">(</span>
+<div class="viewcode-block" id="FastHerbie.xarray"><a class="viewcode-back" href="../../api_reference/_autosummary/herbie.tools.FastHerbie.html#herbie.tools.FastHerbie.xarray">[docs]</a>    <span class="k">def</span> <span class="nf">xarray</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">searchString</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
         <span class="n">max_threads</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="o">**</span><span class="n">xarray_kwargs</span><span class="p">,</span>
     <span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Read many Herbie objects into an xarray Dataset</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Read many Herbie objects into an xarray Dataset</span>
 
 <span class="sd">        # TODO: Sometimes the Jupyter Cell always crashes when I run this.</span>
 <span class="sd">        # TODO: &quot;fatal flex scanner internal error--end of buffer missed&quot;</span>
@@ -675,8 +682,8 @@
 <span class="c1">########################################################################</span>
 
 
-<div class="viewcode-block" id="create_index_files"><a class="viewcode-back" href="../../reference_guide/_autosummary/herbie.tools.create_index_files.html#herbie.tools.create_index_files">[docs]</a><span class="k">def</span> <span class="nf">create_index_files</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Create an index file for all GRIB2 files in a directory.</span>
+<div class="viewcode-block" id="create_index_files"><a class="viewcode-back" href="../../api_reference/_autosummary/herbie.tools.create_index_files.html#herbie.tools.create_index_files">[docs]</a><span class="k">def</span> <span class="nf">create_index_files</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Create an index file for all GRIB2 files in a directory.</span>
 
 <span class="sd">    # TODO: use Path().expand()</span>
 
@@ -704,7 +711,7 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="n">f_idx</span><span class="o">.</span><span class="n">exists</span><span class="p">()</span> <span class="ow">or</span> <span class="n">overwrite</span><span class="p">:</span>
             <span class="c1"># Create an index using wgrib2&#39;s simple inventory option</span>
             <span class="c1"># if it doesn&#39;t already exist or if overwrite is True.</span>
-            <span class="n">index_data</span> <span class="o">=</span> <span class="n">wgrib2_idx_to_str</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">f</span><span class="p">))</span>
+            <span class="n">index_data</span> <span class="o">=</span> <span class="n">wgrib2_idx</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">f</span><span class="p">))</span>
             <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">f_idx</span><span class="p">,</span> <span class="s2">&quot;w+&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">out_idx</span><span class="p">:</span>
                 <span class="n">out_idx</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">index_data</span><span class="p">)</span></div>
 
@@ -714,7 +721,7 @@
 
 <span class="c1"># !OLD, use FastHerbie class instead</span>
 <span class="k">def</span> <span class="nf">fast_Herbie</span><span class="p">(</span><span class="n">DATES</span><span class="p">,</span> <span class="n">fxx</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="o">*</span><span class="p">,</span> <span class="n">max_threads</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create many Herbie objects with Multithreading.</span>
 
 <span class="sd">    .. note::</span>
@@ -784,7 +791,7 @@
     <span class="n">download_kw</span><span class="o">=</span><span class="p">{},</span>
     <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
 <span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Use multithreading to download many Herbie objects</span>
 
 <span class="sd">    Benchmark</span>
@@ -836,7 +843,7 @@
     <span class="n">xarray_kw</span><span class="o">=</span><span class="p">{},</span>
     <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
 <span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Use multithreading to download many Herbie objects</span>
 
 <span class="sd">    Parameters</span>
@@ -910,7 +917,7 @@
 
 <span class="c1"># ! Old: Use FastHerbie instead</span>
 <span class="k">def</span> <span class="nf">bulk_download</span><span class="p">(</span><span class="n">DATES</span><span class="p">,</span> <span class="n">searchString</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">fxx</span><span class="o">=</span><span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Bulk download GRIB2 files from file source to the local machine.</span>
 
 <span class="sd">    Iterates over a list of datetimes (DATES) and forecast lead times (fxx).</span>
@@ -981,7 +988,7 @@
 
 <span class="c1"># ! Old: Use FastHerbie instead</span>
 <span class="k">def</span> <span class="nf">xr_concat_sameRun</span><span class="p">(</span><span class="n">DATE</span><span class="p">,</span> <span class="n">searchString</span><span class="p">,</span> <span class="n">fxx</span><span class="o">=</span><span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">18</span><span class="p">),</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Load and concatenate xarray objects by forecast lead time for the same run.</span>
 
 <span class="sd">    Parameters</span>
@@ -1003,7 +1010,7 @@
 
 <span class="c1"># ! Old: Use FastHerbie instead</span>
 <span class="k">def</span> <span class="nf">xr_concat_sameLead</span><span class="p">(</span><span class="n">DATES</span><span class="p">,</span> <span class="n">searchString</span><span class="p">,</span> <span class="n">fxx</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Load and concatenate xarray objects by model initialization date for the same lead time.</span>
 
 <span class="sd">    Parameters</span>
@@ -1024,7 +1031,7 @@
 
 <span class="c1"># ! Old: Use herbie accessor instead</span>
 <span class="k">def</span> <span class="nf">nearest_points</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="n">points</span><span class="p">,</span> <span class="n">names</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Get the nearest latitude/longitude points from a xarray Dataset.</span>
 
 <span class="sd">    This is **much** faster than my old &quot;pluck_points&quot; method. For</span>
@@ -1159,7 +1166,7 @@
     
 <p class="copyright">
 
-    &copy; Copyright 2022, Brian K. Blaylock.    ♻ Updated: 02:57 UTC 10 Dec 2022.<br>
+    &copy; Copyright 2023, Brian K. Blaylock.    ♻ Updated: 21:54 UTC 03 Jan 2023.<br>
 
 </p>
 
