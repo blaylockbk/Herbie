@@ -37,6 +37,7 @@ class rtma:
         self.EXPECT_IDX_FILE = None
         self.LOCALFILE = f"{self.get_remoteFileName}"
 
+
 class rtma_ak:
     def template(self):
         self.DESCRIPTION = "Alaska Real-Time Mesoscale Analysis (RTMA)"
