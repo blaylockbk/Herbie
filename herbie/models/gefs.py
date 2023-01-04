@@ -13,6 +13,7 @@ class gefs:
         self.DESCRIPTION = "Global Ensemble Forecast System (GEFS)"
         self.DETAILS = {
             "Amazon Open Data": "https://registry.opendata.aws/noaa-gefs/",
+            "NOMADS": "https://www.nco.ncep.noaa.gov/pmb/products/gens/",
         }
 
         self.PRODUCTS = {
