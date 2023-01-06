@@ -4,7 +4,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
     <title>🏔 Plot model terrain &#8212; Herbie 2022.9.0 documentation</title>
   
@@ -39,7 +39,6 @@
     <script src="../../_static/underscore.js"></script>
     <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../../_static/doctools.js"></script>
-    <script src="../../_static/sphinx_highlight.js"></script>
     <script src="../../_static/design-tabs.js"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script async="async" src="https://www.googletagmanager.com/gtag/js?id=G-PT9LX1B7B8"></script>
@@ -386,7 +385,8 @@
 <li class="toctree-l2"><a class="reference internal" href="../_model_notebooks/rtma.html">RTMA Data</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../_model_notebooks/nam.html">NAM Data</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../_model_notebooks/gfs.html">GFS Data</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../_model_notebooks/gefs.html">GEFS Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../_model_notebooks/gefs.html">GEFS - Global Ensemble Forecast System</a></li>
+
 
 <li class="toctree-l2"><a class="reference internal" href="../_model_notebooks/ecmwf.html">ECMWF Open Data</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../_model_notebooks/nbm.html">NBM Data</a></li>
@@ -1331,7 +1331,7 @@ Attributes:
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">H</span> <span class="o">=</span> <span class="n">Herbie</span><span class="p">(</span><span class="s2">&quot;2022-01-01&quot;</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="s1">&#39;gfs&#39;</span><span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">H</span> <span class="o">=</span> <span class="n">Herbie</span><span class="p">(</span><span class="s2">&quot;2022-01-01&quot;</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="s2">&quot;gfs&quot;</span><span class="p">)</span>
 <span class="n">ds</span> <span class="o">=</span> <span class="n">H</span><span class="o">.</span><span class="n">terrain</span><span class="p">()</span>
 <span class="n">ds</span>
 </pre></div>
@@ -1898,7 +1898,7 @@ Attributes:
     
 <p class="copyright">
 
-    &copy; Copyright 2023, Brian K. Blaylock.    ♻ Updated: 21:54 UTC 03 Jan 2023.<br>
+    &copy; Copyright 2023, Brian K. Blaylock.    ♻ Updated: 06:23 UTC 06 Jan 2023.<br>
 
 </p>
 
@@ -1917,7 +1917,7 @@ Attributes:
   <div class="footer-item">
     
 <p class="sphinx-version">
-Created using <a href="http://sphinx-doc.org/">Sphinx</a> 5.3.0.<br>
+Created using <a href="http://sphinx-doc.org/">Sphinx</a> 5.0.0.<br>
 </p>
 
   </div>

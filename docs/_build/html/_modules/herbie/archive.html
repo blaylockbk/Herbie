@@ -38,7 +38,6 @@
     <script src="../../_static/underscore.js"></script>
     <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../../_static/doctools.js"></script>
-    <script src="../../_static/sphinx_highlight.js"></script>
     <script src="../../_static/design-tabs.js"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script async="async" src="https://www.googletagmanager.com/gtag/js?id=G-PT9LX1B7B8"></script>
@@ -458,7 +457,7 @@
 
 
 <span class="k">def</span> <span class="nf">wgrib2_idx</span><span class="p">(</span><span class="n">grib2filepath</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Produce the GRIB2 inventory index with wgrib2.</span>
 
 <span class="sd">    Parameters</span>
@@ -480,7 +479,7 @@
 
 
 <div class="viewcode-block" id="Herbie"><a class="viewcode-back" href="../../api_reference/_autosummary/herbie.archive.Herbie.html#herbie.archive.Herbie">[docs]</a><span class="k">class</span> <span class="nc">Herbie</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Locate GRIB2 file at one of the archive sources.</span>
 
 <span class="sd">    Parameters</span>
@@ -546,7 +545,7 @@
         <span class="n">verbose</span><span class="o">=</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;default&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;verbose&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">),</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Specify model output and find GRIB2 file at one of the sources.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">fxx</span> <span class="o">=</span> <span class="n">fxx</span>
@@ -638,7 +637,7 @@
                 <span class="p">)</span></div>
 
     <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Representation in Notebook&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Representation in Notebook&quot;&quot;&quot;</span>
         <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span>
             <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">ANSI</span><span class="o">.</span><span class="n">herbie</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span><span class="si">}</span><span class="s2"> model&quot;</span><span class="p">,</span>
             <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">ANSI</span><span class="o">.</span><span class="n">italic</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">product</span><span class="si">}{</span><span class="n">ANSI</span><span class="o">.</span><span class="n">reset</span><span class="si">}</span><span class="s2"> product initialized&quot;</span><span class="p">,</span>
@@ -648,27 +647,27 @@
         <span class="k">return</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;When Herbie class object is printed, print all properties.&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;When Herbie class object is printed, print all properties.&quot;&quot;&quot;</span>
         <span class="c1"># * Keep this simple so it runs fast.</span>
         <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;║HERBIE╠ </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">product</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,)</span>
         <span class="k">return</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Herbie.tell_me_everything"><a class="viewcode-back" href="../../api_reference/_autosummary/herbie.archive.Herbie.html#herbie.archive.Herbie.tell_me_everything">[docs]</a>    <span class="k">def</span> <span class="nf">tell_me_everything</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Print all the attributes of the Herbie object&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Print all the attributes of the Herbie object&quot;&quot;&quot;</span>
         <span class="n">msg</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">dir</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">),</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)):</span>
                 <span class="k">if</span> <span class="ow">not</span> <span class="n">i</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;__&quot;</span><span class="p">):</span>
-                    <span class="n">msg</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;self.</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">=</span><span class="si">{</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="w"> </span><span class="n">i</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                    <span class="n">msg</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;self.</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">=</span><span class="si">{</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
         <span class="nb">print</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span></div>
 
     <span class="k">def</span> <span class="nf">__logo__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;For Fun, show the Herbie Logo&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;For Fun, show the Herbie Logo&quot;&quot;&quot;</span>
         <span class="nb">print</span><span class="p">(</span><span class="n">ANSI</span><span class="o">.</span><span class="n">ascii</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_validate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Validate the Herbie class input arguments&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Validate the Herbie class input arguments&quot;&quot;&quot;</span>
 
         <span class="c1"># Accept model alias</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;alaska&quot;</span><span class="p">:</span>
@@ -700,7 +699,7 @@
                     <span class="bp">self</span><span class="o">.</span><span class="n">priority</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="s2">&quot;nomads&quot;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_ping_pando</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Pinging the Pando server before downloading can prevent a bad handshake.&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Pinging the Pando server before downloading can prevent a bad handshake.&quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">requests</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="s2">&quot;https://pando-rgw01.chpc.utah.edu/&quot;</span><span class="p">)</span>
         <span class="k">except</span><span class="p">:</span>
@@ -708,7 +707,7 @@
             <span class="k">pass</span>
 
     <span class="k">def</span> <span class="nf">_check_grib</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="n">min_content_length</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Check that the GRIB2 URL exist and is of useful length.</span>
 
 <span class="sd">        Parameters</span>
@@ -731,7 +730,7 @@
             <span class="k">return</span> <span class="kc">False</span>
 
     <span class="k">def</span> <span class="nf">_check_idx</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if an index file exist for the GRIB2 URL.&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Check if an index file exist for the GRIB2 URL.&quot;&quot;&quot;</span>
         <span class="c1"># To check inventory files with slightly different URL structure</span>
         <span class="c1"># we will loop through the IDX_SUFFIX.</span>
 
@@ -761,7 +760,7 @@
         <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">None</span>
 
 <div class="viewcode-block" id="Herbie.find_grib"><a class="viewcode-back" href="../../api_reference/_autosummary/herbie.archive.Herbie.html#herbie.archive.Herbie.find_grib">[docs]</a>    <span class="k">def</span> <span class="nf">find_grib</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Find a GRIB file from the archive sources</span>
+        <span class="sd">&quot;&quot;&quot;Find a GRIB file from the archive sources</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -808,7 +807,7 @@
         <span class="k">return</span> <span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span></div>
 
 <div class="viewcode-block" id="Herbie.find_idx"><a class="viewcode-back" href="../../api_reference/_autosummary/herbie.archive.Herbie.html#herbie.archive.Herbie.find_idx">[docs]</a>    <span class="k">def</span> <span class="nf">find_idx</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Find an index file for the GRIB file&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Find an index file for the GRIB file&quot;&quot;&quot;</span>
         <span class="c1"># If priority list is set, we want to search SOURCES in that</span>
         <span class="c1"># priority order. If priority is None, then search all SOURCES</span>
         <span class="c1"># in the order given by the model template file.</span>
@@ -846,18 +845,18 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">get_remoteFileName</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Predict remote file name (assumes all sources are named the same).&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Predict remote file name (assumes all sources are named the same).&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">source</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">source</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">SOURCES</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">SOURCES</span><span class="p">[</span><span class="n">source</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">get_localFileName</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Predict the local file name.&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Predict the local file name.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">LOCALFILE</span>
 
 <div class="viewcode-block" id="Herbie.get_localFilePath"><a class="viewcode-back" href="../../api_reference/_autosummary/herbie.archive.Herbie.html#herbie.archive.Herbie.get_localFilePath">[docs]</a>    <span class="k">def</span> <span class="nf">get_localFilePath</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">searchString</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get full path to the local file&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Get full path to the local file&quot;&quot;&quot;</span>
 
         <span class="c1"># Predict the localFileName from the first model template SOURCE.</span>
         <span class="n">localFilePath</span> <span class="o">=</span> <span class="p">(</span>
@@ -922,7 +921,7 @@
 
     <span class="nd">@functools</span><span class="o">.</span><span class="n">cached_property</span>
     <span class="k">def</span> <span class="nf">index_as_dataframe</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Read and cache the full index file&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Read and cache the full index file&quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">grib_source</span> <span class="o">==</span> <span class="s2">&quot;local&quot;</span> <span class="ow">and</span> <span class="n">wgrib2</span><span class="p">:</span>
             <span class="c1"># Generate IDX inventory with wgrib2</span>
@@ -1091,7 +1090,7 @@
         <span class="k">return</span> <span class="n">df</span>
 
 <div class="viewcode-block" id="Herbie.read_idx"><a class="viewcode-back" href="../../api_reference/_autosummary/herbie.archive.Herbie.html#herbie.archive.Herbie.read_idx">[docs]</a>    <span class="k">def</span> <span class="nf">read_idx</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">searchString</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Inspect the GRIB2 file contents by reading the index file.</span>
 
 <span class="sd">        This reads index files created with the wgrib2 utility.</span>
@@ -1134,7 +1133,7 @@
         <span class="n">verbose</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">errors</span><span class="o">=</span><span class="s2">&quot;warn&quot;</span><span class="p">,</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Download file from source.</span>
 
 <span class="sd">        TODO: When we download a full file, the value of self.grib and</span>
@@ -1169,7 +1168,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">def</span> <span class="nf">_reporthook</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">):</span>
-<span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
+            <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">            Print download progress in megabytes.</span>
 
 <span class="sd">            Parameters</span>
@@ -1187,7 +1186,7 @@
                 <span class="p">)</span>
 
         <span class="k">def</span> <span class="nf">subset</span><span class="p">(</span><span class="n">searchString</span><span class="p">,</span> <span class="n">outFile</span><span class="p">):</span>
-<span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
+            <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">            Download a subset specified by the regex searchString</span>
 <span class="sd">            &quot;&quot;&quot;</span>
             <span class="c1"># TODO An alternative to downloadling subset with curl is</span>
@@ -1336,7 +1335,7 @@
         <span class="n">remove_grib</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="o">**</span><span class="n">download_kwargs</span><span class="p">,</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Open GRIB2 data as xarray DataSet</span>
 
 <span class="sd">        Parameters</span>
@@ -1446,7 +1445,7 @@
             <span class="c1"># Forcefully close the files so it can be removed</span>
             <span class="c1"># (this is a WindowsOS specific requirement).</span>
             <span class="c1"># os.close(?WHAT IS THE FILE HANDLER?)</span>
-<span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
+            <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">            https://docs.python.org/3/library/os.html#os.remove</span>
 <span class="sd">            On Windows, attempting to remove a file that is in use</span>
 <span class="sd">            causes an exception to be raised; on Unix, the directory</span>
@@ -1478,7 +1477,7 @@
 
     <span class="c1"># Shortcut Methods below</span>
 <div class="viewcode-block" id="Herbie.terrain"><a class="viewcode-back" href="../../api_reference/_autosummary/herbie.archive.Herbie.html#herbie.archive.Herbie.terrain">[docs]</a>    <span class="k">def</span> <span class="nf">terrain</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">water_masked</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return model terrain as an xarray.Dataset&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Return model terrain as an xarray.Dataset&quot;&quot;&quot;</span>
         <span class="n">ds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">xarray</span><span class="p">(</span><span class="s2">&quot;:(?:HGT|LAND):surface&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">water_masked</span><span class="p">:</span>
             <span class="n">ds</span><span class="p">[</span><span class="s2">&quot;orog&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ds</span><span class="o">.</span><span class="n">orog</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">ds</span><span class="o">.</span><span class="n">lsm</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span>
@@ -1540,7 +1539,7 @@
     
 <p class="copyright">
 
-    &copy; Copyright 2023, Brian K. Blaylock.    ♻ Updated: 21:54 UTC 03 Jan 2023.<br>
+    &copy; Copyright 2023, Brian K. Blaylock.    ♻ Updated: 06:23 UTC 06 Jan 2023.<br>
 
 </p>
 
@@ -1559,7 +1558,7 @@
   <div class="footer-item">
     
 <p class="sphinx-version">
-Created using <a href="http://sphinx-doc.org/">Sphinx</a> 5.3.0.<br>
+Created using <a href="http://sphinx-doc.org/">Sphinx</a> 5.0.0.<br>
 </p>
 
   </div>

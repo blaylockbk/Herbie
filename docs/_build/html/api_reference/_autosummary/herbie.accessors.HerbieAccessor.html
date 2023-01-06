@@ -4,7 +4,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
     <title>herbie.accessors.HerbieAccessor &#8212; Herbie 2022.9.0 documentation</title>
   
@@ -39,7 +39,6 @@
     <script src="../../_static/underscore.js"></script>
     <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../../_static/doctools.js"></script>
-    <script src="../../_static/sphinx_highlight.js"></script>
     <script src="../../_static/design-tabs.js"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script async="async" src="https://www.googletagmanager.com/gtag/js?id=G-PT9LX1B7B8"></script>
@@ -417,6 +416,10 @@
 
 <p class="rubric">Methods</p>
 <table class="autosummary longtable table autosummary">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#id0" title="herbie.accessors.HerbieAccessor.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>(xarray_obj)</p></td>
 <td><p></p></td>
@@ -431,6 +434,10 @@
 </table>
 <p class="rubric">Attributes</p>
 <table class="autosummary longtable table autosummary">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#herbie.accessors.HerbieAccessor.center" title="herbie.accessors.HerbieAccessor.center"><code class="xref py py-obj docutils literal notranslate"><span class="pre">center</span></code></a></p></td>
 <td><p>Return the geographic center point of this dataset.</p></td>
@@ -445,6 +452,10 @@
 </table>
 <p><strong>Methods:</strong></p>
 <table class="autosummary longtable table autosummary">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#id0" title="herbie.accessors.HerbieAccessor.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>(xarray_obj)</p></td>
 <td><p></p></td>
@@ -459,6 +470,10 @@
 </table>
 <p><strong>Attributes:</strong></p>
 <table class="autosummary longtable table autosummary">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#herbie.accessors.HerbieAccessor.center" title="herbie.accessors.HerbieAccessor.center"><code class="xref py py-obj docutils literal notranslate"><span class="pre">center</span></code></a></p></td>
 <td><p>Return the geographic center point of this dataset.</p></td>
@@ -488,7 +503,7 @@
 <dd><p>Cartopy coordinate reference system (crs) from a cfgrib Dataset.</p>
 <p>Projection information is from the grib2 message for each variable.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>ds</strong> (<em>xarray.Dataset</em>) – An xarray.Dataset from a GRIB2 file opened by the cfgrib engine.</p>
 </dd>
 </dl>
@@ -498,45 +513,28 @@
 <dt class="sig sig-object py" id="herbie.accessors.HerbieAccessor.nearest_points">
 <span class="sig-name descname"><span class="pre">nearest_points</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">points</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">names</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/herbie/accessors.html#HerbieAccessor.nearest_points"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#herbie.accessors.HerbieAccessor.nearest_points" title="Permalink to this definition">#</a></dt>
 <dd><p>Get the nearest latitude/longitude points from a xarray Dataset.</p>
-<section id="info">
-<h2>Info<a class="headerlink" href="#info" title="Permalink to this heading">#</a></h2>
 <ul class="simple">
 <li><p>Stack Overflow: <a class="reference external" href="https://stackoverflow.com/questions/58758480/xarray-select-nearest-lat-lon-with-multi-dimension-coordinates">https://stackoverflow.com/questions/58758480/xarray-select-nearest-lat-lon-with-multi-dimension-coordinates</a></p></li>
 <li><p>MetPy Details: <a class="reference external" href="https://unidata.github.io/MetPy/latest/tutorials/xarray_tutorial.html?highlight=assign_y_x">https://unidata.github.io/MetPy/latest/tutorials/xarray_tutorial.html?highlight=assign_y_x</a></p></li>
 </ul>
 <dl class="field-list simple">
-<dt class="field-odd">param ds<span class="colon">:</span></dt>
-<dd class="field-odd"><p>A Herbie-friendly xarray Dataset</p>
-</dd>
-<dt class="field-even">type ds<span class="colon">:</span></dt>
-<dd class="field-even"><p>xr.Dataset</p>
-</dd>
-<dt class="field-odd">param points<span class="colon">:</span></dt>
-<dd class="field-odd"><p>The longitude and latitude (lon, lat) coordinate pair (as a tuple)
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ds</strong> (<em>xr.Dataset</em>) – A Herbie-friendly xarray Dataset</p></li>
+<li><p><strong>points</strong> (<em>tuple</em><em> (</em><em>lon</em><em>, </em><em>lat</em><em>) or </em><em>list of tuples</em>) – The longitude and latitude (lon, lat) coordinate pair (as a tuple)
 for the points you want to pluck from the gridded Dataset.
-A list of tuples may be given to return the values from multiple points.</p>
-</dd>
-<dt class="field-even">type points<span class="colon">:</span></dt>
-<dd class="field-even"><p>tuple (lon, lat) or list of tuples</p>
-</dd>
-<dt class="field-odd">param names<span class="colon">:</span></dt>
-<dd class="field-odd"><p>A list of names for each point location (i.e., station name).
+A list of tuples may be given to return the values from multiple points.</p></li>
+<li><p><strong>names</strong> (<em>list</em>) – A list of names for each point location (i.e., station name).
 None will not append any names. names should be the same
-length as points.</p>
-</dd>
-<dt class="field-even">type names<span class="colon">:</span></dt>
-<dd class="field-even"><p>list</p>
-</dd>
-<dt class="field-odd">param Benchmark<span class="colon">:</span></dt>
-<dd class="field-odd"><p></p></dd>
-<dt class="field-even">param ———<span class="colon">:</span></dt>
-<dd class="field-even"><p>This is <strong>much</strong> faster than my old “pluck_points” method.
+length as points.</p></li>
+<li><p><strong>Benchmark</strong> – </p></li>
+<li><p><strong>---------</strong> – This is <strong>much</strong> faster than my old “pluck_points” method.
 For matchign 1,948 points:
 - <cite>nearest_points</cite> completed in 7.5 seconds.
-- <cite>pluck_points</cite> completed in 2 minutes.</p>
+- <cite>pluck_points</cite> completed in 2 minutes.</p></li>
+</ul>
 </dd>
 </dl>
-</section>
 </dd></dl>
 
 <dl class="py method">
@@ -544,7 +542,7 @@ For matchign 1,948 points:
 <span class="sig-name descname"><span class="pre">plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">common_features_kw</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vars</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/herbie/accessors.html#HerbieAccessor.plot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#herbie.accessors.HerbieAccessor.plot" title="Permalink to this definition">#</a></dt>
 <dd><p>Plot data on a map.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>vars</strong> (<em>list</em>) – List of variables to plot. Default None will plot all
 variables in the DataSet.</p>
 </dd>
@@ -592,92 +590,6 @@ variables in the DataSet.</p>
           
             <div class="bd-sidebar-secondary bd-toc">
               
-<div class="toc-item">
-  
-<div class="tocsection onthispage">
-    <i class="fa-solid fa-list"></i> On this page
-</div>
-<nav id="bd-toc-nav" class="page-toc">
-    <ul class="visible nav section-nav flex-column">
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#herbie.accessors.HerbieAccessor">
-   <code class="docutils literal notranslate">
-    <span class="pre">
-     HerbieAccessor
-    </span>
-   </code>
-  </a>
-  <ul class="nav section-nav flex-column">
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#herbie.accessors.HerbieAccessor.__init__">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       HerbieAccessor.__init__()
-      </span>
-     </code>
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#id0">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       HerbieAccessor.__init__()
-      </span>
-     </code>
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#herbie.accessors.HerbieAccessor.center">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       HerbieAccessor.center
-      </span>
-     </code>
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#herbie.accessors.HerbieAccessor.crs">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       HerbieAccessor.crs
-      </span>
-     </code>
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#herbie.accessors.HerbieAccessor.nearest_points">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       HerbieAccessor.nearest_points()
-      </span>
-     </code>
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#herbie.accessors.HerbieAccessor.plot">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       HerbieAccessor.plot()
-      </span>
-     </code>
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#herbie.accessors.HerbieAccessor.polygon">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       HerbieAccessor.polygon
-      </span>
-     </code>
-    </a>
-   </li>
-  </ul>
- </li>
-</ul>
-
-</nav>
-</div>
-
 <div class="toc-item">
   
 <div id="searchbox"></div>
@@ -730,7 +642,7 @@ variables in the DataSet.</p>
     
 <p class="copyright">
 
-    &copy; Copyright 2023, Brian K. Blaylock.    ♻ Updated: 21:54 UTC 03 Jan 2023.<br>
+    &copy; Copyright 2023, Brian K. Blaylock.    ♻ Updated: 06:23 UTC 06 Jan 2023.<br>
 
 </p>
 
@@ -749,7 +661,7 @@ variables in the DataSet.</p>
   <div class="footer-item">
     
 <p class="sphinx-version">
-Created using <a href="http://sphinx-doc.org/">Sphinx</a> 5.3.0.<br>
+Created using <a href="http://sphinx-doc.org/">Sphinx</a> 5.0.0.<br>
 </p>
 
   </div>

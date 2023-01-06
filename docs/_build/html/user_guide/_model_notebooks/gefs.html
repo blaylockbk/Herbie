@@ -4,9 +4,9 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>GEFS Data &#8212; Herbie 2022.9.0 documentation</title>
+    <title>GEFS - Global Ensemble Forecast System &#8212; Herbie 2022.9.0 documentation</title>
   
   
   
@@ -39,7 +39,6 @@
     <script src="../../_static/underscore.js"></script>
     <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../../_static/doctools.js"></script>
-    <script src="../../_static/sphinx_highlight.js"></script>
     <script src="../../_static/design-tabs.js"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script async="async" src="https://www.googletagmanager.com/gtag/js?id=G-PT9LX1B7B8"></script>
@@ -386,7 +385,8 @@
 <li class="toctree-l2"><a class="reference internal" href="rtma.html">RTMA Data</a></li>
 <li class="toctree-l2"><a class="reference internal" href="nam.html">NAM Data</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gfs.html">GFS Data</a></li>
-<li class="toctree-l2 current active"><a class="current reference internal" href="#">GEFS Data</a></li>
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">GEFS - Global Ensemble Forecast System</a></li>
+
 
 <li class="toctree-l2"><a class="reference internal" href="ecmwf.html">ECMWF Open Data</a></li>
 <li class="toctree-l2"><a class="reference internal" href="nbm.html">NBM Data</a></li>
@@ -705,9 +705,1863 @@ div.rendered_html tbody tr:hover {
   background: rgba(66, 165, 245, 0.2);
 }
 </style>
-<section id="GEFS-Data">
-<h1>GEFS Data<a class="headerlink" href="#GEFS-Data" title="Permalink to this heading">#</a></h1>
-<p>This demonstrates using the Global Ensembele Forecast System (GEFS) reanalysis: 2000-2019 dataset.</p>
+<section id="GEFS---Global-Ensemble-Forecast-System">
+<h1>GEFS - Global Ensemble Forecast System<a class="headerlink" href="#GEFS---Global-Ensemble-Forecast-System" title="Permalink to this heading">#</a></h1>
+<p>This notebook demonstrates using the Global Ensemble Forecast System. It is available on <a class="reference external" href="https://registry.opendata.aws/noaa-gefs/">AWS</a> for 2017 to present.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">cartopy.crs</span> <span class="k">as</span> <span class="nn">ccrs</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">from</span> <span class="nn">herbie</span> <span class="kn">import</span> <span class="n">Herbie</span>
+<span class="kn">from</span> <span class="nn">paint.standard2</span> <span class="kn">import</span> <span class="n">cm_tmp</span><span class="p">,</span> <span class="n">cm_wind</span><span class="p">,</span> <span class="n">cm_wave_height</span><span class="p">,</span> <span class="n">cm_pcp</span>
+<span class="kn">from</span> <span class="nn">toolbox</span> <span class="kn">import</span> <span class="n">EasyMap</span><span class="p">,</span> <span class="n">pc</span>
+</pre></div>
+</div>
+</div>
+<p>The GEFS model product could be any of the following: - <code class="docutils literal notranslate"><span class="pre">'atmos.5'</span></code> - Half degree atmos PRIMARY fields (pgrb2ap5); ~83 most common variables. - <code class="docutils literal notranslate"><span class="pre">'atmos.5b'</span></code> - Half degree atmos SECONDARY fields (pgrb2bp5); ~500 least common variables - <code class="docutils literal notranslate"><span class="pre">'atmos.25'</span></code> - Quarter degree atmos PRIMARY fields (pgrb2sp25); ~35 most common variables - <code class="docutils literal notranslate"><span class="pre">'wave'</span></code> - Global wave products. - <code class="docutils literal notranslate"><span class="pre">'chem.5'</span></code> - Chemistry fields on 0.5 degree grid - <code class="docutils literal notranslate"><span class="pre">'chem.25'</span></code> - Chemistry fields on 0.25 degree grid</p>
+<p>You also must specify a <code class="docutils literal notranslate"><span class="pre">member</span></code>. For the atmos output, this should be something like <code class="docutils literal notranslate"><span class="pre">0</span></code> or <code class="docutils literal notranslate"><span class="pre">&quot;c00&quot;</span></code> for control member, <code class="docutils literal notranslate"><span class="pre">1</span></code>-<code class="docutils literal notranslate"><span class="pre">30</span></code> or <code class="docutils literal notranslate"><span class="pre">&quot;p01&quot;</span></code>-<code class="docutils literal notranslate"><span class="pre">&quot;p30&quot;</span></code> for members 1-30, or <code class="docutils literal notranslate"><span class="pre">'avg'</span></code> or <code class="docutils literal notranslate"><span class="pre">'mean'</span></code> for the ensemble mean, <code class="docutils literal notranslate"><span class="pre">'spr'</span></code> for ensemble spread.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">H</span> <span class="o">=</span> <span class="n">Herbie</span><span class="p">(</span>
+    <span class="s2">&quot;2023-01-04 12:00&quot;</span><span class="p">,</span>
+    <span class="n">model</span><span class="o">=</span><span class="s2">&quot;gefs&quot;</span><span class="p">,</span>
+    <span class="n">product</span><span class="o">=</span><span class="s2">&quot;atmos.5&quot;</span><span class="p">,</span>
+    <span class="n">member</span><span class="o">=</span><span class="s2">&quot;mean&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">H</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+✅ Found ┊ model=gefs ┊ product=atmos.5 ┊ <span style="color: rgb(41,130,13)">2023-Jan-04 12:00 UTC</span><span class="ansi-green-intense-fg"> F00</span> ┊ <span style="color: rgb(255,153,0)">GRIB2 @ aws</span> ┊ <span style="color: rgb(255,153,0)">IDX @ aws</span>
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+<span style="color: rgb(136,33,27); background-color: rgb(255,255,255)">▌</span><span style="color: rgb(12,53,118); background-color: rgb(240,234,210)">▌</span><span class="ansi-bold" style="color: rgb(0,0,0); background-color: rgb(240,234,210)">Herbie</span> GEFS model atmos.5 product initialized <span style="color: rgb(41,130,13)">2023-Jan-04 12:00 UTC</span><span class="ansi-green-intense-fg"> F00</span> ┊ <span style="color: rgb(255,153,0)">source=aws</span>
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Show all the available products (from the model template file)</span>
+<span class="n">H</span><span class="o">.</span><span class="n">PRODUCTS</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+{&#39;atmos.5&#39;: &#39;Half degree atmos PRIMARY fields (pgrb2ap5); ~83 most common variables.&#39;,
+ &#39;atmos.5b&#39;: &#39;Half degree atmos SECONDARY fields (pgrb2bp5); ~500 least common variables&#39;,
+ &#39;atmos.25&#39;: &#39;Quarter degree atmos PRIMARY fields (pgrb2sp25); ~35 most common variables&#39;,
+ &#39;wave&#39;: &#39;Global wave products.&#39;,
+ &#39;chem.5&#39;: &#39;Chemistry fields on 0.5 degree grid&#39;,
+ &#39;chem.25&#39;: &#39;Chemistry fields on 0.25 degree grid&#39;}
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">df</span> <span class="o">=</span> <span class="n">H</span><span class="o">.</span><span class="n">read_idx</span><span class="p">()</span>
+<span class="n">df</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>grib_message</th>
+      <th>start_byte</th>
+      <th>end_byte</th>
+      <th>range</th>
+      <th>reference_time</th>
+      <th>valid_time</th>
+      <th>variable</th>
+      <th>level</th>
+      <th>forecast_time</th>
+      <th>?</th>
+      <th>search_this</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>1</td>
+      <td>0</td>
+      <td>224944</td>
+      <td>0-224944</td>
+      <td>2023-01-04 12:00:00</td>
+      <td>2023-01-04 12:00:00</td>
+      <td>HGT</td>
+      <td>10 mb</td>
+      <td>anl</td>
+      <td>ens mean</td>
+      <td>:HGT:10 mb:anl:ens mean</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>2</td>
+      <td>224944</td>
+      <td>353986</td>
+      <td>224944-353986</td>
+      <td>2023-01-04 12:00:00</td>
+      <td>2023-01-04 12:00:00</td>
+      <td>TMP</td>
+      <td>10 mb</td>
+      <td>anl</td>
+      <td>ens mean</td>
+      <td>:TMP:10 mb:anl:ens mean</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>3</td>
+      <td>353986</td>
+      <td>387271</td>
+      <td>353986-387271</td>
+      <td>2023-01-04 12:00:00</td>
+      <td>2023-01-04 12:00:00</td>
+      <td>RH</td>
+      <td>10 mb</td>
+      <td>anl</td>
+      <td>ens mean</td>
+      <td>:RH:10 mb:anl:ens mean</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>4</td>
+      <td>387271</td>
+      <td>641627</td>
+      <td>387271-641627</td>
+      <td>2023-01-04 12:00:00</td>
+      <td>2023-01-04 12:00:00</td>
+      <td>UGRD</td>
+      <td>10 mb</td>
+      <td>anl</td>
+      <td>ens mean</td>
+      <td>:UGRD:10 mb:anl:ens mean</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>5</td>
+      <td>641627</td>
+      <td>881486</td>
+      <td>641627-881486</td>
+      <td>2023-01-04 12:00:00</td>
+      <td>2023-01-04 12:00:00</td>
+      <td>VGRD</td>
+      <td>10 mb</td>
+      <td>anl</td>
+      <td>ens mean</td>
+      <td>:VGRD:10 mb:anl:ens mean</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>66</th>
+      <td>67</td>
+      <td>13100932</td>
+      <td>13361479</td>
+      <td>13100932-13361479</td>
+      <td>2023-01-04 12:00:00</td>
+      <td>2023-01-04 12:00:00</td>
+      <td>VGRD</td>
+      <td>10 m above ground</td>
+      <td>anl</td>
+      <td>ens mean</td>
+      <td>:VGRD:10 m above ground:anl:ens mean</td>
+    </tr>
+    <tr>
+      <th>67</th>
+      <td>68</td>
+      <td>13361479</td>
+      <td>13520800</td>
+      <td>13361479-13520800</td>
+      <td>2023-01-04 12:00:00</td>
+      <td>2023-01-04 12:00:00</td>
+      <td>PWAT</td>
+      <td>entire atmosphere (considered as a single layer)</td>
+      <td>anl</td>
+      <td>ens mean</td>
+      <td>:PWAT:entire atmosphere (considered as a singl...</td>
+    </tr>
+    <tr>
+      <th>68</th>
+      <td>69</td>
+      <td>13520800</td>
+      <td>13665977</td>
+      <td>13520800-13665977</td>
+      <td>2023-01-04 12:00:00</td>
+      <td>2023-01-04 12:00:00</td>
+      <td>CAPE</td>
+      <td>180-0 mb above ground</td>
+      <td>anl</td>
+      <td>ens mean</td>
+      <td>:CAPE:180-0 mb above ground:anl:ens mean</td>
+    </tr>
+    <tr>
+      <th>69</th>
+      <td>70</td>
+      <td>13665977</td>
+      <td>13762089</td>
+      <td>13665977-13762089</td>
+      <td>2023-01-04 12:00:00</td>
+      <td>2023-01-04 12:00:00</td>
+      <td>CIN</td>
+      <td>180-0 mb above ground</td>
+      <td>anl</td>
+      <td>ens mean</td>
+      <td>:CIN:180-0 mb above ground:anl:ens mean</td>
+    </tr>
+    <tr>
+      <th>70</th>
+      <td>71</td>
+      <td>13762089</td>
+      <td></td>
+      <td>13762089-</td>
+      <td>2023-01-04 12:00:00</td>
+      <td>2023-01-04 12:00:00</td>
+      <td>PRMSL</td>
+      <td>mean sea level</td>
+      <td>anl</td>
+      <td>ens mean</td>
+      <td>:PRMSL:mean sea level:anl:ens mean</td>
+    </tr>
+  </tbody>
+</table>
+<p>71 rows × 11 columns</p>
+</div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">df</span><span class="o">.</span><span class="n">variable</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+array([&#39;HGT&#39;, &#39;TMP&#39;, &#39;RH&#39;, &#39;UGRD&#39;, &#39;VGRD&#39;, &#39;VVEL&#39;, &#39;PRES&#39;, &#39;TSOIL&#39;,
+       &#39;SOILW&#39;, &#39;WEASD&#39;, &#39;SNOD&#39;, &#39;ICETK&#39;, &#39;PWAT&#39;, &#39;CAPE&#39;, &#39;CIN&#39;, &#39;PRMSL&#39;],
+      dtype=object)
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">H</span><span class="o">.</span><span class="n">read_idx</span><span class="p">(</span><span class="s2">&quot;HGT&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>grib_message</th>
+      <th>start_byte</th>
+      <th>end_byte</th>
+      <th>range</th>
+      <th>reference_time</th>
+      <th>valid_time</th>
+      <th>variable</th>
+      <th>level</th>
+      <th>forecast_time</th>
+      <th>?</th>
+      <th>search_this</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>1</td>
+      <td>0</td>
+      <td>224944</td>
+      <td>0-224944</td>
+      <td>2023-01-04 12:00:00</td>
+      <td>2023-01-04 12:00:00</td>
+      <td>HGT</td>
+      <td>10 mb</td>
+      <td>anl</td>
+      <td>ens mean</td>
+      <td>:HGT:10 mb:anl:ens mean</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>6</td>
+      <td>881486</td>
+      <td>1113634</td>
+      <td>881486-1113634</td>
+      <td>2023-01-04 12:00:00</td>
+      <td>2023-01-04 12:00:00</td>
+      <td>HGT</td>
+      <td>50 mb</td>
+      <td>anl</td>
+      <td>ens mean</td>
+      <td>:HGT:50 mb:anl:ens mean</td>
+    </tr>
+    <tr>
+      <th>10</th>
+      <td>11</td>
+      <td>1829912</td>
+      <td>2058354</td>
+      <td>1829912-2058354</td>
+      <td>2023-01-04 12:00:00</td>
+      <td>2023-01-04 12:00:00</td>
+      <td>HGT</td>
+      <td>100 mb</td>
+      <td>anl</td>
+      <td>ens mean</td>
+      <td>:HGT:100 mb:anl:ens mean</td>
+    </tr>
+    <tr>
+      <th>15</th>
+      <td>16</td>
+      <td>2853920</td>
+      <td>3078454</td>
+      <td>2853920-3078454</td>
+      <td>2023-01-04 12:00:00</td>
+      <td>2023-01-04 12:00:00</td>
+      <td>HGT</td>
+      <td>200 mb</td>
+      <td>anl</td>
+      <td>ens mean</td>
+      <td>:HGT:200 mb:anl:ens mean</td>
+    </tr>
+    <tr>
+      <th>20</th>
+      <td>21</td>
+      <td>3750171</td>
+      <td>3972303</td>
+      <td>3750171-3972303</td>
+      <td>2023-01-04 12:00:00</td>
+      <td>2023-01-04 12:00:00</td>
+      <td>HGT</td>
+      <td>250 mb</td>
+      <td>anl</td>
+      <td>ens mean</td>
+      <td>:HGT:250 mb:anl:ens mean</td>
+    </tr>
+    <tr>
+      <th>25</th>
+      <td>26</td>
+      <td>4665076</td>
+      <td>4885223</td>
+      <td>4665076-4885223</td>
+      <td>2023-01-04 12:00:00</td>
+      <td>2023-01-04 12:00:00</td>
+      <td>HGT</td>
+      <td>300 mb</td>
+      <td>anl</td>
+      <td>ens mean</td>
+      <td>:HGT:300 mb:anl:ens mean</td>
+    </tr>
+    <tr>
+      <th>30</th>
+      <td>31</td>
+      <td>5575673</td>
+      <td>5819613</td>
+      <td>5575673-5819613</td>
+      <td>2023-01-04 12:00:00</td>
+      <td>2023-01-04 12:00:00</td>
+      <td>HGT</td>
+      <td>500 mb</td>
+      <td>anl</td>
+      <td>ens mean</td>
+      <td>:HGT:500 mb:anl:ens mean</td>
+    </tr>
+    <tr>
+      <th>35</th>
+      <td>36</td>
+      <td>6505417</td>
+      <td>6760483</td>
+      <td>6505417-6760483</td>
+      <td>2023-01-04 12:00:00</td>
+      <td>2023-01-04 12:00:00</td>
+      <td>HGT</td>
+      <td>700 mb</td>
+      <td>anl</td>
+      <td>ens mean</td>
+      <td>:HGT:700 mb:anl:ens mean</td>
+    </tr>
+    <tr>
+      <th>40</th>
+      <td>41</td>
+      <td>7642597</td>
+      <td>7908462</td>
+      <td>7642597-7908462</td>
+      <td>2023-01-04 12:00:00</td>
+      <td>2023-01-04 12:00:00</td>
+      <td>HGT</td>
+      <td>850 mb</td>
+      <td>anl</td>
+      <td>ens mean</td>
+      <td>:HGT:850 mb:anl:ens mean</td>
+    </tr>
+    <tr>
+      <th>46</th>
+      <td>47</td>
+      <td>9144964</td>
+      <td>9419015</td>
+      <td>9144964-9419015</td>
+      <td>2023-01-04 12:00:00</td>
+      <td>2023-01-04 12:00:00</td>
+      <td>HGT</td>
+      <td>925 mb</td>
+      <td>anl</td>
+      <td>ens mean</td>
+      <td>:HGT:925 mb:anl:ens mean</td>
+    </tr>
+    <tr>
+      <th>55</th>
+      <td>56</td>
+      <td>11237567</td>
+      <td>11523719</td>
+      <td>11237567-11523719</td>
+      <td>2023-01-04 12:00:00</td>
+      <td>2023-01-04 12:00:00</td>
+      <td>HGT</td>
+      <td>1000 mb</td>
+      <td>anl</td>
+      <td>ens mean</td>
+      <td>:HGT:1000 mb:anl:ens mean</td>
+    </tr>
+    <tr>
+      <th>57</th>
+      <td>58</td>
+      <td>11777787</td>
+      <td>11930300</td>
+      <td>11777787-11930300</td>
+      <td>2023-01-04 12:00:00</td>
+      <td>2023-01-04 12:00:00</td>
+      <td>HGT</td>
+      <td>surface</td>
+      <td>anl</td>
+      <td>ens mean</td>
+      <td>:HGT:surface:anl:ens mean</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ds</span> <span class="o">=</span> <span class="n">H</span><span class="o">.</span><span class="n">xarray</span><span class="p">(</span><span class="s2">&quot;PWAT&quot;</span><span class="p">)</span>
+<span class="n">ds</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div><svg style="position: absolute; width: 0; height: 0; overflow: hidden">
+<defs>
+<symbol id="icon-database" viewBox="0 0 32 32">
+<path d="M16 0c-8.837 0-16 2.239-16 5v4c0 2.761 7.163 5 16 5s16-2.239 16-5v-4c0-2.761-7.163-5-16-5z"></path>
+<path d="M16 17c-8.837 0-16-2.239-16-5v6c0 2.761 7.163 5 16 5s16-2.239 16-5v-6c0 2.761-7.163 5-16 5z"></path>
+<path d="M16 26c-8.837 0-16-2.239-16-5v6c0 2.761 7.163 5 16 5s16-2.239 16-5v-6c0 2.761-7.163 5-16 5z"></path>
+</symbol>
+<symbol id="icon-file-text2" viewBox="0 0 32 32">
+<path d="M28.681 7.159c-0.694-0.947-1.662-2.053-2.724-3.116s-2.169-2.030-3.116-2.724c-1.612-1.182-2.393-1.319-2.841-1.319h-15.5c-1.378 0-2.5 1.121-2.5 2.5v27c0 1.378 1.122 2.5 2.5 2.5h23c1.378 0 2.5-1.122 2.5-2.5v-19.5c0-0.448-0.137-1.23-1.319-2.841zM24.543 5.457c0.959 0.959 1.712 1.825 2.268 2.543h-4.811v-4.811c0.718 0.556 1.584 1.309 2.543 2.268zM28 29.5c0 0.271-0.229 0.5-0.5 0.5h-23c-0.271 0-0.5-0.229-0.5-0.5v-27c0-0.271 0.229-0.5 0.5-0.5 0 0 15.499-0 15.5 0v7c0 0.552 0.448 1 1 1h7v19.5z"></path>
+<path d="M23 26h-14c-0.552 0-1-0.448-1-1s0.448-1 1-1h14c0.552 0 1 0.448 1 1s-0.448 1-1 1z"></path>
+<path d="M23 22h-14c-0.552 0-1-0.448-1-1s0.448-1 1-1h14c0.552 0 1 0.448 1 1s-0.448 1-1 1z"></path>
+<path d="M23 18h-14c-0.552 0-1-0.448-1-1s0.448-1 1-1h14c0.552 0 1 0.448 1 1s-0.448 1-1 1z"></path>
+</symbol>
+</defs>
+</svg>
+<style>/* CSS stylesheet for displaying xarray objects in jupyterlab.
+ *
+ */
+
+:root {
+  --xr-font-color0: var(--jp-content-font-color0, rgba(0, 0, 0, 1));
+  --xr-font-color2: var(--jp-content-font-color2, rgba(0, 0, 0, 0.54));
+  --xr-font-color3: var(--jp-content-font-color3, rgba(0, 0, 0, 0.38));
+  --xr-border-color: var(--jp-border-color2, #e0e0e0);
+  --xr-disabled-color: var(--jp-layout-color3, #bdbdbd);
+  --xr-background-color: var(--jp-layout-color0, white);
+  --xr-background-color-row-even: var(--jp-layout-color1, white);
+  --xr-background-color-row-odd: var(--jp-layout-color2, #eeeeee);
+}
+
+html[theme=dark],
+body[data-theme=dark],
+body.vscode-dark {
+  --xr-font-color0: rgba(255, 255, 255, 1);
+  --xr-font-color2: rgba(255, 255, 255, 0.54);
+  --xr-font-color3: rgba(255, 255, 255, 0.38);
+  --xr-border-color: #1F1F1F;
+  --xr-disabled-color: #515151;
+  --xr-background-color: #111111;
+  --xr-background-color-row-even: #111111;
+  --xr-background-color-row-odd: #313131;
+}
+
+.xr-wrap {
+  display: block !important;
+  min-width: 300px;
+  max-width: 700px;
+}
+
+.xr-text-repr-fallback {
+  /* fallback to plain text repr when CSS is not injected (untrusted notebook) */
+  display: none;
+}
+
+.xr-header {
+  padding-top: 6px;
+  padding-bottom: 6px;
+  margin-bottom: 4px;
+  border-bottom: solid 1px var(--xr-border-color);
+}
+
+.xr-header > div,
+.xr-header > ul {
+  display: inline;
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.xr-obj-type,
+.xr-array-name {
+  margin-left: 2px;
+  margin-right: 10px;
+}
+
+.xr-obj-type {
+  color: var(--xr-font-color2);
+}
+
+.xr-sections {
+  padding-left: 0 !important;
+  display: grid;
+  grid-template-columns: 150px auto auto 1fr 20px 20px;
+}
+
+.xr-section-item {
+  display: contents;
+}
+
+.xr-section-item input {
+  display: none;
+}
+
+.xr-section-item input + label {
+  color: var(--xr-disabled-color);
+}
+
+.xr-section-item input:enabled + label {
+  cursor: pointer;
+  color: var(--xr-font-color2);
+}
+
+.xr-section-item input:enabled + label:hover {
+  color: var(--xr-font-color0);
+}
+
+.xr-section-summary {
+  grid-column: 1;
+  color: var(--xr-font-color2);
+  font-weight: 500;
+}
+
+.xr-section-summary > span {
+  display: inline-block;
+  padding-left: 0.5em;
+}
+
+.xr-section-summary-in:disabled + label {
+  color: var(--xr-font-color2);
+}
+
+.xr-section-summary-in + label:before {
+  display: inline-block;
+  content: '►';
+  font-size: 11px;
+  width: 15px;
+  text-align: center;
+}
+
+.xr-section-summary-in:disabled + label:before {
+  color: var(--xr-disabled-color);
+}
+
+.xr-section-summary-in:checked + label:before {
+  content: '▼';
+}
+
+.xr-section-summary-in:checked + label > span {
+  display: none;
+}
+
+.xr-section-summary,
+.xr-section-inline-details {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+.xr-section-inline-details {
+  grid-column: 2 / -1;
+}
+
+.xr-section-details {
+  display: none;
+  grid-column: 1 / -1;
+  margin-bottom: 5px;
+}
+
+.xr-section-summary-in:checked ~ .xr-section-details {
+  display: contents;
+}
+
+.xr-array-wrap {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: 20px auto;
+}
+
+.xr-array-wrap > label {
+  grid-column: 1;
+  vertical-align: top;
+}
+
+.xr-preview {
+  color: var(--xr-font-color3);
+}
+
+.xr-array-preview,
+.xr-array-data {
+  padding: 0 5px !important;
+  grid-column: 2;
+}
+
+.xr-array-data,
+.xr-array-in:checked ~ .xr-array-preview {
+  display: none;
+}
+
+.xr-array-in:checked ~ .xr-array-data,
+.xr-array-preview {
+  display: inline-block;
+}
+
+.xr-dim-list {
+  display: inline-block !important;
+  list-style: none;
+  padding: 0 !important;
+  margin: 0;
+}
+
+.xr-dim-list li {
+  display: inline-block;
+  padding: 0;
+  margin: 0;
+}
+
+.xr-dim-list:before {
+  content: '(';
+}
+
+.xr-dim-list:after {
+  content: ')';
+}
+
+.xr-dim-list li:not(:last-child):after {
+  content: ',';
+  padding-right: 5px;
+}
+
+.xr-has-index {
+  font-weight: bold;
+}
+
+.xr-var-list,
+.xr-var-item {
+  display: contents;
+}
+
+.xr-var-item > div,
+.xr-var-item label,
+.xr-var-item > .xr-var-name span {
+  background-color: var(--xr-background-color-row-even);
+  margin-bottom: 0;
+}
+
+.xr-var-item > .xr-var-name:hover span {
+  padding-right: 5px;
+}
+
+.xr-var-list > li:nth-child(odd) > div,
+.xr-var-list > li:nth-child(odd) > label,
+.xr-var-list > li:nth-child(odd) > .xr-var-name span {
+  background-color: var(--xr-background-color-row-odd);
+}
+
+.xr-var-name {
+  grid-column: 1;
+}
+
+.xr-var-dims {
+  grid-column: 2;
+}
+
+.xr-var-dtype {
+  grid-column: 3;
+  text-align: right;
+  color: var(--xr-font-color2);
+}
+
+.xr-var-preview {
+  grid-column: 4;
+}
+
+.xr-index-preview {
+  grid-column: 2 / 5;
+  color: var(--xr-font-color2);
+}
+
+.xr-var-name,
+.xr-var-dims,
+.xr-var-dtype,
+.xr-preview,
+.xr-attrs dt {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding-right: 10px;
+}
+
+.xr-var-name:hover,
+.xr-var-dims:hover,
+.xr-var-dtype:hover,
+.xr-attrs dt:hover {
+  overflow: visible;
+  width: auto;
+  z-index: 1;
+}
+
+.xr-var-attrs,
+.xr-var-data,
+.xr-index-data {
+  display: none;
+  background-color: var(--xr-background-color) !important;
+  padding-bottom: 5px !important;
+}
+
+.xr-var-attrs-in:checked ~ .xr-var-attrs,
+.xr-var-data-in:checked ~ .xr-var-data,
+.xr-index-data-in:checked ~ .xr-index-data {
+  display: block;
+}
+
+.xr-var-data > table {
+  float: right;
+}
+
+.xr-var-name span,
+.xr-var-data,
+.xr-index-name div,
+.xr-index-data,
+.xr-attrs {
+  padding-left: 25px !important;
+}
+
+.xr-attrs,
+.xr-var-attrs,
+.xr-var-data,
+.xr-index-data {
+  grid-column: 1 / -1;
+}
+
+dl.xr-attrs {
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: 125px auto;
+}
+
+.xr-attrs dt,
+.xr-attrs dd {
+  padding: 0;
+  margin: 0;
+  float: left;
+  padding-right: 10px;
+  width: auto;
+}
+
+.xr-attrs dt {
+  font-weight: normal;
+  grid-column: 1;
+}
+
+.xr-attrs dt:hover span {
+  display: inline-block;
+  background: var(--xr-background-color);
+  padding-right: 10px;
+}
+
+.xr-attrs dd {
+  grid-column: 2;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+.xr-icon-database,
+.xr-icon-file-text2,
+.xr-no-icon {
+  display: inline-block;
+  vertical-align: middle;
+  width: 1em;
+  height: 1.5em !important;
+  stroke-width: 0;
+  stroke: currentColor;
+  fill: currentColor;
+}
+</style><pre class='xr-text-repr-fallback'>&lt;xarray.Dataset&gt;
+Dimensions:                (latitude: 361, longitude: 720)
+Coordinates:
+    time                   datetime64[ns] 2023-01-04T12:00:00
+    step                   timedelta64[ns] 00:00:00
+    atmosphereSingleLayer  float64 0.0
+  * latitude               (latitude) float64 90.0 89.5 89.0 ... -89.5 -90.0
+  * longitude              (longitude) float64 0.0 0.5 1.0 ... 358.5 359.0 359.5
+    valid_time             datetime64[ns] 2023-01-04T12:00:00
+Data variables:
+    pwat                   (latitude, longitude) float32 4.3 4.3 4.3 ... 1.0 1.0
+    gribfile_projection    object None
+Attributes:
+    GRIB_edition:            2
+    GRIB_centre:             kwbc
+    GRIB_centreDescription:  US National Weather Service - NCEP
+    GRIB_subCentre:          2
+    Conventions:             CF-1.7
+    institution:             US National Weather Service - NCEP
+    model:                   gefs
+    product:                 atmos.5
+    description:             Global Ensemble Forecast System (GEFS)
+    remote_grib:             https://noaa-gefs-pds.s3.amazonaws.com/gefs.2023...
+    local_grib:              /home/blaylock/data/gefs/20230104/subset_f4ef1a3...
+    searchString:            PWAT</pre><div class='xr-wrap' style='display:none'><div class='xr-header'><div class='xr-obj-type'>xarray.Dataset</div></div><ul class='xr-sections'><li class='xr-section-item'><input id='section-e7aba932-e08b-4f90-9e37-95aa14f9a685' class='xr-section-summary-in' type='checkbox' disabled ><label for='section-e7aba932-e08b-4f90-9e37-95aa14f9a685' class='xr-section-summary'  title='Expand/collapse section'>Dimensions:</label><div class='xr-section-inline-details'><ul class='xr-dim-list'><li><span class='xr-has-index'>latitude</span>: 361</li><li><span class='xr-has-index'>longitude</span>: 720</li></ul></div><div class='xr-section-details'></div></li><li class='xr-section-item'><input id='section-ce7c99c1-9c81-4110-9f9a-1802333a5929' class='xr-section-summary-in' type='checkbox'  checked><label for='section-ce7c99c1-9c81-4110-9f9a-1802333a5929' class='xr-section-summary' >Coordinates: <span>(6)</span></label><div class='xr-section-inline-details'></div><div class='xr-section-details'><ul class='xr-var-list'><li class='xr-var-item'><div class='xr-var-name'><span>time</span></div><div class='xr-var-dims'>()</div><div class='xr-var-dtype'>datetime64[ns]</div><div class='xr-var-preview xr-preview'>2023-01-04T12:00:00</div><input id='attrs-ceb4d737-d313-4ff6-b79f-0d4ebc49f98a' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-ceb4d737-d313-4ff6-b79f-0d4ebc49f98a' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-095b9787-dd1c-4142-9690-ad6a880c29eb' class='xr-var-data-in' type='checkbox'><label for='data-095b9787-dd1c-4142-9690-ad6a880c29eb' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>long_name :</span></dt><dd>initial time of forecast</dd><dt><span>standard_name :</span></dt><dd>forecast_reference_time</dd></dl></div><div class='xr-var-data'><pre>array(&#x27;2023-01-04T12:00:00.000000000&#x27;, dtype=&#x27;datetime64[ns]&#x27;)</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span>step</span></div><div class='xr-var-dims'>()</div><div class='xr-var-dtype'>timedelta64[ns]</div><div class='xr-var-preview xr-preview'>00:00:00</div><input id='attrs-62de5b73-fcae-43ee-bc60-81fe67ce4658' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-62de5b73-fcae-43ee-bc60-81fe67ce4658' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-b76dbf2b-caa8-4c48-ba67-1d2455af55d6' class='xr-var-data-in' type='checkbox'><label for='data-b76dbf2b-caa8-4c48-ba67-1d2455af55d6' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>long_name :</span></dt><dd>time since forecast_reference_time</dd><dt><span>standard_name :</span></dt><dd>forecast_period</dd></dl></div><div class='xr-var-data'><pre>array(0, dtype=&#x27;timedelta64[ns]&#x27;)</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span>atmosphereSingleLayer</span></div><div class='xr-var-dims'>()</div><div class='xr-var-dtype'>float64</div><div class='xr-var-preview xr-preview'>0.0</div><input id='attrs-c51213e8-befe-47f8-b972-a2c20ddeb1c7' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-c51213e8-befe-47f8-b972-a2c20ddeb1c7' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-d11a6703-fb9c-4793-aa99-3b100a443d27' class='xr-var-data-in' type='checkbox'><label for='data-d11a6703-fb9c-4793-aa99-3b100a443d27' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>long_name :</span></dt><dd>original GRIB coordinate for key: level(atmosphereSingleLayer)</dd><dt><span>units :</span></dt><dd>1</dd></dl></div><div class='xr-var-data'><pre>array(0.)</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span class='xr-has-index'>latitude</span></div><div class='xr-var-dims'>(latitude)</div><div class='xr-var-dtype'>float64</div><div class='xr-var-preview xr-preview'>90.0 89.5 89.0 ... -89.5 -90.0</div><input id='attrs-8e31678d-ab52-4e94-ac20-5216285a44db' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-8e31678d-ab52-4e94-ac20-5216285a44db' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-5bf38f1f-4862-4cab-b6aa-d64f263f626a' class='xr-var-data-in' type='checkbox'><label for='data-5bf38f1f-4862-4cab-b6aa-d64f263f626a' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>units :</span></dt><dd>degrees_north</dd><dt><span>standard_name :</span></dt><dd>latitude</dd><dt><span>long_name :</span></dt><dd>latitude</dd><dt><span>stored_direction :</span></dt><dd>decreasing</dd></dl></div><div class='xr-var-data'><pre>array([ 90. ,  89.5,  89. , ..., -89. , -89.5, -90. ])</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span class='xr-has-index'>longitude</span></div><div class='xr-var-dims'>(longitude)</div><div class='xr-var-dtype'>float64</div><div class='xr-var-preview xr-preview'>0.0 0.5 1.0 ... 358.5 359.0 359.5</div><input id='attrs-bdfa6810-da0e-48f6-94b4-1c14bcd1061a' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-bdfa6810-da0e-48f6-94b4-1c14bcd1061a' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-a4553d39-561e-467d-b0fa-3f5deef169f3' class='xr-var-data-in' type='checkbox'><label for='data-a4553d39-561e-467d-b0fa-3f5deef169f3' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>units :</span></dt><dd>degrees_east</dd><dt><span>standard_name :</span></dt><dd>longitude</dd><dt><span>long_name :</span></dt><dd>longitude</dd></dl></div><div class='xr-var-data'><pre>array([  0. ,   0.5,   1. , ..., 358.5, 359. , 359.5])</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span>valid_time</span></div><div class='xr-var-dims'>()</div><div class='xr-var-dtype'>datetime64[ns]</div><div class='xr-var-preview xr-preview'>2023-01-04T12:00:00</div><input id='attrs-c19ebe85-4ab6-4782-bc9d-6486b5c2d30d' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-c19ebe85-4ab6-4782-bc9d-6486b5c2d30d' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-c8aef59b-db28-40f8-978c-ce46ae32e805' class='xr-var-data-in' type='checkbox'><label for='data-c8aef59b-db28-40f8-978c-ce46ae32e805' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>standard_name :</span></dt><dd>time</dd><dt><span>long_name :</span></dt><dd>time</dd></dl></div><div class='xr-var-data'><pre>array(&#x27;2023-01-04T12:00:00.000000000&#x27;, dtype=&#x27;datetime64[ns]&#x27;)</pre></div></li></ul></div></li><li class='xr-section-item'><input id='section-58247c0e-9b78-4834-ba70-690ceed07cb7' class='xr-section-summary-in' type='checkbox'  checked><label for='section-58247c0e-9b78-4834-ba70-690ceed07cb7' class='xr-section-summary' >Data variables: <span>(2)</span></label><div class='xr-section-inline-details'></div><div class='xr-section-details'><ul class='xr-var-list'><li class='xr-var-item'><div class='xr-var-name'><span>pwat</span></div><div class='xr-var-dims'>(latitude, longitude)</div><div class='xr-var-dtype'>float32</div><div class='xr-var-preview xr-preview'>4.3 4.3 4.3 4.3 ... 1.0 1.0 1.0 1.0</div><input id='attrs-09238238-2d80-4335-94dc-c0f7db129591' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-09238238-2d80-4335-94dc-c0f7db129591' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-6eef1cfc-8a40-4d01-8d85-e65cfcc4c64f' class='xr-var-data-in' type='checkbox'><label for='data-6eef1cfc-8a40-4d01-8d85-e65cfcc4c64f' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>GRIB_paramId :</span></dt><dd>3054</dd><dt><span>GRIB_dataType :</span></dt><dd>pf</dd><dt><span>GRIB_numberOfPoints :</span></dt><dd>259920</dd><dt><span>GRIB_typeOfLevel :</span></dt><dd>atmosphereSingleLayer</dd><dt><span>GRIB_stepUnits :</span></dt><dd>1</dd><dt><span>GRIB_stepType :</span></dt><dd>instant</dd><dt><span>GRIB_gridType :</span></dt><dd>regular_ll</dd><dt><span>GRIB_NV :</span></dt><dd>0</dd><dt><span>GRIB_Nx :</span></dt><dd>720</dd><dt><span>GRIB_Ny :</span></dt><dd>361</dd><dt><span>GRIB_cfName :</span></dt><dd>unknown</dd><dt><span>GRIB_cfVarName :</span></dt><dd>pwat</dd><dt><span>GRIB_gridDefinitionDescription :</span></dt><dd>Latitude/longitude. Also called equidistant cylindrical, or Plate Carree</dd><dt><span>GRIB_iDirectionIncrementInDegrees :</span></dt><dd>0.5</dd><dt><span>GRIB_iScansNegatively :</span></dt><dd>0</dd><dt><span>GRIB_jDirectionIncrementInDegrees :</span></dt><dd>0.5</dd><dt><span>GRIB_jPointsAreConsecutive :</span></dt><dd>0</dd><dt><span>GRIB_jScansPositively :</span></dt><dd>0</dd><dt><span>GRIB_latitudeOfFirstGridPointInDegrees :</span></dt><dd>90.0</dd><dt><span>GRIB_latitudeOfLastGridPointInDegrees :</span></dt><dd>-90.0</dd><dt><span>GRIB_longitudeOfFirstGridPointInDegrees :</span></dt><dd>0.0</dd><dt><span>GRIB_longitudeOfLastGridPointInDegrees :</span></dt><dd>359.5</dd><dt><span>GRIB_missingValue :</span></dt><dd>3.4028234663852886e+38</dd><dt><span>GRIB_name :</span></dt><dd>Precipitable water</dd><dt><span>GRIB_parameterName :</span></dt><dd>Precipitable water</dd><dt><span>GRIB_parameterUnits :</span></dt><dd>kg m-2</dd><dt><span>GRIB_shortName :</span></dt><dd>pwat</dd><dt><span>GRIB_stepRange :</span></dt><dd>0</dd><dt><span>GRIB_totalNumber :</span></dt><dd>30</dd><dt><span>GRIB_units :</span></dt><dd>kg m**-2</dd><dt><span>long_name :</span></dt><dd>Precipitable water</dd><dt><span>units :</span></dt><dd>kg m**-2</dd><dt><span>standard_name :</span></dt><dd>unknown</dd><dt><span>grid_mapping :</span></dt><dd>gribfile_projection</dd></dl></div><div class='xr-var-data'><pre>array([[4.3, 4.3, 4.3, ..., 4.3, 4.3, 4.3],
+       [4.7, 4.7, 4.7, ..., 4.7, 4.7, 4.7],
+       [4.8, 4.8, 4.8, ..., 4.8, 4.8, 4.8],
+       ...,
+       [1.2, 1.2, 1.2, ..., 1.2, 1.2, 1.2],
+       [1.1, 1.1, 1.1, ..., 1.1, 1.1, 1.1],
+       [1. , 1. , 1. , ..., 1. , 1. , 1. ]], dtype=float32)</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span>gribfile_projection</span></div><div class='xr-var-dims'>()</div><div class='xr-var-dtype'>object</div><div class='xr-var-preview xr-preview'>None</div><input id='attrs-75ccb529-bf48-461d-865e-f46708c43536' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-75ccb529-bf48-461d-865e-f46708c43536' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-89118f24-2b67-431a-97b1-f9576e501bb8' class='xr-var-data-in' type='checkbox'><label for='data-89118f24-2b67-431a-97b1-f9576e501bb8' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>crs_wkt :</span></dt><dd>GEOGCRS[&quot;unknown&quot;,DATUM[&quot;unknown&quot;,ELLIPSOID[&quot;unknown&quot;,6371229,0,LENGTHUNIT[&quot;metre&quot;,1,ID[&quot;EPSG&quot;,9001]]]],PRIMEM[&quot;Greenwich&quot;,0,ANGLEUNIT[&quot;degree&quot;,0.0174532925199433],ID[&quot;EPSG&quot;,8901]],CS[ellipsoidal,2],AXIS[&quot;longitude&quot;,east,ORDER[1],ANGLEUNIT[&quot;degree&quot;,0.0174532925199433,ID[&quot;EPSG&quot;,9122]]],AXIS[&quot;latitude&quot;,north,ORDER[2],ANGLEUNIT[&quot;degree&quot;,0.0174532925199433,ID[&quot;EPSG&quot;,9122]]]]</dd><dt><span>semi_major_axis :</span></dt><dd>6371229.0</dd><dt><span>semi_minor_axis :</span></dt><dd>6371229.0</dd><dt><span>inverse_flattening :</span></dt><dd>0.0</dd><dt><span>reference_ellipsoid_name :</span></dt><dd>unknown</dd><dt><span>longitude_of_prime_meridian :</span></dt><dd>0.0</dd><dt><span>prime_meridian_name :</span></dt><dd>Greenwich</dd><dt><span>geographic_crs_name :</span></dt><dd>unknown</dd><dt><span>grid_mapping_name :</span></dt><dd>latitude_longitude</dd><dt><span>long_name :</span></dt><dd>GEFS model grid projection</dd></dl></div><div class='xr-var-data'><pre>array(None, dtype=object)</pre></div></li></ul></div></li><li class='xr-section-item'><input id='section-b47df59b-d80c-4b5c-b42f-b7bdb355e0c0' class='xr-section-summary-in' type='checkbox'  ><label for='section-b47df59b-d80c-4b5c-b42f-b7bdb355e0c0' class='xr-section-summary' >Indexes: <span>(2)</span></label><div class='xr-section-inline-details'></div><div class='xr-section-details'><ul class='xr-var-list'><li class='xr-var-item'><div class='xr-index-name'><div>latitude</div></div><div class='xr-index-preview'>PandasIndex</div><div></div><input id='index-8f7e1927-37a8-492c-ab98-44aec80355e5' class='xr-index-data-in' type='checkbox'/><label for='index-8f7e1927-37a8-492c-ab98-44aec80355e5' title='Show/Hide index repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-index-data'><pre>PandasIndex(Float64Index([ 90.0,  89.5,  89.0,  88.5,  88.0,  87.5,  87.0,  86.5,  86.0,
+               85.5,
+              ...
+              -85.5, -86.0, -86.5, -87.0, -87.5, -88.0, -88.5, -89.0, -89.5,
+              -90.0],
+             dtype=&#x27;float64&#x27;, name=&#x27;latitude&#x27;, length=361))</pre></div></li><li class='xr-var-item'><div class='xr-index-name'><div>longitude</div></div><div class='xr-index-preview'>PandasIndex</div><div></div><input id='index-5dbed181-b362-43b0-a271-bfa36a422855' class='xr-index-data-in' type='checkbox'/><label for='index-5dbed181-b362-43b0-a271-bfa36a422855' title='Show/Hide index repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-index-data'><pre>PandasIndex(Float64Index([  0.0,   0.5,   1.0,   1.5,   2.0,   2.5,   3.0,   3.5,   4.0,
+                4.5,
+              ...
+              355.0, 355.5, 356.0, 356.5, 357.0, 357.5, 358.0, 358.5, 359.0,
+              359.5],
+             dtype=&#x27;float64&#x27;, name=&#x27;longitude&#x27;, length=720))</pre></div></li></ul></div></li><li class='xr-section-item'><input id='section-781f2ec9-cbeb-432f-a24c-24caf03af738' class='xr-section-summary-in' type='checkbox'  ><label for='section-781f2ec9-cbeb-432f-a24c-24caf03af738' class='xr-section-summary' >Attributes: <span>(12)</span></label><div class='xr-section-inline-details'></div><div class='xr-section-details'><dl class='xr-attrs'><dt><span>GRIB_edition :</span></dt><dd>2</dd><dt><span>GRIB_centre :</span></dt><dd>kwbc</dd><dt><span>GRIB_centreDescription :</span></dt><dd>US National Weather Service - NCEP</dd><dt><span>GRIB_subCentre :</span></dt><dd>2</dd><dt><span>Conventions :</span></dt><dd>CF-1.7</dd><dt><span>institution :</span></dt><dd>US National Weather Service - NCEP</dd><dt><span>model :</span></dt><dd>gefs</dd><dt><span>product :</span></dt><dd>atmos.5</dd><dt><span>description :</span></dt><dd>Global Ensemble Forecast System (GEFS)</dd><dt><span>remote_grib :</span></dt><dd>https://noaa-gefs-pds.s3.amazonaws.com/gefs.20230104/12/atmos/pgrb2ap5/geavg.t12z.pgrb2a.0p50.f000</dd><dt><span>local_grib :</span></dt><dd>/home/blaylock/data/gefs/20230104/subset_f4ef1a3b__geavg.t12z.pgrb2a.0p50.f000</dd><dt><span>searchString :</span></dt><dd>PWAT</dd></dl></div></li></ul></div></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ds2</span> <span class="o">=</span> <span class="n">H</span><span class="o">.</span><span class="n">xarray</span><span class="p">(</span><span class="s2">&quot;HGT:500 mb&quot;</span><span class="p">)</span>
+<span class="n">ds2</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div><svg style="position: absolute; width: 0; height: 0; overflow: hidden">
+<defs>
+<symbol id="icon-database" viewBox="0 0 32 32">
+<path d="M16 0c-8.837 0-16 2.239-16 5v4c0 2.761 7.163 5 16 5s16-2.239 16-5v-4c0-2.761-7.163-5-16-5z"></path>
+<path d="M16 17c-8.837 0-16-2.239-16-5v6c0 2.761 7.163 5 16 5s16-2.239 16-5v-6c0 2.761-7.163 5-16 5z"></path>
+<path d="M16 26c-8.837 0-16-2.239-16-5v6c0 2.761 7.163 5 16 5s16-2.239 16-5v-6c0 2.761-7.163 5-16 5z"></path>
+</symbol>
+<symbol id="icon-file-text2" viewBox="0 0 32 32">
+<path d="M28.681 7.159c-0.694-0.947-1.662-2.053-2.724-3.116s-2.169-2.030-3.116-2.724c-1.612-1.182-2.393-1.319-2.841-1.319h-15.5c-1.378 0-2.5 1.121-2.5 2.5v27c0 1.378 1.122 2.5 2.5 2.5h23c1.378 0 2.5-1.122 2.5-2.5v-19.5c0-0.448-0.137-1.23-1.319-2.841zM24.543 5.457c0.959 0.959 1.712 1.825 2.268 2.543h-4.811v-4.811c0.718 0.556 1.584 1.309 2.543 2.268zM28 29.5c0 0.271-0.229 0.5-0.5 0.5h-23c-0.271 0-0.5-0.229-0.5-0.5v-27c0-0.271 0.229-0.5 0.5-0.5 0 0 15.499-0 15.5 0v7c0 0.552 0.448 1 1 1h7v19.5z"></path>
+<path d="M23 26h-14c-0.552 0-1-0.448-1-1s0.448-1 1-1h14c0.552 0 1 0.448 1 1s-0.448 1-1 1z"></path>
+<path d="M23 22h-14c-0.552 0-1-0.448-1-1s0.448-1 1-1h14c0.552 0 1 0.448 1 1s-0.448 1-1 1z"></path>
+<path d="M23 18h-14c-0.552 0-1-0.448-1-1s0.448-1 1-1h14c0.552 0 1 0.448 1 1s-0.448 1-1 1z"></path>
+</symbol>
+</defs>
+</svg>
+<style>/* CSS stylesheet for displaying xarray objects in jupyterlab.
+ *
+ */
+
+:root {
+  --xr-font-color0: var(--jp-content-font-color0, rgba(0, 0, 0, 1));
+  --xr-font-color2: var(--jp-content-font-color2, rgba(0, 0, 0, 0.54));
+  --xr-font-color3: var(--jp-content-font-color3, rgba(0, 0, 0, 0.38));
+  --xr-border-color: var(--jp-border-color2, #e0e0e0);
+  --xr-disabled-color: var(--jp-layout-color3, #bdbdbd);
+  --xr-background-color: var(--jp-layout-color0, white);
+  --xr-background-color-row-even: var(--jp-layout-color1, white);
+  --xr-background-color-row-odd: var(--jp-layout-color2, #eeeeee);
+}
+
+html[theme=dark],
+body[data-theme=dark],
+body.vscode-dark {
+  --xr-font-color0: rgba(255, 255, 255, 1);
+  --xr-font-color2: rgba(255, 255, 255, 0.54);
+  --xr-font-color3: rgba(255, 255, 255, 0.38);
+  --xr-border-color: #1F1F1F;
+  --xr-disabled-color: #515151;
+  --xr-background-color: #111111;
+  --xr-background-color-row-even: #111111;
+  --xr-background-color-row-odd: #313131;
+}
+
+.xr-wrap {
+  display: block !important;
+  min-width: 300px;
+  max-width: 700px;
+}
+
+.xr-text-repr-fallback {
+  /* fallback to plain text repr when CSS is not injected (untrusted notebook) */
+  display: none;
+}
+
+.xr-header {
+  padding-top: 6px;
+  padding-bottom: 6px;
+  margin-bottom: 4px;
+  border-bottom: solid 1px var(--xr-border-color);
+}
+
+.xr-header > div,
+.xr-header > ul {
+  display: inline;
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.xr-obj-type,
+.xr-array-name {
+  margin-left: 2px;
+  margin-right: 10px;
+}
+
+.xr-obj-type {
+  color: var(--xr-font-color2);
+}
+
+.xr-sections {
+  padding-left: 0 !important;
+  display: grid;
+  grid-template-columns: 150px auto auto 1fr 20px 20px;
+}
+
+.xr-section-item {
+  display: contents;
+}
+
+.xr-section-item input {
+  display: none;
+}
+
+.xr-section-item input + label {
+  color: var(--xr-disabled-color);
+}
+
+.xr-section-item input:enabled + label {
+  cursor: pointer;
+  color: var(--xr-font-color2);
+}
+
+.xr-section-item input:enabled + label:hover {
+  color: var(--xr-font-color0);
+}
+
+.xr-section-summary {
+  grid-column: 1;
+  color: var(--xr-font-color2);
+  font-weight: 500;
+}
+
+.xr-section-summary > span {
+  display: inline-block;
+  padding-left: 0.5em;
+}
+
+.xr-section-summary-in:disabled + label {
+  color: var(--xr-font-color2);
+}
+
+.xr-section-summary-in + label:before {
+  display: inline-block;
+  content: '►';
+  font-size: 11px;
+  width: 15px;
+  text-align: center;
+}
+
+.xr-section-summary-in:disabled + label:before {
+  color: var(--xr-disabled-color);
+}
+
+.xr-section-summary-in:checked + label:before {
+  content: '▼';
+}
+
+.xr-section-summary-in:checked + label > span {
+  display: none;
+}
+
+.xr-section-summary,
+.xr-section-inline-details {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+.xr-section-inline-details {
+  grid-column: 2 / -1;
+}
+
+.xr-section-details {
+  display: none;
+  grid-column: 1 / -1;
+  margin-bottom: 5px;
+}
+
+.xr-section-summary-in:checked ~ .xr-section-details {
+  display: contents;
+}
+
+.xr-array-wrap {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: 20px auto;
+}
+
+.xr-array-wrap > label {
+  grid-column: 1;
+  vertical-align: top;
+}
+
+.xr-preview {
+  color: var(--xr-font-color3);
+}
+
+.xr-array-preview,
+.xr-array-data {
+  padding: 0 5px !important;
+  grid-column: 2;
+}
+
+.xr-array-data,
+.xr-array-in:checked ~ .xr-array-preview {
+  display: none;
+}
+
+.xr-array-in:checked ~ .xr-array-data,
+.xr-array-preview {
+  display: inline-block;
+}
+
+.xr-dim-list {
+  display: inline-block !important;
+  list-style: none;
+  padding: 0 !important;
+  margin: 0;
+}
+
+.xr-dim-list li {
+  display: inline-block;
+  padding: 0;
+  margin: 0;
+}
+
+.xr-dim-list:before {
+  content: '(';
+}
+
+.xr-dim-list:after {
+  content: ')';
+}
+
+.xr-dim-list li:not(:last-child):after {
+  content: ',';
+  padding-right: 5px;
+}
+
+.xr-has-index {
+  font-weight: bold;
+}
+
+.xr-var-list,
+.xr-var-item {
+  display: contents;
+}
+
+.xr-var-item > div,
+.xr-var-item label,
+.xr-var-item > .xr-var-name span {
+  background-color: var(--xr-background-color-row-even);
+  margin-bottom: 0;
+}
+
+.xr-var-item > .xr-var-name:hover span {
+  padding-right: 5px;
+}
+
+.xr-var-list > li:nth-child(odd) > div,
+.xr-var-list > li:nth-child(odd) > label,
+.xr-var-list > li:nth-child(odd) > .xr-var-name span {
+  background-color: var(--xr-background-color-row-odd);
+}
+
+.xr-var-name {
+  grid-column: 1;
+}
+
+.xr-var-dims {
+  grid-column: 2;
+}
+
+.xr-var-dtype {
+  grid-column: 3;
+  text-align: right;
+  color: var(--xr-font-color2);
+}
+
+.xr-var-preview {
+  grid-column: 4;
+}
+
+.xr-index-preview {
+  grid-column: 2 / 5;
+  color: var(--xr-font-color2);
+}
+
+.xr-var-name,
+.xr-var-dims,
+.xr-var-dtype,
+.xr-preview,
+.xr-attrs dt {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding-right: 10px;
+}
+
+.xr-var-name:hover,
+.xr-var-dims:hover,
+.xr-var-dtype:hover,
+.xr-attrs dt:hover {
+  overflow: visible;
+  width: auto;
+  z-index: 1;
+}
+
+.xr-var-attrs,
+.xr-var-data,
+.xr-index-data {
+  display: none;
+  background-color: var(--xr-background-color) !important;
+  padding-bottom: 5px !important;
+}
+
+.xr-var-attrs-in:checked ~ .xr-var-attrs,
+.xr-var-data-in:checked ~ .xr-var-data,
+.xr-index-data-in:checked ~ .xr-index-data {
+  display: block;
+}
+
+.xr-var-data > table {
+  float: right;
+}
+
+.xr-var-name span,
+.xr-var-data,
+.xr-index-name div,
+.xr-index-data,
+.xr-attrs {
+  padding-left: 25px !important;
+}
+
+.xr-attrs,
+.xr-var-attrs,
+.xr-var-data,
+.xr-index-data {
+  grid-column: 1 / -1;
+}
+
+dl.xr-attrs {
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: 125px auto;
+}
+
+.xr-attrs dt,
+.xr-attrs dd {
+  padding: 0;
+  margin: 0;
+  float: left;
+  padding-right: 10px;
+  width: auto;
+}
+
+.xr-attrs dt {
+  font-weight: normal;
+  grid-column: 1;
+}
+
+.xr-attrs dt:hover span {
+  display: inline-block;
+  background: var(--xr-background-color);
+  padding-right: 10px;
+}
+
+.xr-attrs dd {
+  grid-column: 2;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+.xr-icon-database,
+.xr-icon-file-text2,
+.xr-no-icon {
+  display: inline-block;
+  vertical-align: middle;
+  width: 1em;
+  height: 1.5em !important;
+  stroke-width: 0;
+  stroke: currentColor;
+  fill: currentColor;
+}
+</style><pre class='xr-text-repr-fallback'>&lt;xarray.Dataset&gt;
+Dimensions:              (latitude: 361, longitude: 720)
+Coordinates:
+    time                 datetime64[ns] 2023-01-04T12:00:00
+    step                 timedelta64[ns] 00:00:00
+    isobaricInhPa        float64 500.0
+  * latitude             (latitude) float64 90.0 89.5 89.0 ... -89.0 -89.5 -90.0
+  * longitude            (longitude) float64 0.0 0.5 1.0 ... 358.5 359.0 359.5
+    valid_time           datetime64[ns] 2023-01-04T12:00:00
+Data variables:
+    gh                   (latitude, longitude) float32 5.248e+03 ... 5.023e+03
+    gribfile_projection  object None
+Attributes:
+    GRIB_edition:            2
+    GRIB_centre:             kwbc
+    GRIB_centreDescription:  US National Weather Service - NCEP
+    GRIB_subCentre:          2
+    Conventions:             CF-1.7
+    institution:             US National Weather Service - NCEP
+    model:                   gefs
+    product:                 atmos.5
+    description:             Global Ensemble Forecast System (GEFS)
+    remote_grib:             https://noaa-gefs-pds.s3.amazonaws.com/gefs.2023...
+    local_grib:              /home/blaylock/data/gefs/20230104/subset_f4efbd3...
+    searchString:            HGT:500 mb</pre><div class='xr-wrap' style='display:none'><div class='xr-header'><div class='xr-obj-type'>xarray.Dataset</div></div><ul class='xr-sections'><li class='xr-section-item'><input id='section-a185e3ad-424a-40c4-83b9-07be0857a71c' class='xr-section-summary-in' type='checkbox' disabled ><label for='section-a185e3ad-424a-40c4-83b9-07be0857a71c' class='xr-section-summary'  title='Expand/collapse section'>Dimensions:</label><div class='xr-section-inline-details'><ul class='xr-dim-list'><li><span class='xr-has-index'>latitude</span>: 361</li><li><span class='xr-has-index'>longitude</span>: 720</li></ul></div><div class='xr-section-details'></div></li><li class='xr-section-item'><input id='section-2d8391d2-e8a7-4d09-9b7c-b303787f0ae9' class='xr-section-summary-in' type='checkbox'  checked><label for='section-2d8391d2-e8a7-4d09-9b7c-b303787f0ae9' class='xr-section-summary' >Coordinates: <span>(6)</span></label><div class='xr-section-inline-details'></div><div class='xr-section-details'><ul class='xr-var-list'><li class='xr-var-item'><div class='xr-var-name'><span>time</span></div><div class='xr-var-dims'>()</div><div class='xr-var-dtype'>datetime64[ns]</div><div class='xr-var-preview xr-preview'>2023-01-04T12:00:00</div><input id='attrs-41e9dd90-f2a2-48b4-9eb4-9ed5ab8a052e' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-41e9dd90-f2a2-48b4-9eb4-9ed5ab8a052e' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-46000b0a-bba3-422a-b75e-53559b2add9c' class='xr-var-data-in' type='checkbox'><label for='data-46000b0a-bba3-422a-b75e-53559b2add9c' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>long_name :</span></dt><dd>initial time of forecast</dd><dt><span>standard_name :</span></dt><dd>forecast_reference_time</dd></dl></div><div class='xr-var-data'><pre>array(&#x27;2023-01-04T12:00:00.000000000&#x27;, dtype=&#x27;datetime64[ns]&#x27;)</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span>step</span></div><div class='xr-var-dims'>()</div><div class='xr-var-dtype'>timedelta64[ns]</div><div class='xr-var-preview xr-preview'>00:00:00</div><input id='attrs-dd79423d-6e31-4dc3-aa64-fea4ba6eb257' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-dd79423d-6e31-4dc3-aa64-fea4ba6eb257' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-46e78669-edcf-4398-83fb-1bd0eb617843' class='xr-var-data-in' type='checkbox'><label for='data-46e78669-edcf-4398-83fb-1bd0eb617843' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>long_name :</span></dt><dd>time since forecast_reference_time</dd><dt><span>standard_name :</span></dt><dd>forecast_period</dd></dl></div><div class='xr-var-data'><pre>array(0, dtype=&#x27;timedelta64[ns]&#x27;)</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span>isobaricInhPa</span></div><div class='xr-var-dims'>()</div><div class='xr-var-dtype'>float64</div><div class='xr-var-preview xr-preview'>500.0</div><input id='attrs-b5ae574f-0476-4fcd-a908-0b871bd7a921' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-b5ae574f-0476-4fcd-a908-0b871bd7a921' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-8ed0523a-9c77-4840-889d-6c4f043b55e1' class='xr-var-data-in' type='checkbox'><label for='data-8ed0523a-9c77-4840-889d-6c4f043b55e1' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>long_name :</span></dt><dd>pressure</dd><dt><span>units :</span></dt><dd>hPa</dd><dt><span>positive :</span></dt><dd>down</dd><dt><span>stored_direction :</span></dt><dd>decreasing</dd><dt><span>standard_name :</span></dt><dd>air_pressure</dd></dl></div><div class='xr-var-data'><pre>array(500.)</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span class='xr-has-index'>latitude</span></div><div class='xr-var-dims'>(latitude)</div><div class='xr-var-dtype'>float64</div><div class='xr-var-preview xr-preview'>90.0 89.5 89.0 ... -89.5 -90.0</div><input id='attrs-527e928c-5233-48ba-a4e9-371e3c1ac023' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-527e928c-5233-48ba-a4e9-371e3c1ac023' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-8f6d214e-4801-4a6a-a3ee-fe8f73aefbb6' class='xr-var-data-in' type='checkbox'><label for='data-8f6d214e-4801-4a6a-a3ee-fe8f73aefbb6' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>units :</span></dt><dd>degrees_north</dd><dt><span>standard_name :</span></dt><dd>latitude</dd><dt><span>long_name :</span></dt><dd>latitude</dd><dt><span>stored_direction :</span></dt><dd>decreasing</dd></dl></div><div class='xr-var-data'><pre>array([ 90. ,  89.5,  89. , ..., -89. , -89.5, -90. ])</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span class='xr-has-index'>longitude</span></div><div class='xr-var-dims'>(longitude)</div><div class='xr-var-dtype'>float64</div><div class='xr-var-preview xr-preview'>0.0 0.5 1.0 ... 358.5 359.0 359.5</div><input id='attrs-5b63b903-a0f5-4b3e-945a-e9578edaccf7' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-5b63b903-a0f5-4b3e-945a-e9578edaccf7' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-03279fec-abb7-4f74-b3d0-dda806eee6bb' class='xr-var-data-in' type='checkbox'><label for='data-03279fec-abb7-4f74-b3d0-dda806eee6bb' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>units :</span></dt><dd>degrees_east</dd><dt><span>standard_name :</span></dt><dd>longitude</dd><dt><span>long_name :</span></dt><dd>longitude</dd></dl></div><div class='xr-var-data'><pre>array([  0. ,   0.5,   1. , ..., 358.5, 359. , 359.5])</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span>valid_time</span></div><div class='xr-var-dims'>()</div><div class='xr-var-dtype'>datetime64[ns]</div><div class='xr-var-preview xr-preview'>2023-01-04T12:00:00</div><input id='attrs-c60d6a10-3da3-4c51-aea8-fec987d0cd74' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-c60d6a10-3da3-4c51-aea8-fec987d0cd74' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-4b88707a-fa41-4efa-b6c2-b96a44e11428' class='xr-var-data-in' type='checkbox'><label for='data-4b88707a-fa41-4efa-b6c2-b96a44e11428' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>standard_name :</span></dt><dd>time</dd><dt><span>long_name :</span></dt><dd>time</dd></dl></div><div class='xr-var-data'><pre>array(&#x27;2023-01-04T12:00:00.000000000&#x27;, dtype=&#x27;datetime64[ns]&#x27;)</pre></div></li></ul></div></li><li class='xr-section-item'><input id='section-87902620-7a66-4346-a5cd-340f8e3a0676' class='xr-section-summary-in' type='checkbox'  checked><label for='section-87902620-7a66-4346-a5cd-340f8e3a0676' class='xr-section-summary' >Data variables: <span>(2)</span></label><div class='xr-section-inline-details'></div><div class='xr-section-details'><ul class='xr-var-list'><li class='xr-var-item'><div class='xr-var-name'><span>gh</span></div><div class='xr-var-dims'>(latitude, longitude)</div><div class='xr-var-dtype'>float32</div><div class='xr-var-preview xr-preview'>5.248e+03 5.248e+03 ... 5.023e+03</div><input id='attrs-62403c84-d9cd-42ca-a066-ac388a682b7b' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-62403c84-d9cd-42ca-a066-ac388a682b7b' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-b1fec65d-ead6-4c9c-87e7-5630a3c96a2a' class='xr-var-data-in' type='checkbox'><label for='data-b1fec65d-ead6-4c9c-87e7-5630a3c96a2a' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>GRIB_paramId :</span></dt><dd>156</dd><dt><span>GRIB_dataType :</span></dt><dd>pf</dd><dt><span>GRIB_numberOfPoints :</span></dt><dd>259920</dd><dt><span>GRIB_typeOfLevel :</span></dt><dd>isobaricInhPa</dd><dt><span>GRIB_stepUnits :</span></dt><dd>1</dd><dt><span>GRIB_stepType :</span></dt><dd>instant</dd><dt><span>GRIB_gridType :</span></dt><dd>regular_ll</dd><dt><span>GRIB_NV :</span></dt><dd>0</dd><dt><span>GRIB_Nx :</span></dt><dd>720</dd><dt><span>GRIB_Ny :</span></dt><dd>361</dd><dt><span>GRIB_cfName :</span></dt><dd>geopotential_height</dd><dt><span>GRIB_cfVarName :</span></dt><dd>gh</dd><dt><span>GRIB_gridDefinitionDescription :</span></dt><dd>Latitude/longitude. Also called equidistant cylindrical, or Plate Carree</dd><dt><span>GRIB_iDirectionIncrementInDegrees :</span></dt><dd>0.5</dd><dt><span>GRIB_iScansNegatively :</span></dt><dd>0</dd><dt><span>GRIB_jDirectionIncrementInDegrees :</span></dt><dd>0.5</dd><dt><span>GRIB_jPointsAreConsecutive :</span></dt><dd>0</dd><dt><span>GRIB_jScansPositively :</span></dt><dd>0</dd><dt><span>GRIB_latitudeOfFirstGridPointInDegrees :</span></dt><dd>90.0</dd><dt><span>GRIB_latitudeOfLastGridPointInDegrees :</span></dt><dd>-90.0</dd><dt><span>GRIB_longitudeOfFirstGridPointInDegrees :</span></dt><dd>0.0</dd><dt><span>GRIB_longitudeOfLastGridPointInDegrees :</span></dt><dd>359.5</dd><dt><span>GRIB_missingValue :</span></dt><dd>3.4028234663852886e+38</dd><dt><span>GRIB_name :</span></dt><dd>Geopotential height</dd><dt><span>GRIB_parameterName :</span></dt><dd>Geopotential height</dd><dt><span>GRIB_parameterUnits :</span></dt><dd>gpm</dd><dt><span>GRIB_shortName :</span></dt><dd>gh</dd><dt><span>GRIB_stepRange :</span></dt><dd>0</dd><dt><span>GRIB_totalNumber :</span></dt><dd>30</dd><dt><span>GRIB_units :</span></dt><dd>gpm</dd><dt><span>long_name :</span></dt><dd>Geopotential height</dd><dt><span>units :</span></dt><dd>gpm</dd><dt><span>standard_name :</span></dt><dd>geopotential_height</dd><dt><span>grid_mapping :</span></dt><dd>gribfile_projection</dd></dl></div><div class='xr-var-data'><pre>array([[5248.3467, 5248.3467, 5248.3467, ..., 5248.3467, 5248.3467,
+        5248.3467],
+       [5248.8066, 5248.8467, 5248.8867, ..., 5248.687 , 5248.727 ,
+        5248.767 ],
+       [5250.187 , 5250.247 , 5250.3066, ..., 5249.967 , 5250.027 ,
+        5250.107 ],
+       ...,
+       [5028.507 , 5028.727 , 5028.967 , ..., 5027.8267, 5028.067 ,
+        5028.287 ],
+       [5025.707 , 5025.8267, 5025.927 , ..., 5025.3867, 5025.487 ,
+        5025.607 ],
+       [5022.787 , 5022.787 , 5022.787 , ..., 5022.787 , 5022.787 ,
+        5022.787 ]], dtype=float32)</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span>gribfile_projection</span></div><div class='xr-var-dims'>()</div><div class='xr-var-dtype'>object</div><div class='xr-var-preview xr-preview'>None</div><input id='attrs-874bc0db-4309-4456-8fcb-3ac87abc8494' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-874bc0db-4309-4456-8fcb-3ac87abc8494' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-73563ac2-cd90-4192-b1a8-929fe6d19a2d' class='xr-var-data-in' type='checkbox'><label for='data-73563ac2-cd90-4192-b1a8-929fe6d19a2d' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>crs_wkt :</span></dt><dd>GEOGCRS[&quot;unknown&quot;,DATUM[&quot;unknown&quot;,ELLIPSOID[&quot;unknown&quot;,6371229,0,LENGTHUNIT[&quot;metre&quot;,1,ID[&quot;EPSG&quot;,9001]]]],PRIMEM[&quot;Greenwich&quot;,0,ANGLEUNIT[&quot;degree&quot;,0.0174532925199433],ID[&quot;EPSG&quot;,8901]],CS[ellipsoidal,2],AXIS[&quot;longitude&quot;,east,ORDER[1],ANGLEUNIT[&quot;degree&quot;,0.0174532925199433,ID[&quot;EPSG&quot;,9122]]],AXIS[&quot;latitude&quot;,north,ORDER[2],ANGLEUNIT[&quot;degree&quot;,0.0174532925199433,ID[&quot;EPSG&quot;,9122]]]]</dd><dt><span>semi_major_axis :</span></dt><dd>6371229.0</dd><dt><span>semi_minor_axis :</span></dt><dd>6371229.0</dd><dt><span>inverse_flattening :</span></dt><dd>0.0</dd><dt><span>reference_ellipsoid_name :</span></dt><dd>unknown</dd><dt><span>longitude_of_prime_meridian :</span></dt><dd>0.0</dd><dt><span>prime_meridian_name :</span></dt><dd>Greenwich</dd><dt><span>geographic_crs_name :</span></dt><dd>unknown</dd><dt><span>grid_mapping_name :</span></dt><dd>latitude_longitude</dd><dt><span>long_name :</span></dt><dd>GEFS model grid projection</dd></dl></div><div class='xr-var-data'><pre>array(None, dtype=object)</pre></div></li></ul></div></li><li class='xr-section-item'><input id='section-6c49a30a-35c3-48bf-8737-4ddfccc63385' class='xr-section-summary-in' type='checkbox'  ><label for='section-6c49a30a-35c3-48bf-8737-4ddfccc63385' class='xr-section-summary' >Indexes: <span>(2)</span></label><div class='xr-section-inline-details'></div><div class='xr-section-details'><ul class='xr-var-list'><li class='xr-var-item'><div class='xr-index-name'><div>latitude</div></div><div class='xr-index-preview'>PandasIndex</div><div></div><input id='index-2180d654-3155-436c-9463-75d55694dd3c' class='xr-index-data-in' type='checkbox'/><label for='index-2180d654-3155-436c-9463-75d55694dd3c' title='Show/Hide index repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-index-data'><pre>PandasIndex(Float64Index([ 90.0,  89.5,  89.0,  88.5,  88.0,  87.5,  87.0,  86.5,  86.0,
+               85.5,
+              ...
+              -85.5, -86.0, -86.5, -87.0, -87.5, -88.0, -88.5, -89.0, -89.5,
+              -90.0],
+             dtype=&#x27;float64&#x27;, name=&#x27;latitude&#x27;, length=361))</pre></div></li><li class='xr-var-item'><div class='xr-index-name'><div>longitude</div></div><div class='xr-index-preview'>PandasIndex</div><div></div><input id='index-b5898da4-da40-4cf6-b564-b84723287bf6' class='xr-index-data-in' type='checkbox'/><label for='index-b5898da4-da40-4cf6-b564-b84723287bf6' title='Show/Hide index repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-index-data'><pre>PandasIndex(Float64Index([  0.0,   0.5,   1.0,   1.5,   2.0,   2.5,   3.0,   3.5,   4.0,
+                4.5,
+              ...
+              355.0, 355.5, 356.0, 356.5, 357.0, 357.5, 358.0, 358.5, 359.0,
+              359.5],
+             dtype=&#x27;float64&#x27;, name=&#x27;longitude&#x27;, length=720))</pre></div></li></ul></div></li><li class='xr-section-item'><input id='section-bf16cfa8-0d56-4eb4-a724-d6a33d75ccc5' class='xr-section-summary-in' type='checkbox'  ><label for='section-bf16cfa8-0d56-4eb4-a724-d6a33d75ccc5' class='xr-section-summary' >Attributes: <span>(12)</span></label><div class='xr-section-inline-details'></div><div class='xr-section-details'><dl class='xr-attrs'><dt><span>GRIB_edition :</span></dt><dd>2</dd><dt><span>GRIB_centre :</span></dt><dd>kwbc</dd><dt><span>GRIB_centreDescription :</span></dt><dd>US National Weather Service - NCEP</dd><dt><span>GRIB_subCentre :</span></dt><dd>2</dd><dt><span>Conventions :</span></dt><dd>CF-1.7</dd><dt><span>institution :</span></dt><dd>US National Weather Service - NCEP</dd><dt><span>model :</span></dt><dd>gefs</dd><dt><span>product :</span></dt><dd>atmos.5</dd><dt><span>description :</span></dt><dd>Global Ensemble Forecast System (GEFS)</dd><dt><span>remote_grib :</span></dt><dd>https://noaa-gefs-pds.s3.amazonaws.com/gefs.20230104/12/atmos/pgrb2ap5/geavg.t12z.pgrb2a.0p50.f000</dd><dt><span>local_grib :</span></dt><dd>/home/blaylock/data/gefs/20230104/subset_f4efbd36__geavg.t12z.pgrb2a.0p50.f000</dd><dt><span>searchString :</span></dt><dd>HGT:500 mb</dd></dl></div></li></ul></div></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ax</span> <span class="o">=</span> <span class="n">EasyMap</span><span class="p">(</span><span class="s2">&quot;50m&quot;</span><span class="p">,</span> <span class="n">crs</span><span class="o">=</span><span class="n">ds</span><span class="o">.</span><span class="n">herbie</span><span class="o">.</span><span class="n">crs</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">])</span><span class="o">.</span><span class="n">STATES</span><span class="p">()</span><span class="o">.</span><span class="n">BORDERS</span><span class="p">()</span><span class="o">.</span><span class="n">ax</span>
+<span class="n">p</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">pcolormesh</span><span class="p">(</span>
+    <span class="n">ds</span><span class="o">.</span><span class="n">longitude</span><span class="p">,</span> <span class="n">ds</span><span class="o">.</span><span class="n">latitude</span><span class="p">,</span> <span class="n">ds</span><span class="o">.</span><span class="n">pwat</span><span class="p">,</span> <span class="n">transform</span><span class="o">=</span><span class="n">pc</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">&quot;Greens&quot;</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=</span><span class="mi">0</span>
+<span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span>
+    <span class="n">p</span><span class="p">,</span>
+    <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span>
+    <span class="n">orientation</span><span class="o">=</span><span class="s2">&quot;horizontal&quot;</span><span class="p">,</span>
+    <span class="n">pad</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span>
+    <span class="n">shrink</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span>
+    <span class="n">label</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">ds</span><span class="o">.</span><span class="n">pwat</span><span class="o">.</span><span class="n">GRIB_name</span><span class="si">}</span><span class="s2">(</span><span class="si">{</span><span class="n">ds</span><span class="o">.</span><span class="n">pwat</span><span class="o">.</span><span class="n">GRIB_units</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="c1"># Add 500 hPa Geopotential height</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">contour</span><span class="p">(</span>
+    <span class="n">ds2</span><span class="o">.</span><span class="n">longitude</span><span class="p">,</span>
+    <span class="n">ds2</span><span class="o">.</span><span class="n">latitude</span><span class="p">,</span>
+    <span class="n">ds2</span><span class="o">.</span><span class="n">gh</span><span class="p">,</span>
+    <span class="n">colors</span><span class="o">=</span><span class="s2">&quot;k&quot;</span><span class="p">,</span>
+    <span class="n">linewidths</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+    <span class="n">levels</span><span class="o">=</span><span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10000</span><span class="p">,</span> <span class="mi">120</span><span class="p">),</span>
+<span class="p">)</span>
+
+<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span>
+    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">ds</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span><span class="si">}</span><span class="s2"> ensemble mean</span><span class="se">\n</span><span class="s2">Valid: </span><span class="si">{</span><span class="n">ds</span><span class="o">.</span><span class="n">valid_time</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%H:%M UTC </span><span class="si">%d</span><span class="s1"> %b %Y&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">item</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+    <span class="n">loc</span><span class="o">=</span><span class="s2">&quot;left&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">ds</span><span class="o">.</span><span class="n">pwat</span><span class="o">.</span><span class="n">GRIB_name</span><span class="p">,</span> <span class="n">loc</span><span class="o">=</span><span class="s2">&quot;right&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Text(1.0, 1.0, &#39;Precipitable water&#39;)
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../_images/user_guide__model_notebooks_gefs_10_1.png" src="../../_images/user_guide__model_notebooks_gefs_10_1.png" />
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Get a specific member</span>
+<span class="n">H5</span> <span class="o">=</span> <span class="n">Herbie</span><span class="p">(</span>
+    <span class="s2">&quot;2022-01-01&quot;</span><span class="p">,</span>
+    <span class="n">model</span><span class="o">=</span><span class="s2">&quot;gefs&quot;</span><span class="p">,</span>
+    <span class="n">product</span><span class="o">=</span><span class="s2">&quot;atmos.5&quot;</span><span class="p">,</span>
+    <span class="n">member</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">H5</span><span class="o">.</span><span class="n">xarray</span><span class="p">(</span><span class="s2">&quot;TMP:2 m&quot;</span><span class="p">)</span>
+
+<span class="c1">## If a user wants all the members in</span>
+<span class="c1">## a single Dataframe, I&#39;ll let the user</span>
+<span class="c1">## concat it themselves.</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+✅ Found ┊ model=gefs ┊ product=atmos.5 ┊ <span style="color: rgb(41,130,13)">2022-Jan-01 00:00 UTC</span><span class="ansi-green-intense-fg"> F00</span> ┊ <span style="color: rgb(255,153,0)">GRIB2 @ aws</span> ┊ <span style="color: rgb(255,153,0)">IDX @ aws</span>
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div><svg style="position: absolute; width: 0; height: 0; overflow: hidden">
+<defs>
+<symbol id="icon-database" viewBox="0 0 32 32">
+<path d="M16 0c-8.837 0-16 2.239-16 5v4c0 2.761 7.163 5 16 5s16-2.239 16-5v-4c0-2.761-7.163-5-16-5z"></path>
+<path d="M16 17c-8.837 0-16-2.239-16-5v6c0 2.761 7.163 5 16 5s16-2.239 16-5v-6c0 2.761-7.163 5-16 5z"></path>
+<path d="M16 26c-8.837 0-16-2.239-16-5v6c0 2.761 7.163 5 16 5s16-2.239 16-5v-6c0 2.761-7.163 5-16 5z"></path>
+</symbol>
+<symbol id="icon-file-text2" viewBox="0 0 32 32">
+<path d="M28.681 7.159c-0.694-0.947-1.662-2.053-2.724-3.116s-2.169-2.030-3.116-2.724c-1.612-1.182-2.393-1.319-2.841-1.319h-15.5c-1.378 0-2.5 1.121-2.5 2.5v27c0 1.378 1.122 2.5 2.5 2.5h23c1.378 0 2.5-1.122 2.5-2.5v-19.5c0-0.448-0.137-1.23-1.319-2.841zM24.543 5.457c0.959 0.959 1.712 1.825 2.268 2.543h-4.811v-4.811c0.718 0.556 1.584 1.309 2.543 2.268zM28 29.5c0 0.271-0.229 0.5-0.5 0.5h-23c-0.271 0-0.5-0.229-0.5-0.5v-27c0-0.271 0.229-0.5 0.5-0.5 0 0 15.499-0 15.5 0v7c0 0.552 0.448 1 1 1h7v19.5z"></path>
+<path d="M23 26h-14c-0.552 0-1-0.448-1-1s0.448-1 1-1h14c0.552 0 1 0.448 1 1s-0.448 1-1 1z"></path>
+<path d="M23 22h-14c-0.552 0-1-0.448-1-1s0.448-1 1-1h14c0.552 0 1 0.448 1 1s-0.448 1-1 1z"></path>
+<path d="M23 18h-14c-0.552 0-1-0.448-1-1s0.448-1 1-1h14c0.552 0 1 0.448 1 1s-0.448 1-1 1z"></path>
+</symbol>
+</defs>
+</svg>
+<style>/* CSS stylesheet for displaying xarray objects in jupyterlab.
+ *
+ */
+
+:root {
+  --xr-font-color0: var(--jp-content-font-color0, rgba(0, 0, 0, 1));
+  --xr-font-color2: var(--jp-content-font-color2, rgba(0, 0, 0, 0.54));
+  --xr-font-color3: var(--jp-content-font-color3, rgba(0, 0, 0, 0.38));
+  --xr-border-color: var(--jp-border-color2, #e0e0e0);
+  --xr-disabled-color: var(--jp-layout-color3, #bdbdbd);
+  --xr-background-color: var(--jp-layout-color0, white);
+  --xr-background-color-row-even: var(--jp-layout-color1, white);
+  --xr-background-color-row-odd: var(--jp-layout-color2, #eeeeee);
+}
+
+html[theme=dark],
+body[data-theme=dark],
+body.vscode-dark {
+  --xr-font-color0: rgba(255, 255, 255, 1);
+  --xr-font-color2: rgba(255, 255, 255, 0.54);
+  --xr-font-color3: rgba(255, 255, 255, 0.38);
+  --xr-border-color: #1F1F1F;
+  --xr-disabled-color: #515151;
+  --xr-background-color: #111111;
+  --xr-background-color-row-even: #111111;
+  --xr-background-color-row-odd: #313131;
+}
+
+.xr-wrap {
+  display: block !important;
+  min-width: 300px;
+  max-width: 700px;
+}
+
+.xr-text-repr-fallback {
+  /* fallback to plain text repr when CSS is not injected (untrusted notebook) */
+  display: none;
+}
+
+.xr-header {
+  padding-top: 6px;
+  padding-bottom: 6px;
+  margin-bottom: 4px;
+  border-bottom: solid 1px var(--xr-border-color);
+}
+
+.xr-header > div,
+.xr-header > ul {
+  display: inline;
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.xr-obj-type,
+.xr-array-name {
+  margin-left: 2px;
+  margin-right: 10px;
+}
+
+.xr-obj-type {
+  color: var(--xr-font-color2);
+}
+
+.xr-sections {
+  padding-left: 0 !important;
+  display: grid;
+  grid-template-columns: 150px auto auto 1fr 20px 20px;
+}
+
+.xr-section-item {
+  display: contents;
+}
+
+.xr-section-item input {
+  display: none;
+}
+
+.xr-section-item input + label {
+  color: var(--xr-disabled-color);
+}
+
+.xr-section-item input:enabled + label {
+  cursor: pointer;
+  color: var(--xr-font-color2);
+}
+
+.xr-section-item input:enabled + label:hover {
+  color: var(--xr-font-color0);
+}
+
+.xr-section-summary {
+  grid-column: 1;
+  color: var(--xr-font-color2);
+  font-weight: 500;
+}
+
+.xr-section-summary > span {
+  display: inline-block;
+  padding-left: 0.5em;
+}
+
+.xr-section-summary-in:disabled + label {
+  color: var(--xr-font-color2);
+}
+
+.xr-section-summary-in + label:before {
+  display: inline-block;
+  content: '►';
+  font-size: 11px;
+  width: 15px;
+  text-align: center;
+}
+
+.xr-section-summary-in:disabled + label:before {
+  color: var(--xr-disabled-color);
+}
+
+.xr-section-summary-in:checked + label:before {
+  content: '▼';
+}
+
+.xr-section-summary-in:checked + label > span {
+  display: none;
+}
+
+.xr-section-summary,
+.xr-section-inline-details {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+.xr-section-inline-details {
+  grid-column: 2 / -1;
+}
+
+.xr-section-details {
+  display: none;
+  grid-column: 1 / -1;
+  margin-bottom: 5px;
+}
+
+.xr-section-summary-in:checked ~ .xr-section-details {
+  display: contents;
+}
+
+.xr-array-wrap {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: 20px auto;
+}
+
+.xr-array-wrap > label {
+  grid-column: 1;
+  vertical-align: top;
+}
+
+.xr-preview {
+  color: var(--xr-font-color3);
+}
+
+.xr-array-preview,
+.xr-array-data {
+  padding: 0 5px !important;
+  grid-column: 2;
+}
+
+.xr-array-data,
+.xr-array-in:checked ~ .xr-array-preview {
+  display: none;
+}
+
+.xr-array-in:checked ~ .xr-array-data,
+.xr-array-preview {
+  display: inline-block;
+}
+
+.xr-dim-list {
+  display: inline-block !important;
+  list-style: none;
+  padding: 0 !important;
+  margin: 0;
+}
+
+.xr-dim-list li {
+  display: inline-block;
+  padding: 0;
+  margin: 0;
+}
+
+.xr-dim-list:before {
+  content: '(';
+}
+
+.xr-dim-list:after {
+  content: ')';
+}
+
+.xr-dim-list li:not(:last-child):after {
+  content: ',';
+  padding-right: 5px;
+}
+
+.xr-has-index {
+  font-weight: bold;
+}
+
+.xr-var-list,
+.xr-var-item {
+  display: contents;
+}
+
+.xr-var-item > div,
+.xr-var-item label,
+.xr-var-item > .xr-var-name span {
+  background-color: var(--xr-background-color-row-even);
+  margin-bottom: 0;
+}
+
+.xr-var-item > .xr-var-name:hover span {
+  padding-right: 5px;
+}
+
+.xr-var-list > li:nth-child(odd) > div,
+.xr-var-list > li:nth-child(odd) > label,
+.xr-var-list > li:nth-child(odd) > .xr-var-name span {
+  background-color: var(--xr-background-color-row-odd);
+}
+
+.xr-var-name {
+  grid-column: 1;
+}
+
+.xr-var-dims {
+  grid-column: 2;
+}
+
+.xr-var-dtype {
+  grid-column: 3;
+  text-align: right;
+  color: var(--xr-font-color2);
+}
+
+.xr-var-preview {
+  grid-column: 4;
+}
+
+.xr-index-preview {
+  grid-column: 2 / 5;
+  color: var(--xr-font-color2);
+}
+
+.xr-var-name,
+.xr-var-dims,
+.xr-var-dtype,
+.xr-preview,
+.xr-attrs dt {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding-right: 10px;
+}
+
+.xr-var-name:hover,
+.xr-var-dims:hover,
+.xr-var-dtype:hover,
+.xr-attrs dt:hover {
+  overflow: visible;
+  width: auto;
+  z-index: 1;
+}
+
+.xr-var-attrs,
+.xr-var-data,
+.xr-index-data {
+  display: none;
+  background-color: var(--xr-background-color) !important;
+  padding-bottom: 5px !important;
+}
+
+.xr-var-attrs-in:checked ~ .xr-var-attrs,
+.xr-var-data-in:checked ~ .xr-var-data,
+.xr-index-data-in:checked ~ .xr-index-data {
+  display: block;
+}
+
+.xr-var-data > table {
+  float: right;
+}
+
+.xr-var-name span,
+.xr-var-data,
+.xr-index-name div,
+.xr-index-data,
+.xr-attrs {
+  padding-left: 25px !important;
+}
+
+.xr-attrs,
+.xr-var-attrs,
+.xr-var-data,
+.xr-index-data {
+  grid-column: 1 / -1;
+}
+
+dl.xr-attrs {
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: 125px auto;
+}
+
+.xr-attrs dt,
+.xr-attrs dd {
+  padding: 0;
+  margin: 0;
+  float: left;
+  padding-right: 10px;
+  width: auto;
+}
+
+.xr-attrs dt {
+  font-weight: normal;
+  grid-column: 1;
+}
+
+.xr-attrs dt:hover span {
+  display: inline-block;
+  background: var(--xr-background-color);
+  padding-right: 10px;
+}
+
+.xr-attrs dd {
+  grid-column: 2;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+.xr-icon-database,
+.xr-icon-file-text2,
+.xr-no-icon {
+  display: inline-block;
+  vertical-align: middle;
+  width: 1em;
+  height: 1.5em !important;
+  stroke-width: 0;
+  stroke: currentColor;
+  fill: currentColor;
+}
+</style><pre class='xr-text-repr-fallback'>&lt;xarray.Dataset&gt;
+Dimensions:              (latitude: 361, longitude: 720)
+Coordinates:
+    number               int64 5
+    time                 datetime64[ns] 2022-01-01
+    step                 timedelta64[ns] 00:00:00
+    heightAboveGround    float64 2.0
+  * latitude             (latitude) float64 90.0 89.5 89.0 ... -89.0 -89.5 -90.0
+  * longitude            (longitude) float64 0.0 0.5 1.0 ... 358.5 359.0 359.5
+    valid_time           datetime64[ns] 2022-01-01
+Data variables:
+    t2m                  (latitude, longitude) float32 244.5 244.5 ... 252.3
+    gribfile_projection  object None
+Attributes:
+    GRIB_edition:            2
+    GRIB_centre:             kwbc
+    GRIB_centreDescription:  US National Weather Service - NCEP
+    GRIB_subCentre:          2
+    Conventions:             CF-1.7
+    institution:             US National Weather Service - NCEP
+    model:                   gefs
+    product:                 atmos.5
+    description:             Global Ensemble Forecast System (GEFS)
+    remote_grib:             https://noaa-gefs-pds.s3.amazonaws.com/gefs.2022...
+    local_grib:              /home/blaylock/data/gefs/20220101/subset_04ef8ac...
+    searchString:            TMP:2 m</pre><div class='xr-wrap' style='display:none'><div class='xr-header'><div class='xr-obj-type'>xarray.Dataset</div></div><ul class='xr-sections'><li class='xr-section-item'><input id='section-f2127268-d7ea-4ba1-a9df-4a21fb4c0825' class='xr-section-summary-in' type='checkbox' disabled ><label for='section-f2127268-d7ea-4ba1-a9df-4a21fb4c0825' class='xr-section-summary'  title='Expand/collapse section'>Dimensions:</label><div class='xr-section-inline-details'><ul class='xr-dim-list'><li><span class='xr-has-index'>latitude</span>: 361</li><li><span class='xr-has-index'>longitude</span>: 720</li></ul></div><div class='xr-section-details'></div></li><li class='xr-section-item'><input id='section-03857092-7780-4ee0-bab5-7abc14a8e60e' class='xr-section-summary-in' type='checkbox'  checked><label for='section-03857092-7780-4ee0-bab5-7abc14a8e60e' class='xr-section-summary' >Coordinates: <span>(7)</span></label><div class='xr-section-inline-details'></div><div class='xr-section-details'><ul class='xr-var-list'><li class='xr-var-item'><div class='xr-var-name'><span>number</span></div><div class='xr-var-dims'>()</div><div class='xr-var-dtype'>int64</div><div class='xr-var-preview xr-preview'>5</div><input id='attrs-65362565-f299-4b48-91ea-34fc23f59650' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-65362565-f299-4b48-91ea-34fc23f59650' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-a02057e8-6bf9-4acf-ac23-1405f1dfa90e' class='xr-var-data-in' type='checkbox'><label for='data-a02057e8-6bf9-4acf-ac23-1405f1dfa90e' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>long_name :</span></dt><dd>ensemble member numerical id</dd><dt><span>units :</span></dt><dd>1</dd><dt><span>standard_name :</span></dt><dd>realization</dd></dl></div><div class='xr-var-data'><pre>array(5)</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span>time</span></div><div class='xr-var-dims'>()</div><div class='xr-var-dtype'>datetime64[ns]</div><div class='xr-var-preview xr-preview'>2022-01-01</div><input id='attrs-e5bf5191-2cc5-4123-a9d8-aad9bc08f92c' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-e5bf5191-2cc5-4123-a9d8-aad9bc08f92c' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-1730cdbb-8c72-4957-aa12-d73c11b20690' class='xr-var-data-in' type='checkbox'><label for='data-1730cdbb-8c72-4957-aa12-d73c11b20690' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>long_name :</span></dt><dd>initial time of forecast</dd><dt><span>standard_name :</span></dt><dd>forecast_reference_time</dd></dl></div><div class='xr-var-data'><pre>array(&#x27;2022-01-01T00:00:00.000000000&#x27;, dtype=&#x27;datetime64[ns]&#x27;)</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span>step</span></div><div class='xr-var-dims'>()</div><div class='xr-var-dtype'>timedelta64[ns]</div><div class='xr-var-preview xr-preview'>00:00:00</div><input id='attrs-ac3524ee-f998-4327-bf75-fa3c783ffa6d' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-ac3524ee-f998-4327-bf75-fa3c783ffa6d' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-d51b7aa9-f518-4ec3-9000-d93fa57a143b' class='xr-var-data-in' type='checkbox'><label for='data-d51b7aa9-f518-4ec3-9000-d93fa57a143b' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>long_name :</span></dt><dd>time since forecast_reference_time</dd><dt><span>standard_name :</span></dt><dd>forecast_period</dd></dl></div><div class='xr-var-data'><pre>array(0, dtype=&#x27;timedelta64[ns]&#x27;)</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span>heightAboveGround</span></div><div class='xr-var-dims'>()</div><div class='xr-var-dtype'>float64</div><div class='xr-var-preview xr-preview'>2.0</div><input id='attrs-f5490224-9d4e-4246-aeb4-4908239a31f9' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-f5490224-9d4e-4246-aeb4-4908239a31f9' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-fb17e214-733a-4aa2-b868-c1a71edc5934' class='xr-var-data-in' type='checkbox'><label for='data-fb17e214-733a-4aa2-b868-c1a71edc5934' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>long_name :</span></dt><dd>height above the surface</dd><dt><span>units :</span></dt><dd>m</dd><dt><span>positive :</span></dt><dd>up</dd><dt><span>standard_name :</span></dt><dd>height</dd></dl></div><div class='xr-var-data'><pre>array(2.)</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span class='xr-has-index'>latitude</span></div><div class='xr-var-dims'>(latitude)</div><div class='xr-var-dtype'>float64</div><div class='xr-var-preview xr-preview'>90.0 89.5 89.0 ... -89.5 -90.0</div><input id='attrs-aa371eec-9b74-4280-b0a9-3e82fb6a9013' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-aa371eec-9b74-4280-b0a9-3e82fb6a9013' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-7e7e0ff2-8084-48b4-ba71-f35410e31780' class='xr-var-data-in' type='checkbox'><label for='data-7e7e0ff2-8084-48b4-ba71-f35410e31780' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>units :</span></dt><dd>degrees_north</dd><dt><span>standard_name :</span></dt><dd>latitude</dd><dt><span>long_name :</span></dt><dd>latitude</dd><dt><span>stored_direction :</span></dt><dd>decreasing</dd></dl></div><div class='xr-var-data'><pre>array([ 90. ,  89.5,  89. , ..., -89. , -89.5, -90. ])</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span class='xr-has-index'>longitude</span></div><div class='xr-var-dims'>(longitude)</div><div class='xr-var-dtype'>float64</div><div class='xr-var-preview xr-preview'>0.0 0.5 1.0 ... 358.5 359.0 359.5</div><input id='attrs-06ec79b4-35bf-4876-a889-6b999b56c8ff' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-06ec79b4-35bf-4876-a889-6b999b56c8ff' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-7be1b688-ec27-429f-b421-55bb6cd2a6e0' class='xr-var-data-in' type='checkbox'><label for='data-7be1b688-ec27-429f-b421-55bb6cd2a6e0' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>units :</span></dt><dd>degrees_east</dd><dt><span>standard_name :</span></dt><dd>longitude</dd><dt><span>long_name :</span></dt><dd>longitude</dd></dl></div><div class='xr-var-data'><pre>array([  0. ,   0.5,   1. , ..., 358.5, 359. , 359.5])</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span>valid_time</span></div><div class='xr-var-dims'>()</div><div class='xr-var-dtype'>datetime64[ns]</div><div class='xr-var-preview xr-preview'>2022-01-01</div><input id='attrs-64ac8629-ad44-454e-bf90-976daafb322d' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-64ac8629-ad44-454e-bf90-976daafb322d' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-73bcc39c-a6f2-45df-bbf9-9d2087ed2720' class='xr-var-data-in' type='checkbox'><label for='data-73bcc39c-a6f2-45df-bbf9-9d2087ed2720' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>standard_name :</span></dt><dd>time</dd><dt><span>long_name :</span></dt><dd>time</dd></dl></div><div class='xr-var-data'><pre>array(&#x27;2022-01-01T00:00:00.000000000&#x27;, dtype=&#x27;datetime64[ns]&#x27;)</pre></div></li></ul></div></li><li class='xr-section-item'><input id='section-c4f92423-2b1d-4db9-98ce-dfa9a4c43c81' class='xr-section-summary-in' type='checkbox'  checked><label for='section-c4f92423-2b1d-4db9-98ce-dfa9a4c43c81' class='xr-section-summary' >Data variables: <span>(2)</span></label><div class='xr-section-inline-details'></div><div class='xr-section-details'><ul class='xr-var-list'><li class='xr-var-item'><div class='xr-var-name'><span>t2m</span></div><div class='xr-var-dims'>(latitude, longitude)</div><div class='xr-var-dtype'>float32</div><div class='xr-var-preview xr-preview'>244.5 244.5 244.5 ... 252.3 252.3</div><input id='attrs-c1f622c9-a237-4eba-87ac-757d1fcc7fb8' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-c1f622c9-a237-4eba-87ac-757d1fcc7fb8' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-874726ac-579f-4857-a022-d2f1fb1ddeec' class='xr-var-data-in' type='checkbox'><label for='data-874726ac-579f-4857-a022-d2f1fb1ddeec' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>GRIB_paramId :</span></dt><dd>167</dd><dt><span>GRIB_dataType :</span></dt><dd>pf</dd><dt><span>GRIB_numberOfPoints :</span></dt><dd>259920</dd><dt><span>GRIB_typeOfLevel :</span></dt><dd>heightAboveGround</dd><dt><span>GRIB_stepUnits :</span></dt><dd>1</dd><dt><span>GRIB_stepType :</span></dt><dd>instant</dd><dt><span>GRIB_gridType :</span></dt><dd>regular_ll</dd><dt><span>GRIB_NV :</span></dt><dd>0</dd><dt><span>GRIB_Nx :</span></dt><dd>720</dd><dt><span>GRIB_Ny :</span></dt><dd>361</dd><dt><span>GRIB_cfName :</span></dt><dd>air_temperature</dd><dt><span>GRIB_cfVarName :</span></dt><dd>t2m</dd><dt><span>GRIB_gridDefinitionDescription :</span></dt><dd>Latitude/longitude. Also called equidistant cylindrical, or Plate Carree</dd><dt><span>GRIB_iDirectionIncrementInDegrees :</span></dt><dd>0.5</dd><dt><span>GRIB_iScansNegatively :</span></dt><dd>0</dd><dt><span>GRIB_jDirectionIncrementInDegrees :</span></dt><dd>0.5</dd><dt><span>GRIB_jPointsAreConsecutive :</span></dt><dd>0</dd><dt><span>GRIB_jScansPositively :</span></dt><dd>0</dd><dt><span>GRIB_latitudeOfFirstGridPointInDegrees :</span></dt><dd>90.0</dd><dt><span>GRIB_latitudeOfLastGridPointInDegrees :</span></dt><dd>-90.0</dd><dt><span>GRIB_longitudeOfFirstGridPointInDegrees :</span></dt><dd>0.0</dd><dt><span>GRIB_longitudeOfLastGridPointInDegrees :</span></dt><dd>359.5</dd><dt><span>GRIB_missingValue :</span></dt><dd>3.4028234663852886e+38</dd><dt><span>GRIB_name :</span></dt><dd>2 metre temperature</dd><dt><span>GRIB_parameterName :</span></dt><dd>Temperature</dd><dt><span>GRIB_parameterUnits :</span></dt><dd>K</dd><dt><span>GRIB_shortName :</span></dt><dd>2t</dd><dt><span>GRIB_stepRange :</span></dt><dd>0</dd><dt><span>GRIB_totalNumber :</span></dt><dd>30</dd><dt><span>GRIB_units :</span></dt><dd>K</dd><dt><span>long_name :</span></dt><dd>2 metre temperature</dd><dt><span>units :</span></dt><dd>K</dd><dt><span>standard_name :</span></dt><dd>air_temperature</dd><dt><span>grid_mapping :</span></dt><dd>gribfile_projection</dd></dl></div><div class='xr-var-data'><pre>array([[244.54944, 244.54944, 244.54944, ..., 244.54944, 244.54944,
+        244.54944],
+       [244.62944, 244.62944, 244.62944, ..., 244.61943, 244.61943,
+        244.62944],
+       [245.09943, 245.11943, 245.12944, ..., 245.04944, 245.06943,
+        245.07944],
+       ...,
+       [251.91943, 251.89943, 251.87944, ..., 251.97943, 251.95943,
+        251.93944],
+       [252.22943, 252.21944, 252.20943, ..., 252.25943, 252.24944,
+        252.23944],
+       [252.25943, 252.25943, 252.25943, ..., 252.25943, 252.25943,
+        252.25943]], dtype=float32)</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span>gribfile_projection</span></div><div class='xr-var-dims'>()</div><div class='xr-var-dtype'>object</div><div class='xr-var-preview xr-preview'>None</div><input id='attrs-b256ab53-46ab-4343-8f2f-ee1b1a8c220e' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-b256ab53-46ab-4343-8f2f-ee1b1a8c220e' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-7d6410b3-404e-4f0a-943e-312034d5d290' class='xr-var-data-in' type='checkbox'><label for='data-7d6410b3-404e-4f0a-943e-312034d5d290' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>crs_wkt :</span></dt><dd>GEOGCRS[&quot;unknown&quot;,DATUM[&quot;unknown&quot;,ELLIPSOID[&quot;unknown&quot;,6371229,0,LENGTHUNIT[&quot;metre&quot;,1,ID[&quot;EPSG&quot;,9001]]]],PRIMEM[&quot;Greenwich&quot;,0,ANGLEUNIT[&quot;degree&quot;,0.0174532925199433],ID[&quot;EPSG&quot;,8901]],CS[ellipsoidal,2],AXIS[&quot;longitude&quot;,east,ORDER[1],ANGLEUNIT[&quot;degree&quot;,0.0174532925199433,ID[&quot;EPSG&quot;,9122]]],AXIS[&quot;latitude&quot;,north,ORDER[2],ANGLEUNIT[&quot;degree&quot;,0.0174532925199433,ID[&quot;EPSG&quot;,9122]]]]</dd><dt><span>semi_major_axis :</span></dt><dd>6371229.0</dd><dt><span>semi_minor_axis :</span></dt><dd>6371229.0</dd><dt><span>inverse_flattening :</span></dt><dd>0.0</dd><dt><span>reference_ellipsoid_name :</span></dt><dd>unknown</dd><dt><span>longitude_of_prime_meridian :</span></dt><dd>0.0</dd><dt><span>prime_meridian_name :</span></dt><dd>Greenwich</dd><dt><span>geographic_crs_name :</span></dt><dd>unknown</dd><dt><span>grid_mapping_name :</span></dt><dd>latitude_longitude</dd><dt><span>long_name :</span></dt><dd>GEFS model grid projection</dd></dl></div><div class='xr-var-data'><pre>array(None, dtype=object)</pre></div></li></ul></div></li><li class='xr-section-item'><input id='section-d9bef748-7416-4fe5-9f28-d1f007c2d1ad' class='xr-section-summary-in' type='checkbox'  ><label for='section-d9bef748-7416-4fe5-9f28-d1f007c2d1ad' class='xr-section-summary' >Indexes: <span>(2)</span></label><div class='xr-section-inline-details'></div><div class='xr-section-details'><ul class='xr-var-list'><li class='xr-var-item'><div class='xr-index-name'><div>latitude</div></div><div class='xr-index-preview'>PandasIndex</div><div></div><input id='index-1deb057d-8f4d-4447-877c-fbcbbf7ecff6' class='xr-index-data-in' type='checkbox'/><label for='index-1deb057d-8f4d-4447-877c-fbcbbf7ecff6' title='Show/Hide index repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-index-data'><pre>PandasIndex(Float64Index([ 90.0,  89.5,  89.0,  88.5,  88.0,  87.5,  87.0,  86.5,  86.0,
+               85.5,
+              ...
+              -85.5, -86.0, -86.5, -87.0, -87.5, -88.0, -88.5, -89.0, -89.5,
+              -90.0],
+             dtype=&#x27;float64&#x27;, name=&#x27;latitude&#x27;, length=361))</pre></div></li><li class='xr-var-item'><div class='xr-index-name'><div>longitude</div></div><div class='xr-index-preview'>PandasIndex</div><div></div><input id='index-741d1b3d-2e52-49ba-8213-a3008b322b7f' class='xr-index-data-in' type='checkbox'/><label for='index-741d1b3d-2e52-49ba-8213-a3008b322b7f' title='Show/Hide index repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-index-data'><pre>PandasIndex(Float64Index([  0.0,   0.5,   1.0,   1.5,   2.0,   2.5,   3.0,   3.5,   4.0,
+                4.5,
+              ...
+              355.0, 355.5, 356.0, 356.5, 357.0, 357.5, 358.0, 358.5, 359.0,
+              359.5],
+             dtype=&#x27;float64&#x27;, name=&#x27;longitude&#x27;, length=720))</pre></div></li></ul></div></li><li class='xr-section-item'><input id='section-ad5f1150-90cd-4c84-9f1b-10d55f9a3907' class='xr-section-summary-in' type='checkbox'  ><label for='section-ad5f1150-90cd-4c84-9f1b-10d55f9a3907' class='xr-section-summary' >Attributes: <span>(12)</span></label><div class='xr-section-inline-details'></div><div class='xr-section-details'><dl class='xr-attrs'><dt><span>GRIB_edition :</span></dt><dd>2</dd><dt><span>GRIB_centre :</span></dt><dd>kwbc</dd><dt><span>GRIB_centreDescription :</span></dt><dd>US National Weather Service - NCEP</dd><dt><span>GRIB_subCentre :</span></dt><dd>2</dd><dt><span>Conventions :</span></dt><dd>CF-1.7</dd><dt><span>institution :</span></dt><dd>US National Weather Service - NCEP</dd><dt><span>model :</span></dt><dd>gefs</dd><dt><span>product :</span></dt><dd>atmos.5</dd><dt><span>description :</span></dt><dd>Global Ensemble Forecast System (GEFS)</dd><dt><span>remote_grib :</span></dt><dd>https://noaa-gefs-pds.s3.amazonaws.com/gefs.20220101/00/atmos/pgrb2ap5/gep05.t00z.pgrb2a.0p50.f000</dd><dt><span>local_grib :</span></dt><dd>/home/blaylock/data/gefs/20220101/subset_04ef8acd__gep05.t00z.pgrb2a.0p50.f000</dd><dt><span>searchString :</span></dt><dd>TMP:2 m</dd></dl></div></li></ul></div></div></div>
+</div>
+</section>
+<section id="GEFS-Reanalysis-Data">
+<h1>GEFS-Reanalysis Data<a class="headerlink" href="#GEFS-Reanalysis-Data" title="Permalink to this heading">#</a></h1>
+<p>This section demonstrates using the Global Ensemble Forecast System (GEFS) reanalysis: 2000-2019 dataset.</p>
 <p>The GEFS version 12 reanalysis is available on <a class="reference external" href="https://registry.opendata.aws/noaa-gefs-reforecast/">Amazon Web Services</a> and can be retrieved with Herbie.</p>
 <blockquote>
 <div><p>Note: The GEFS directory structure is different than other models that Herbie can access, and that makes Herbie’s access to these files little awkward. Instead of grouping the GRIB fields by forecast hour where there are many different variables for the same lead time in the same file, the GEFS files are grouped into the same variable per file with each GRIB message being a different lead time. This changes the way a user would use Herbie to access GEFS data–a user will need to supply a
@@ -733,10 +2587,12 @@ div.rendered_html tbody tr:hover {
 <p>Download a full GRIB2 file to your local system.</p>
 <p>Remember to specify the following: - <code class="docutils literal notranslate"><span class="pre">fxx</span></code> is the lead time lead time, a number between 0 and 384. If you are getting the full file, this only tells Herbie what folder to look in (Days:0-10 or Days:10-16). - <code class="docutils literal notranslate"><span class="pre">member</span></code> is the ensemble member. 0 is the control and a value between 1, 2, 3, or 4 is a perturbation member. - <code class="docutils literal notranslate"><span class="pre">variable_level</span></code> is the name of the file to obtain.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">H</span> <span class="o">=</span> <span class="n">Herbie</span><span class="p">(</span><span class="s2">&quot;2017-03-14&quot;</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="s2">&quot;gefs&quot;</span><span class="p">,</span> <span class="n">fxx</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span> <span class="n">member</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">variable_level</span><span class="o">=</span><span class="s2">&quot;tmp_2m&quot;</span><span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">H</span> <span class="o">=</span> <span class="n">Herbie</span><span class="p">(</span>
+    <span class="s2">&quot;2017-03-14&quot;</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="s2">&quot;gefs_reforecast&quot;</span><span class="p">,</span> <span class="n">fxx</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span> <span class="n">member</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">variable_level</span><span class="o">=</span><span class="s2">&quot;tmp_2m&quot;</span>
+<span class="p">)</span>
 <span class="n">H</span><span class="o">.</span><span class="n">download</span><span class="p">(</span><span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -746,70 +2602,20 @@ div.rendered_html tbody tr:hover {
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-✅ Found ┊ model=gefs ┊ product=GEFSv12/reforecast ┊ <span style="color: rgb(41,130,13)">2017-Mar-14 00:00 UTC</span><span class="ansi-green-intense-fg"> F12</span> ┊ <span style="color: rgb(255,153,0)">GRIB2 @ aws</span> ┊ <span style="color: rgb(255,153,0)">IDX @ aws</span>
-👨🏻‍🏭 Created directory: [C:\Users\blaylock\data\gefs\20170314]
+✅ Found ┊ model=gefs_reforecast ┊ product=GEFSv12/reforecast ┊ <span style="color: rgb(41,130,13)">2017-Mar-14 00:00 UTC</span><span class="ansi-green-intense-fg"> F12</span> ┊ <span style="color: rgb(255,153,0)">GRIB2 @ aws</span> ┊ <span style="color: rgb(255,153,0)">IDX @ aws</span>
+👨🏻‍🏭 Created directory: [/home/blaylock/data/gefs_reforecast/20170314]
+✅ Success! Downloaded GEFS_REFORECAST from <span style="color: rgb(255,95,0)">aws                 </span>
+        src: /home/blaylock/data/gefs_reforecast/20170314/tmp_2m_2017031400_c00.grib2
+        dst: /home/blaylock/data/gefs_reforecast/20170314/tmp_2m_2017031400_c00.grib2
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+</pre></div>
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-<span class="ansi-red-intense-fg ansi-bold">---------------------------------------------------------------------------</span>
-<span class="ansi-red-intense-fg ansi-bold">KeyboardInterrupt</span>                         Traceback (most recent call last)
-Cell <span class="ansi-green-intense-fg ansi-bold">In[2], line 2</span>
-<span class="ansi-green-fg">      1</span> H = Herbie(&#34;2017-03-14&#34;, model=&#34;gefs&#34;, fxx=12, member=0, variable_level=&#34;tmp_2m&#34;)
-<span class="ansi-green-intense-fg ansi-bold">----&gt; 2</span> H.download()
-
-File <span class="ansi-green-intense-fg ansi-bold">~\_GITHUB\Herbie\herbie\archive.py:911</span>, in <span class="ansi-cyan-fg">Herbie.download</span><span class="ansi-blue-intense-fg ansi-bold">(self, searchString, source, save_dir, overwrite, verbose, errors)</span>
-<span class="ansi-green-fg">    907</span>     print(f&#34;👨🏻‍🏭 Created directory: [{outFile.parent}]&#34;)
-<span class="ansi-green-fg">    909</span> if searchString in [None, &#34;:&#34;] or self.idx is None:
-<span class="ansi-green-fg">    910</span>     # Download the full file from remote source
-<span class="ansi-green-intense-fg ansi-bold">--&gt; 911</span>     urllib.request.urlretrieve(self.grib, outFile, _reporthook)
-<span class="ansi-green-fg">    913</span>     self.grib = outFile
-<span class="ansi-green-fg">    914</span>     # self.grib_source = &#34;local&#34;
-
-File <span class="ansi-green-intense-fg ansi-bold">c:\Users\blaylock\Miniconda3\envs\herbie-dev\lib\urllib\request.py:270</span>, in <span class="ansi-cyan-fg">urlretrieve</span><span class="ansi-blue-intense-fg ansi-bold">(url, filename, reporthook, data)</span>
-<span class="ansi-green-fg">    267</span>     reporthook(blocknum, bs, size)
-<span class="ansi-green-fg">    269</span> while True:
-<span class="ansi-green-intense-fg ansi-bold">--&gt; 270</span>     block = fp.read(bs)
-<span class="ansi-green-fg">    271</span>     if not block:
-<span class="ansi-green-fg">    272</span>         break
-
-File <span class="ansi-green-intense-fg ansi-bold">c:\Users\blaylock\Miniconda3\envs\herbie-dev\lib\http\client.py:465</span>, in <span class="ansi-cyan-fg">HTTPResponse.read</span><span class="ansi-blue-intense-fg ansi-bold">(self, amt)</span>
-<span class="ansi-green-fg">    462</span> if self.length is not None and amt &gt; self.length:
-<span class="ansi-green-fg">    463</span>     # clip the read to the &#34;end of response&#34;
-<span class="ansi-green-fg">    464</span>     amt = self.length
-<span class="ansi-green-intense-fg ansi-bold">--&gt; 465</span> s = self.fp.read(amt)
-<span class="ansi-green-fg">    466</span> if not s and amt:
-<span class="ansi-green-fg">    467</span>     # Ideally, we would raise IncompleteRead if the content-length
-<span class="ansi-green-fg">    468</span>     # wasn&#39;t satisfied, but it might break compatibility.
-<span class="ansi-green-fg">    469</span>     self._close_conn()
-
-File <span class="ansi-green-intense-fg ansi-bold">c:\Users\blaylock\Miniconda3\envs\herbie-dev\lib\socket.py:705</span>, in <span class="ansi-cyan-fg">SocketIO.readinto</span><span class="ansi-blue-intense-fg ansi-bold">(self, b)</span>
-<span class="ansi-green-fg">    703</span> while True:
-<span class="ansi-green-fg">    704</span>     try:
-<span class="ansi-green-intense-fg ansi-bold">--&gt; 705</span>         return self._sock.recv_into(b)
-<span class="ansi-green-fg">    706</span>     except timeout:
-<span class="ansi-green-fg">    707</span>         self._timeout_occurred = True
-
-File <span class="ansi-green-intense-fg ansi-bold">c:\Users\blaylock\Miniconda3\envs\herbie-dev\lib\ssl.py:1274</span>, in <span class="ansi-cyan-fg">SSLSocket.recv_into</span><span class="ansi-blue-intense-fg ansi-bold">(self, buffer, nbytes, flags)</span>
-<span class="ansi-green-fg">   1270</span>     if flags != 0:
-<span class="ansi-green-fg">   1271</span>         raise ValueError(
-<span class="ansi-green-fg">   1272</span>           &#34;non-zero flags not allowed in calls to recv_into() on %s&#34; %
-<span class="ansi-green-fg">   1273</span>           self.__class__)
-<span class="ansi-green-intense-fg ansi-bold">-&gt; 1274</span>     return self.read(nbytes, buffer)
-<span class="ansi-green-fg">   1275</span> else:
-<span class="ansi-green-fg">   1276</span>     return super().recv_into(buffer, nbytes, flags)
-
-File <span class="ansi-green-intense-fg ansi-bold">c:\Users\blaylock\Miniconda3\envs\herbie-dev\lib\ssl.py:1130</span>, in <span class="ansi-cyan-fg">SSLSocket.read</span><span class="ansi-blue-intense-fg ansi-bold">(self, len, buffer)</span>
-<span class="ansi-green-fg">   1128</span> try:
-<span class="ansi-green-fg">   1129</span>     if buffer is not None:
-<span class="ansi-green-intense-fg ansi-bold">-&gt; 1130</span>         return self._sslobj.read(len, buffer)
-<span class="ansi-green-fg">   1131</span>     else:
-<span class="ansi-green-fg">   1132</span>         return self._sslobj.read(len)
-
-<span class="ansi-red-intense-fg ansi-bold">KeyboardInterrupt</span>:
+PosixPath(&#39;/home/blaylock/data/gefs_reforecast/20170314/tmp_2m_2017031400_c00.grib2&#39;)
 </pre></div></div>
 </div>
 </section>
@@ -1287,7 +3093,7 @@ Text(1.0, 1.0, &#39;2 metre temperature&#39;)
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../../_images/user_guide__model_notebooks_gefs_8_2.png" src="../../_images/user_guide__model_notebooks_gefs_8_2.png" />
+<img alt="../../_images/user_guide__model_notebooks_gefs_20_2.png" src="../../_images/user_guide__model_notebooks_gefs_20_2.png" />
 </div>
 </div>
 </section>
@@ -1940,7 +3746,12 @@ array([&#39;sfc&#39;, &#39;ceiling&#39;, &#39;hybr&#39;, &#39;pres&#39;, &#39;hg
     <ul class="visible nav section-nav flex-column">
  <li class="toc-h1 nav-item toc-entry">
   <a class="reference internal nav-link" href="#">
-   GEFS Data
+   GEFS - Global Ensemble Forecast System
+  </a>
+ </li>
+ <li class="toc-h1 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#GEFS-Reanalysis-Data">
+   GEFS-Reanalysis Data
   </a>
   <ul class="visible nav section-nav flex-column">
    <li class="toc-h2 nav-item toc-entry">
@@ -2023,7 +3834,7 @@ array([&#39;sfc&#39;, &#39;ceiling&#39;, &#39;hybr&#39;, &#39;pres&#39;, &#39;hg
     
 <p class="copyright">
 
-    &copy; Copyright 2023, Brian K. Blaylock.    ♻ Updated: 21:54 UTC 03 Jan 2023.<br>
+    &copy; Copyright 2023, Brian K. Blaylock.    ♻ Updated: 06:23 UTC 06 Jan 2023.<br>
 
 </p>
 
@@ -2042,7 +3853,7 @@ array([&#39;sfc&#39;, &#39;ceiling&#39;, &#39;hybr&#39;, &#39;pres&#39;, &#39;hg
   <div class="footer-item">
     
 <p class="sphinx-version">
-Created using <a href="http://sphinx-doc.org/">Sphinx</a> 5.3.0.<br>
+Created using <a href="http://sphinx-doc.org/">Sphinx</a> 5.0.0.<br>
 </p>
 
   </div>
