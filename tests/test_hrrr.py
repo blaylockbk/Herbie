@@ -5,6 +5,9 @@
 Tests for downloading HRRR model
 """
 from datetime import datetime, timedelta
+from shutil import which
+
+import pytest
 
 from herbie import Herbie, Path
 import os
@@ -15,6 +18,9 @@ yesterday = today - timedelta(days=1)
 today_str = today.strftime("%Y-%m-%d %H:%M")
 yesterday_str = yesterday.strftime("%Y-%m-%d %H:%M")
 save_dir = Path("$TMPDIR/Herbie-Tests/").expand()
+
+# Location of wgrib2 command, if it exists
+wgrib2 = which("wgrib2")
 
 
 def test_hrrr_aws1():
@@ -78,39 +84,36 @@ def test_do_not_remove_file():
     assert H.get_localFilePath(var).exists()
 
 
+@pytest.mark.skipif(wgrib2 is None, reason="wgrib2 not installed")
 def test_make_idx_with_wgrib():
-    import shutil
+    H = Herbie(
+        "2022-12-13 6:00",
+        model="hrrr",
+        product="sfc",
+        save_dir=save_dir,
+    )
+    H.download(verbose=True)
 
-    if shutil.which("wgrib2"):
-        H = Herbie(
-            "2022-12-13 6:00",
-            model="hrrr",
-            product="sfc",
-            save_dir=save_dir,
-        )
-        H.download(verbose=True)
+    # Pretent this was a local file
+    H.idx = None
+    H.idx_source = None
+    H.grib_source = "local"
 
-        # Pretent this was a local file
-        H.idx = None
-        H.idx_source = None
-        H.grib_source = "local"
-
-        # Generate IDX file
-        df = H.read_idx()
-        assert len(df), "Length of index file is 0."
-        assert H.idx_source == "generated", "Doesn't look like a generated idx file."
+    # Generate IDX file
+    df = H.read_idx()
+    assert len(df), "Length of index file is 0."
+    assert H.idx_source == "generated", "Doesn't look like a generated idx file."
 
 
+@pytest.mark.skipif(wgrib2 is None, reason="wgrib2 not installed")
 def test_create_idx_with_wgrib2():
     """Test that Herbie can make an index file with wgrib2 when an index file is not found"""
-    if os.name != "nt":
-        # If not windows (nt), then try using wgrib2
-        H = Herbie(
-            today_str,
-            model="hrrr",
-            product="sfc",
-            save_dir=save_dir,
-        )
-        H.download()
-        H.idx = None
-        assert len(H.index_as_dataframe) > 0
+    H = Herbie(
+        today_str,
+        model="hrrr",
+        product="sfc",
+        save_dir=save_dir,
+    )
+    H.download()
+    H.idx = None
+    assert len(H.index_as_dataframe) > 0
