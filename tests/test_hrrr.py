@@ -6,8 +6,7 @@ Tests for downloading HRRR model
 """
 from datetime import datetime, timedelta
 
-from herbie import Herbie
-
+from herbie import Herbie, Path
 import os
 
 now = datetime.now()
@@ -15,8 +14,7 @@ today = datetime(now.year, now.month, now.day, now.hour) - timedelta(hours=6)
 yesterday = today - timedelta(days=1)
 today_str = today.strftime("%Y-%m-%d %H:%M")
 yesterday_str = yesterday.strftime("%Y-%m-%d %H:%M")
-save_dir = "$TMPDIR/Herbie-Tests/"
-
+save_dir = Path("$TMPDIR/Herbie-Tests/").expand()
 
 def test_hrrr_aws1():
     # Test HRRR with datetime.datetime date
@@ -31,6 +29,16 @@ def test_hrrr_aws1():
     H.xarray("TMP:2 m", remove_grib=False)
     assert H.get_localFilePath("TMP:2 m").exists()
 
+def test_hrrr_to_netcdf():
+    """Check that a xarray Dataset can be written to a NetCDF file."""
+    H = Herbie(
+        '2022-01-01 06:00',
+        model="hrrr",
+        product="sfc",
+        save_dir=save_dir,
+    )
+    ds = H.xarray("TMP:2 m", remove_grib=False)
+    ds.to_netcdf(save_dir/"test_hrrr_to_netcdf.nc")
 
 def test_hrrr_aws2():
 

@@ -1044,15 +1044,18 @@ class Herbie:
 
         # Here I'm looping over each dataset in the list returned by cfgrib
         for ds in Hxr:
+            # ----------------
             # Add some details
             # ----------------
+            # Note: all attributes should still work with the `ds.to_netcdf()` method.
             ds.attrs["model"] = self.model
             ds.attrs["product"] = self.product
             ds.attrs["description"] = self.DESCRIPTION
             ds.attrs["remote_grib"] = self.grib
-            ds.attrs["local_grib"] = local_file
+            ds.attrs["local_grib"] = str(local_file)
             ds.attrs["searchString"] = searchString
 
+            # ----------------------
             # Attach CF grid mapping
             # ----------------------
             # http://cfconventions.org/Data/cf-conventions/cf-conventions-1.8/cf-conventions.html#appendix-grid-mappings
