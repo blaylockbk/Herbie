@@ -40,6 +40,8 @@ TODO: Rename 'searchString' to 'subset' (and rename subset function to??) - REJE
 TODO: add `idx_to_df()` and `df_to_idx()` methods.
 TODO: Perhaps rename this file to 'core.py'
 TODO: There are probably use cases for the `Path().suffixes` method
+TODO: Fix temporary file problem on Windows with xr.load_dataset() (see #)
+TODO: Allow fxx argument to accept a Pandas timedelta or string like "6H"
 """
 import functools
 import hashlib
