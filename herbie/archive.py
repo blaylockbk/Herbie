@@ -110,6 +110,7 @@ def wgrib2_idx(grib2filepath):
     else:
         raise RuntimeError("wgrib2 command was not found.")
 
+
 class Herbie:
     """
     Locate GRIB2 file at one of the archive sources.
