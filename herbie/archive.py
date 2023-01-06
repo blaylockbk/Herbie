@@ -4,6 +4,7 @@
 ## May 6, 2022
 
 """
+
 ===============================
 Herbie: Retrieve NWP Model Data
 ===============================
@@ -34,10 +35,11 @@ file in the ``herbie/models`` directory and make a pull-request.
 
 For more details, see https://blaylockbk.github.io/Herbie/_build/html/user_guide/data_sources.html
 
-.. note:: Updates since the ``Herbie 0.0.9`` release
 
-    - TODO: Rename 'searchString' to 'subset' (and rename subset function to??)
-    - TODO: add `idx_to_df()` and `df_to_idx()` methods.
+TODO: Rename 'searchString' to 'subset' (and rename subset function to??) - REJECTED, for now
+TODO: add `idx_to_df()` and `df_to_idx()` methods.
+TODO: Perhaps rename this file to 'core.py'
+TODO: There are probably use cases for the `Path().suffixes` method
 """
 import functools
 import hashlib
@@ -107,7 +109,6 @@ def wgrib2_idx(grib2filepath):
         return p.stdout
     else:
         raise RuntimeError("wgrib2 command was not found.")
-
 
 class Herbie:
     """
