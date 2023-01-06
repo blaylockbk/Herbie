@@ -26,6 +26,10 @@ class gefs:
             "chem.25": "Chemistry fields on 0.25 degree grid",
         }
 
+        if self.product is None:
+            # Just select the first PRODUCT as default
+            self.product = list(self.PRODUCTS)[0]
+
         if self.product == "wave":
             if self.member == "spr":
                 self.member = "spread"
