@@ -4,7 +4,7 @@ name: herbie-test
 channels:
   - conda-forge
 dependencies:
-  - python>=3.10
+  - python>=3.8
   - pip
 
   #==============
@@ -17,6 +17,7 @@ dependencies:
   - numpy
   - pandas
   - pygrib
+  - pytest
   - requests
   - toml
   - xarray>=2022.6.0
@@ -28,6 +29,3 @@ dependencies:
   - eccodes # required by cfgrib
   - geos # required by cartopy
   - proj # required by cartopy
-
-  - pip:
-      - herbie-data
