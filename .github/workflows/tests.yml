@@ -24,9 +24,9 @@ jobs:
         python-version: ["3.9", "3.10", "3.11"]
         # In order to save resources, only run particular
         # matrix slots on other OS than Linux.
-        #include:
-          #- os: "macos-latest"
-          #  python-version: "3.11"
+        include:
+          - os: "macos-latest"
+            python-version: "3.11"
           #- os: "windows-latest"
           #  python-version: "3.11"
 
@@ -59,10 +59,15 @@ jobs:
       run: |
         sudo apt -y install libgeos-dev libeccodes-dev
 
+    - name: Install prerequisites (macOS)
+      if: runner.os == 'macOS'
+      run: |
+        brew install pkg-config geos eccodes
+
     - name: Install project
       run: |
-        pip install --requirement=requirements-test.txt
-        pip install --editable=.
+        pip3 install --requirement=requirements-test.txt
+        pip3 install --editable=.
 
     - name: Run tests
       env:
