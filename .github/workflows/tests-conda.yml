@@ -103,4 +103,4 @@ jobs:
       env:
         TMPDIR: ${{ runner.temp }}
       run: |
-        pytest -k test_ecmwf
+        pytest
