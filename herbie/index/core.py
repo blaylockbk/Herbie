@@ -142,6 +142,16 @@ class NwpIndex:
             time_slice = Slice(idx_time, idx_time + 2)
             filtered = self.data[time_slice, lat_slice, lon_slice]
             timestamp_coord = self.coordinate.time[time_slice.start : time_slice.stop]
+        elif isinstance(time, (t.Sequence, np.ndarray)):
+            idx_time = np.where(
+                np.logical_and(
+                    self.coordinate.time >= time[0],
+                    self.coordinate.time <= time[1],
+                )
+            )[0]
+            time_slice = Slice(start=idx_time[0], stop=idx_time[-1] + 1)
+            filtered = self.data[time_slice, lat_slice, lon_slice]
+            timestamp_coord = self.coordinate.time[time_slice.start : time_slice.stop]
         else:
             raise ValueError(
                 f"Unable to process value for time={time}, type={type(time)}"

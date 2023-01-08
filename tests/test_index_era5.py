@@ -166,3 +166,83 @@ def test_query_era5_latitude_slice(era5_temp2m_index):
         -43.399993896484375,
     ]
     assert result[-1].coords["lat"] == -89.75
+
+
+def test_query_era5_time_slice_tuple(era5_temp2m_index):
+    """
+    Query indexed ERA5 NWP data within given time range.
+    This variant uses a `tuple` for defining time range boundaries.
+
+    While the input dataset contains three records, filtering by
+    time range should only yield two records.
+    """
+
+    # Load data.
+    nwp = era5_temp2m_index.load()
+
+    # Temperatures for whole slice.
+    result = (
+        nwp.query(
+            time=(np.datetime64("1987-10-01 08:00"), np.datetime64("1987-10-01 09:05")),
+            lat=52.51074,
+            lon=13.43506,
+        )
+        .kelvin_to_celsius()
+        .select_first_point()
+    )
+
+    # Verify values and coordinates.
+    timerange = np.arange(
+        start=np.datetime64("1987-10-01 08:00"),
+        stop=np.datetime64("1987-10-01 09:01"),
+        step=datetime.timedelta(hours=1),
+    )
+    reference = xr.DataArray(
+        data=np.array([6.600006, 6.600006], dtype=np.float32),
+        coords=dict(
+            time=xr.DataArray(data=timerange),
+            lat=xr.DataArray(data=np.float32(52.5)),
+            lon=xr.DataArray(data=np.float32(13.5)),
+        ),
+    )
+    reference = reference.swap_dims(dim_0="time")
+    assert_equal(result, reference)
+
+
+def test_query_era5_time_slice_range(era5_temp2m_index):
+    """
+    Query indexed ERA5 NWP data within given time range.
+    This variant uses a `np.array` for defining time range boundaries.
+
+    While the input dataset contains three records, filtering by
+    time range should only yield two records.
+    """
+
+    # Load data.
+    nwp = era5_temp2m_index.load()
+
+    # Define timerange used for querying.
+    timerange = np.arange(
+        start=np.datetime64("1987-10-01 08:00"),
+        stop=np.datetime64("1987-10-01 09:01"),
+        step=datetime.timedelta(hours=1),
+    )
+
+    # Temperatures for whole slice.
+    result = (
+        nwp.query(time=timerange, lat=52.51074, lon=13.43506)
+        .kelvin_to_celsius()
+        .select_first_point()
+    )
+
+    # Verify values and coordinates.
+    reference = xr.DataArray(
+        data=np.array([6.600006, 6.600006], dtype=np.float32),
+        coords=dict(
+            time=xr.DataArray(data=timerange),
+            lat=xr.DataArray(data=np.float32(52.5)),
+            lon=xr.DataArray(data=np.float32(13.5)),
+        ),
+    )
+    reference = reference.swap_dims(dim_0="time")
+    assert_equal(result, reference)
