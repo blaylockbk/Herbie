@@ -38,7 +38,7 @@ def test_query_era5_monterey_fahrenheit_single_spot(era5_temp2m_index):
 
     # Temperatures in Monterey, in Fahrenheit.
     first = (
-        nwp.query(timestamp="1987-10-01 08:00", lat=36.6083, lon=-121.8674)
+        nwp.query(time="1987-10-01 08:00", lat=36.6083, lon=-121.8674)
         .kelvin_to_fahrenheit()
         .select_first()
     )
@@ -91,7 +91,7 @@ def test_query_era5_monterey_fahrenheit_bbox_area(era5_temp2m_index):
     # Temperatures in Monterey area, in Fahrenheit.
     result = (
         nwp.query(
-            timestamp="1987-10-01 08:00",
+            time="1987-10-01 08:00",
             lat=(36.450837, 36.700907),
             lon=(-122.166252, -121.655045),
         )
@@ -129,9 +129,7 @@ def test_query_era5_latitude_slice(era5_temp2m_index):
 
     # Temperatures for whole slice.
     result = (
-        nwp.query(
-            timestamp="1987-10-01 08:00", lat=None, lon=(-122.166252, -121.655045)
-        )
+        nwp.query(time="1987-10-01 08:00", lat=None, lon=(-122.166252, -121.655045))
         .kelvin_to_celsius()
         .select_first_timestamp()
     )

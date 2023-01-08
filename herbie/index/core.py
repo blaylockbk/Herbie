@@ -96,7 +96,7 @@ class NwpIndex:
     def round_location(self, value):
         return round_clipped(value, self.resolution)
 
-    def query(self, timestamp=None, lat=None, lon=None) -> "Result":
+    def query(self, time=None, lat=None, lon=None) -> "Result":
 
         # Query by point or range (bbox).
         if lat is None:
@@ -105,7 +105,7 @@ class NwpIndex:
         elif isinstance(lat, float):
             idx_lat = np.where(self.coordinate.lat == self.round_location(lat))[0][0]
             lat_slice = Slice(start=idx_lat, stop=idx_lat + 2)
-        elif isinstance(lat, t.Sequence):
+        elif isinstance(lat, (t.Sequence, np.ndarray)):
             idx_lat = np.where(
                 np.logical_and(
                     self.coordinate.lat >= self.round_location(lat[0]),
@@ -114,7 +114,7 @@ class NwpIndex:
             )[0]
             lat_slice = Slice(start=idx_lat[0], stop=idx_lat[-1] + 1)
         else:
-            raise ValueError(f"Unable to process value for lat={lat}")
+            raise ValueError(f"Unable to process value for lat={lat}, type={type(lat)}")
 
         if lon is None:
             idx_lon = np.where(self.coordinate.lon)[0]
@@ -122,7 +122,7 @@ class NwpIndex:
         elif isinstance(lon, float):
             idx_lon = np.where(self.coordinate.lon == self.round_location(lon))[0][0]
             lon_slice = Slice(start=idx_lon, stop=idx_lon + 2)
-        elif isinstance(lon, t.Sequence):
+        elif isinstance(lon, (t.Sequence, np.ndarray)):
             idx_lon = np.where(
                 np.logical_and(
                     self.coordinate.lon >= self.round_location(lon[0]),
@@ -131,17 +131,21 @@ class NwpIndex:
             )[0]
             lon_slice = Slice(start=idx_lon[0], stop=idx_lon[-1] + 1)
         else:
-            raise ValueError(f"Unable to process value for lon={lon}")
+            raise ValueError(f"Unable to process value for lon={lon}, type={type(lon)}")
 
         # Optionally query by timestamp, or not.
-        if timestamp:
-            idx_time = np.where(self.coordinate.time == np.datetime64(timestamp))[0][0]
+        if time is None:
+            filtered = self.data[:, lat_slice, lon_slice]
+            timestamp_coord = self.coordinate.time[:]
+        elif isinstance(time, str):
+            idx_time = np.where(self.coordinate.time == np.datetime64(time))[0][0]
             time_slice = Slice(idx_time, idx_time + 2)
             filtered = self.data[time_slice, lat_slice, lon_slice]
             timestamp_coord = self.coordinate.time[time_slice.start : time_slice.stop]
         else:
-            filtered = self.data[:, lat_slice, lon_slice]
-            timestamp_coord = self.coordinate.time[:]
+            raise ValueError(
+                f"Unable to process value for time={time}, type={type(time)}"
+            )
 
         # Rebuild DataArray from result.
         outdata = xr.DataArray(
