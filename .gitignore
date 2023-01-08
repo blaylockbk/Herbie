@@ -12,6 +12,7 @@ core.*
 
 *.idx
 *.grib2
+*.iarr
 !sample_data/hrrr/20201214/subset_20201214_hrrr.t00z.wrfsfcf12.grib2
 
 .idea
