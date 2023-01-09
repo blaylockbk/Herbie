@@ -14,6 +14,7 @@
 
 ![](https://img.shields.io/github/license/blaylockbk/Herbie)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+[![Documentation Status](https://readthedocs.org/projects/herbie/badge/?version=latest)](https://herbie.readthedocs.io/?badge=latest)
 [![Conda Recipe](https://img.shields.io/badge/recipe-herbie--data-green.svg)](https://anaconda.org/conda-forge/herbie-data)
 [![Conda Downloads](https://img.shields.io/conda/dn/conda-forge/herbie-data.svg)](https://anaconda.org/conda-forge/herbie-data)
 [![Conda Platforms](https://img.shields.io/conda/pn/conda-forge/herbie-data.svg)](https://anaconda.org/conda-forge/herbie-data)
@@ -26,16 +27,16 @@
 
 Herbie helps you discover, download, and read data from:
 
-- [High Resolution Rapid Refresh (HRRR)](https://blaylockbk.github.io/Herbie/_build/html/user_guide/_model_notebooks/hrrr.html) | [HRRR-Alaska](https://blaylockbk.github.io/Herbie/_build/html/user_guide/_model_notebooks/hrrrak.html)
-- [Rapid Refresh (RAP)](https://blaylockbk.github.io/Herbie/_build/html/user_guide/_model_notebooks/rap.html)
-- [Global Forecast System (GFS)](https://blaylockbk.github.io/Herbie/_build/html/user_guide/_model_notebooks/gfs.html)
-- [Global Ensemble Forecast System (GEFS)](https://blaylockbk.github.io/Herbie/_build/html/user_guide/_model_notebooks/gefs.html)
-- [ECMWF Open Data Forecast Products](https://blaylockbk.github.io/Herbie/_build/html/user_guide/_model_notebooks/ecmwf.html)
+- [High Resolution Rapid Refresh (HRRR)](https://herbie.readthedocs.io/user_guide/_model_notebooks/hrrr.html) | [HRRR-Alaska](https://herbie.readthedocs.io/user_guide/_model_notebooks/hrrrak.html)
+- [Rapid Refresh (RAP)](https://herbie.readthedocs.io/user_guide/_model_notebooks/rap.html)
+- [Global Forecast System (GFS)](https://herbie.readthedocs.io/user_guide/_model_notebooks/gfs.html)
+- [Global Ensemble Forecast System (GEFS)](https://herbie.readthedocs.io/user_guide/_model_notebooks/gefs.html)
+- [ECMWF Open Data Forecast Products](https://herbie.readthedocs.io/user_guide/_model_notebooks/ecmwf.html)
 - [North American Mesoscale Model (NAM)](https://github.com/blaylockbk/Herbie/blob/main/docs/user_guide/_model_notebooks/nam.ipynb)
-- [National Blend of Models (NBM)](https://blaylockbk.github.io/Herbie/_build/html/user_guide/_model_notebooks/nbm.html)
-- [Rapid Refresh Forecast System - Prototype (RRFS)](https://blaylockbk.github.io/Herbie/_build/html/user_guide/_model_notebooks/rrfs.html)
+- [National Blend of Models (NBM)](https://herbie.readthedocs.io/user_guide/_model_notebooks/nbm.html)
+- [Rapid Refresh Forecast System - Prototype (RRFS)](https://herbie.readthedocs.io/user_guide/_model_notebooks/rrfs.html)
 
-# 📓 [Herbie Documentation](https://blaylockbk.github.io/Herbie/_build/html/)
+# 📓 [Herbie Documentation](https://herbie.readthedocs.io/)
 
 ## Installation
 
@@ -174,7 +175,7 @@ If Herbie played an important role in your work, please [tell me about it](https
 
 |     |                                                                                                       |
 | :-: | ----------------------------------------------------------------------------------------------------- |
-| 👨🏻‍💻  | [Contributing Guidelines](https://blaylockbk.github.io/Herbie/_build/html/user_guide/contribute.html) |
+| 👨🏻‍💻  | [Contributing Guidelines](https://herbie.readthedocs.io/user_guide/contribute.html) |
 | 💬  | [GitHub Discussions](https://github.com/blaylockbk/Herbie/discussions)                                |
 | 🚑  | [GitHub Issues](https://github.com/blaylockbk/Herbie/issues)                                          |
 | 🌐  | [Personal Webpage](http://home.chpc.utah.edu/~u0553130/Brian_Blaylock/home.html)                      |

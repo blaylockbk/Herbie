@@ -34,12 +34,12 @@ Some models Herbie can retrieve data from include:
 
 .. TODO: I'd like to have the cards here instead of the toctree, but the toctree is needed to show the links in the top banner.
 .. .. card:: User Guide
-..     :link: https://blaylockbk.github.io/Herbie/_build/html/user_guide/index.html
+..     :link: https://herbie.readthedocs.io/user_guide/index.html
 
 ..     Information you need to know to use Herbie.
 
 .. .. card:: Reference Guide
-..     :link: https://blaylockbk.github.io/Herbie/_build/html/reference_guide/index.html
+..     :link: https://herbie.readthedocs.io/reference_guide/index.html
 
 ..     API reference for Herbie's classes and functions.
 

@@ -87,7 +87,7 @@ default_custom_template = """
 # Private Model Template
 # ======================
 # Find more details at
-# https://blaylockbk.github.io/Herbie/_build/html/user_guide/extend.html
+# https://herbie.readthedocs.io/user_guide/extend.html
 
 # Uncomment class, add additional classes, and edit SOURCES dictionary
 # to help Herbie locate your locally stored GRIB2 files.

@@ -15,7 +15,7 @@ inside and will get you to the
 `finish line <https://www.youtube.com/watch?v=4XWufUZ1mxQ&t=189s>`_.
 Happy racing! 🏁
 
-`📓 Documentation <https://blaylockbk.github.io/Herbie/_build/html/>`_
+`📓 Documentation <https://herbie.readthedocs.io/>`_
 
 With Herbie's API, you can search and download GRIB2 model output files
 from different archive sources for the High-Resolution Rapid Refresh
@@ -33,7 +33,7 @@ help you open them with xarray/cfgrib.
 Herbie is extendable to support other models. Simply create a template
 file in the ``herbie/models`` directory and make a pull-request.
 
-For more details, see https://blaylockbk.github.io/Herbie/_build/html/user_guide/data_sources.html
+For more details, see https://herbie.readthedocs.io/user_guide/data_sources.html
 
 
 TODO: Rename 'searchString' to 'subset' (and rename subset function to??) - REJECTED, for now

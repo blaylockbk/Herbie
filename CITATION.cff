@@ -9,7 +9,7 @@ authors:
 title: "Herbie: Retrieve Numerical Weather Prediction Model Data"
 version: 2022.9.0
 date-released: "2022-05-06"
-url: "https://blaylockbk.github.io/Herbie/_build/html/"
+url: "https://herbie.readthedocs.io/"
 repository-code: "https://github.com/blaylockbk/Herbie"
 type: software
 keywords:
