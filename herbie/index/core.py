@@ -58,6 +58,9 @@ class NwpIndex:
         self.path = self.BASEDIR.joinpath(self.name).with_suffix(".iarr")
 
     def load(self):
+        """
+        Load data from ironArray file.
+        """
         self.data: ia.IArray = ia.open(str(self.path))
         logger.info(f"Loaded IArray from: {self.path}")
         logger.debug(f"IArray info:\n{self.data.info}")
@@ -65,6 +68,8 @@ class NwpIndex:
 
     def save(self, dataset: xr.Dataset):
         """
+        Save data to ironArray file, effectively indexing it on all dimensions.
+
         Derived from ironArray's `fetch_data.py` example program [1,2],
         and its documentation about "Configuring ironArray" [3].
 
@@ -93,82 +98,92 @@ class NwpIndex:
         logger.debug(f"IArray info:\n{ia_data.info}")
         self.data = ia_data
 
-    def round_location(self, value):
-        return round_clipped(value, self.resolution)
-
     def query(self, time=None, lat=None, lon=None) -> "Result":
+        """
+        Query ironArray by multiple dimensions.
+        """
 
-        # Query by point or range (bbox).
-        if lat is None:
-            idx_lat = np.where(self.coordinate.lat)[0]
-            lat_slice = Slice(start=idx_lat[0], stop=idx_lat[-1] + 1)
-        elif isinstance(lat, float):
-            idx_lat = np.where(self.coordinate.lat == self.round_location(lat))[0][0]
-            lat_slice = Slice(start=idx_lat, stop=idx_lat + 2)
-        elif isinstance(lat, (t.Sequence, np.ndarray)):
-            idx_lat = np.where(
-                np.logical_and(
-                    self.coordinate.lat >= self.round_location(lat[0]),
-                    self.coordinate.lat <= self.round_location(lat[1]),
-                )
-            )[0]
-            lat_slice = Slice(start=idx_lat[0], stop=idx_lat[-1] + 1)
-        else:
-            raise ValueError(f"Unable to process value for lat={lat}, type={type(lat)}")
+        # Compute slices for time or time range, and geolocation point or range (bbox).
+        time_slice = self.time_slice(coordinate="time", value=time)
+        lat_slice = self.geo_slice(coordinate="lat", value=lat)
+        lon_slice = self.geo_slice(coordinate="lon", value=lon)
 
-        if lon is None:
-            idx_lon = np.where(self.coordinate.lon)[0]
-            lon_slice = Slice(start=idx_lon[0], stop=idx_lon[-1] + 1)
-        elif isinstance(lon, float):
-            idx_lon = np.where(self.coordinate.lon == self.round_location(lon))[0][0]
-            lon_slice = Slice(start=idx_lon, stop=idx_lon + 2)
-        elif isinstance(lon, (t.Sequence, np.ndarray)):
-            idx_lon = np.where(
-                np.logical_and(
-                    self.coordinate.lon >= self.round_location(lon[0]),
-                    self.coordinate.lon <= self.round_location(lon[1]),
-                )
-            )[0]
-            lon_slice = Slice(start=idx_lon[0], stop=idx_lon[-1] + 1)
-        else:
-            raise ValueError(f"Unable to process value for lon={lon}, type={type(lon)}")
-
-        # Optionally query by timestamp, or not.
-        if time is None:
-            filtered = self.data[:, lat_slice, lon_slice]
-            timestamp_coord = self.coordinate.time[:]
-        elif isinstance(time, str):
-            idx_time = np.where(self.coordinate.time == np.datetime64(time))[0][0]
-            time_slice = Slice(idx_time, idx_time + 2)
-            filtered = self.data[time_slice, lat_slice, lon_slice]
-            timestamp_coord = self.coordinate.time[time_slice.start : time_slice.stop]
-        elif isinstance(time, (t.Sequence, np.ndarray)):
-            idx_time = np.where(
-                np.logical_and(
-                    self.coordinate.time >= time[0],
-                    self.coordinate.time <= time[1],
-                )
-            )[0]
-            time_slice = Slice(start=idx_time[0], stop=idx_time[-1] + 1)
-            filtered = self.data[time_slice, lat_slice, lon_slice]
-            timestamp_coord = self.coordinate.time[time_slice.start : time_slice.stop]
-        else:
-            raise ValueError(
-                f"Unable to process value for time={time}, type={type(time)}"
-            )
+        # Slice data.
+        data = self.data[time_slice, lat_slice, lon_slice]
 
         # Rebuild DataArray from result.
         outdata = xr.DataArray(
-            filtered,
+            data,
             dims=("time", "lat", "lon"),
             coords={
+                "time": self.coordinate.time[time_slice.start : time_slice.stop],
                 "lat": self.coordinate.lat[lat_slice.start : lat_slice.stop],
                 "lon": self.coordinate.lon[lon_slice.start : lon_slice.stop],
-                "time": timestamp_coord,
             },
         )
 
         return Result(da=outdata)
+
+    def geo_slice(self, coordinate: str, value: t.Union[float, t.Sequence, np.ndarray]):
+        """
+        Compute slice for geolocation point or range (bbox).
+        """
+
+        coord = getattr(self.coordinate, coordinate)
+
+        if value is None:
+            idx = np.where(coord)[0]
+            effective_slice = Slice(start=idx[0], stop=idx[-1] + 1)
+        elif isinstance(value, float):
+            idx = np.where(coord == self.round_location(value))[0][0]
+            effective_slice = Slice(start=idx, stop=idx + 2)
+        elif isinstance(value, (t.Sequence, np.ndarray)):
+            idx = np.where(
+                np.logical_and(
+                    coord >= self.round_location(value[0]),
+                    coord <= self.round_location(value[1]),
+                )
+            )[0]
+            effective_slice = Slice(start=idx[0], stop=idx[-1] + 1)
+        else:
+            raise ValueError(
+                f"Unable to process value for {coordinate}={value}, type={type(value)}"
+            )
+
+        return effective_slice
+
+    def time_slice(
+        self, coordinate: str, value: t.Union[float, t.Sequence, np.ndarray]
+    ):
+        """
+        Compute slice for time or time range.
+        """
+
+        coord = getattr(self.coordinate, coordinate)
+
+        if value is None:
+            idx = np.where(self.coordinate.time)[0]
+            effective_slice = Slice(idx[0], idx[-1] + 1)
+        elif isinstance(value, str):
+            idx = np.where(coord == np.datetime64(value))[0][0]
+            effective_slice = Slice(idx, idx + 2)
+        elif isinstance(value, (t.Sequence, np.ndarray)):
+            idx = np.where(
+                np.logical_and(
+                    coord >= np.datetime64(value[0]),
+                    coord <= np.datetime64(value[1]),
+                )
+            )[0]
+            effective_slice = Slice(start=idx[0], stop=idx[-1] + 1)
+        else:
+            raise ValueError(
+                f"Unable to process value for {coordinate}={value}, type={type(value)}"
+            )
+
+        return effective_slice
+
+    def round_location(self, value):
+        return round_clipped(value, self.resolution)
 
 
 @dataclasses.dataclass

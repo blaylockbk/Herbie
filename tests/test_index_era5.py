@@ -56,7 +56,7 @@ def test_query_era5_monterey_fahrenheit_single_spot(era5_temp2m_index):
 
 def test_query_era5_berlin_celsius_location_full_timerange(era5_temp2m_index):
     """
-    Query indexed ERA5 NWP data for a sequence of time steps.
+    Query indexed ERA5 NWP data for the whole time range.
     """
 
     nwp = era5_temp2m_index.load()

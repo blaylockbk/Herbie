@@ -17,7 +17,7 @@ CACHE_BASEDIR = platformdirs.user_cache_path("herbie").joinpath("index-download"
 
 def open_era5_zarr(parameter, year, month, datestart, dateend) -> xr.Dataset:
     """
-    Load "ERA5 forecasts reanalysis" data from ECMWF.
+    Load "ERA5 forecasts reanalysis" data from ECMWF, using Zarr.
     The ERA5 HRES atmospheric data has a resolution of 31km, 0.28125 degrees [1].
 
     The implementation is derived from ironArray's "Slicing Datasets and Creating
