@@ -40,7 +40,7 @@ def test_query_era5_monterey_fahrenheit_single_spot(era5_temp2m_index):
     first = (
         nwp.query(time="1987-10-01 08:00", lat=36.6083, lon=-121.8674)
         .kelvin_to_fahrenheit()
-        .select_first()
+        .data
     )
 
     # Verify values.
@@ -62,9 +62,7 @@ def test_query_era5_berlin_celsius_location_full_timerange(era5_temp2m_index):
     nwp = era5_temp2m_index.load()
 
     # Temperatures in Berlin, in Celsius.
-    result = (
-        nwp.query(lat=52.51074, lon=13.43506).kelvin_to_celsius().select_first_point()
-    )
+    result = nwp.query(lat=52.51074, lon=13.43506).kelvin_to_celsius().data
 
     # Verify values and coordinates.
     reference = xr.DataArray(
@@ -96,7 +94,7 @@ def test_query_era5_monterey_fahrenheit_bbox_area(era5_temp2m_index):
             lon=(-122.166252, -121.655045),
         )
         .kelvin_to_fahrenheit()
-        .select_first_timestamp()
+        .data
     )
 
     # Verify values and coordinates.
@@ -131,7 +129,7 @@ def test_query_era5_latitude_slice(era5_temp2m_index):
     result = (
         nwp.query(time="1987-10-01 08:00", lat=None, lon=(-122.166252, -121.655045))
         .kelvin_to_celsius()
-        .select_first_timestamp()
+        .data
     )
 
     # Verify coordinates.
@@ -188,7 +186,7 @@ def test_query_era5_time_slice_tuple(era5_temp2m_index):
             lon=13.43506,
         )
         .kelvin_to_celsius()
-        .select_first_point()
+        .data
     )
 
     # Verify values and coordinates.
@@ -230,9 +228,7 @@ def test_query_era5_time_slice_range(era5_temp2m_index):
 
     # Temperatures for whole slice.
     result = (
-        nwp.query(time=timerange, lat=52.51074, lon=13.43506)
-        .kelvin_to_celsius()
-        .select_first_point()
+        nwp.query(time=timerange, lat=52.51074, lon=13.43506).kelvin_to_celsius().data
     )
 
     # Verify values and coordinates.

@@ -13,7 +13,7 @@ import xarray as xr
 from ndindex import Slice
 from scipy.constants import convert_temperature
 
-from herbie.index.util import dataset_info, round_clipped
+from herbie.index.util import dataset_info, is_sequence, round_clipped
 
 logger = logging.getLogger(__name__)
 
@@ -122,7 +122,7 @@ class NwpIndex:
             },
         )
 
-        return Result(da=outdata)
+        return Result(qp=QueryParameter(time=time, lat=lat, lon=lon), da=outdata)
 
     def geo_slice(self, coordinate: str, value: t.Union[float, t.Sequence, np.ndarray]):
         """
@@ -187,6 +187,13 @@ class NwpIndex:
 
 
 @dataclasses.dataclass
+class QueryParameter:
+    time: t.Optional[str] = None
+    lat: t.Optional[float] = None
+    lon: t.Optional[float] = None
+
+
+@dataclasses.dataclass
 class Coordinate:
     """
     Manage data for all available coordinates.
@@ -211,6 +218,7 @@ class Result:
     Wrap query result, and provide convenience accessor methods and value converters.
     """
 
+    qp: QueryParameter
     da: xr.DataArray
 
     def select_first(self) -> xr.DataArray:
@@ -229,3 +237,26 @@ class Result:
     def kelvin_to_fahrenheit(self):
         self.da.values = convert_temperature(self.da.values, "Kelvin", "Fahrenheit")
         return self
+
+    @property
+    def data(self) -> xr.DataArray:
+        """
+        Auto-select shape of return value, based on the shape of the query parameters.
+        """
+        all_defined = all(
+            v is not None for v in [self.qp.time, self.qp.lat, self.qp.lon]
+        )
+        is_time_range = is_sequence(self.qp.time)
+        is_lat_range = is_sequence(self.qp.lat)
+        is_lon_range = is_sequence(self.qp.lon)
+        if all_defined and not any([is_time_range, is_lat_range, is_lon_range]):
+            return self.select_first()
+        elif not any([is_lat_range, is_lon_range]):
+            return self.select_first_point()
+        elif self.qp.time and not is_time_range:
+            return self.select_first_timestamp()
+        else:
+            raise ValueError(
+                f"Unable to auto-select shape of return value, "
+                f"query parameters have unknown shape: {self.qp}"
+            )

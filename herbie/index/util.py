@@ -4,6 +4,9 @@
 import io
 import logging
 import sys
+import typing as t
+
+import numpy as np
 
 
 def round_clipped(value, clipping):
@@ -29,3 +32,7 @@ def dataset_info(ds) -> str:
     ds.info(buf)
     buf.seek(0)
     return buf.read()
+
+
+def is_sequence(value):
+    return not isinstance(value, str) and isinstance(value, (t.Sequence, np.ndarray))
