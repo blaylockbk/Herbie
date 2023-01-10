@@ -150,6 +150,7 @@ autodoc_default_options = {
 }
 
 autodoc_mock_imports = [
+    "herbie",
     "xesmf",
     "numpy",
     "matplotlib",
