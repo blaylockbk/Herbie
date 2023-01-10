@@ -15,6 +15,15 @@ build:
     - libeccodes-dev
     - libgeos-dev
 
+  # Work around timeout error.
+  # ReadTimeoutError: HTTPSConnectionPool(host='files.pythonhosted.org', port=443): Read timed out.
+  # https://stackoverflow.com/questions/43298872/how-to-solve-readtimeouterror-httpsconnectionpoolhost-pypi-python-org-port#comment110786026_43560499
+  # https://github.com/readthedocs/readthedocs.org/issues/6311#issuecomment-1324426604
+  # https://docs.readthedocs.io/en/stable/config-file/v2.html#build-jobs
+  jobs:
+    post_checkout:
+      - echo "export PIP_DEFAULT_TIMEOUT=100" >> ~/.profile
+
 # Build documentation in the docs/ directory with Sphinx
 sphinx:
   configuration: docs/conf.py
