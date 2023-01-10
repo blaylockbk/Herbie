@@ -26,15 +26,14 @@
 **Herbie** is a python package that downloads recent and archived numerical weather prediction (NWP) model output from different cloud archive sources. **Its most popular capability is to download HRRR model data.** NWP data in GRIB2 format can be read with xarray+cfgrib. Much of this data is made available through the [NOAA Open Data Dissemination](https://www.noaa.gov/information-technology/open-data-dissemination) (NODD) Program (formerly the Big Data Program) which has made weather data more accessible than ever before.
 
 Herbie helps you discover, download, and read data from:
-
-- [High Resolution Rapid Refresh (HRRR)](https://herbie.readthedocs.io/user_guide/_model_notebooks/hrrr.html) | [HRRR-Alaska](https://herbie.readthedocs.io/user_guide/_model_notebooks/hrrrak.html)
-- [Rapid Refresh (RAP)](https://herbie.readthedocs.io/user_guide/_model_notebooks/rap.html)
-- [Global Forecast System (GFS)](https://herbie.readthedocs.io/user_guide/_model_notebooks/gfs.html)
-- [Global Ensemble Forecast System (GEFS)](https://herbie.readthedocs.io/user_guide/_model_notebooks/gefs.html)
-- [ECMWF Open Data Forecast Products](https://herbie.readthedocs.io/user_guide/_model_notebooks/ecmwf.html)
+- [High Resolution Rapid Refresh (HRRR)](https://herbie.readthedocs.io/en/latest/user_guide/_model_notebooks/hrrr.html) | [HRRR-Alaska](https://herbie.readthedocs.io/en/latest/user_guide/_model_notebooks/hrrrak.html)
+- [Rapid Refresh (RAP)](https://herbie.readthedocs.io/en/latest/user_guide/_model_notebooks/rap.html)
+- [Global Forecast System (GFS)](https://herbie.readthedocs.io/en/latest/user_guide/_model_notebooks/gfs.html)
+- [Global Ensemble Forecast System (GEFS)](https://herbie.readthedocs.io/en/latest/user_guide/_model_notebooks/gefs.html)
+- [ECMWF Open Data Forecast Products](https://herbie.readthedocs.io/en/latest/user_guide/_model_notebooks/ecmwf.html)
 - [North American Mesoscale Model (NAM)](https://github.com/blaylockbk/Herbie/blob/main/docs/user_guide/_model_notebooks/nam.ipynb)
-- [National Blend of Models (NBM)](https://herbie.readthedocs.io/user_guide/_model_notebooks/nbm.html)
-- [Rapid Refresh Forecast System - Prototype (RRFS)](https://herbie.readthedocs.io/user_guide/_model_notebooks/rrfs.html)
+- [National Blend of Models (NBM)](https://herbie.readthedocs.io/en/latest/user_guide/_model_notebooks/nbm.html)
+- [Rapid Refresh Forecast System - Prototype (RRFS)](https://herbie.readthedocs.io/en/latest/user_guide/_model_notebooks/rrfs.html)
 
 # 📓 [Herbie Documentation](https://herbie.readthedocs.io/)
 
