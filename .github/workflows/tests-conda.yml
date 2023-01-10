@@ -18,7 +18,7 @@ jobs:
   tests:
     runs-on: ${{ matrix.os }}
     strategy:
-      fail-fast: false
+      fail-fast: true
       matrix:
         os: ["windows-latest"]
         python-version: ["3.11"]
