@@ -4,15 +4,21 @@
 """
 Tests for downloading RAP model
 """
-from herbie.archive import Herbie
-from datetime import datetime
 import pandas as pd
+import pytest
 
+from herbie.archive import Herbie
+from tests.util import is_time_between
 
 today = pd.to_datetime("today").floor("1D")
 save_dir = "$TMPDIR/Herbie-Tests/"
 
 
+@pytest.mark.skipif(
+    is_time_between("00:00", "02:30"),
+    reason="Test hibernated between 00:00 and 02:30 UTC, "
+    "because upstream data not available or incomplete at night.",
+)
 def test_rap_aws():
     # Test
     H = Herbie(

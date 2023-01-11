@@ -1,0 +1,76 @@
+name: Tests (Python)
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+  # Allow job to be triggered manually.
+  workflow_dispatch:
+
+# Cancel in-progress jobs when pushing to the same branch.
+concurrency:
+  cancel-in-progress: true
+  group: ${{ github.workflow }}-${{ github.ref }}
+
+jobs:
+  tests:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: true
+      matrix:
+        os: ["ubuntu-latest"]
+        python-version: ["3.9", "3.10", "3.11"]
+        # In order to save resources, only run particular
+        # matrix slots on other OS than Linux.
+        include:
+          - os: "macos-latest"
+            python-version: "3.11"
+          #- os: "windows-latest"
+          #  python-version: "3.11"
+
+    env:
+      OS: ${{ matrix.os }}
+      PYTHON: ${{ matrix.python-version }}
+
+    defaults:
+      run:
+        shell: bash -el {0}
+
+    name: Python ${{ matrix.python-version }} on OS ${{ matrix.os }}
+    steps:
+
+    - name: Acquire sources
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 2
+
+    - name: Setup Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+        architecture: x64
+        cache: 'pip'
+        cache-dependency-path: 'setup.cfg'
+
+    - name: Install prerequisites (Linux)
+      if: runner.os == 'Linux'
+      run: |
+        sudo apt -y install libgeos-dev libeccodes-dev
+
+    - name: Install prerequisites (macOS)
+      if: runner.os == 'macOS'
+      run: |
+        brew install pkg-config geos eccodes
+
+    - name: Install project
+      run: |
+        pip3 install --requirement=requirements-test.txt
+        pip3 install --editable=.
+
+    - name: Run tests
+      env:
+        TMPDIR: ${{ runner.temp }}
+      run: |
+        pytest
