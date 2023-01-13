@@ -22,47 +22,49 @@ TIMERANGE = np.arange(
 
 
 @pytest.fixture
-def era5_temp2m_index():
-    nwp = NwpIndex(name=TEMP2M, time_coordinate=TIMERANGE, resolution=0.25)
-    if not nwp.path.exists():
+def era5_temp2m():
+    """
+    Provide an instance of `NwpIndex` to the test cases.
+    """
+    nwp = NwpIndex(name=TEMP2M)
+    if not nwp.exists():
         nwp.save(dataset=open_era5_zarr(TEMP2M, 1987, 10, TIMERANGE[0], TIMERANGE[-1]))
+    nwp.load()
     return nwp
 
 
-def test_query_era5_monterey_fahrenheit_single_spot(era5_temp2m_index):
+def test_query_era5_monterey_fahrenheit_point_time(era5_temp2m):
     """
-    Query indexed ERA5 NWP data for a specific point in space and time.
+    Query indexed ERA5 NWP data for a specific geopoint and time.
     """
-
-    nwp = era5_temp2m_index.load()
 
     # Temperatures in Monterey, in Fahrenheit.
-    first = (
-        nwp.query(time="1987-10-01 08:00", lat=36.6083, lon=-121.8674)
+    item = (
+        era5_temp2m.query(time="1987-10-01 08:00", lat=36.6083, lon=-121.8674)
         .kelvin_to_fahrenheit()
         .data
     )
 
     # Verify values.
-    assert first.values == np.array(73.805008, dtype=np.float32)
+    assert item.values == np.array(73.805008, dtype=np.float32)
 
     # Verify coordinate.
-    assert dict(first.coords) == dict(
+    assert dict(item.coords) == dict(
         time=xr.DataArray(data=np.datetime64("1987-10-01 08:00"), name="time"),
         lat=xr.DataArray(data=np.float32(36.5), name="lat"),
         lon=xr.DataArray(data=np.float32(-121.75), name="lon"),
     )
 
 
-def test_query_era5_berlin_celsius_location_full_timerange(era5_temp2m_index):
+def test_query_era5_berlin_celsius_point_timerange(era5_temp2m):
     """
-    Query indexed ERA5 NWP data for the whole time range.
+    Query indexed ERA5 NWP data for the whole time range at a specific geopoint.
     """
-
-    nwp = era5_temp2m_index.load()
 
     # Temperatures in Berlin, in Celsius.
-    result = nwp.query(lat=52.51074, lon=13.43506).kelvin_to_celsius().data
+    result = era5_temp2m.query(lat=52.51074, lon=13.43506).kelvin_to_celsius().data
+    assert len(result.data) == 3
+    assert result.shape == (3,)
 
     # Verify values and coordinates.
     reference = xr.DataArray(
@@ -77,18 +79,16 @@ def test_query_era5_berlin_celsius_location_full_timerange(era5_temp2m_index):
     assert_equal(result, reference)
 
 
-def test_query_era5_monterey_fahrenheit_bbox_area(era5_temp2m_index):
+def test_query_era5_bbox_time(era5_temp2m):
     """
-    Query indexed ERA5 NWP data for a given area.
+    Query indexed ERA5 NWP data for a given area, defined by a bounding box.
 
     http://bboxfinder.com/
     """
 
-    nwp = era5_temp2m_index.load()
-
     # Temperatures in Monterey area, in Fahrenheit.
     result = (
-        nwp.query(
+        era5_temp2m.query(
             time="1987-10-01 08:00",
             lat=(36.450837, 36.700907),
             lon=(-122.166252, -121.655045),
@@ -96,6 +96,8 @@ def test_query_era5_monterey_fahrenheit_bbox_area(era5_temp2m_index):
         .kelvin_to_fahrenheit()
         .data
     )
+    assert len(result.data) == 2
+    assert result.shape == (2, 3)
 
     # Verify values and coordinates.
     reference = xr.DataArray(
@@ -118,19 +120,22 @@ def test_query_era5_monterey_fahrenheit_bbox_area(era5_temp2m_index):
     assert_equal(result, reference)
 
 
-def test_query_era5_latitude_slice(era5_temp2m_index):
+def test_query_era5_geoslice_time(era5_temp2m):
     """
-    Query indexed ERA5 NWP data for a given area along the same longitude coordinates.
+    Query indexed ERA5 NWP data for a given slice on the latitude coordinate,
+    along the same longitude coordinates.
     """
-
-    nwp = era5_temp2m_index.load()
 
     # Temperatures for whole slice.
     result = (
-        nwp.query(time="1987-10-01 08:00", lat=None, lon=(-122.166252, -121.655045))
+        era5_temp2m.query(
+            time="1987-10-01 08:00", lat=None, lon=(-122.166252, -121.655045)
+        )
         .kelvin_to_celsius()
         .data
     )
+    assert len(result.data) == 721
+    assert result.shape == (721, 3)
 
     # Verify coordinates.
     reference = xr.DataArray(
@@ -139,7 +144,7 @@ def test_query_era5_latitude_slice(era5_temp2m_index):
         coords=dict(
             time=xr.DataArray(data=np.datetime64("1987-10-01 08:00")),
             lat=xr.DataArray(
-                data=np.arange(start=90.0, stop=-90.0, step=-0.25, dtype=np.float32),
+                data=np.arange(start=90.0, stop=-90.01, step=-0.25, dtype=np.float32),
                 dims=("lat",),
             ),
             lon=xr.DataArray(
@@ -159,14 +164,14 @@ def test_query_era5_latitude_slice(era5_temp2m_index):
     assert result[0].coords["lat"] == 90
 
     assert result[-1].values.tolist() == [
-        -43.399993896484375,
-        -43.399993896484375,
-        -43.399993896484375,
+        -43.837493896484375,
+        -43.837493896484375,
+        -43.837493896484375,
     ]
-    assert result[-1].coords["lat"] == -89.75
+    assert result[-1].coords["lat"] == -90.0
 
 
-def test_query_era5_time_slice_tuple(era5_temp2m_index):
+def test_query_era5_point_timerange_tuple(era5_temp2m):
     """
     Query indexed ERA5 NWP data within given time range.
     This variant uses a `tuple` for defining time range boundaries.
@@ -175,12 +180,9 @@ def test_query_era5_time_slice_tuple(era5_temp2m_index):
     time range should only yield two records.
     """
 
-    # Load data.
-    nwp = era5_temp2m_index.load()
-
     # Temperatures for whole slice.
     result = (
-        nwp.query(
+        era5_temp2m.query(
             time=(np.datetime64("1987-10-01 08:00"), np.datetime64("1987-10-01 09:05")),
             lat=52.51074,
             lon=13.43506,
@@ -188,6 +190,8 @@ def test_query_era5_time_slice_tuple(era5_temp2m_index):
         .kelvin_to_celsius()
         .data
     )
+    assert len(result.data) == 2
+    assert result.shape == (2,)
 
     # Verify values and coordinates.
     timerange = np.arange(
@@ -207,17 +211,14 @@ def test_query_era5_time_slice_tuple(era5_temp2m_index):
     assert_equal(result, reference)
 
 
-def test_query_era5_time_slice_range(era5_temp2m_index):
+def test_query_era5_point_timerange_numpy(era5_temp2m):
     """
     Query indexed ERA5 NWP data within given time range.
-    This variant uses a `np.array` for defining time range boundaries.
+    This variant uses an `np.array` for defining time range boundaries.
 
     While the input dataset contains three records, filtering by
     time range should only yield two records.
     """
-
-    # Load data.
-    nwp = era5_temp2m_index.load()
 
     # Define timerange used for querying.
     timerange = np.arange(
@@ -228,8 +229,12 @@ def test_query_era5_time_slice_range(era5_temp2m_index):
 
     # Temperatures for whole slice.
     result = (
-        nwp.query(time=timerange, lat=52.51074, lon=13.43506).kelvin_to_celsius().data
+        era5_temp2m.query(time=timerange, lat=52.51074, lon=13.43506)
+        .kelvin_to_celsius()
+        .data
     )
+    assert len(result.data) == 2
+    assert result.shape == (2,)
 
     # Verify values and coordinates.
     reference = xr.DataArray(

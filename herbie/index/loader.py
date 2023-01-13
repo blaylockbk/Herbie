@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 CACHE_BASEDIR = platformdirs.user_cache_path("herbie").joinpath("index-download")
 
 
-def open_era5_zarr(parameter, year, month, datestart, dateend) -> xr.Dataset:
+def open_era5_zarr(parameter, year, month, datestart=None, dateend=None) -> xr.Dataset:
     """
     Load "ERA5 forecasts reanalysis" data from ECMWF, using Zarr.
     The ERA5 HRES atmospheric data has a resolution of 31km, 0.28125 degrees [1].
@@ -43,15 +43,16 @@ def open_era5_zarr(parameter, year, month, datestart, dateend) -> xr.Dataset:
     s3map = s3fs.S3Map(location, s3=fs)
     ds = xr.open_dataset(s3map, engine="zarr")
 
-    # The name of the `time` coordinate differs between datasets.
+    # The name of the `time` coordinate may be different between datasets.
     time_field_candidates = ["time0", "time1"]
     for candidate in time_field_candidates:
         if candidate in ds.coords:
-            time_field = candidate
+            ds = ds.rename({candidate: "time"})
 
     # Select subset of data based on time range.
-    indexers = {time_field: slice(np.datetime64(datestart), np.datetime64(dateend))}
-    ds = ds.sel(indexers=indexers)
+    if datestart and dateend:
+        indexers = {"time": slice(np.datetime64(datestart), np.datetime64(dateend))}
+        ds = ds.sel(indexers=indexers)
 
     # Rearrange coordinates data from longitude 0 to 360 degrees (long3) to -180 to 180 degrees (long1).
     ds = ds.assign(lon=ds["lon"] - 180)

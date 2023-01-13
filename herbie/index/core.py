@@ -13,7 +13,13 @@ import xarray as xr
 from ndindex import Slice
 from scipy.constants import convert_temperature
 
-from herbie.index.util import dataset_info, is_sequence, round_clipped
+from herbie.index.model import DataSchema, QueryParameter
+from herbie.index.util import (
+    dataset_get_data_variable_names,
+    dataset_info,
+    is_sequence,
+    round_clipped,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -24,6 +30,10 @@ class NwpIndex:
 
     - https://caterva.readthedocs.io/
     - https://ironarray.io/docs/html/
+
+    TODO: Think about making this an xarray accessor, e.g. `ds.xindex`.
+
+    - https://docs.xarray.dev/en/stable/internals/extending-xarray.html
     """
 
     # Where the ironArray files (`.iarr`) will be stored.
@@ -34,10 +44,10 @@ class NwpIndex:
     # Alternatively, just use the working directory for now.
     BASEDIR = Path(os.path.curdir)
 
-    # Default ironArray configuration.
+    # Configure ironArray.
     IA_CONFIG = dict(
-        codec=ia.Codec.LZ4,
-        clevel=9,
+        codec=ia.Codec.ZSTD,
+        clevel=1,
         # How to choose the best numbers?
         # https://ironarray.io/docs/html/tutorials/03.Slicing_Datasets_and_Creating_Views.html#Optimization-Tips
         chunks=(360, 360, 720),
@@ -48,22 +58,45 @@ class NwpIndex:
         # nthreads=12,
     )
 
-    def __init__(self, name, time_coordinate, resolution=None, data=None):
-        self.name = name
-        self.resolution = resolution
-        self.coordinate = Coordinate(time=time_coordinate)
-        if self.resolution:
-            self.coordinate.mkgrid(resolution=self.resolution)
-        self.data: ia.IArray = data
+    def __init__(self, name, resolution=None, schema=None, dataset=None, irondata=None):
+        self.name: str = name
+        self._resolution: float = resolution
+        self.dataset: xr.Dataset = dataset
+        self.irondata: ia.IArray = irondata
+
         self.path = self.BASEDIR.joinpath(self.name).with_suffix(".iarr")
+        self.schema: DataSchema = schema or DataSchema(path=self.path)
+
+    def exists(self):
+        return self.path.exists()
+
+    @property
+    def resolution(self):
+        if self._resolution:
+            return self._resolution
+        elif self.schema.ds is not None:
+            return self.schema.get_resolution()
+        else:
+            raise ValueError("Resolution is required for querying the Dataset by geospatial coordinates")
+
+    @resolution.setter
+    def resolution(self, value):
+        self._resolution = value
 
     def load(self):
         """
         Load data from ironArray file.
         """
-        self.data: ia.IArray = ia.open(str(self.path))
+
+        # Load data.
+        # TODO: Handle multiple variable names.
+        self.irondata: ia.IArray = ia.open(str(self.path))
         logger.info(f"Loaded IArray from: {self.path}")
-        logger.debug(f"IArray info:\n{self.data.info}")
+        logger.debug(f"IArray info:\n{self.irondata.info}")
+
+        # Load schema.
+        self.schema.load()
+
         return self
 
     def save(self, dataset: xr.Dataset):
@@ -79,7 +112,9 @@ class NwpIndex:
         """
 
         # Use data from first data variable within dataset.
-        data_variable = list(dataset.data_vars.keys())[0]
+        # TODO: Handle multiple variable names.
+        data_variables = dataset_get_data_variable_names(dataset)
+        data_variable = data_variables[0]
         logger.info(f"Discovered dataset variable: {data_variable}")
         logger.info(f"Storing and indexing to: {self.path}")
         logger.debug(f"Dataset info:\n{dataset_info(dataset)}")
@@ -96,7 +131,10 @@ class NwpIndex:
             ia_data[:] = data.values
         logger.info(f"IArray is ready")
         logger.debug(f"IArray info:\n{ia_data.info}")
-        self.data = ia_data
+        self.irondata = ia_data
+
+        # Save schema.
+        self.schema.save(ds=dataset)
 
     def query(self, time=None, lat=None, lon=None) -> "Result":
         """
@@ -109,27 +147,45 @@ class NwpIndex:
         lon_slice = self.geo_slice(coordinate="lon", value=lon)
 
         # Slice data.
-        data = self.data[time_slice, lat_slice, lon_slice]
+        data = self.irondata[time_slice, lat_slice, lon_slice]
 
-        # Rebuild DataArray from result.
-        outdata = xr.DataArray(
-            data,
-            dims=("time", "lat", "lon"),
-            coords={
-                "time": self.coordinate.time[time_slice.start : time_slice.stop],
-                "lat": self.coordinate.lat[lat_slice.start : lat_slice.stop],
-                "lon": self.coordinate.lon[lon_slice.start : lon_slice.stop],
-            },
-        )
+        # Rebuild Dataset from result.
+        coords = {
+            "time": self.schema.ds.coords["time"][time_slice.start: time_slice.stop],
+            "lat": self.schema.ds.coords["lat"][lat_slice.start: lat_slice.stop],
+            "lon": self.schema.ds.coords["lon"][lon_slice.start: lon_slice.stop],
+        }
+        ds = self.to_dataset(data, coords=coords)
 
-        return Result(qp=QueryParameter(time=time, lat=lat, lon=lon), da=outdata)
+        return Result(qp=QueryParameter(time=time, lat=lat, lon=lon), ds=ds)
+
+    def to_dataset(self, irondata, coords):
+        """
+        Re-create Xarray Dataset from ironArray data and coordinates.
+
+        The intention is to emit a Dataset which has the same character
+        as the Dataset originally loaded from GRIB/netCDF/HDF5/Zarr.
+        """
+
+        # Re-create empty Dataset with original shape.
+        schema = self.schema.ds.copy(deep=True)
+        dataset = xr.Dataset(data_vars=schema.data_vars, coords=coords, attrs=schema.attrs)
+
+        # Populate data.
+        # TODO: Handle more than one variable.
+        # TODO: Is there a faster operation than using `list(irondata)`?
+        variable0_info = self.schema.metadata["variables"][0]
+        variable0_name = variable0_info["name"]
+        dataset[variable0_name] = xr.DataArray(list(irondata), **variable0_info)
+
+        return dataset
 
     def geo_slice(self, coordinate: str, value: t.Union[float, t.Sequence, np.ndarray]):
         """
         Compute slice for geolocation point or range (bbox).
         """
 
-        coord = getattr(self.coordinate, coordinate)
+        coord = self.schema.ds.coords[coordinate]
 
         if value is None:
             idx = np.where(coord)[0]
@@ -159,10 +215,10 @@ class NwpIndex:
         Compute slice for time or time range.
         """
 
-        coord = getattr(self.coordinate, coordinate)
+        coord = self.schema.ds.coords[coordinate]
 
         if value is None:
-            idx = np.where(self.coordinate.time)[0]
+            idx = np.where(coord)[0]
             effective_slice = Slice(idx[0], idx[-1] + 1)
         elif isinstance(value, str):
             idx = np.where(coord == np.datetime64(value))[0][0]
@@ -187,55 +243,42 @@ class NwpIndex:
 
 
 @dataclasses.dataclass
-class QueryParameter:
-    time: t.Optional[str] = None
-    lat: t.Optional[float] = None
-    lon: t.Optional[float] = None
-
-
-@dataclasses.dataclass
-class Coordinate:
-    """
-    Manage data for all available coordinates.
-
-    # TODO: How could this meta information be carried over from the source data?
-    """
-
-    time: t.Optional[np.ndarray] = None
-    lat: t.Optional[np.ndarray] = None
-    lon: t.Optional[np.ndarray] = None
-
-    def mkgrid(self, resolution: float):
-        self.lat = np.arange(start=90.0, stop=-90.0, step=-resolution, dtype=np.float32)
-        self.lon = np.arange(
-            start=-180.0, stop=180.0, step=resolution, dtype=np.float32
-        )
-
-
-@dataclasses.dataclass
 class Result:
     """
     Wrap query result, and provide convenience accessor methods and value converters.
     """
 
     qp: QueryParameter
-    da: xr.DataArray
+    ds: xr.Dataset
+
+    @property
+    def pv(self):
+        """
+        Return primary variable name. That is, the first one.
+
+        # TODO: Handle multiple variable names.
+        """
+        return list(self.ds.data_vars.keys())[0]
 
     def select_first(self) -> xr.DataArray:
-        return self.da[0][0][0]
+        return self.ds[self.pv][0][0][0]
 
     def select_first_point(self):
-        return self.da.sel(lat=self.da["lat"][0], lon=self.da["lon"][0])
+        da = self.ds[self.pv]
+        return da.sel(lat=da["lat"][0], lon=da["lon"][0])
 
     def select_first_timestamp(self):
-        return self.da.sel(time=self.da["time"][0])
+        da = self.ds[self.pv]
+        return da.sel(time=da["time"][0])
 
     def kelvin_to_celsius(self):
-        self.da.values = convert_temperature(self.da.values, "Kelvin", "Celsius")
+        da = self.ds[self.pv]
+        da.values = convert_temperature(da.values, "Kelvin", "Celsius")
         return self
 
     def kelvin_to_fahrenheit(self):
-        self.da.values = convert_temperature(self.da.values, "Kelvin", "Fahrenheit")
+        da = self.ds[self.pv]
+        da.values = convert_temperature(da.values, "Kelvin", "Fahrenheit")
         return self
 
     @property

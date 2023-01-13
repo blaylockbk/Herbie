@@ -7,6 +7,7 @@ import sys
 import typing as t
 
 import numpy as np
+import xarray as xr
 
 
 def round_clipped(value, clipping):
@@ -27,7 +28,7 @@ def setup_logging(level=logging.INFO):
     requests_log.setLevel(logging.INFO)
 
 
-def dataset_info(ds) -> str:
+def dataset_info(ds: xr.Dataset) -> str:
     buf = io.StringIO()
     ds.info(buf)
     buf.seek(0)
@@ -36,3 +37,12 @@ def dataset_info(ds) -> str:
 
 def is_sequence(value):
     return not isinstance(value, str) and isinstance(value, (t.Sequence, np.ndarray))
+
+
+def dataset_get_data_variable_names(ds: xr.Dataset):
+    return list(ds.data_vars.keys())
+
+
+def dataset_without_data(ds: xr.Dataset):
+    data_variables = dataset_get_data_variable_names(ds)
+    return ds.drop_vars(names=data_variables)
