@@ -10,16 +10,19 @@ from pathlib import Path
 import iarray_community as ia
 import numpy as np
 import pandas as pd
+import shapely
 import xarray as xr
 from ndindex import Slice
 from scipy.constants import convert_temperature
+from shapely.geometry import CAP_STYLE, Point, Polygon
 
-from herbie.index.model import BBox, DataSchema, QueryParameter
+from herbie.index.model import BBox, Circle, DataSchema, QueryParameter
 from herbie.index.util import (
     dataset_get_data_variable_names,
     dataset_info,
     is_sequence,
     round_clipped,
+    unit,
 )
 
 logger = logging.getLogger(__name__)
@@ -137,12 +140,31 @@ class NwpIndex:
         # Save schema.
         self.schema.save(ds=dataset)
 
-    def query(self, time=None, location: t.Union[BBox] = None, lat=None, lon=None) -> "Result":
+    def query(self, time=None, location: t.Union[BBox, Circle] = None, lat=None, lon=None) -> "Result":
         """
         Query ironArray by multiple dimensions.
         """
 
         if location is not None:
+
+            # Select location by circle (point and distance).
+            if isinstance(location, Circle):
+                circle: Circle = location
+                # At 38 degrees North latitude (which passes through Stockton California
+                # and Charlottesville Virginia), one degree of longitude equals 54.6 miles.
+                # => 0.25 degrees equal 13.65 miles.
+                #
+                # -- https://www.usgs.gov/faqs/how-much-distance-does-degree-minute-and-second-cover-your-maps
+                #
+                # FIXME: Verify this, and apply the correct conversion for other places on earth.
+                factor = 54.6 * self.resolution
+                distance = (circle.distance / (factor * unit.miles)).magnitude
+
+                # Compute minimum bounding rectangle from circle.
+                point = Point([circle.point.longitude, circle.point.latitude]) \
+                    .buffer(distance, cap_style=CAP_STYLE.square)
+                bbox: Polygon = point.minimum_rotated_rectangle
+                location = BBox(*bbox.bounds)
 
             # Select location by bounding box.
             # https://boundingbox.klokantech.com/

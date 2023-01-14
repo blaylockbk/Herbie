@@ -7,7 +7,10 @@ import sys
 import typing as t
 
 import numpy as np
+import pint
 import xarray as xr
+
+unit = pint.UnitRegistry()
 
 
 def round_clipped(value, clipping):

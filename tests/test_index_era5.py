@@ -12,7 +12,8 @@ from xarray.testing import assert_equal
 
 from herbie.index.core import NwpIndex
 from herbie.index.loader import open_era5_zarr
-from herbie.index.model import BBox
+from herbie.index.model import BBox, Circle, Point
+from herbie.index.util import unit
 
 TEMP2M = "air_temperature_at_2_metres"
 
@@ -253,7 +254,7 @@ def test_query_era5_point_timerange_numpy(era5_temp2m):
 
 def test_query_era5_bbox_timerange(era5_temp2m):
     """
-    Query indexed ERA5 NWP data within a given area and time range.
+    Query indexed ERA5 NWP data within a given bounding box area and time range.
 
     This variant uses a pandas `DatetimeIndex` for defining the time range
     boundaries, and a `BBox` instance for defining a geospatial bounding box.
@@ -309,6 +310,76 @@ def test_query_era5_bbox_timerange(era5_temp2m):
             ),
             lon=xr.DataArray(
                 data=np.array([13.0, 13.25, 13.5], dtype=np.float32), dims=("lon",)
+            ),
+        ),
+    )
+    assert_equal(ds[data_var], reference)
+
+
+def test_query_era5_circle_timerange(era5_temp2m):
+    """
+    Query indexed ERA5 NWP data within a given circular area and time range.
+
+    This variant uses a pandas `DatetimeIndex` for defining the time range
+    boundaries, and a `Circle` instance for defining a geospatial bounding box.
+    """
+
+    data_var = "air_temperature_at_2_metres"
+
+    # Temperatures in Monterey area, in Fahrenheit.
+    ds = (
+        era5_temp2m.query(
+            time=pd.date_range(
+                start="1987-10-01 08:00", end="1987-10-01 09:00", freq="H"
+            ),
+            location=Circle(
+                Point(longitude=-121.8674, latitude=36.6083), distance=3.5 * unit.miles
+            ),
+        )
+        .kelvin_to_fahrenheit()
+        .ds
+    )
+    assert len(ds) == 1
+    assert ds[data_var].shape == (2, 3, 3)
+    assert ds[data_var].dims == ("time", "lat", "lon")
+
+    # Verify values and coordinates.
+    reference = xr.DataArray(
+        dims=("time", "lat", "lon"),
+        data=np.array(
+            [
+                [
+                    [71.89251, 70.88001, 69.64251],
+                    [75.717514, 73.80501, 72.11751],
+                    [78.530014, 77.29251, 76.280014],
+                ],
+                [
+                    [72.23001, 71.217514, 69.98001],
+                    [76.61751, 74.48001, 72.68001],
+                    [79.76751, 78.41751, 77.18001],
+                ],
+            ],
+            dtype=np.float32,
+        ),
+        coords=dict(
+            time=xr.DataArray(
+                data=np.arange(
+                    start=np.datetime64("1987-10-01 08:00:00"),
+                    stop=np.datetime64("1987-10-01 09:00:00.001"),
+                    step=datetime.timedelta(hours=1),
+                ),
+                name="time",
+                dims=("time",),
+            ),
+            lat=xr.DataArray(
+                data=np.array([36.75, 36.5, 36.25], dtype=np.float32),
+                name="lat",
+                dims=("lat",),
+            ),
+            lon=xr.DataArray(
+                data=np.array([-122.0, -121.75, -121.5], dtype=np.float32),
+                name="lon",
+                dims=("lon",),
             ),
         ),
     )

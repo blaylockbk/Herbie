@@ -7,6 +7,7 @@ import typing as t
 from pathlib import Path
 
 import xarray as xr
+from pint import Quantity
 
 from herbie.index.util import dataset_get_data_variable_names, dataset_without_data
 
@@ -96,6 +97,28 @@ class QueryParameter:
     time: t.Optional[str] = None
     lat: t.Optional[float] = None
     lon: t.Optional[float] = None
+
+
+@dataclasses.dataclass
+class Point:
+    """
+    Manage geopoint information.
+    """
+
+    longitude: float
+    latitude: float
+
+
+@dataclasses.dataclass
+class Circle:
+    """
+    Manage geolocation circle information.
+
+    Radius in kilometers.
+    """
+
+    point: Point
+    distance: Quantity
 
 
 @dataclasses.dataclass
