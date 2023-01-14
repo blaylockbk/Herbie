@@ -9,6 +9,7 @@ from pathlib import Path
 
 import iarray_community as ia
 import numpy as np
+import pandas as pd
 import xarray as xr
 from ndindex import Slice
 from scipy.constants import convert_temperature
@@ -223,7 +224,7 @@ class NwpIndex:
         elif isinstance(value, str):
             idx = np.where(coord == np.datetime64(value))[0][0]
             effective_slice = Slice(idx, idx + 2)
-        elif isinstance(value, (t.Sequence, np.ndarray)):
+        elif isinstance(value, (t.Sequence, np.ndarray, pd.DatetimeIndex)):
             idx = np.where(
                 np.logical_and(
                     coord >= np.datetime64(value[0]),
