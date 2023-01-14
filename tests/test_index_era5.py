@@ -5,12 +5,14 @@ import datetime
 from unittest import mock
 
 import numpy as np
+import pandas as pd
 import pytest
 import xarray as xr
 from xarray.testing import assert_equal
 
 from herbie.index.core import NwpIndex
 from herbie.index.loader import open_era5_zarr
+from herbie.index.model import BBox
 
 TEMP2M = "air_temperature_at_2_metres"
 
@@ -213,7 +215,7 @@ def test_query_era5_point_timerange_tuple(era5_temp2m):
 
 def test_query_era5_point_timerange_numpy(era5_temp2m):
     """
-    Query indexed ERA5 NWP data within given time range.
+    Query indexed ERA5 NWP data at a specific point within given time range.
     This variant uses an `np.array` for defining time range boundaries.
 
     While the input dataset contains three records, filtering by
@@ -247,3 +249,67 @@ def test_query_era5_point_timerange_numpy(era5_temp2m):
     )
     reference = reference.swap_dims(dim_0="time")
     assert_equal(result, reference)
+
+
+def test_query_era5_bbox_timerange(era5_temp2m):
+    """
+    Query indexed ERA5 NWP data within a given area and time range.
+
+    This variant uses a pandas `DatetimeIndex` for defining the time range
+    boundaries, and a `BBox` instance for defining a geospatial bounding box.
+    """
+
+    data_var = "air_temperature_at_2_metres"
+
+    # Temperatures in Berlin area, in Celsius.
+    ds = (
+        era5_temp2m.query(
+            time=pd.date_range(
+                start="1987-10-01 08:00", end="1987-10-01 09:00", freq="H"
+            ),
+            location=BBox(lon1=13.000, lat1=52.700, lon2=13.600, lat2=52.300),
+        )
+        .kelvin_to_celsius()
+        .ds
+    )
+    assert len(ds) == 1
+    assert ds[data_var].shape == (2, 3, 3)
+    assert ds[data_var].dims == ("time", "lat", "lon")
+
+    # Verify values and coordinates.
+    reference = xr.DataArray(
+        dims=("time", "lat", "lon"),
+        data=np.array(
+            [
+                [
+                    [6.412506, 6.412506, 6.475006],
+                    [6.537506, 6.537506, 6.600006],
+                    [6.662506, 6.662506, 6.725006],
+                ],
+                [
+                    [6.350006, 6.412506, 6.412506],
+                    [6.537506, 6.537506, 6.600006],
+                    [6.662506, 6.662506, 6.662506],
+                ],
+            ],
+            dtype=np.float32,
+        ),
+        coords=dict(
+            time=xr.DataArray(
+                data=np.arange(
+                    start=np.datetime64("1987-10-01 08:00:00"),
+                    stop=np.datetime64("1987-10-01 09:00:01"),
+                    step=datetime.timedelta(hours=1),
+                ),
+                name="time",
+                dims=("time",),
+            ),
+            lat=xr.DataArray(
+                data=np.array([52.75, 52.5, 52.25], dtype=np.float32), dims=("lat",)
+            ),
+            lon=xr.DataArray(
+                data=np.array([13.0, 13.25, 13.5], dtype=np.float32), dims=("lon",)
+            ),
+        ),
+    )
+    assert_equal(ds[data_var], reference)

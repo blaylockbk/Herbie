@@ -96,3 +96,18 @@ class QueryParameter:
     time: t.Optional[str] = None
     lat: t.Optional[float] = None
     lon: t.Optional[float] = None
+
+
+@dataclasses.dataclass
+class BBox:
+    """
+    Manage bounding box information.
+
+    # min_x, min_y, max_x, max_y
+    # (lon1, lat1, lon2, lat2) = c.bbox
+    """
+
+    lon1: float
+    lat1: float
+    lon2: float
+    lat2: float

@@ -14,7 +14,7 @@ import xarray as xr
 from ndindex import Slice
 from scipy.constants import convert_temperature
 
-from herbie.index.model import DataSchema, QueryParameter
+from herbie.index.model import BBox, DataSchema, QueryParameter
 from herbie.index.util import (
     dataset_get_data_variable_names,
     dataset_info,
@@ -137,10 +137,21 @@ class NwpIndex:
         # Save schema.
         self.schema.save(ds=dataset)
 
-    def query(self, time=None, lat=None, lon=None) -> "Result":
+    def query(self, time=None, location: t.Union[BBox] = None, lat=None, lon=None) -> "Result":
         """
         Query ironArray by multiple dimensions.
         """
+
+        if location is not None:
+
+            # Select location by bounding box.
+            # https://boundingbox.klokantech.com/
+            if isinstance(location, BBox):
+                lat = [location.lat1, location.lat2]
+                lon = [location.lon1, location.lon2]
+
+            else:
+                raise ValueError(f"Unable to process location={location}, type={type(location)}")
 
         # Compute slices for time or time range, and geolocation point or range (bbox).
         time_slice = self.time_slice(coordinate="time", value=time)
@@ -195,6 +206,7 @@ class NwpIndex:
             idx = np.where(coord == self.round_location(value))[0][0]
             effective_slice = Slice(start=idx, stop=idx + 2)
         elif isinstance(value, (t.Sequence, np.ndarray)):
+            value = sorted(value)
             idx = np.where(
                 np.logical_and(
                     coord >= self.round_location(value[0]),
