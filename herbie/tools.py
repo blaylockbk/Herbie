@@ -177,6 +177,20 @@ class FastHerbie:
             ds_list, index=self.DATES, columns=[f"F{i:02d}" for i in self.fxx]
         )
 
+    def inventory(self, searchString=None):
+        """Get combined inventory DataFrame.
+
+        Useful for data discovery and checking your searchString before
+        doing a download.
+        """
+        # NOTE: In my quick test, you don't gain much speed using multithreading here.
+        dfs = []
+        for i in self.file_exists:
+            df = i.read_idx(searchString)
+            df = df.assign(FILE=i.grib)
+            dfs.append(df)
+        return pd.concat(dfs, ignore_index=True)
+
     def download(self, searchString=None, *, max_threads=20, **download_kwargs):
         r"""Download many Herbie objects
 
@@ -205,7 +219,7 @@ class FastHerbie:
         log.info(f"🧵 Working on {self.tasks} tasks with {threads} threads.")
 
         outFiles = []
-        with ThreadPoolExecutor(max_threads) as exe:
+        with ThreadPoolExecutor(threads) as exe:
             futures = [
                 exe.submit(H.download, searchString, **download_kwargs)
                 for H in self.file_exists
