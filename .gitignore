@@ -20,6 +20,8 @@ sandbox*
 
 local_B.py
 
+docs/_build
+
 dist/*
 build/*
 *.egg-info
