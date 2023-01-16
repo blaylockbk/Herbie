@@ -515,7 +515,7 @@ class Herbie:
 
         if searchString is not None:
             # Reassign the index DataFrame with the requested searchString
-            idx_df = self.read_idx(searchString)
+            idx_df = self.inventory(searchString)
 
             # ======================================
             # Make a unique filename for the subset
@@ -724,7 +724,16 @@ class Herbie:
 
         return df
 
+    # TODO : Remove this in a future Herbie version
     def read_idx(self, searchString=None):
+        warnings.warn(
+            "The `read_idx` method has been renamed `inventory`.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return self.inventory(searchString=None)
+
+    def inventory(self, searchString=None):
         """
         Inspect the GRIB2 file contents by reading the index file.
 
@@ -846,7 +855,7 @@ class Herbie:
             # Find index groupings
             # TODO: Improve this for readability
             # https://stackoverflow.com/a/32199363/2383070
-            idx_df = self.read_idx(searchString)
+            idx_df = self.inventory(searchString)
             li = idx_df.index
             inds = (
                 [0]

@@ -106,7 +106,7 @@ pip install git+https://github.com/blaylockbk/Herbie.git
       H((Herbie))
       H --- .download
       H --- .xarray
-      H --- .read_idx
+      H --- .inventory
 
       style H fill:#d8c89d,stroke:#0c3576,stroke-width:4px,color:#000000
 ```

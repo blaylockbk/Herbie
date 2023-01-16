@@ -100,7 +100,7 @@ def test_make_idx_with_wgrib():
     H.grib_source = "local"
 
     # Generate IDX file
-    df = H.read_idx()
+    df = H.inventory()
     assert len(df), "Length of index file is 0."
     assert H.idx_source == "generated", "Doesn't look like a generated idx file."
 

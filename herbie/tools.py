@@ -186,7 +186,7 @@ class FastHerbie:
         # NOTE: In my quick test, you don't gain much speed using multithreading here.
         dfs = []
         for i in self.file_exists:
-            df = i.read_idx(searchString)
+            df = i.inventory(searchString)
             df = df.assign(FILE=i.grib)
             dfs.append(df)
         return pd.concat(dfs, ignore_index=True)
