@@ -30,5 +30,6 @@ MANIFEST
 *.so
 .eggs/
 *.h5
+$TMPDIR/
 
 herbie/_version.py
