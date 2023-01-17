@@ -1048,9 +1048,9 @@ class Herbie:
         # Get CF grid projection information with pygrib and pyproj because
         # this is something cfgrib doesn't do (https://github.com/ecmwf/cfgrib/issues/251)
         # NOTE: Assumes the projection is the same for all variables
-        grib = pygrib.open(str(local_file))
-        msg = grib.message(1)
-        cf_params = CRS(msg.projparams).to_cf()
+        with pygrib.open(str(local_file)) as grb:
+            msg = grb.message(1)
+            cf_params = CRS(msg.projparams).to_cf()
 
         # Funny stuff with polar stereographic (https://github.com/pyproj4/pyproj/issues/856)
         # TODO: Is there a better way to handle this? What about south pole?
@@ -1092,25 +1092,7 @@ class Herbie:
             # Load the datasets into memory before removing the file
             Hxr = [ds.load() for ds in Hxr]
             _ = [ds.close() for ds in Hxr]
-
-            # TODO:
-            # Forcefully close the files so it can be removed
-            # (this is a WindowsOS specific requirement).
-            # os.close(?WHAT IS THE FILE HANDLER?)
-            """
-            https://docs.python.org/3/library/os.html#os.remove
-            On Windows, attempting to remove a file that is in use
-            causes an exception to be raised; on Unix, the directory
-            entry is removed but the storage allocated to the file is
-            not made available until the original file is no longer in
-            use.
-            >> HOW DO I COMPLETELY CLOSE THE FILE OPENED BY CFGRIB??
-            """
-            if not sys.platform == "win32":
-                # Removes file
-                local_file.unlink()
-            else:
-                warnings.warn("sorry, on windows I couldn't remove the file.")
+            local_file.unlink()
 
         if len(Hxr) == 1:
             return Hxr[0]
