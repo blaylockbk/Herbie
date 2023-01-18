@@ -21,7 +21,7 @@
 			"import"
 		],
 		"body": [
-			"from herbie.archive import Herbie",
+			"from herbie.core import Herbie",
 		],
 		"description": "import Herbie class"
 	},

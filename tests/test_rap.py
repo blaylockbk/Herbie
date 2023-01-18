@@ -7,7 +7,7 @@ Tests for downloading RAP model
 import pandas as pd
 import pytest
 
-from herbie.archive import Herbie
+from herbie import Herbie
 from tests.util import is_time_between
 
 today = pd.to_datetime("today").floor("1D")

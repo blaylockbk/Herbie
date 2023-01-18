@@ -18,6 +18,10 @@ To use the herbie xarray accessor, do this...
     ds.herbie.crs
     ds.herbie.plot()
 
+
+# TODO: I like the idea in Salem to mask data by a geographic region
+# TODO: Maybe can use that in Herbie. https://github.com/fmaussion/salem
+
 """
 import functools
 import cartopy.crs as ccrs

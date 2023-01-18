@@ -1,7 +1,7 @@
-﻿herbie.archive.Herbie
+﻿herbie.core.Herbie
 =====================
 
-.. currentmodule:: herbie.archive
+.. currentmodule:: herbie.core
 
 .. autoclass:: Herbie
 

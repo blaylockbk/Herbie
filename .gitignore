@@ -6,7 +6,6 @@ __pycache__/
 env_pypi.yml
 condaenv*
 .venv*
-core.*
 
 .pytest_cache/
 

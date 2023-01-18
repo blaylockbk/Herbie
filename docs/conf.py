@@ -12,7 +12,7 @@
 #
 import os
 import sys
-import herbie.archive  ## Required for accessors to be documented
+import herbie.core  ## Required for accessors to be documented
 
 sys.path.insert(0, os.path.abspath("../.."))
 
@@ -150,8 +150,6 @@ autodoc_default_options = {
 }
 
 autodoc_mock_imports = [
-    "herbie",
-    "herbie.archive",
     "xesmf",
     "numpy",
     "matplotlib",
