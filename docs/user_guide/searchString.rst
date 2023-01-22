@@ -46,7 +46,7 @@ Here are some examples you can use for the ``searchString`` argument for the **w
 
 .. hint:: The NCEP `Parameters & Units Table <https://www.nco.ncep.noaa.gov/pmb/docs/on388/table2.html>`_ is a useful resource to help you identify wgrib2-style GRIB variable abbreviations and their meanings.
 
-If you can't figure out the right search string, you may also find *Brute Force* the search string for complex rules.
+If you can't figure out the right search string, you may also *Brute Force* the search string for complex rules.
 
 .. code:: python
 
