@@ -29,4 +29,6 @@ MANIFEST
 .eggs/
 *.h5
 
+$TMPDIR/
+
 herbie/_version.py
