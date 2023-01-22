@@ -39,9 +39,7 @@ For more details, see https://herbie.readthedocs.io/user_guide/data_sources.html
 TODO: Rename 'searchString' to 'subset' (and rename subset function to??) - REJECTED, for now
 TODO: Rename 'fxx' to 'lead' and allow pandas-parsable timedelta string like "6H".
 TODO: add `idx_to_df()` and `df_to_idx()` methods.
-TODO: Perhaps rename this file to 'core.py'
 TODO: There are probably use cases for the `Path().suffixes` method
-TODO: Fix temporary file problem on Windows with xr.load_dataset() (see #)
 """
 import functools
 import hashlib
