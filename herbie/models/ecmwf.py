@@ -11,6 +11,8 @@ See the `media release <https://www.ecmwf.int/en/about/media-centre/news/2022/ec
 - Licence Statement: This data is published under a Creative Commons Attribution 4.0 International (CC BY 4.0). https://creativecommons.org/licenses/by/4.0/
 - Disclaimer: ECMWF does not accept any liability whatsoever for any error or omission in the data, their availability, or for any loss or damage arising from their use.
 
+https://confluence.ecmwf.int/display/DAC/ECMWF+open+data%3A+real-time+forecasts
+
 """
 
 
@@ -23,7 +25,7 @@ class ecmwf:
 
         self.DESCRIPTION = "ECMWF open data"
         self.DETAILS = {
-            "ECMWF": "https://confluence.ecmwf.int/display/UDOC/ECMWF+Open+Data+-+Real+Time",
+            "ECMWF": "https://confluence.ecmwf.int/display/DAC/ECMWF+open+data%3A+real-time+forecasts",
         }
         self.PRODUCTS = {
             "oper": "operational high-resolution forecast, atmospheric fields",
