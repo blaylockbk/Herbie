@@ -50,6 +50,7 @@ class ecmwf:
 
         self.SOURCES = {
             "azure": f"https://ai4edataeuwest.blob.core.windows.net/ecmwf/{post_root}",
+            "aws": f"https://ecmwf-forecasts.s3.eu-central-1.amazonaws.com/{post_root}"
             "ecmwf": f"https://data.ecmwf.int/forecasts/{post_root}",
         }
         self.IDX_SUFFIX = [".index"]
