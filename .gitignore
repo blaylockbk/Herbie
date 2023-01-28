@@ -6,7 +6,6 @@ __pycache__/
 env_pypi.yml
 condaenv*
 .venv*
-core.*
 
 .pytest_cache/
 
@@ -20,6 +19,8 @@ sandbox*
 
 local_B.py
 
+docs/_build
+
 dist/*
 build/*
 *.egg-info
@@ -28,6 +29,7 @@ MANIFEST
 *.so
 .eggs/
 *.h5
+$TMPDIR/
 
 $TMPDIR/
 

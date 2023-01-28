@@ -32,7 +32,7 @@ PRODUCTS : dict
 SOURCES : dict
     Build the URL for the GRIB2 file for different sources.
     The parameters are from arguments passed into the
-    ``herbie.archive.Herbie()`` class.
+    ``herbie.core.Herbie()`` class.
     ORDER MATTERS -- If priority is None, then Herbie searches the
     sources in the order given here.
     *LOOP THROUGH ALL SOURCES*

@@ -1,25 +1,24 @@
-﻿herbie.tools.FastHerbie
+﻿herbie.fast.FastHerbie
 =======================
 
-.. currentmodule:: herbie.tools
+.. currentmodule:: herbie.fast
 
 .. autoclass:: FastHerbie
 
-   
+
    .. automethod:: __init__
 
-   
+
    .. rubric:: Methods
 
    .. autosummary::
-   
+
       ~FastHerbie.__init__
       ~FastHerbie.df
       ~FastHerbie.download
       ~FastHerbie.xarray
-   
-   
 
-   
-   
-   
+
+
+
+

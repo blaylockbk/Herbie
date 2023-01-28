@@ -12,7 +12,7 @@
 [![Conda Version](https://img.shields.io/conda/vn/conda-forge/herbie-data.svg)](https://anaconda.org/conda-forge/herbie-data)
 [![DOI](https://zenodo.org/badge/275214142.svg)](https://zenodo.org/badge/latestdoi/275214142)
 
-![](https://img.shields.io/github/license/blaylockbk/Herbie)
+![License](https://img.shields.io/github/license/blaylockbk/Herbie)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 [![Tests (Conda)](https://github.com/blaylockbk/Herbie/actions/workflows/tests-conda.yml/badge.svg)](https://github.com/blaylockbk/Herbie/actions/workflows/tests-conda.yml)
 [![Tests (Python)](https://github.com/blaylockbk/Herbie/actions/workflows/tests-python.yml/badge.svg)](https://github.com/blaylockbk/Herbie/actions/workflows/tests-python.yml)
@@ -96,17 +96,17 @@ pip install git+https://github.com/blaylockbk/Herbie.git
 
 ```mermaid
   graph TD;
-      d1[(HRRR)] -.-> H
+      d1[(HRRR)] -..-> H
       d2[(RAP)] -.-> H
-      d3[(GFS)] -.-> H
+      d3[(GFS)] -..-> H
       d33[(GEFS)] -.-> H
-      d4[(ECMWF)] -.-> H
+      d4[(ECMWF)] -..-> H
       d5[(NBM)] -.-> H
-      d6[(RRFS)] -.-> H
+      d6[(RRFS)] -..-> H
       H((Herbie))
+      H --- .inventory
       H --- .download
       H --- .xarray
-      H --- .read_idx
 
       style H fill:#d8c89d,stroke:#0c3576,stroke-width:4px,color:#000000
 ```
@@ -121,6 +121,9 @@ H = Herbie(
   product='sfc',
   fxx=6
 )
+
+# Look at file contents
+H.inventory()
 
 # Download the full GRIB2 file
 H.download()
@@ -137,8 +140,8 @@ H.xarray("TMP:2 m")
 Herbie downloads model data from the following sources, but can be extended to include others:
 
 - [NOMADS](https://nomads.ncep.noaa.gov/)
-- Big Data Program Partners (AWS, Google, Azure)
-- ECMWF Open Data Azure storage
+- [NOAA Open Data Dissemination Program (NODD)](https://www.noaa.gov/information-technology/open-data-dissemination) partners (i.e., AWS, Google, Azure).
+- [ECMWF Open Data}(https://www.ecmwf.int/en/forecasts/datasets/open-data)Azure storage
 - University of Utah CHPC Pando archive
 - Local file system
 
@@ -150,7 +153,7 @@ During my PhD at the University of Utah, I created, at the time, the [only publi
 <p style="padding-left: 22px ; text-indent: -22px ;"> Blaylock B., J. Horel and S. Liston, 2017: Cloud Archiving and Data Mining of High Resolution Rapid Refresh Model Output. Computers and Geosciences. 109, 43-50. <a href="https://doi.org/10.1016/j.cageo.2017.08.005">https://doi.org/10.1016/j.cageo.2017.08.005</a></p>
 </cite></blockquote>
 
-In the later half of 2020, the HRRR dataset from 2014 to present was made available through the [NOAA Big Data Program](https://www.noaa.gov/information-technology/big-data). Herbie organizes and expands my original download scripts into a more coherent package with the extended ability to download data for other models from many different archive sources.
+In the later half of 2020, the HRRR dataset from 2014 to present was made available through the [NODD Program](https://www.noaa.gov/information-technology/open-data-dissemination) (formerly NOAA's Big Data Program). Herbie organizes and expands my original download scripts into a more coherent package with the extended ability to download data for other models from many different archive sources.
 
 I originally released this package under the name “HRRR-B” because it only worked with the HRRR dataset; the “B” was for my first-name initial. Since then, I have added the ability to download RAP, GFS, ECMWF, GEFS, RRFS, and others with potentially more models in the future. Thus, this package was renamed **_Herbie_**, named after one of my favorite childhood movie characters.
 

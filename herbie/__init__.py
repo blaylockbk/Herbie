@@ -30,6 +30,14 @@ __author__ = "Brian K. Blaylock"
 __meet_Herbie__ = "https://en.wikipedia.org/wiki/Herbie"
 __movie_clips__ = "https://youtube.com/playlist?list=PLrSOkJxBTv53gvwbw9pVlMm-1C2PUHJx7"
 
+try:
+    ## TODO: Will the `_version.py` file *always* be present? What if the
+    ## TODO:   person doesn't do "install"
+    from ._version import __version__, __version_tuple__
+except:
+    __version__ = "unknown"
+    __version_tuple__ = (999, 999, 999)
+
 ########################################################################
 # Append Path object with my custom expand method so user can use
 # environment variables in the config file (e.g., ${HOME}).
@@ -156,5 +164,5 @@ config = toml.load(_config_path)
 config["default"]["save_dir"] = Path(config["default"]["save_dir"]).expand()
 
 
-from herbie.archive import Herbie
-from herbie.tools import FastHerbie, Herbie_latest
+from herbie.core import Herbie
+from herbie.fast import FastHerbie, Herbie_latest

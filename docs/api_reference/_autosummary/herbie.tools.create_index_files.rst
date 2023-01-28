@@ -1,6 +1,6 @@
-﻿herbie.tools.create\_index\_files
+﻿herbie.fast.create\_index\_files
 =================================
 
-.. currentmodule:: herbie.tools
+.. currentmodule:: herbie.fast
 
 .. autofunction:: create_index_files

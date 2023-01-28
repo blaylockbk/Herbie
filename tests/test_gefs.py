@@ -5,7 +5,7 @@
 Tests for downloading GFS model
 """
 
-from herbie.archive import Herbie
+from herbie import Herbie
 
 save_dir = "$TMPDIR/Herbie-Tests/"
 
