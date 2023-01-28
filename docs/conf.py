@@ -105,10 +105,10 @@ html_theme_options = {
     "use_edit_page_button": True,
     "analytics": {"google_analytics_id": "G-PT9LX1B7B8"},
     "show_toc_level": 1,
-    "switcher": {
-        "json_url": "https://herbie.readthedocs.io/en/latest/_static/switcher.json",
-        "version_match": version,
-    },
+    # "switcher": {
+    #     "json_url": "https://herbie.readthedocs.io/en/latest/_static/switcher.json",
+    #     "version_match": version,
+    # },
     "external_links": [
         {
             "name": "SynopticPy",
