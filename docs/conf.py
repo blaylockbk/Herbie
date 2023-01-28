@@ -102,7 +102,7 @@ html_theme_options = {
     "twitter_url": "https://twitter.com/blaylockbk",
     "navbar_start": [
         "navbar-logo",
-    #    "version-switcher"
+        #    "version-switcher"
     ],
     "navbar_end": ["theme-switcher", "navbar-icon-links.html", "search-field.html"],
     "use_edit_page_button": True,
