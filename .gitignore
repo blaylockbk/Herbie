@@ -31,4 +31,6 @@ MANIFEST
 *.h5
 $TMPDIR/
 
+$TMPDIR/
+
 herbie/_version.py

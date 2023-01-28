@@ -108,11 +108,11 @@ html_theme_options = {
     "external_links": [
         {
             "name": "SynopticPy",
-            "url": "https://blaylockbk.github.io/SynopticPy/_build/html/",
+            "url": "https://synopticpy.readthedocs.io/",
         },
         {
             "name": "GOES-2-go",
-            "url": "https://blaylockbk.github.io/goes2go/_build/html/",
+            "url": "https://goes2go.readthedocs.io/",
         },
     ],
     "logo": {
