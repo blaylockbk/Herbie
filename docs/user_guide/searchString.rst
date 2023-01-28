@@ -59,11 +59,7 @@ For example, here is another way to get 1-hr precipiation variables using the br
    match_these = [f":APCP:surface:{i}-{i+1} h*" for i in range(47)]
    searchString = f"({'|'.join(match_these)})"
 
-will produce a long string with many regex groups
-
-.. code:: python
-
-   '(:APCP:surface:0-1 h*|:APCP:surface:1-2 h*|:APCP:surface:2-3 h*|:APCP:surface:3-4 h*|:APCP:surface:4-5 h*|:APCP:surface:5-6 h*|:APCP:surface:6-7 h*|:APCP:surface:7-8 h*|:APCP:surface:8-9 h*|:APCP:surface:9-10 h*|:APCP:surface:10-11 h*|:APCP:surface:11-12 h*|:APCP:surface:12-13 h*|:APCP:surface:13-14 h*|:APCP:surface:14-15 h*|:APCP:surface:15-16 h*|:APCP:surface:16-17 h*|:APCP:surface:17-18 h*|:APCP:surface:18-19 h*|:APCP:surface:19-20 h*|:APCP:surface:20-21 h*|:APCP:surface:21-22 h*|:APCP:surface:22-23 h*|:APCP:surface:23-24 h*|:APCP:surface:24-25 h*|:APCP:surface:25-26 h*|:APCP:surface:26-27 h*|:APCP:surface:27-28 h*|:APCP:surface:28-29 h*|:APCP:surface:29-30 h*|:APCP:surface:30-31 h*|:APCP:surface:31-32 h*|:APCP:surface:32-33 h*|:APCP:surface:33-34 h*|:APCP:surface:34-35 h*|:APCP:surface:35-36 h*|:APCP:surface:36-37 h*|:APCP:surface:37-38 h*|:APCP:surface:38-39 h*|:APCP:surface:39-40 h*|:APCP:surface:40-41 h*|:APCP:surface:41-42 h*|:APCP:surface:42-43 h*|:APCP:surface:43-44 h*|:APCP:surface:44-45 h*|:APCP:surface:45-46 h*|:APCP:surface:46-47 h*)'
+will produce a long string with many regex groups: ``'(:APCP:surface:0-1 h*|:APCP:surface:1-2 h*|:APCP:surface:2-3 h*|:APCP:surface:3-4 h*|:APCP:surface:4-5 h*|:APCP:surface:5-6 h*|:APCP:surface:6-7 h*|:APCP:surface:7-8 h*|:APCP:surface:8-9 h*|:APCP:surface:9-10 h*|:APCP:surface:10-11 h*|:APCP:surface:11-12 h*|:APCP:surface:12-13 h*|:APCP:surface:13-14 h*|:APCP:surface:14-15 h*|:APCP:surface:15-16 h*|:APCP:surface:16-17 h*|:APCP:surface:17-18 h*|:APCP:surface:18-19 h*|:APCP:surface:19-20 h*|:APCP:surface:20-21 h*|:APCP:surface:21-22 h*|:APCP:surface:22-23 h*|:APCP:surface:23-24 h*|:APCP:surface:24-25 h*|:APCP:surface:25-26 h*|:APCP:surface:26-27 h*|:APCP:surface:27-28 h*|:APCP:surface:28-29 h*|:APCP:surface:29-30 h*|:APCP:surface:30-31 h*|:APCP:surface:31-32 h*|:APCP:surface:32-33 h*|:APCP:surface:33-34 h*|:APCP:surface:34-35 h*|:APCP:surface:35-36 h*|:APCP:surface:36-37 h*|:APCP:surface:37-38 h*|:APCP:surface:38-39 h*|:APCP:surface:39-40 h*|:APCP:surface:40-41 h*|:APCP:surface:41-42 h*|:APCP:surface:42-43 h*|:APCP:surface:43-44 h*|:APCP:surface:44-45 h*|:APCP:surface:45-46 h*|:APCP:surface:46-47 h*)'``
 
 
 
