@@ -12,12 +12,18 @@
 #
 import os
 import sys
-import herbie.core  ## Required for accessors to be documented
+import pydata_sphinx_theme
+from datetime import datetime
+import herbie  ## Required to get herbie version and to for accessors to be documented
 
 sys.path.insert(0, os.path.abspath("../.."))
 
-import pydata_sphinx_theme
-from datetime import datetime
+# The full version, including alpha/beta/rc/post tags
+release = herbie.__version__
+
+# The version, excluding alpha/beat/rc/tags
+version = ".".join([str(i) for i in herbie.__version_tuple__])
+
 
 # ---- Project information -----------------------------------------------------
 utc_now = datetime.utcnow().strftime("%H:%M UTC %d %b %Y")
@@ -26,9 +32,6 @@ project = "Herbie"
 copyright = f"{datetime.utcnow():%Y}, Brian K. Blaylock.    ♻ Updated: {utc_now}"
 author = f"Brian K. Blaylock"
 
-
-# The full version, including alpha/beta/rc tags
-release = "2022.9.0"
 
 # ---- General configuration ---------------------------------------------------
 
@@ -104,6 +107,7 @@ html_theme_options = {
     "show_toc_level": 1,
     "switcher": {
         "json_url": "https://herbie.readthedocs.io/en/latest/_static/switcher.json",
+        "version_match": version,
     },
     "external_links": [
         {
