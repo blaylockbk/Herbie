@@ -22,9 +22,6 @@ class WGRIB2:
     # PATH of wgrib2 program
     wgrib2 = which("wgrib2")
 
-    if wgrib2 is None:
-        raise ValueError("wgrib2 utility is not in your PATH.")
-
     def __init__(self, grib2file):
         """Wrapper for wgrib2 on a file"""
 
