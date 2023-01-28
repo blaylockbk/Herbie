@@ -31,17 +31,19 @@ from herbie import Path
 from shutil import which
 import subprocess
 
+
 def run_command(cmd):
     p = subprocess.run(
-            cmd,
-            shell=True,
-            capture_output=True,
-            encoding="utf-8",
-            check=True,
-        )
+        cmd,
+        shell=True,
+        capture_output=True,
+        encoding="utf-8",
+        check=True,
+    )
     return p.stdout
 
-class _WGRIB2():
+
+class _WGRIB2:
     """Wrapper for wgrib2 program."""
 
     # PATH to wgrib2 executable
@@ -100,5 +102,6 @@ class _WGRIB2():
         else:
             print("Mixed vector relative winds; pay attention to output.")
         return relative
+
 
 wgrib2 = _WGRIB2()
