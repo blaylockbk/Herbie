@@ -59,13 +59,12 @@ import pygrib
 import requests
 import xarray as xr
 from pyproj import CRS
-import subprocess
-from shutil import which
 
 import herbie.models as model_templates
 from herbie import Path, config
 from herbie.help import _searchString_help
 from herbie.misc import ANSI
+from herbie.wgrib2 import WGRIB2
 
 # NOTE: The config dict values are retrieved from __init__ and read
 # from the file ${HOME}/.config/herbie/config.toml
@@ -84,63 +83,6 @@ except:
     pass
 
 log = logging.getLogger(__name__)
-
-# Location of wgrib2 command, if it exists
-wgrib2 = which("wgrib2")
-
-
-def wgrib2_idx(grib2filepath):
-    """
-    Produce the GRIB2 inventory index with wgrib2.
-
-    Parameters
-    ----------
-    grib2filepath : Path
-        Path to a grib2 file.
-    """
-    if wgrib2:
-        p = subprocess.run(
-            f"{wgrib2} -s {grib2filepath}",
-            shell=True,
-            capture_output=True,
-            encoding="utf-8",
-            check=True,
-        )
-        return p.stdout
-    else:
-        raise RuntimeError("wgrib2 command was not found.")
-
-
-def create_index_files(path, overwrite=False):
-    """Create an index file for all GRIB2 files in a directory.
-
-    Parameters
-    ----------
-    path : str or pathlib.Path
-        Path to directory or file.
-    overwrite : bool
-        Overwrite index file if it exists.
-    """
-    path = Path(path).expand()
-    files = []
-    if path.is_dir():
-        # List all GRIB2 files in the directory
-        files = list(path.rglob("*.grib2*"))
-    elif path.is_file():
-        # The path is a single file
-        files = [path]
-
-    if not files:
-        raise ValueError(f"No grib2 files were found in {path}")
-
-    for f in files:
-        f_idx = Path(str(f) + ".idx")
-        if not f_idx.exists() or overwrite:
-            # Create an index using wgrib2's simple inventory option
-            # if it doesn't already exist or if overwrite is True.
-            index_data = wgrib2_idx(Path(f))
-            with open(f_idx, "w+") as out_idx:
-                out_idx.write(index_data)
 
 
 class Herbie:
@@ -593,16 +535,16 @@ class Herbie:
     def index_as_dataframe(self):
         """Read and cache the full index file"""
 
-        if self.grib_source == "local" and wgrib2:
+        if self.grib_source == "local" and WGRIB2.wgrib2:
             # Generate IDX inventory with wgrib2
-            self.idx = StringIO(wgrib2_idx(self.get_localFilePath()))
+            self.idx = StringIO(WGRIB2(self.get_localFilePath()).inventory())
             self.idx_source = "generated"
             self.IDX_STYLE = "wgrib2"
         elif self.idx is None:
             if self.grib_source == "local":
                 # Use wgrib2 to get the index file if the file is local
                 log.info("🧙🏻‍♂️ I'll use wgrib2 to create the missing index file.")
-                self.idx = StringIO(wgrib2_idx(self.get_localFilePath()))
+                self.idx = StringIO(WGRIB2(self.get_localFilePath()).inventory())
                 self.IDX_STYLE = "wgrib2"
             else:
                 raise ValueError(
