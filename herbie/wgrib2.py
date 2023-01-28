@@ -77,15 +77,25 @@ class _WGRIB2:
                 with open(f_idx, "w+") as out_idx:
                     out_idx.write(index_data)
 
-    def area_subset(self, lon_min, lon_max, lat_min, lat_max, OUTFILE=None):
-        """Subset a GRIB2 file by geographical area."""
+    def area_subset(self, FILE, lon_min, lon_max, lat_min, lat_max, OUTFILE=None):
+        """Subset a GRIB2 file by geographical area.
+
+        See https://www.cpc.ncep.noaa.gov/products/wesley/wgrib2/small_grib.html
+        """
         raise NotImplementedError(
             "Work in progress: https://github.com/blaylockbk/Herbie/issues/109"
         )
 
+        if OUTFILE is None:
+            OUTFILE = FILE
+
+        cmd = f"{self.wgrib2} {Path(FILE).expand()} -small_grib {lon_min}:{lon_max} {lat_min}:{lat_max} {OUTFILE} -set_grib_type same"
+
     def vector_relative(self, FILE):
         """
         Check if vector quantities are "grid relative" or "earth relative"
+
+        See "What are Earth and Grid Relative Winds" on https://www.cpc.ncep.noaa.gov/products/wesley/wgrib2/new_grid_intro.html
 
         Read my thought on the subject
         https://github.com/blaylockbk/pyBKB_v2/blob/master/demos/HRRR_earthRelative_vs_gridRelative_winds.ipynb
