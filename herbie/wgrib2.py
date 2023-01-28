@@ -31,6 +31,16 @@ from herbie import Path
 from shutil import which
 import subprocess
 
+def run_command(cmd):
+    p = subprocess.run(
+            cmd,
+            shell=True,
+            capture_output=True,
+            encoding="utf-8",
+            check=True,
+        )
+    return p.stdout
+
 class _WGRIB2():
     """Wrapper for wgrib2 program."""
 
@@ -40,14 +50,7 @@ class _WGRIB2():
     def inventory(self, FILE):
         """Return wgrib2-style inventory of GRIB2 file."""
         cmd = f"{self.wgrib2} -s {Path(FILE).expand()}"
-        p = subprocess.run(
-            cmd,
-            shell=True,
-            capture_output=True,
-            encoding="utf-8",
-            check=True,
-        )
-        return p.stdout
+        return run_command(cmd)
 
     def create_inventory_file(self, FILE, overwrite=False):
         """Create and save wgrib2 inventory files for GRIB2 file/files."""
@@ -77,5 +80,25 @@ class _WGRIB2():
         raise NotImplementedError(
             "Work in progress: https://github.com/blaylockbk/Herbie/issues/109"
         )
+
+    def vector_relative(self, FILE):
+        """
+        Check if vector quantities are "grid relative" or "earth relative"
+
+        Read my thought on the subject
+        https://github.com/blaylockbk/pyBKB_v2/blob/master/demos/HRRR_earthRelative_vs_gridRelative_winds.ipynb
+        """
+        cmd = f"{self.wgrib2} -vector_dir {Path(FILE).expand()}"
+
+        out = run_command(cmd)
+        relative = {i.split(":")[-1] for i in out.split()}
+
+        if relative == {"winds(grid)"}:
+            print("All winds are grid-relative winds.")
+        elif relative == {"winds(earth)"}:
+            print("All winds are earth-relative winds.")
+        else:
+            print("Mixed vector relative winds; pay attention to output.")
+        return relative
 
 wgrib2 = _WGRIB2()
