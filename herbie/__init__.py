@@ -35,7 +35,8 @@ try:
     ## TODO:   person doesn't do "install"
     from ._version import __version__, __version_tuple__
 except:
-    pass
+    __version__ = "unknown"
+    __version_tuple__ = (999, 999, 999)
 
 ########################################################################
 # Append Path object with my custom expand method so user can use
