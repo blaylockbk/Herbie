@@ -126,7 +126,7 @@ but we can work with it.
 """
 
 
-class gefs_ref:
+class gefs_reforecast:
     """Template for GEFS data
     Provide arguments for
     - date (2000-2019)
