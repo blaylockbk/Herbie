@@ -29,7 +29,8 @@ import metpy  # * Needed for metpy accessor
 import numpy as np
 import pandas as pd
 import xarray as xr
-from shapely.geometry import Polygon
+import shapely
+from shapely.geometry import Polygon, MultiPoint, Point
 
 
 _level_units = dict(
@@ -146,8 +147,6 @@ class HerbieAccessor:
         """
         Get the nearest latitude/longitude points from a xarray Dataset.
 
-        Info
-        ----
         - Stack Overflow: https://stackoverflow.com/questions/58758480/xarray-select-nearest-lat-lon-with-multi-dimension-coordinates
         - MetPy Details: https://unidata.github.io/MetPy/latest/tutorials/xarray_tutorial.html?highlight=assign_y_x
 
@@ -155,23 +154,65 @@ class HerbieAccessor:
         ----------
         ds : xr.Dataset
             A Herbie-friendly xarray Dataset
-        points : tuple (lon, lat) or list of tuples
-            The longitude and latitude (lon, lat) coordinate pair (as a tuple)
-            for the points you want to pluck from the gridded Dataset.
-            A list of tuples may be given to return the values from multiple points.
+
+        points : tuple, list of tuples, pd.DataFrame
+            Points to be plucked from the gridded Dataset.
+            There are multiple objects accepted.
+
+            1. Tuple of longitude and latitude (lon, lat) coordinate pair.
+            1. List of multiple (lon, lat) coordinate pair tuples.
+            1. Pandas DataFrame with ``longitude`` and ``latitude`` columns. Index will be used as point names, unless ``names`` is specified.
+            1. Shapeley Point or Points
+
         names : list
             A list of names for each point location (i.e., station name).
             None will not append any names. names should be the same
             length as points.
 
-        Benchmark
-        ---------
+        Notes
+        -----
             This is **much** faster than my old "pluck_points" method.
-            For matchign 1,948 points:
+            For matching 1,948 points:
             - `nearest_points` completed in 7.5 seconds.
             - `pluck_points` completed in 2 minutes.
+
+            TODO: Explore alternatives
+            - Could Shapely nearest_points be used
+            https://shapely.readthedocs.io/en/latest/manual.html#nearest-points
+            - Or possibly scipy BallTree method.
         """
         ds = self._obj
+
+        # Longitude and Latitude point DataFrame
+        if isinstance(points, pd.DataFrame):
+            point_df = points[["longitude", "latitude"]]
+            if names is not None:
+                point_df.index = names
+        elif np.shape(points) == (2,):
+            # points is a tuple (lon, lat) or list [lon, lat]
+            # and name is given as None or str
+            point_df = pd.DataFrame(
+                [points],
+                columns=["longitude", "latitude"],
+                index=[names],
+            )
+        elif isinstance(points, list):
+            # points given as a list of coordinate-pair tuples
+            # and name is given as a list of str
+            point_df = pd.DataFrame(
+                points,
+                columns=["longitude", "latitude"],
+                index=names,
+            )
+        elif isinstance(points, (MultiPoint, Point)):
+            # points is given as a Shapely object
+            point_df = pd.DataFrame(
+                shapely.get_coordinates(points),
+                columns=["longitude", "latitude"],
+                index=names,
+            )
+        else:
+            raise ValueError("The points supplied was not understood.")
 
         # Check if MetPy has already parsed the CF metadata grid projection.
         # Do that if it hasn't been done yet.
@@ -187,16 +228,10 @@ class HerbieAccessor:
         # We want to index the dataset at a single point.
         # We can do this by transforming a lat/lon point to the grid location
         crs = ds.metpy_crs.item().to_cartopy()
-        # lat/lon input must be a numpy array, not a list or polygon
-        if isinstance(points, tuple):
-            # If a tuple is give, turn into a one-item list.
-            points = np.array([points])
-        if not isinstance(points, np.ndarray):
-            # Points must be a 2D numpy array
-            points = np.array(points)
-        lons = points[:, 0]
-        lats = points[:, 1]
-        transformed_data = crs.transform_points(ccrs.PlateCarree(), lons, lats)
+
+        transformed_data = crs.transform_points(
+            ccrs.PlateCarree(), point_df.longitude, point_df.latitude
+        )
         xs = transformed_data[:, 0]
         ys = transformed_data[:, 1]
 
@@ -211,13 +246,9 @@ class HerbieAccessor:
             dim="point",
         )
 
-        # Add list of names as a coordinate
-        if names is not None:
-            # Assign the point dimension as the names.
-            assert len(points) == len(
-                names
-            ), "`points` and `names` must be same length."
-            new_ds["point"] = names
+        new_ds.coords["point"] = ("point", point_df.index.to_list())
+        new_ds.coords["point_latitude"] = ("point", point_df.latitude)
+        new_ds.coords["point_longitude"] = ("point", point_df.longitude)
 
         return new_ds
 

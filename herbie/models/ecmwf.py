@@ -18,7 +18,6 @@ https://confluence.ecmwf.int/display/DAC/ECMWF+open+data%3A+real-time+forecasts
 
 class ecmwf:
     def template(self):
-
         # TODO: This will need to be updated someday
         version = "0p4-beta"
         # version = '0p4'

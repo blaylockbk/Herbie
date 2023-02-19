@@ -109,7 +109,6 @@ class gefs_reforecast:
     """
 
     def template(self):
-
         self.DESCRIPTION = "Global Ensemble Forecast System (GEFS)"
         self.DETAILS = {
             "aws": "https://registry.opendata.aws/noaa-gefs-reforecast/",
