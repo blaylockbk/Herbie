@@ -409,7 +409,6 @@ class Herbie:
 
         # Loop through IDX_SUFFIX options until we find one that exists
         for i in self.IDX_SUFFIX:
-
             if Path(url).suffix in {".grb", ".grib", ".grb2", ".grib2"}:
                 idx_url = url.rsplit(".", maxsplit=1)[0] + i
             else:
