@@ -50,7 +50,6 @@ def test_hrrr_to_netcdf():
 
 
 def test_hrrr_aws2():
-
     # Test HRRR with string date
     H = Herbie(
         yesterday_str,

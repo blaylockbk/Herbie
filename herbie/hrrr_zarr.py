@@ -67,7 +67,6 @@ def load_combined_dataset(start_date, num_hours, level, param_short_name):
 
 
 def demo_tmp2m():
-
     # Let's grab an analysis file.
     ds = load_combined_dataset(
         start_date=pd.to_datetime("2021-07-03 12:00"),
