@@ -1,7 +1,7 @@
 # 🎨 Style Guide
 
 ## Font
-DejaVu Sans Bold
+Franklin Gothic Heavy
 
 ## Colors
 
