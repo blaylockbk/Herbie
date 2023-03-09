@@ -98,7 +98,7 @@ class _WGRIB2:
         else:
             OUTFILE = FILE.parent / f"{name}_{FILE.name}"
 
-        cmd = f"{self.wgrib2} {Path(FILE).expand()} --small_grib {lon_min}:{lon_max} {lat_min}:{lat_max} {OUTFILE} -set_grib_type same"
+        cmd = f"{self.wgrib2} {Path(FILE).expand()} -small_grib {lon_min}:{lon_max} {lat_min}:{lat_max} {OUTFILE} -set_grib_type same"
 
         run_command(cmd)
         print(f"Create region subset file {OUTFILE}")
