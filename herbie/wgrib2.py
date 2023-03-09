@@ -103,8 +103,6 @@ class _WGRIB2:
         run_command(cmd)
         print(f"Create region subset file {OUTFILE}")
 
-
-
     def vector_relative(self, FILE):
         """
         Check if vector quantities are "grid relative" or "earth relative"

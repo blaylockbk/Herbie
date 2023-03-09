@@ -788,7 +788,7 @@ class Herbie:
         Returns
         -------
         A Pandas DataFrame of the index file.
-        
+
         """
         df = self.index_as_dataframe
 

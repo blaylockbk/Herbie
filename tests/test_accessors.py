@@ -28,7 +28,7 @@ def test_nearest_points():
         (-100, 40),
         [-100, 40],
         p3,
-        #MultiPoint(p3), #Only test this if we pin shapely>=2.0
+        # MultiPoint(p3), #Only test this if we pin shapely>=2.0
         pd.DataFrame(p3, columns=["longitude", "latitude"], index=n3),
     ]
 
