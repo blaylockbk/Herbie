@@ -54,13 +54,12 @@ class _WGRIB2:
         cmd = f"{self.wgrib2} -s {Path(FILE).expand()}"
         return run_command(cmd)
 
-    def create_inventory_file(self, FILE, overwrite=False):
+    def create_inventory_file(self, FILE, suffix=".grib2", overwrite=False):
         """Create and save wgrib2 inventory files for GRIB2 file/files."""
         FILE = Path(FILE).expand()
-        files = []
         if FILE.is_dir():
             # List all GRIB2 files in the directory
-            files = list(FILE.rglob("*.grib2*"))
+            files = list(FILE.rglob(f"*{suffix}"))
         elif FILE.is_file():
             # The path is a single file
             files = [FILE]
@@ -72,24 +71,39 @@ class _WGRIB2:
             f_idx = Path(str(f) + ".idx")
             if not f_idx.exists() or overwrite:
                 # Create an index using wgrib2's simple inventory option
-                # if it doesn't already exist or if overwrite is True.
+                # only if it doesn't already exist or if overwrite is True.
                 index_data = self.inventory(Path(f))
                 with open(f_idx, "w+") as out_idx:
                     out_idx.write(index_data)
 
-    def area_subset(self, FILE, lon_min, lon_max, lat_min, lat_max, OUTFILE=None):
-        """Subset a GRIB2 file by geographical area.
+    def region(self, FILE, lon_min, lon_max, lat_min, lat_max, *, name=None):
+        """Subset a GRIB2 file by geographical region.
 
         See https://www.cpc.ncep.noaa.gov/products/wesley/wgrib2/small_grib.html
+
+        Parameters
+        ----------
+        FILE : path-like
+            Path to the grib2 file you wish to subset into a region.
+        lon_min, lon_max, lat_min, lat_max : float
+            Longitude and Latitude bounds representing the region of interest.
+        name : str
+            Name of the region. Output grib will be saved to a new file with
+            the ``name`` prepended to the filename.
         """
-        raise NotImplementedError(
-            "Work in progress: https://github.com/blaylockbk/Herbie/issues/109"
-        )
+        FILE = Path(FILE).expand()
 
-        if OUTFILE is None:
+        if name is None:
             OUTFILE = FILE
+        else:
+            OUTFILE = FILE.parent / f"{name}_{FILE.name}"
 
-        cmd = f"{self.wgrib2} {Path(FILE).expand()} -small_grib {lon_min}:{lon_max} {lat_min}:{lat_max} {OUTFILE} -set_grib_type same"
+        cmd = f"{self.wgrib2} {Path(FILE).expand()} --small_grib {lon_min}:{lon_max} {lat_min}:{lat_max} {OUTFILE} -set_grib_type same"
+
+        run_command(cmd)
+        print(f"Create region subset file {OUTFILE}")
+
+
 
     def vector_relative(self, FILE):
         """

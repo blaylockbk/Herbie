@@ -20,6 +20,7 @@ sandbox*
 local_B.py
 
 docs/_build
+docs/**/_autosummary
 
 dist/*
 build/*

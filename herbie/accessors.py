@@ -65,7 +65,7 @@ _level_units = dict(
 
 @xr.register_dataset_accessor("herbie")
 class HerbieAccessor:
-    """Accessor for xarray Datasets opened with Herbie"""
+    """Accessor for xarray Datasets opened with Herbie."""
 
     def __init__(self, xarray_obj):
         self._obj = xarray_obj
@@ -93,6 +93,7 @@ class HerbieAccessor:
         ----------
         ds : xarray.Dataset
             An xarray.Dataset from a GRIB2 file opened by the cfgrib engine.
+
         """
 
         ds = self._obj
@@ -180,6 +181,7 @@ class HerbieAccessor:
             - Could Shapely nearest_points be used
             https://shapely.readthedocs.io/en/latest/manual.html#nearest-points
             - Or possibly scipy BallTree method.
+
         """
         ds = self._obj
 
