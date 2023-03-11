@@ -782,11 +782,13 @@ class Herbie:
             Execute ``_searchString_help()`` for examples of a good
             searchString.
 
-            .. include:: ../../user_guide/searchString.rst
+            Read more in the user guide at
+            https://herbie.readthedocs.io/en/latest/user_guide/searchString.html
 
         Returns
         -------
         A Pandas DataFrame of the index file.
+
         """
         df = self.index_as_dataframe
 
@@ -825,7 +827,8 @@ class Herbie:
         searchString : str
             If None, download the full file. Else, use regex to subset
             the file by specific variables and levels.
-            .. include:: ../../user_guide/searchString.rst
+            Read more in the user guide:
+            https://herbie.readthedocs.io/en/latest/user_guide/searchString.html
         source : {'nomads', 'aws', 'google', 'azure', 'pando', 'pando2'}
             If None, download GRIB2 file from self.grib2 which is
             the first location the GRIB2 file was found from the
@@ -843,6 +846,7 @@ class Herbie:
             be unique.
         errors : {'warn', 'raise'}
             When an error occurs, send a warning or raise a value error.
+
         """
 
         def _reporthook(a, b, c):

@@ -123,8 +123,8 @@ html_theme_options = {
         },
     ],
     "logo": {
-        "image_light": "logo_new/Herbie-logo.png",
-        "image_dark": "logo_new/Herbie-logo.png",
+        "image_light": "_static/logo_new/Herbie-logo.png",
+        "image_dark": "_static/logo_new/Herbie-logo.png",
     },
 }
 

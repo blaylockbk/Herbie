@@ -7,7 +7,8 @@ Docstring reference for the ``herbie`` module
 .. toctree::
    :maxdepth: 2
 
-   archive
+   core
+   fast
    accessors
-   tools
+   wgrib2
    misc
