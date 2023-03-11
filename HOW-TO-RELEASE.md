@@ -7,9 +7,10 @@ _Notes for when Brian needs to publish a new release_.
 Update Herbie version number in
 
 - ~~setup.py~~
+- ~~./docs/conf.py~~
 - ./CITATION.cff
-- ./docs/conf.py
-- Build the docs (one last time before release)
+- ~~Build the docs (one last time before release)~~
+- Make sure all leftover changes on main are commited that you want. 
 - **Create a tag and release in GitHub**
 
 ## 📦 Publish to PyPI
