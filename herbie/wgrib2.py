@@ -54,56 +54,109 @@ class _WGRIB2:
         cmd = f"{self.wgrib2} -s {Path(FILE).expand()}"
         return run_command(cmd)
 
-    def create_inventory_file(self, FILE, suffix=".grib2", overwrite=False):
-        """Create and save wgrib2 inventory files for GRIB2 file/files."""
-        FILE = Path(FILE).expand()
-        if FILE.is_dir():
+    def create_inventory_file(self, path, suffix=".grib2"):
+        """Create and save wgrib2 inventory files for GRIB2 file/files.
+
+        Note that this will overwrite any existing inventory file.
+
+        Parameters
+        ----------
+        path : pathlib.path
+            If path is a file, then make inventory file for that file.
+            If path is a directory, then make inventory files for all
+            files with the indicated suffix.
+        suffix : {".grib2", ".grib", ".grb", etc.}
+            If path specified is a directory, then this is the suffix to
+            look for GRIB2 files.
+        """
+        path = Path(path).expand()
+        if path.is_dir():
             # List all GRIB2 files in the directory
-            files = list(FILE.rglob(f"*{suffix}"))
-        elif FILE.is_file():
+            files = list(path.rglob(f"*{suffix}"))
+        elif path.is_file():
             # The path is a single file
-            files = [FILE]
+            files = [path]
 
         if not files:
-            raise ValueError(f"No grib2 files were found in {FILE}")
+            raise ValueError(f"No grib2 files were found in {path}")
 
+        idx_files = []
         for f in files:
             f_idx = Path(str(f) + ".idx")
-            if not f_idx.exists() or overwrite:
-                # Create an index using wgrib2's simple inventory option
-                # only if it doesn't already exist or if overwrite is True.
-                index_data = self.inventory(Path(f))
-                with open(f_idx, "w+") as out_idx:
-                    out_idx.write(index_data)
+            idx_files.append(f_idx)
+            index_data = self.inventory(Path(f))
+            with open(f_idx, "w+") as out_idx:
+                out_idx.write(index_data)
 
-    def region(self, FILE, lon_min, lon_max, lat_min, lat_max, *, name=None):
+        if len(idx_files) == 1:
+            return idx_files[0]
+        else:
+            return idx_files
+
+    def region(self, path, extent, *, name="region", suffix=".grib2", create_idx=True):
         """Subset a GRIB2 file by geographical region.
 
         See https://www.cpc.ncep.noaa.gov/products/wesley/wgrib2/small_grib.html
 
         Parameters
         ----------
-        FILE : path-like
+        path : path-like
             Path to the grib2 file you wish to subset into a region.
-        lon_min, lon_max, lat_min, lat_max : float
+            If path is a file, then make region subset for that file.
+            If path is a directory, then make region subset for all
+            files with the indicated suffix.
+        extent : 4-item tuple or list
             Longitude and Latitude bounds representing the region of interest.
+            (lon_min, lon_max, lat_min, lat_max) : float
         name : str
             Name of the region. Output grib will be saved to a new file with
             the ``name`` prepended to the filename.
+        suffix : {".grib2", ".grib", ".grb", etc.}
+            If path specified is a directory, then this is the suffix to
+            look for GRIB2 files.
+        create_idx : bool
+            If True, then make an inventory file for the GRIB2 region subest.
         """
-        FILE = Path(FILE).expand()
+        path = Path(path).expand()
+        if path.is_dir():
+            # List all GRIB2 files in the directory
+            files = list(path.rglob(f"*{suffix}"))
+        elif path.is_file():
+            # The path is a single file
+            files = [path]
 
-        if name is None:
-            OUTFILE = FILE
+        if not files:
+            raise ValueError(f"No grib2 files were found in {path}")
+
+        if len(extent) != 4:
+            raise TypeError(
+                "Region extent must be (lon_min, lon_max, lat_min, lat_max)"
+            )
+
+        lon_min, lon_max, lat_min, lat_max = extent
+
+        OUTFILES = []
+        for f in files:
+            OUTFILE = path.parent / f"{name}_{path.name}"
+
+            cmd = f"{self.wgrib2} {Path(path).expand()} -small_grib {lon_min}:{lon_max} {lat_min}:{lat_max} {OUTFILE} -set_grib_type same"
+
+            run_command(cmd)
+
+            if name is None:
+                OUTFILE.rename(f)
+                self.create_inventory_file(f)
+                OUTFILES.append(f)
+            else:
+                self.create_inventory_file(OUTFILE)
+                OUTFILES.append(OUTFILE)
+
+        if len(OUTFILES) == 1:
+            return OUTFILES[0]
         else:
-            OUTFILE = FILE.parent / f"{name}_{FILE.name}"
+            return OUTFILES
 
-        cmd = f"{self.wgrib2} {Path(FILE).expand()} -small_grib {lon_min}:{lon_max} {lat_min}:{lat_max} {OUTFILE} -set_grib_type same"
-
-        run_command(cmd)
-        print(f"Create region subset file {OUTFILE}")
-
-    def vector_relative(self, FILE):
+    def vector_relative(self, path):
         """
         Check if vector quantities are "grid relative" or "earth relative"
 
@@ -111,8 +164,13 @@ class _WGRIB2:
 
         Read my thought on the subject
         https://github.com/blaylockbk/pyBKB_v2/blob/master/demos/HRRR_earthRelative_vs_gridRelative_winds.ipynb
+
+        Parameters
+        ----------
+        path : path-like
+            Path to the grib2 file.
         """
-        cmd = f"{self.wgrib2} -vector_dir {Path(FILE).expand()}"
+        cmd = f"{self.wgrib2} -vector_dir {Path(path).expand()}"
 
         out = run_command(cmd)
         relative = {i.split(":")[-1] for i in out.split()}

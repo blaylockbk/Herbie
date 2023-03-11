@@ -166,3 +166,4 @@ config["default"]["save_dir"] = Path(config["default"]["save_dir"]).expand()
 
 from herbie.core import Herbie
 from herbie.fast import FastHerbie, Herbie_latest
+from herbie.wgrib2 import wgrib2
