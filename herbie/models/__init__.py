@@ -25,6 +25,7 @@ from .rrfs import *
 from .ecmwf import *
 from .gefs import *
 from .rtma import *
+from .urma import *
 
 # ======================================================================
 #                     Import Private Model Templates

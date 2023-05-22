@@ -41,6 +41,12 @@ LOCALFILE : str
     ``save_dir/model/YYYYmmdd/localFile.grib2``
     It is sometimes necessary to add details to maintain unique
     filenames (e.g., rrfs needs to have the member number in LOCALFILE).
+EXPECT_IDX_FILE : {None, "remote"}
+    If None, Herbie knows not to expect an index file for this kind
+    of file. (Perhaps the file is not a GRIB file.)
+    If "remote", then Herbie will expect an index file on the remote
+    location. This is the default value.
+
 
 Optional
 --------
