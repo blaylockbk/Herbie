@@ -103,6 +103,8 @@ pip install git+https://github.com/blaylockbk/Herbie.git
       d4[(ECMWF)] -..-> H
       d5[(NBM)] -.-> H
       d6[(RRFS)] -..-> H
+      d7[(RTMA)] -.-> H
+      d8[(URMA)] -..-> H
       H((Herbie))
       H --- .inventory
       H --- .download
