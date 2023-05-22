@@ -97,24 +97,6 @@ exclude_patterns = [
 #
 html_theme = "pydata_sphinx_theme"
 
-# Define the json_url for our version switcher.
-json_url = "https://pydata-sphinx-theme.readthedocs.io/en/latest/_static/switcher.json"
-
-# Define the version we use for matching in the version switcher.
-version_match = os.environ.get("READTHEDOCS_VERSION")
-# If READTHEDOCS_VERSION doesn't exist, we're not on RTD
-# If it is an integer, we're in a PR build and the version isn't correct.
-if not version_match or version_match.isdigit():
-    # For local development, infer the version to match from the package.
-    release = pydata_sphinx_theme.__version__
-    if "dev" in release or "rc" in release:
-        version_match = "latest"
-        # We want to keep the relative reference if we are in dev mode
-        # but we want the whole url if we are effectively in a released version
-        json_url = "_static/switcher.json"
-    else:
-        version_match = release
-
 html_theme_options = {
     "github_url": "https://github.com/blaylockbk/Herbie",
     "twitter_url": "https://twitter.com/blaylockbk",
@@ -122,8 +104,8 @@ html_theme_options = {
     "navbar_center": ["version-switcher", "navbar-nav"],
     "navbar_end": ["theme-switcher", "navbar-icon-links.html", "search-field.html"],
     "switcher": {
-        "json_url": json_url,
-        "version_match": version_match,
+        "json_url": "https://herbie.readthedocs.io/en/docs_add_version_switcher/_static/switcher.json",
+        "version_match": os.environ.get("READTHEDOCS_VERSION"),
     },
     "use_edit_page_button": True,
     "analytics": {"google_analytics_id": "G-PT9LX1B7B8"},
