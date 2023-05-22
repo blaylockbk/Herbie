@@ -97,14 +97,34 @@ exclude_patterns = [
 #
 html_theme = "pydata_sphinx_theme"
 
+# Define the json_url for our version switcher.
+json_url = "https://pydata-sphinx-theme.readthedocs.io/en/latest/_static/switcher.json"
+
+# Define the version we use for matching in the version switcher.
+version_match = os.environ.get("READTHEDOCS_VERSION")
+# If READTHEDOCS_VERSION doesn't exist, we're not on RTD
+# If it is an integer, we're in a PR build and the version isn't correct.
+if not version_match or version_match.isdigit():
+    # For local development, infer the version to match from the package.
+    release = pydata_sphinx_theme.__version__
+    if "dev" in release or "rc" in release:
+        version_match = "latest"
+        # We want to keep the relative reference if we are in dev mode
+        # but we want the whole url if we are effectively in a released version
+        json_url = "_static/switcher.json"
+    else:
+        version_match = release
+
 html_theme_options = {
     "github_url": "https://github.com/blaylockbk/Herbie",
     "twitter_url": "https://twitter.com/blaylockbk",
-    "navbar_start": [
-        "navbar-logo",
-        #    "version-switcher"
-    ],
+    "navbar_start": ["navbar-logo"],
+    "navbar_center": ["version-switcher", "navbar-nav"],
     "navbar_end": ["theme-switcher", "navbar-icon-links.html", "search-field.html"],
+    "switcher": {
+        "json_url": json_url,
+        "version_match": version_match,
+    },
     "use_edit_page_button": True,
     "analytics": {"google_analytics_id": "G-PT9LX1B7B8"},
     "show_toc_level": 1,
@@ -143,6 +163,7 @@ html_context = {
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ["_static", "../images"]
+
 
 fontawesome_included = True
 panels_add_bootstrap_css = False  # False, because pydata theme already loads it
