@@ -1,6 +1,17 @@
 [
     {
-        "version": "2022.9.0",
-        "url": "https://herbie.readthedocs.io/en/latest/index.html"
+        "version": "latest",
+        "url": "https://herbie.readthedocs.io/en/latest/",
+        "is_latest": true
+    },
+    {
+        "name": "stable",
+        "version": "stable",
+        "url": "https://herbie.readthedocs.io/en/stable/"
+    },
+    {
+        "name": "2023.3.0",
+        "version": "2023.3.0",
+        "url": "https://herbie.readthedocs.io/en/2023.3.0/"
     }
 ]

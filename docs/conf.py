@@ -100,11 +100,13 @@ html_theme = "pydata_sphinx_theme"
 html_theme_options = {
     "github_url": "https://github.com/blaylockbk/Herbie",
     "twitter_url": "https://twitter.com/blaylockbk",
-    "navbar_start": [
-        "navbar-logo",
-        #    "version-switcher"
-    ],
+    "navbar_start": ["navbar-logo"],
+    "navbar_center": ["version-switcher", "navbar-nav"],
     "navbar_end": ["theme-switcher", "navbar-icon-links.html", "search-field.html"],
+    "switcher": {
+        "json_url": "https://herbie.readthedocs.io/en/docs_add_version_switcher/_static/switcher.json",
+        "version_match": os.environ.get("READTHEDOCS_VERSION"),
+    },
     "use_edit_page_button": True,
     "analytics": {"google_analytics_id": "G-PT9LX1B7B8"},
     "show_toc_level": 1,
@@ -143,6 +145,7 @@ html_context = {
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ["_static", "../images"]
+
 
 fontawesome_included = True
 panels_add_bootstrap_css = False  # False, because pydata theme already loads it

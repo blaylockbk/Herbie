@@ -5,14 +5,15 @@
 
 Update Herbie version number in
 
-- ~~setup.py~~
-- ~~./docs/conf.py~~
-- ~~Build the docs (one last time before release)~~
-- ./CITATION.cff
+- Update `./CITATION.cff` citation document
+- Update `./docs/_static/switcher.json` with a new item for the version you will soon create
 - Make sure all leftover changes on main are committed that you want. 
 - **Create a tag and release in GitHub**. 
 
-> Note: The tag name should be `YYYY.MM.00` with _no leading zeros for the month_ (PyPI doesn't care about leading zeros).
+> Note: The tag name should follow the pattern `YYYY.MM.0`
+> `YYYY` - Four-digit year the tag is created
+> `MM` - Month number the tag is created with _no leading zeros_ (PyPI doesn't care about leading zeros).
+> `0` - The micro update, used if there is more than one release in the same month (most likely due to a bug fix). 
 
 
 ## 📦 Publish to PyPI
