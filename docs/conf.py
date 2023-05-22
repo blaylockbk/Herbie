@@ -104,16 +104,12 @@ html_theme_options = {
     "navbar_center": ["version-switcher", "navbar-nav"],
     "navbar_end": ["theme-switcher", "navbar-icon-links.html", "search-field.html"],
     "switcher": {
-        "json_url": "https://herbie.readthedocs.io/en/docs_add_version_switcher/_static/switcher.json",
+        "json_url": "https://herbie.readthedocs.io/en/latest/_static/switcher.json",
         "version_match": os.environ.get("READTHEDOCS_VERSION"),
     },
     "use_edit_page_button": True,
     "analytics": {"google_analytics_id": "G-PT9LX1B7B8"},
     "show_toc_level": 1,
-    # "switcher": {
-    #     "json_url": "https://herbie.readthedocs.io/en/latest/_static/switcher.json",
-    #     "version_match": version,
-    # },
     "external_links": [
         {
             "name": "SynopticPy",
