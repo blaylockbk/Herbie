@@ -817,7 +817,7 @@ class Herbie:
         Download file from source.
 
         TODO: When we download a full file, the value of self.grib and
-        TODO: self.grib_source should change to represent the local file.
+        TODO:   self.grib_source should change to represent the local file.
 
         Subsetting by variable follows the same principles described here:
         https://www.cpc.ncep.noaa.gov/products/wesley/fast_downloading_grib.html
@@ -918,10 +918,11 @@ class Herbie:
 
                 if i == 0:
                     # If we are working on the first item, overwrite the existing file...
-                    curl = f"curl -s --range {range} {grib_source} > {outFile}"
+                    curl = f'''curl -s --range {range} "{grib_source}" > "{outFile}"'''
                 else:
                     # ...all other messages are appended to the subset file.
-                    curl = f"curl -s --range {range} {grib_source} >> {outFile}"
+                    curl = f'''curl -s --range {range} "{grib_source}" >> "{outFile}"'''
+                print(curl)
                 os.system(curl)
 
             if verbose:
