@@ -868,6 +868,8 @@ class Herbie:
             """
             Download a subset specified by the regex searchString
             """
+            # TODO: Maybe optimize downloading multiple subsets with MultiThreading
+
             # TODO An alternative to downloadling subset with curl is
             # TODO  to use the request module directly.
             # TODO  >> headers = dict(Range=f"bytes={start_bytes}-{end_bytes}")
