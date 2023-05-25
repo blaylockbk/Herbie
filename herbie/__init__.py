@@ -38,6 +38,7 @@ except:
     __version__ = "unknown"
     __version_tuple__ = (999, 999, 999)
 
+
 ########################################################################
 # Append Path object with my custom expand method so user can use
 # environment variables in the config file (e.g., ${HOME}).
@@ -124,7 +125,6 @@ class model1_name:
 ########################################################################
 # If a config file isn't found, make one
 if not _config_path.exists():
-
     print(
         f" ╭─────────────────────────────────────────────────╮\n"
         f" │ I'm building Herbie's default config file.      │\n"
@@ -166,3 +166,4 @@ config["default"]["save_dir"] = Path(config["default"]["save_dir"]).expand()
 
 from herbie.core import Herbie
 from herbie.fast import FastHerbie, Herbie_latest
+from herbie.wgrib2 import wgrib2

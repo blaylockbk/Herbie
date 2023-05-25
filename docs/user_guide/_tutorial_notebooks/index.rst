@@ -9,3 +9,4 @@
    fast.ipynb
    accessors.ipynb
    demo_map.ipynb
+   wgrib2-wrapper.ipynb

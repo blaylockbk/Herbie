@@ -409,7 +409,6 @@ class Herbie:
 
         # Loop through IDX_SUFFIX options until we find one that exists
         for i in self.IDX_SUFFIX:
-
             if Path(url).suffix in {".grb", ".grib", ".grb2", ".grib2"}:
                 idx_url = url.rsplit(".", maxsplit=1)[0] + i
             else:
@@ -783,11 +782,13 @@ class Herbie:
             Execute ``_searchString_help()`` for examples of a good
             searchString.
 
-            .. include:: ../../user_guide/searchString.rst
+            Read more in the user guide at
+            https://herbie.readthedocs.io/en/latest/user_guide/searchString.html
 
         Returns
         -------
         A Pandas DataFrame of the index file.
+
         """
         df = self.index_as_dataframe
 
@@ -816,7 +817,7 @@ class Herbie:
         Download file from source.
 
         TODO: When we download a full file, the value of self.grib and
-        TODO: self.grib_source should change to represent the local file.
+        TODO:   self.grib_source should change to represent the local file.
 
         Subsetting by variable follows the same principles described here:
         https://www.cpc.ncep.noaa.gov/products/wesley/fast_downloading_grib.html
@@ -826,7 +827,8 @@ class Herbie:
         searchString : str
             If None, download the full file. Else, use regex to subset
             the file by specific variables and levels.
-            .. include:: ../../user_guide/searchString.rst
+            Read more in the user guide:
+            https://herbie.readthedocs.io/en/latest/user_guide/searchString.html
         source : {'nomads', 'aws', 'google', 'azure', 'pando', 'pando2'}
             If None, download GRIB2 file from self.grib2 which is
             the first location the GRIB2 file was found from the
@@ -844,6 +846,7 @@ class Herbie:
             be unique.
         errors : {'warn', 'raise'}
             When an error occurs, send a warning or raise a value error.
+
         """
 
         def _reporthook(a, b, c):
@@ -917,10 +920,11 @@ class Herbie:
 
                 if i == 0:
                     # If we are working on the first item, overwrite the existing file...
-                    curl = f"curl -s --range {range} {grib_source} > {outFile}"
+                    curl = f'''curl -s --range {range} "{grib_source}" > "{outFile}"'''
                 else:
                     # ...all other messages are appended to the subset file.
-                    curl = f"curl -s --range {range} {grib_source} >> {outFile}"
+                    curl = f'''curl -s --range {range} "{grib_source}" >> "{outFile}"'''
+                print(curl)
                 os.system(curl)
 
             if verbose:

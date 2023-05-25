@@ -1,6 +1,6 @@
-==============
+===========
 herbie.core
-==============
+===========
 
 
 I recommend importing the Herbie class with

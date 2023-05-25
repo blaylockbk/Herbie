@@ -52,7 +52,7 @@ There are two key python packages for reading GRIB2 files. Both can be installed
 - **pygrib** is what I started to learn and still use sometimes. | `Video Demo <https://youtu.be/yLoudFv3hAY>`_ |  `pygrib GitHub <https://github.com/jswhit/pygrib>`_ |
 - **cfgrib** works well reading GRIB2 data as xarray datasets. Make sure you have the latest version (>0.9.8) |  `cfgrib GitHub <https://github.com/ecmwf/cfgrib>`_
 
-.. code-bloc:: bash
+.. code-block:: bash
 
    conda install -c conda-forge pygrib cfgrib
 

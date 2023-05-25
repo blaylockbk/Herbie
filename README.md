@@ -37,6 +37,7 @@ Herbie helps you discover, download, and read data from:
 - [North American Mesoscale Model (NAM)](https://github.com/blaylockbk/Herbie/blob/main/docs/user_guide/_model_notebooks/nam.ipynb)
 - [National Blend of Models (NBM)](https://herbie.readthedocs.io/en/latest/user_guide/_model_notebooks/nbm.html)
 - [Rapid Refresh Forecast System - Prototype (RRFS)](https://herbie.readthedocs.io/en/latest/user_guide/_model_notebooks/rrfs.html)
+- [Real-Time/Un-Restricted Mesoscale Analysis (RTMA/URMA)](https://herbie.readthedocs.io/en/latest/user_guide/_model_notebooks/rtma.html)
 
 # 📓 [Herbie Documentation](https://herbie.readthedocs.io/)
 
@@ -103,6 +104,8 @@ pip install git+https://github.com/blaylockbk/Herbie.git
       d4[(ECMWF)] -..-> H
       d5[(NBM)] -.-> H
       d6[(RRFS)] -..-> H
+      d7[(RTMA)] -.-> H
+      d8[(URMA)] -..-> H
       H((Herbie))
       H --- .inventory
       H --- .download

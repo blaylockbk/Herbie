@@ -23,7 +23,8 @@ Some models Herbie can retrieve data from include:
 - Global Forecast System (GFS)
 - National Blend of Models (NBM)
 - Rapid Refresh Forecast System - Prototype (RRFS)
-- ECMWF open data forecast products (ECMWF).
+- ECMWF open data forecast products (ECMWF)
+- Real-Time/Un-Restricted Mesoscale Analysis (RTMA/URMA)
 - and others.
 
 .. toctree::

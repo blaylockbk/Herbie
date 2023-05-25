@@ -11,4 +11,3 @@ herbie.fast
    :toctree: _autosummary
 
    FastHerbie
-   create_index_files
