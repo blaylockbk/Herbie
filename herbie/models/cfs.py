@@ -4,6 +4,7 @@
 """
 A Herbie template for the CFS (Climate Forecast System).
 """
+from pandas import to_datetime
 
 
 class cfs_monthly:
@@ -48,6 +49,48 @@ class cfs_monthly:
             PATH = f"/cfs.{self.date:%Y%m%d/%H}/monthly_grib_{self.member:02d}/{self.product}.{self.member:02d}.{self.date:%Y%m%d%H}.{self.YYYYMM}.avrg.grib.grb2"
         else:
             PATH = f"/cfs.{self.date:%Y%m%d/%H}/monthly_grib_{self.member:02d}/{self.product}.{self.member:02d}.{self.date:%Y%m%d%H}.{self.YYYYMM}.avrg.grib.{self.hour:02d}Z.grb2"
+
+        self.SOURCES = {
+            "aws": f"https://noaa-cfs-pds.s3.amazonaws.com/{PATH}",
+            "nomads": f"https://nomads.ncep.noaa.gov/pub/data/nccf/com/cfs/prod/{PATH}",
+            # "azure": f"https://noaacfs.blob.core.windows.net/cfs/{PATH}"
+        }
+
+        self.IDX_SUFFIX = [".grb2.idx", ".idx", ".grib.idx"]
+        self.LOCALFILE = f"{self.get_remoteFileName}"
+
+
+class cfs_6_hourly:
+    def template(self):
+        self.DESCRIPTION = "Climate Forecast System; 6 hourly"
+        self.DETAILS = {
+            "NOMADS product description": "https://www.nco.ncep.noaa.gov/pmb/products/cfs/",
+            "Amazon Open Data": "https://registry.opendata.aws/noaa-cfs/",
+            "Microsoft Azure": "https://planetarycomputer.microsoft.com/dataset/storage/noaa-cfs",
+        }
+        self.PRODUCTS = {
+            "flxf": "CFS Surface, Radiative Fluxes",
+            "pgbf": "CFS 3D Pressure Level, 1 degree resolution",
+            "ocnh": "CFS 3D Ocean Data, 0.5 degree resolution",
+            "ocnf": "CFS 3D Ocean Data, 1.0 degree resolution",
+            "ipvf": "CFS 3D Isentropitc Level, 1.0 degree resolution",
+        }
+
+        try:
+            self.member
+        except NameError:
+            print(
+                "'member' is not defined. Please set 'member=1` for monthly data for the 6, 12, and 18 UTC cycles, but may be 1, 2, 3, or 4 for the 0 UTC cycle."
+            )
+
+        try:
+            self.forecast = to_datetime(self.forecast)
+        except NameError:
+            print(
+                "'forecast' is not defined. Please set `set` to the forecast datetime."
+            )
+
+        PATH = f"/cfs.{self.date:%Y%m%d/%H}/6hrly_grib_{self.member:02d}/{self.product}{self.forecast:%Y%m%d%H}.{self.member:02d}.{self.date:%Y%m%d%H}.grb2"
 
         self.SOURCES = {
             "aws": f"https://noaa-cfs-pds.s3.amazonaws.com/{PATH}",
