@@ -23,6 +23,7 @@ dependencies:
   - proj
   - pygrib
   - requests
+  - s3fs
   - toml
   #- wgrib2 # ONLY AVAILABLE ON LINUX. Uncomment if you want this optional dependency.
   - xarray>=2022.6.0
