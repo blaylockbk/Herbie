@@ -14,6 +14,7 @@ dependencies:
   - curl
   - cartopy>=0.20.3
   - cfgrib>=0.9.10.1
+  - dask
   - eccodes
   - geos
   - matplotlib>=3.5.3
@@ -26,10 +27,10 @@ dependencies:
   - s3fs
   - toml
   #- wgrib2 # ONLY AVAILABLE ON LINUX. Uncomment if you want this optional dependency.
-  - xarray>=2022.6.0
-
   - jupyter
   - jupyterlab
+  - xarray>=2022.6.0
+  - zarr
 
   - pip:
       # Borrow some tools from my garage
