@@ -15,6 +15,7 @@ https://confluence.ecmwf.int/display/DAC/ECMWF+open+data%3A+real-time+forecasts
 
 """
 
+from datetime import datetime
 
 class ecmwf:
     def template(self):
@@ -45,7 +46,10 @@ class ecmwf:
         else:
             product_suffix = "fc"
 
-        post_root = f"{self.date:%Y%m%d/%Hz}/{version}/{self.product}-opendata/{self.date:%Y%m%d%H%M%S}-{self.fxx}h-{self.product}-opendata-{product_suffix}.grib2"
+        if self.date >= datetime(2023, 6, 28, 6): 
+            post_root = f"{self.date:%Y%m%d/%Hz}/{version}/{self.product}-opendata/{self.date:%Y%m%d%H%M%S}-{self.fxx}h-{self.product}-opendata-{product_suffix}.grib2"
+        else:
+            post_root = f"{self.date:%Y%m%d/%Hz}/{version}/{self.product}/{self.date:%Y%m%d%H%M%S}-{self.fxx}h-{self.product}-{product_suffix}.grib2"
 
         self.SOURCES = {
             "azure": f"https://ai4edataeuwest.blob.core.windows.net/ecmwf/{post_root}",
