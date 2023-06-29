@@ -45,7 +45,7 @@ class ecmwf:
         else:
             product_suffix = "fc"
 
-        post_root = f"{self.date:%Y%m%d/%Hz}/{version}/{self.product}-opendata/{self.date:%Y%m%d%H%M%S}-{self.fxx}h-{self.product}-{product_suffix}.grib2"
+        post_root = f"{self.date:%Y%m%d/%Hz}/{version}/{self.product}-opendata/{self.date:%Y%m%d%H%M%S}-{self.fxx}h-{self.product}-opendata-{product_suffix}.grib2"
 
         self.SOURCES = {
             "azure": f"https://ai4edataeuwest.blob.core.windows.net/ecmwf/{post_root}",
