@@ -14,48 +14,19 @@ Update Herbie version number in
 > `YYYY` - Four-digit year the tag is created
 > `MM` - Month number the tag is created with _no leading zeros_ (PyPI doesn't care about leading zeros).
 > `0` - The micro update, used if there is more than one release in the same month (most likely due to a bug fix). 
-
+>> Note: I do _NOT_ prepend the verion name with `v`.
 
 ## 📦 Publish to PyPI
 
-On my local copy, do a `git fetch` and then checkout the tag. DO NOT EDIT ANY FILES (else you will get a `_post#` in the version name.)
+This is done automatically by the GitHub Action `.github/workflows/release_to_pypi.yml`
 
-Created a new conda environment with twine, pip, and build
+Just create a release with a tag named `20YY.MM.#`
 
-```bash
-# To create an environment for publishing to PyPI
-conda create -n pypi python=3 twine pip build -c conda-forge
+The build process will start automatically.
 
-# To update that conda environment
-conda update -n pypi -c conda-forge --all
-python3 -m pip install --upgrade build  # Needed to get the latest version of build (0.10+)
-python3 -m pip install --upgrade twine
-```
+1. The action uses the [build](https://github.com/pypa/build) tool to build my package following the steps from [here](https://towardsdatascience.com/how-to-package-your-python-code-df5a7739ab2e)
+1. The action then uses [pypa/gh-action-pypi-publish](https://github.com/pypa/gh-action-pypi-publish#specifying-a-different-username) to upload the package to PyPI
 
-Use the [build](https://github.com/pypa/build) tool to build my package following the steps from [here](https://towardsdatascience.com/how-to-package-your-python-code-df5a7739ab2e)
-
-```bash
-conda activate pypi
-cd Herbie
-python -m build
-twine check dist/*
-```
-
-### Upload Package PyPI
-
-```bash
-# Upload to TEST PyPI site
-twine upload --skip-existing --repository-url https://test.pypi.org/legacy/ dist/*
-
-# followed by username and password
-```
-
-```bash
-# Upload to REAL PyPI site
-twine upload --skip-existing dist/*
-
-```
-Enter username and password. _Note to self: I get a warning because I'm not using keyring_
 
 Now confirm the file was uploaded to PyPI at <https://pypi.org/project/herbie-data/>
 
