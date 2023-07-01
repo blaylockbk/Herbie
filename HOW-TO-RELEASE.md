@@ -1,4 +1,5 @@
-# _Note to self_
+_Note to self_
+
 # How to publish a new release of the `herbie-data` package on PyPI and conda-forge
 
 ## Pre-step
@@ -11,10 +12,10 @@ Update Herbie version number in
 - **Create a tag and release in GitHub**. 
 
 > Note: The tag name should follow the pattern `YYYY.MM.0`
-> `YYYY` - Four-digit year the tag is created
-> `MM` - Month number the tag is created with _no leading zeros_ (PyPI doesn't care about leading zeros).
-> `0` - The micro update, used if there is more than one release in the same month (most likely due to a bug fix). 
->> Note: I do _NOT_ prepend the verion name with `v`.
+> - `YYYY` is the four-digit year the tag is created.
+> - `MM` is the month number the tag is created with _no leading zeros_ (PyPI doesn't care about leading zeros).
+> - `0` - The micro update, set to `0` for the first release of the month, otherwise increment by 1 if there is more than one release in the same month (i.e., a bug fix). 
+>> Note: I do _NOT_ prepend the version name with `v`.
 
 ## 📦 Publish to PyPI
 
@@ -24,23 +25,23 @@ Just create a release with a tag named `20YY.MM.#`
 
 The build process will start automatically.
 
-1. The action uses the [build](https://github.com/pypa/build) tool to build my package following the steps from [here](https://towardsdatascience.com/how-to-package-your-python-code-df5a7739ab2e)
+1. The action uses the [build](https://github.com/pypa/build) tool to build my package following the steps from [here](https://towardsdatascience.com/how-to-package-your-python-code-df5a7739ab2e).
 1. The action then uses [pypa/gh-action-pypi-publish](https://github.com/pypa/gh-action-pypi-publish#specifying-a-different-username) to upload the package to PyPI
 
 
-Now confirm the file was uploaded to PyPI at <https://pypi.org/project/herbie-data/>
+After the action completes, confirm the file was uploaded to PyPI at <https://pypi.org/project/herbie-data/>.
 
 ## 🐍 Publish to Conda
 
-Go to herbie-data feedstock, update the version in the `meta.yml` file.
+Updating the Conda package involves updating the herbie-data feedstock, specifically updating the version in the `meta.yml` file.
 
-- Fork the [herbie-data Conda feedstock](https://github.com/conda-forge/herbie-data-feedstock/pull/1/checks?check_run_id=11936300099)
-- Follow the instructions in the README to update the build
+1. Fork the [herbie-data Conda feedstock](https://github.com/conda-forge/herbie-data-feedstock/pull/1/checks?check_run_id=11936300099)
+1. Follow the instructions in the README to update the build
     - Update version
     - Update sha256 has for the `herbie-data-{version}.tar.gz` file (found on PyPI) in the "Download files" tab.
     - Set build to 0 for releasing a new version.
-- Create pull request.
-- Follow instructions in the pull request template.
+1. Create pull request.
+1. Follow instructions in the pull request template.
 
 ---
 
@@ -51,5 +52,5 @@ See PyPI download statistics at: https://pepy.tech/project/herbie-data
 Check import time with
 
 ```bash
-python -X importtime herbie/archive.py > importtime.txt 2>&1
+python -X importtime herbie/core.py > importtime.txt 2>&1
 ```
