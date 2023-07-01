@@ -165,4 +165,30 @@ class hrdps:
 
 class hrdps_north:
     def template(self):
-        pass
+        if not hasattr(self, "variable"):
+            print(
+                f"HRDPS requires an argument for 'variable'. Here are some ideas:\n{_variable}."
+            )
+            print(
+                "For full list of files, see https://dd.weather.gc.ca/model_hrdps/north"
+            )
+        if not hasattr(self, "level"):
+            print(
+                f"HRDPS requires an argument for 'level'. Here are some ideas:\n{_level}"
+            )
+            print("For full list of files, see https://dd.weather.gc.ca/model_hrdps")
+
+        self.DESCRIPTION = "Canada's High Resolution Deterministic Prediction System (HRDPS) North domain (experimental)"
+        self.DETAILS = {
+            "Datamart product description": "https://eccc-msc.github.io/open-data/msc-data/nwp_hrdps/readme_hrdps-datamart_en",
+        }
+        self.PRODUCTS = {
+            "north/grib2": "North domain (experimental)",
+        }
+        PATH = f"{self.date:%H}/{self.fxx:03d}/CMC_hrdps_north_{self.variable}_{self.level}_ps2.5km_{self.date:%Y%m%d%H}_P{self.fxx:03d}-00.grib2"
+        self.SOURCES = {
+            "msc": f"https://dd.weather.gc.ca/model_hrdps/{self.product}/{PATH}",
+        }
+
+        self.IDX_SUFFIX = [".grb2.idx", ".idx", ".grib.idx"]
+        self.LOCALFILE = f"{self.get_remoteFileName}"
