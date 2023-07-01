@@ -134,12 +134,16 @@ class hrdps:
             print(
                 f"HRDPS requires an argument for 'variable'. Here are some ideas: {_variable}."
             )
-            print("For full list of files, see https://dd.weather.gc.ca/model_hrdps/continental/")
+            print(
+                "For full list of files, see https://dd.weather.gc.ca/model_hrdps/continental/"
+            )
         if not hasattr(self, "level"):
             print(
                 f"HRDPS requires an argument for 'level'. Here are some ideas: {_level}"
             )
-            print("For full list of files, see https://dd.weather.gc.ca/model_hrdps/continental/")
+            print(
+                "For full list of files, see https://dd.weather.gc.ca/model_hrdps/continental/"
+            )
 
         self.DESCRIPTION = (
             "Canada's High Resolution Deterministic Prediction System (HRDPS)"
