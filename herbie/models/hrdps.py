@@ -132,14 +132,14 @@ class hrdps:
     def template(self):
         if not hasattr(self, "variable"):
             print(
-                f"HRDPS requires an argument for 'variable'. Here are some ideas: {_variable}."
+                f"HRDPS requires an argument for 'variable'. Here are some ideas:\n{_variable}."
             )
             print(
                 "For full list of files, see https://dd.weather.gc.ca/model_hrdps/continental/"
             )
         if not hasattr(self, "level"):
             print(
-                f"HRDPS requires an argument for 'level'. Here are some ideas: {_level}"
+                f"HRDPS requires an argument for 'level'. Here are some ideas:\n{_level}"
             )
             print(
                 "For full list of files, see https://dd.weather.gc.ca/model_hrdps/continental/"
