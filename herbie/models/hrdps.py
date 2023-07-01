@@ -39,9 +39,108 @@ Isobaric Levels
 '0950', '0970', '0985', '1015'}
 """
 
+_variable = {
+    "ALBDO",
+    "CAPE",
+    "CWAT",
+    "DEN",
+    "DEPR",
+    "DLWRF",
+    "DPT",
+    "DSWRF",
+    "GUST-Max",
+    "GUST-Min",
+    "GUST",
+    "HGT",
+    "HLCY",
+    "HPBL",
+    "ICEC",
+    "LAND",
+    "LHTFL",
+    "NLWRS",
+    "NSWRS",
+    "PRES",
+    "PRMSL",
+    "RH",
+    "SDEN",
+    "SDWE",
+    "SFCWRO",
+    "SHTFL",
+    "SKINT",
+    "SNOD",
+    "SOILVIC",
+    "SOILW",
+    "SPFH",
+    "TCDC",
+    "TMP",
+    "TSOIL",
+    "UGRD",
+    "ULWRF",
+    "USWRF",
+    "UTCI",
+    "VGRD",
+    "WDIR",
+    "WIND",
+    "WTMP",
+}
+
+_level = {
+    "Sfc",
+    "EATM",
+    "AGL-120m",
+    "AGL-40m",
+    "AGL-80m",
+    "AGL-2m",
+    "NTAT",
+    "AGL-10m",
+    "ISBY-1000-500",
+    "MSL",
+    "DBS-0-10cm",
+    "DBS-0-1cm",
+    "ISBL_0250",
+    "ISBL_0500",
+    "ISBL_0700",
+    "ISBL_0850",
+    "ISBL_1000",
+    "ISBL_0050",
+    "ISBL_0100",
+    "ISBL_0150",
+    "ISBL_0175",
+    "ISBL_0200",
+    "ISBL_0225",
+    "ISBL_0275",
+    "ISBL_0300",
+    "ISBL_0350",
+    "ISBL_0400",
+    "ISBL_0450",
+    "ISBL_0550",
+    "ISBL_0600",
+    "ISBL_0650",
+    "ISBL_0750",
+    "ISBL_0800",
+    "ISBL_0875",
+    "ISBL_0900",
+    "ISBL_0925",
+    "ISBL_0950",
+    "ISBL_0970",
+    "ISBL_0985",
+    "ISBL_1015",
+}
+
 
 class hrdps:
     def template(self):
+        if not hasattr(self, "variable"):
+            print(
+                f"HRDPS requires an argument for 'variable'. Here are some ideas: {_variable}."
+            )
+            print("For full list of files, see https://dd.weather.gc.ca/model_hrdps/continental/")
+        if not hasattr(self, "level"):
+            print(
+                f"HRDPS requires an argument for 'level'. Here are some ideas: {_level}"
+            )
+            print("For full list of files, see https://dd.weather.gc.ca/model_hrdps/continental/")
+
         self.DESCRIPTION = (
             "Canada's High Resolution Deterministic Prediction System (HRDPS)"
         )
@@ -61,4 +160,5 @@ class hrdps:
 
 
 class hrdps_north:
-    raise NotImplementedError("the hrdps_north product is not implemented yet")
+    def template(self):
+        pass
