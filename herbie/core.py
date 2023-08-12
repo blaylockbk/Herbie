@@ -995,6 +995,9 @@ class Herbie:
             outFile.parent.mkdir(parents=True, exist_ok=True)
             print(f"👨🏻‍🏭 Created directory: [{outFile.parent}]")
 
+        # ===============
+        # Do the Download
+        # ===============
         if searchString in [None, ":"] or self.idx is None:
             # Download the full file from remote source
             urllib.request.urlretrieve(self.grib, outFile, _reporthook)
