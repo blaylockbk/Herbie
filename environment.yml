@@ -2,7 +2,7 @@ name: herbie
 channels:
   - conda-forge
 dependencies:
-  - python>=3.10
+  - python>=3.11
   - pip
   - rclone # Not used by Herbie, useful if you are downloading data (https://rclone.org/)
 
@@ -12,23 +12,27 @@ dependencies:
   # Dependencies
   #==============
   - curl
-  - cartopy>=0.20.3
-  - cfgrib>=0.9.10.1
+  - cartopy>=0.22
+  - cfgrib>=0.9.10.4
+  - dask
   - eccodes
   - geos
   - matplotlib>=3.5.3
   - metpy
-  - numpy
-  - pandas
-  - proj
-  - pygrib
-  - requests
+  - netcdf4
+  - numpy>=1.25
+  - pandas>=2.0
+  - pygrib>=2.1.4
+  - pylint
+  - pyproj>=3.6
+  - requests>=2.31
+  - s3fs
   - toml
   #- wgrib2 # ONLY AVAILABLE ON LINUX. Uncomment if you want this optional dependency.
-  - xarray>=2022.6.0
-
   - jupyter
   - jupyterlab
+  - xarray>=2023.7
+  - zarr
 
   - pip:
       # Borrow some tools from my garage
