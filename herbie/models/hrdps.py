@@ -157,6 +157,7 @@ class hrdps:
         PATH = f"{self.date:%H}/{self.fxx:03d}/{self.date:%Y%m%dT%HZ}_MSC_HRDPS_{self.variable}_{self.level}_RLatLon0.0225_PT{self.fxx:03d}H.grib2"
         self.SOURCES = {
             "msc": f"https://dd.weather.gc.ca/model_hrdps/{self.product}/{PATH}",
+            "msc2": f"https://dd.weather.gc.ca/model_hrdps/{self.product}/{PATH.replace('_HRDPS_', '_HRDPS-WEonG_')}",
         }
 
         self.IDX_SUFFIX = [".grb2.idx", ".idx", ".grib.idx"]
