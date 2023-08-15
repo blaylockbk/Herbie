@@ -33,5 +33,6 @@ User Guide
    citation
    disclaimer
    style_guide
+   rclone
    other_tools
 
