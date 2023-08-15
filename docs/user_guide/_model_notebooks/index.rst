@@ -14,6 +14,7 @@
    gefs.ipynb
    ecmwf.ipynb
    nbm.ipynb
-   rrfs.ipynb
    navgem.ipynb
    nogaps.ipynb
+   hrdps.ipynb
+   rrfs.ipynb
