@@ -2,6 +2,12 @@
 A Herbie template for the HAFS model.
 """
 
+# maybe use functool caching decorator here??
+def get_name_mapping(DATE):
+    """Get a mapping of the available hurricane names and labels."""
+    # read some file/files at NOMADS
+    # parse it into a dict with name:label
+    pass
 
 class hafsa:
     def template(self):
@@ -17,8 +23,17 @@ class hafsa:
             "storm.atm": "?",
             "ww3": "?",
         }
+
+        # self.name is the hurricane label identifier (e.g., 11e)
+        # I want to get a list of labels for the requested datetime
+        # and produce a maping of the labels to the hurricane name
+        # so that if name='jova' it will get the hurricane name='11e'
+
+        # TODO: If name is a regular hurricane name and not an ID label,
+        # then get the ID from the name_mapping
+
         self.SOURCES = {
-            "nomads": f"https://nomads.ncep.noaa.gov/pub/data/nccf/com/hafs/prod/{self.model}.{self.date:%Y%m%d/%H}/{self.label}.{self.date:%Y%m%d%H}.{self.model}.{self.product}.f{self.fxx:02d}.grb2"
+            "nomads": f"https://nomads.ncep.noaa.gov/pub/data/nccf/com/hafs/prod/{self.model}.{self.date:%Y%m%d/%H}/{self.name}.{self.date:%Y%m%d%H}.{self.model}.{self.product}.f{self.fxx:02d}.grb2"
         }
         self.EXPECT_IDX_FILE = "remote"
         self.LOCALFILE = f"{self.get_remoteFileName}"
@@ -39,7 +54,7 @@ class hafsb:
             "ww3": "?",
         }
         self.SOURCES = {
-            "nomads": f"https://nomads.ncep.noaa.gov/pub/data/nccf/com/hafs/prod/{self.model}.{self.date:%Y%m%d/%H}/{self.label}.{self.date:%Y%m%d%H}.{self.model}.{self.product}.f{self.fxx:02d}.grb2"
+            "nomads": f"https://nomads.ncep.noaa.gov/pub/data/nccf/com/hafs/prod/{self.model}.{self.date:%Y%m%d/%H}/{self.name}.{self.date:%Y%m%d%H}.{self.model}.{self.product}.f{self.fxx:02d}.grb2"
         }
         self.EXPECT_IDX_FILE = "remote"
         self.LOCALFILE = f"{self.get_remoteFileName}"
