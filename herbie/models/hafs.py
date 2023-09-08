@@ -18,7 +18,7 @@ class hafsa:
             "ww3": "?",
         }
         self.SOURCES = {
-           "nomads": f"https://nomads.ncep.noaa.gov/pub/data/nccf/com/hafs/prod/{self.model}.{self.date:%Y%m%d/%H}/{self.label}.{self.date:%Y%m%d%H}.{self.model}.{self.product}.f{self.fxx:02d}.grb2
+            "nomads": f"https://nomads.ncep.noaa.gov/pub/data/nccf/com/hafs/prod/{self.model}.{self.date:%Y%m%d/%H}/{self.label}.{self.date:%Y%m%d%H}.{self.model}.{self.product}.f{self.fxx:02d}.grb2"
         }
         self.EXPECT_IDX_FILE = "remote"
         self.LOCALFILE = f"{self.get_remoteFileName}"
@@ -39,7 +39,7 @@ class hafsb:
             "ww3": "?",
         }
         self.SOURCES = {
-           "nomads": f"https://nomads.ncep.noaa.gov/pub/data/nccf/com/hafs/prod/{self.model}.{self.date:%Y%m%d/%H}/{self.label}.{self.date:%Y%m%d%H}.{self.model}.{self.product}.f{self.fxx:02d}.grb2
+            "nomads": f"https://nomads.ncep.noaa.gov/pub/data/nccf/com/hafs/prod/{self.model}.{self.date:%Y%m%d/%H}/{self.label}.{self.date:%Y%m%d%H}.{self.model}.{self.product}.f{self.fxx:02d}.grb2"
         }
         self.EXPECT_IDX_FILE = "remote"
         self.LOCALFILE = f"{self.get_remoteFileName}"
