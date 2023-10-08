@@ -995,6 +995,9 @@ class Herbie:
             outFile.parent.mkdir(parents=True, exist_ok=True)
             print(f"👨🏻‍🏭 Created directory: [{outFile.parent}]")
 
+        # ===============
+        # Do the Download
+        # ===============
         if searchString in [None, ":"] or self.idx is None:
             # Download the full file from remote source
             urllib.request.urlretrieve(self.grib, outFile, _reporthook)
@@ -1140,9 +1143,10 @@ class Herbie:
                 data_vars.remove("gribfile_projection")
                 Hxr = xr.concat(Hxr, dim="step", data_vars=data_vars)
             except:
-                print(
-                    f"Note: Returning a list of [{len(Hxr)}] xarray.Datasets because cfgrib opened with multiple hypercubes."
-                )
+                if self.verbose:
+                    print(
+                        f"Note: Returning a list of [{len(Hxr)}] xarray.Datasets because cfgrib opened with multiple hypercubes."
+                    )
             return Hxr
 
     # Shortcut Methods below

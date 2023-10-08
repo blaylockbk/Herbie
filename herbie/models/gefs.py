@@ -122,7 +122,7 @@ class gefs_reforecast:
         # - Members 1-4 are the perturbation members
         if self.member == 0:
             member = f"c{self.member:02d}"
-        elif self.member > 5:
+        elif self.member > 0 and self.member < 5:
             member = f"p{self.member:02d}"
         else:
             raise ValueError("GEFS 'member' must be one of {0,1,2,3,4}.")

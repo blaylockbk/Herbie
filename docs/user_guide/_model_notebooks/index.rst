@@ -8,12 +8,14 @@
    hrrr.ipynb
    hrrrak.ipynb
    rap.ipynb
+   hafs.ipynb
    rtma.ipynb
    nam.ipynb
    gfs.ipynb
    gefs.ipynb
    ecmwf.ipynb
    nbm.ipynb
-   rrfs.ipynb
    navgem.ipynb
    nogaps.ipynb
+   hrdps.ipynb
+   rrfs.ipynb

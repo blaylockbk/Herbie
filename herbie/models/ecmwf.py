@@ -33,9 +33,9 @@ class ecmwf:
             "enfo": "ensemble forecast, atmospheric fields",
             "wave": "wave forecasts",
             "waef": "ensemble forecast, ocean wave fields,",
-            # "scda": "short cut-off high-resolution forecast, atmospheric fields (also known as high-frequency products)",
-            # "scwv": "short cut-off high-resolution forecast, ocean wave fields (also known as high-frequency products)",
-            # "mmsf": "multi-model seasonal forecasts fields from the ECMWF model only.",
+            "scda": "short cut-off high-resolution forecast, atmospheric fields (also known as high-frequency products)",
+            "scwv": "short cut-off high-resolution forecast, ocean wave fields (also known as high-frequency products)",
+            "mmsf": "multi-model seasonal forecasts fields from the ECMWF model only.",
         }
 
         # example file
@@ -49,8 +49,11 @@ class ecmwf:
 
         post_root = f"{self.date:%Y%m%d/%Hz}/{version}/{self.product}/{self.date:%Y%m%d%H%M%S}-{self.fxx}h-{self.product}-{product_suffix}.grib2"
 
+        # If user asks for 'oper' or 'wave', still look for data in scda and waef for the short cut-off high resolution forecast.
         self.SOURCES = {
             "azure": f"https://ai4edataeuwest.blob.core.windows.net/ecmwf/{post_root}",
+            "azure-scda": f"https://ai4edataeuwest.blob.core.windows.net/ecmwf/{post_root.replace('oper', 'scda')}",
+            "azure-waef": f"https://ai4edataeuwest.blob.core.windows.net/ecmwf/{post_root.replace('wave', 'waef')}",
             "aws": f"https://ecmwf-forecasts.s3.eu-central-1.amazonaws.com/{post_root}",
             "ecmwf": f"https://data.ecmwf.int/forecasts/{post_root}",
         }

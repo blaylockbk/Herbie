@@ -13,8 +13,8 @@ import sys
 # ======================================================================
 #                     Import Public Model Templates
 # ======================================================================
-from .gfs import *
 from .hrrr import *
+from .gfs import *
 from .nam import *
 from .navgem import *
 from .nogaps import *
@@ -26,6 +26,8 @@ from .ecmwf import *
 from .gefs import *
 from .rtma import *
 from .urma import *
+from .hrdps import *
+from .hafs import *
 
 # ======================================================================
 #                     Import Private Model Templates
