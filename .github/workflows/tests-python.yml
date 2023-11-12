@@ -67,7 +67,7 @@ jobs:
     - name: Install project
       run: |
         pip3 install --requirement=requirements-test.txt
-        pip3 install --editable=.
+        pip3 install --editable=.[indexing]
 
     - name: Run tests
       env:

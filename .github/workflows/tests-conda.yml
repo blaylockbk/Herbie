@@ -97,7 +97,7 @@ jobs:
 
     - name: INSTALL - Project
       run: |
-        pip install --editable=.
+        pip install --editable=.[indexing]
 
     - name: Run tests
       env:
