@@ -909,7 +909,9 @@ class Herbie:
             for i, group in enumerate(curl_groups):
                 _df = idx_df.loc[group]
                 # cURL ranges are end-inclusive, so subtract one from our end-exclusive end_byte
-                curl_ranges.append(f"{_df.iloc[0].start_byte}-{_df.iloc[-1].end_byte-1}")
+                curl_ranges.append(
+                    f"{_df.iloc[0].start_byte}-{_df.iloc[-1].end_byte-1}"
+                )
                 group_dfs.append(_df)
 
             for i, (range, _df) in enumerate(zip(curl_ranges, group_dfs)):
