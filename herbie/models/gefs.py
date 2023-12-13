@@ -80,6 +80,8 @@ class gefs:
         self.SOURCES = {
             "aws": f"https://noaa-gefs-pds.s3.amazonaws.com/{filepath}",
             "nomads": f"https://nomads.ncep.noaa.gov/pub/data/nccf/com/gens/prod/{filepath}",
+            "google": f"https://storage.googleapis.com/gfs-ensemble-forecast-system/{filepath}",
+            "azure": f"https://noaagefs.blob.core.windows.net/gefs/{filepath}",
         }
 
         self.IDX_SUFFIX = [".idx", ".grb2.idx", ".grib2.idx"]
