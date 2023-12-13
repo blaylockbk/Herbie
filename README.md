@@ -175,21 +175,19 @@ If Herbie played an important role in your work, please [tell me about it](https
 
 > A portion of this work used code generously provided by Brian Blaylock's Herbie python package (https://doi.org/10.5281/zenodo.4567540)
 
----
+<hr>
 
 **Thanks for using Herbie, and happy racing!**
 
 🏁 Brian
 
-<br>
-
-|     |                                                                                     |
-| :-: | ----------------------------------------------------------------------------------- |
-| 👨🏻‍💻  | [Contributing Guidelines](https://herbie.readthedocs.io/user_guide/contribute.html) |
-| 💬  | [GitHub Discussions](https://github.com/blaylockbk/Herbie/discussions)              |
-| 🚑  | [GitHub Issues](https://github.com/blaylockbk/Herbie/issues)                        |
-| 🌐  | [Personal Webpage](http://home.chpc.utah.edu/~u0553130/Brian_Blaylock/home.html)    |
-| 🌐  | [University of Utah HRRR archive](http://hrrr.chpc.utah.edu/)                       |
+|     |                                                                                                     |
+| :-: | --------------------------------------------------------------------------------------------------- |
+| 👨🏻‍💻  | [Contributing Guide/Disclaimer](https://herbie.readthedocs.io/en/stable/user_guide/disclaimer.html) |
+| 💬  | [GitHub Discussions](https://github.com/blaylockbk/Herbie/discussions)                              |
+| 🚑  | [GitHub Issues](https://github.com/blaylockbk/Herbie/issues)                                        |
+| 🌐  | [Personal Webpage](http://home.chpc.utah.edu/~u0553130/Brian_Blaylock/home.html)                    |
+| 🌐  | [University of Utah HRRR archive](http://hrrr.chpc.utah.edu/)                                       |
 
 <br>
 
