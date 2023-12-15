@@ -14,3 +14,4 @@ dependencies:
   - requests>=2.27.1
   - toml
   - xarray>=2022.3.0
+  - flake8
