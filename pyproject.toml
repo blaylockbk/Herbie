@@ -1,6 +1,79 @@
+[project]
+name = "herbie-data"
+description = "Download numerical weather prediction GRIB2 model data."
+readme = "README.md"
+requires-python = ">=3.9"
+license = { file = "LICENSE" }
+authors = [{ name = "Brian K. Blaylock", email = "blaylockbk@gmail.com" }]
+maintainers = [{ name = "Brian K. Blaylock", email = "blaylockbk@gmail.com" }]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Operating System :: MacOS",
+    "Operating System :: Microsoft :: Windows",
+    "Operating System :: POSIX :: Linux",
+    "License :: OSI Approved :: MIT License",
+    "Intended Audience :: Science/Research",
+    "Topic :: Scientific/Engineering :: Atmospheric Science",
+
+]
+keywords = [
+    "weather",
+    "meteorology",
+    "forecast",
+    "atmosphere",
+    "GRIB2",
+    "xarray",
+    "HRRR",
+]
+dependencies = [
+    "matplotlib",
+    "numpy",
+    "pandas",
+    "xarray",
+    "cfgrib",
+    "metpy",
+    "cartopy",
+    "toml",
+    "pygrib",
+]
+dynamic = ["version"]
+
+[project.urls]
+"Homepage" = "https://github.com/blaylockbk/Herbie"
+"Documentation" = "https://herbie.readthedocs.io/"
+"Repository" = "https://github.com/blaylockbk/Herbie"
+"Changelog" = "https://github.com/blaylockbk/Herbie/releases"
+"Bug Tracker" = "https://github.com/blaylockbk/Herbie/issues"
+
+[project.optional-dependencies]
+docs = [
+    "autodocsumm",
+    "linkify-it-py",
+    "myst-parser",
+    "nbconvert",
+    "nbsphinx",
+    "pydata-sphinx-theme",
+    "recommonmark",
+    "sphinx",
+    "sphinx-autosummary-accessors",
+    "sphinx-design",
+    "sphinx-markdown-tables",
+    "sphinxcontrib-mermaid",
+]
+
+test = ["pytest", "black", "isort"]
+
 [build-system]
 requires = ["setuptools>=42", "wheel", "setuptools_scm[toml]>=3.4"]
 build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+packages = ["herbie"]
 
 [tool.setuptools_scm]
 version_scheme = "post-release"
@@ -16,5 +89,4 @@ addopts = "-rsfEX -p pytester --strict-markers --verbosity=3"
 log_level = "DEBUG"
 testpaths = ["tests"]
 xfail_strict = true
-markers = [
-]
+markers = []
