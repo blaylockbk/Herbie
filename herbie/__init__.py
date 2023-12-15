@@ -134,7 +134,7 @@ if not _config_path.exists():
 
     # Create config.toml file
     _config_path.parent.mkdir(parents=True, exist_ok=True)
-    with open(_config_path, "w") as f:
+    with open(_config_path, "w", encoding="utf-8") as f:
         toml_string = toml.dump(toml.loads(default_toml), f)
 
     # Create custom_template.py placeholder

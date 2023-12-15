@@ -4,12 +4,12 @@
 """
 Tests for downloading ECMWF model
 """
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from herbie import Herbie
 
 now = datetime.now()
-yesterday = datetime(now.year, now.month, now.day - 1)
+yesterday = datetime(now.year, now.month, now.day) - timedelta(days=1)
 today_str = yesterday.strftime("%Y-%m-%d %H:%M")
 save_dir = "$TMPDIR/Herbie-Tests/"
 

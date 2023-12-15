@@ -80,6 +80,8 @@ class gefs:
         self.SOURCES = {
             "aws": f"https://noaa-gefs-pds.s3.amazonaws.com/{filepath}",
             "nomads": f"https://nomads.ncep.noaa.gov/pub/data/nccf/com/gens/prod/{filepath}",
+            "google": f"https://storage.googleapis.com/gfs-ensemble-forecast-system/{filepath}",
+            "azure": f"https://noaagefs.blob.core.windows.net/gefs/{filepath}",
         }
 
         self.IDX_SUFFIX = [".idx", ".grb2.idx", ".grib2.idx"]
@@ -122,7 +124,7 @@ class gefs_reforecast:
         # - Members 1-4 are the perturbation members
         if self.member == 0:
             member = f"c{self.member:02d}"
-        elif self.member > 5:
+        elif self.member > 0 and self.member < 5:
             member = f"p{self.member:02d}"
         else:
             raise ValueError("GEFS 'member' must be one of {0,1,2,3,4}.")

@@ -11,6 +11,8 @@ import pytest
 
 from herbie import Herbie, Path
 import os
+import requests
+import pandas as pd
 
 now = datetime.now()
 today = datetime(now.year, now.month, now.day, now.hour) - timedelta(hours=6)
@@ -116,3 +118,38 @@ def test_create_idx_with_wgrib2():
     H.download()
     H.idx = None
     assert len(H.index_as_dataframe) > 0
+
+
+def _size_from_index(H, searchString=None):
+    """Get the size that a file should be from its index, assuming a remote URL."""
+    inventory = H.inventory(searchString)
+    # The last end_byte may be blank, in which case fill with the length of the file
+    file_length = requests.get(H.grib, stream=True).headers["Content-Length"]
+    ends = (
+        pd.to_numeric(inventory.end_byte, errors="coerce")
+        .fillna(file_length)
+        .astype(int)
+    )
+    return (ends - inventory.start_byte.astype(int)).sum()
+
+
+def _size_from_file(H, searchString=None):
+    """Get the actual size of a downloaded file."""
+    return H.get_localFilePath(searchString).stat().st_size
+
+
+def test_hrrr_file_size_full():
+    """Test that theoretical size matches actual size for full (non-subset) files."""
+    H = Herbie(today, model="hrrr", product="sfc", save_dir=save_dir, overwrite=True)
+    stated_size = _size_from_index(H)
+    H.download()
+    assert stated_size == _size_from_file(H)
+
+
+def test_hrrr_file_size_subset():
+    """Test that theoretical size matches actual size for subset files."""
+    var = ":.GRD:"
+    H = Herbie(today, model="hrrr", product="sfc", save_dir=save_dir, overwrite=True)
+    stated_size = _size_from_index(H, var)
+    H.download(var)
+    assert stated_size == _size_from_file(H, var)

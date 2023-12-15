@@ -27,6 +27,7 @@ from .gefs import *
 from .rtma import *
 from .urma import *
 from .hrdps import *
+from .hafs import *
 
 # ======================================================================
 #                     Import Private Model Templates

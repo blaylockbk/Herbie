@@ -908,7 +908,10 @@ class Herbie:
             group_dfs = []
             for i, group in enumerate(curl_groups):
                 _df = idx_df.loc[group]
-                curl_ranges.append(f"{_df.iloc[0].start_byte}-{_df.iloc[-1].end_byte}")
+                # cURL ranges are end-inclusive, so subtract one from our end-exclusive end_byte
+                curl_ranges.append(
+                    f"{_df.iloc[0].start_byte}-{_df.iloc[-1].end_byte-1}"
+                )
                 group_dfs.append(_df)
 
             for i, (range, _df) in enumerate(zip(curl_ranges, group_dfs)):
@@ -1143,9 +1146,10 @@ class Herbie:
                 data_vars.remove("gribfile_projection")
                 Hxr = xr.concat(Hxr, dim="step", data_vars=data_vars)
             except:
-                print(
-                    f"Note: Returning a list of [{len(Hxr)}] xarray.Datasets because cfgrib opened with multiple hypercubes."
-                )
+                if self.verbose:
+                    print(
+                        f"Note: Returning a list of [{len(Hxr)}] xarray.Datasets because cfgrib opened with multiple hypercubes."
+                    )
             return Hxr
 
     # Shortcut Methods below

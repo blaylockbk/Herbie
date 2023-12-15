@@ -2,7 +2,7 @@
   align="center"
 >
 
-<img src="images/logo_new/Herbie-logo.png">  
+<img src="images/logo_new/Herbie-logo.png">
 
 # Herbie: Retrieve NWP Model Data 🏁
 
@@ -29,6 +29,7 @@
 **Herbie** is a python package that downloads recent and archived numerical weather prediction (NWP) model output from different cloud archive sources. **Its most popular capability is to download HRRR model data.** NWP data in GRIB2 format can be read with xarray+cfgrib. Much of this data is made available through the [NOAA Open Data Dissemination](https://www.noaa.gov/information-technology/open-data-dissemination) (NODD) Program (formerly the Big Data Program) which has made weather data more accessible than ever before.
 
 Herbie helps you discover, download, and read data from:
+
 - [High Resolution Rapid Refresh (HRRR)](https://herbie.readthedocs.io/en/latest/user_guide/_model_notebooks/hrrr.html) | [HRRR-Alaska](https://herbie.readthedocs.io/en/latest/user_guide/_model_notebooks/hrrrak.html)
 - [Rapid Refresh (RAP)](https://herbie.readthedocs.io/en/latest/user_guide/_model_notebooks/rap.html)
 - [Global Forecast System (GFS)](https://herbie.readthedocs.io/en/latest/user_guide/_model_notebooks/gfs.html)
@@ -38,6 +39,7 @@ Herbie helps you discover, download, and read data from:
 - [National Blend of Models (NBM)](https://herbie.readthedocs.io/en/latest/user_guide/_model_notebooks/nbm.html)
 - [Rapid Refresh Forecast System - Prototype (RRFS)](https://herbie.readthedocs.io/en/latest/user_guide/_model_notebooks/rrfs.html)
 - [Real-Time/Un-Restricted Mesoscale Analysis (RTMA/URMA)](https://herbie.readthedocs.io/en/latest/user_guide/_model_notebooks/rtma.html)
+- [Hurricane Analysis And Forecast System (HAFS)](https://herbie.readthedocs.io/en/latest/user_guide/_model_notebooks/hafs.html)
 
 # 📓 [Herbie Documentation](https://herbie.readthedocs.io/)
 
@@ -48,7 +50,6 @@ The easiest way to instal Herbie and its dependencies is with [Conda](https://do
 ```bash
 conda install -c conda-forge herbie-data
 ```
-
 
 You may also create the provided Conda environment, **[`environment.yml`](https://github.com/blaylockbk/Herbie/blob/main/environment.yml)**.
 
@@ -163,31 +164,30 @@ I originally released this package under the name “HRRR-B” because it only w
 The University of Utah MesoWest group now manages a [HRRR archive in Zarr format](http://hrrr.chpc.utah.edu/). Maybe someday, Herbie will be able to take advantage of that archive.
 
 ## How to Cite and Acknowledge
+
 If Herbie played an important role in your work, please [tell me about it](https://github.com/blaylockbk/Herbie/discussions/categories/show-and-tell)! Also, consider including a citation or acknowledgement in your article or product.
 
-***Suggested Citation***
+**_Suggested Citation_**
 
 > Blaylock, B. K. (2022). Herbie: Retrieve Numerical Weather Prediction Model Data (Version 2022.9.0) [Computer software]. https://doi.org/10.5281/zenodo.4567540
 
-***Suggested Acknowledgment***
+**_Suggested Acknowledgment_**
 
 > A portion of this work used code generously provided by Brian Blaylock's Herbie python package (https://doi.org/10.5281/zenodo.4567540)
 
----
+<hr>
 
 **Thanks for using Herbie, and happy racing!**
 
 🏁 Brian
 
-<br>
-
-|     |                                                                                                       |
-| :-: | ----------------------------------------------------------------------------------------------------- |
-| 👨🏻‍💻  | [Contributing Guidelines](https://herbie.readthedocs.io/user_guide/contribute.html) |
-| 💬  | [GitHub Discussions](https://github.com/blaylockbk/Herbie/discussions)                                |
-| 🚑  | [GitHub Issues](https://github.com/blaylockbk/Herbie/issues)                                          |
-| 🌐  | [Personal Webpage](http://home.chpc.utah.edu/~u0553130/Brian_Blaylock/home.html)                      |
-| 🌐  | [University of Utah HRRR archive](http://hrrr.chpc.utah.edu/)                                         |
+|     |                                                                                                     |
+| :-: | --------------------------------------------------------------------------------------------------- |
+| 👨🏻‍💻  | [Contributing Guide/Disclaimer](https://herbie.readthedocs.io/en/stable/user_guide/disclaimer.html) |
+| 💬  | [GitHub Discussions](https://github.com/blaylockbk/Herbie/discussions)                              |
+| 🚑  | [GitHub Issues](https://github.com/blaylockbk/Herbie/issues)                                        |
+| 🌐  | [Personal Webpage](http://home.chpc.utah.edu/~u0553130/Brian_Blaylock/home.html)                    |
+| 🌐  | [University of Utah HRRR archive](http://hrrr.chpc.utah.edu/)                                       |
 
 <br>
 
