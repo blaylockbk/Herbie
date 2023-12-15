@@ -1,10 +1,13 @@
 name: Python Package using Conda
 
+# THIS WORKFLOW IS NOT USED BECAUSE IT TAKES TOO LONG
+# FOR CONDA TO CREATE THE ENVIRONMENT.
+
 on:
   #push:
   #  branches: [master]
   pull_request:
-    branches: [main]
+    branches: [master]
 
 jobs:
   build-linux:
