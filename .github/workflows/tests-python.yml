@@ -27,8 +27,9 @@ jobs:
         include:
           - os: "macos-latest"
             python-version: "3.11"
-          - os: "windows-latest"
-            python-version: "3.11"
+          # TODO: Building on Windows fails because it fails to install pygrib; eccodes not found
+          #- os: "windows-latest"
+          #  python-version: "3.11"
 
     env:
       OS: ${{ matrix.os }}
