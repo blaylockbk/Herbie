@@ -27,8 +27,8 @@ jobs:
         include:
           - os: "macos-latest"
             python-version: "3.11"
-          #- os: "windows-latest"
-          #  python-version: "3.11"
+          - os: "windows-latest"
+            python-version: "3.11"
 
     env:
       OS: ${{ matrix.os }}
@@ -62,6 +62,11 @@ jobs:
         if: runner.os == 'macOS'
         run: |
           brew install pkg-config geos eccodes
+
+      - name: Install prerequisites (Windows)
+        if: runner.os == 'windows'
+        run: |
+          echo "Does anything need to be installed?"
 
       - name: Install project
         run: |
