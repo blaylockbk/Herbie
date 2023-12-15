@@ -2,7 +2,7 @@
   align="center"
 >
 
-<img src="images/logo_new/Herbie-logo.png">
+<img src="https://github.com/blaylockbk/Herbie/blob/main/images/logo_new/Herbie-logo.png?raw=True">
 
 # Herbie: Retrieve NWP Model Data 🏁
 
