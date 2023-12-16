@@ -68,16 +68,17 @@ def _expand(self, resolve=False, absolute=False):
 Path.expand = _expand
 
 ########################################################################
-# Herbie configuration files
+# Location of Herbie's configuration file
+_config_path = os.getenv("HERBIE_CONFIG_PATH", "~/.config/herbie")
+_config_path = Path(_config_path).expand()
+_config_file = _config_path / "config.toml"
 
-# Configuration file will be created in `~/config/herbie/config.toml`
-_config_path = Path("~/.config/herbie/config.toml").expand()
-
-# The location data data will be saved when it is downloaded.
+# Default directory Herbie saves model output
 # NOTE: The `\\` is an escape character in TOML.
-# For Windows paths "C:\\user\\"" needs to be "C:\\\\user\\\\""
-_save_dir = str(Path("~/data").expand())
-_save_dir = _save_dir.replace("\\", "\\\\")
+#       For Windows paths, "C:\\user\\"" needs to be "C:\\\\user\\\\""
+_save_dir = os.getenv("HERBIE_SAVE_DIR", "~/data")
+_save_dir = Path(_save_dir).expand()
+_save_dir = str(_save_dir).replace("\\", "\\\\")
 
 # Default TOML Configuration Values
 default_toml = f"""# Herbie defaults
@@ -139,17 +140,17 @@ class model1_name:
 # Load config file (create one if needed)
 try:
     # Load the Herbie config file
-    config = toml.load(_config_path)
+    config = toml.load(_config_file)
 except:
     try:
         # Create the Herbie config file
-        _config_path.parent.mkdir(parents=True, exist_ok=True)
-        with open(_config_path, "w", encoding="utf-8") as f:
+        _config_path.mkdir(parents=True, exist_ok=True)
+        with open(_config_file, "w", encoding="utf-8") as f:
             f.write(default_toml)
 
         # Create `custom_template.py` placeholder
-        _init_path = _config_path.parent / "__init__.py"
-        _custom_path = _config_path.parent / "custom_template.py"
+        _init_path = _config_path / "__init__.py"
+        _custom_path = _config_path / "custom_template.py"
         if not _init_path.exists():
             with open(_init_path, "w") as f:
                 pass
@@ -161,18 +162,19 @@ except:
             f" ╭─{ANSI.herbie}─────────────────────────────────────────────╮\n"
             f" │ INFO: Created a default config file.                 │\n"
             f" │ You may view/edit Herbie's configuration here:       │\n"
-            f" │ {ANSI.orange}{str(_config_path):^50s}{ANSI.reset}   │\n"
+            f" │ {ANSI.orange}{str(_config_file):^50s}{ANSI.reset}   │\n"
             f" ╰──────────────────────────────────────────────────────╯\n"
         )
 
         # Load the new Herbie config file
-        config = toml.load(_config_path)
+        config = toml.load(_config_file)
     except (FileNotFoundError, PermissionError, IOError):
         print(
             f" ╭─{ANSI.herbie}─────────────────────────────────────────────╮\n"
-            f" │ WARNING: Unable to create config file at             │\n"
-            f" │ {ANSI.orange}{str(_config_path):^50s}{ANSI.reset}   │\n"
+            f" │ WARNING: Unable to create config file               │\n"
+            f" │ {ANSI.orange}{str(_config_file):^50s}{ANSI.reset}   │\n"
             f" │ Herbie will use standard default settings.           │\n"
+            f" │ Consider setting env variable HERBIE_CONFIG_PATH.    │\n"
             f" ╰──────────────────────────────────────────────────────╯\n"
         )
         config = toml.loads(default_toml)
@@ -180,6 +182,16 @@ except:
 
 # Expand the full path for `save_dir`
 config["default"]["save_dir"] = Path(config["default"]["save_dir"]).expand()
+
+if os.getenv("HERBIE_SAVE_DIR"):
+    config["default"]["save_dir"] = Path(os.getenv("HERBIE_SAVE_DIR")).expand()
+    print(
+        f" ╭─{ANSI.herbie}─────────────────────────────────────────────╮\n"
+        f" │ INFO: Overriding the configured save_dir because the │\n"
+        f" │ environment variable HERBIE_SAVE_DIR is set to       │\n"
+        f" │ {ANSI.orange}{os.getenv('HERBIE_SAVE_DIR'):^50s}{ANSI.reset}   │\n"
+        f" ╰──────────────────────────────────────────────────────╯\n"
+    )
 
 from herbie.core import Herbie
 from herbie.fast import FastHerbie, Herbie_latest
