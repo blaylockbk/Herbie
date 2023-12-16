@@ -18,8 +18,6 @@
   ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██
 """
 
-from herbie import Path
-
 
 class hc:
     """Herbie Color Pallette"""
