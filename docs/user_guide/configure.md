@@ -17,32 +17,35 @@ overwrite = false
 verbose = true
 ```
 
-The configuration file is mostly a convenience. Any of the configured parameters can be overwritten when creating a new Herbie object. For example,
+The configuration file is mostly a convenience. Any of the configured parameters can be overwritten when creating Herbie objects. For example, this will get the HRRR model and save data to the `~/data` directory, because those are the configured defaults:
 
 ```python
-# This will get the HRRR model and
-# save data to the ~/data folder,
-# because those are the configured defaults:
-Herbie("2023-01-01")
-
-# But you can change the model and the save location
-# when you create a Herbie object.
-# This will change the model to "GFS" and save it in
-# a different location:
-Herbie("2023-01-01", model="gfs", save_dir="/this/folder")
+from herbie import Herbie
+H = Herbie("2023-01-01")
 ```
 
-If Herbie is unable to create its config file, then it will use the defaults.
+But you can set the model and the save location when you create a Herbie object. The following sets a new model (GFS) and will save any downloaded content to the specified location:
 
-If you don't have permission to write to the default location but still want to use a config file, then you can set the a environment variable `HERBIE_CONFIG_PATH` to specify a new path. **Changing the path to the config file is only advised if you don't have permission to write to the default location.**
+```python
+from herbie import Herbie
+H = Herbie("2023-01-01", model="gfs", save_dir="/this/folder")
+```
+
+You might want to set change the default behavior by modifying the Herbie config file if you primarily work with a different model, want to save downloaded content to a different drive, need to use a different source priority, etc.
+
+> If Herbie is unable to create its config file, then it will use the standard defaults.
+
+## Change config file location
+
+If you don't have the right permissions to write to the default location, but you still want to use a config file, then you can set the environment variable `HERBIE_CONFIG_PATH` to specify a new path. **Changing the path to the config file is only advised if you don't have permission to write to the default location.**
 
 ```bash
 export HERBIE_CONFIG_PATH="/my/path/herbie-config/
 ```
 
-## Configurable settings
+# Configurable settings
 
-### `model`
+## `model`
 
 Model name as defined in the [models](https://github.com/blaylockbk/Herbie/tree/main/herbie/models) template folder. CASE INSENSITIVE
 
@@ -56,13 +59,13 @@ Some examples:
 - `'rrfs'` Rapid Refresh Forecast System prototype
 - etc.
 
-### `fxx`
+## `fxx`
 
 Forecast lead time in hours. Available lead times depend on
 the model type and model version. Range is model and run
 dependent.
 
-### `product`
+## `product`
 
 Output variable product file type. If not specified, will
 use first product in model template file. CASE SENSITIVE.
@@ -74,11 +77,11 @@ For example, the HRRR model has these products:
 - `'nat'` native fields
 - `'subh'` subhourly fields
 
-### `member`
+## `member`
 
 Some ensemble models (e.g., GEFS, RRFS) will need to specify an ensemble member number.
 
-### `priority`
+## `priority`
 
 List of data sources in the order of download priority. CASE INSENSITIVE.
 
@@ -99,7 +102,7 @@ For example:
 
 Tip: Look in the `herbie/models` model template files for all the SOURCES available for each model.
 
-### `save_dir`
+## `save_dir`
 
 Location to save GRIB2 files locally. You may use system environment variables like `${HOME}`, and `${TMPDIR}`
 
@@ -109,17 +112,17 @@ This can overwrite the save directory by setting the environment variable `HERBI
 export HERBIE_SAVE_DIR="/my/new/save_dir/
 ```
 
-### `overwrite`
+## `overwrite`
 
 - If `true`, look for GRIB2 file even if local copy exists.
 - If `false`, use the local copy (still need to find the idx file on the remote server).
 
-### `verbose`
+## `verbose`
 
 - If `true`, print info to screen.
 - If `false`, do not print extra info to screen.
 
-## Note: Default Download Priority Rational
+# Note: Default Download Priority Rational
 
 The default download priority is controlled by the order of the SOURCES listed in each model's template file. For example, the [HRRR data sources](https://github.com/blaylockbk/Herbie/blob/main/herbie/models/hrrr.py) are `['aws', 'nomads', 'google', 'azure', 'pando', 'pando2']`. Herbie tries to find the GRIB file at the first source, and then looks at subsequent sources until the file is found. The reason HRRR has this default search order is that I anticipate most often a user will request model output from the recent past or earlier rather than relying on Herbie for operational, real-time needs.
 
