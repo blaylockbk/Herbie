@@ -1,17 +1,16 @@
 # ℹ Model Info
 
-> This is a work in progress.
+> This is a work in progress. Please help with a PR 😄
 
 ## HRRR: High Resolution Rapid Refresh
 
 ESRL: https://rapidrefresh.noaa.gov/hrrr/
 
-
 ```{mermaid}
 gantt
   title HRRR Version History
   axisFormat %b-%Y
-  HRRR v1 :        v1, 2014-09-30, 2016-8-23 
+  HRRR v1 :        v1, 2014-09-30, 2016-8-23
   HRRR v2 :        v2, after v1, 2018-7-12
   HRRR v3 :        v3, after v2, 2020-12-2
   HRRR v4 :active, v4, after v3 2020-12-2, 2024
@@ -19,8 +18,6 @@ gantt
 ```
 
 ## RAP: Rapid Refresh
-
-> work in progress
 
 ESRL: https://rapidrefresh.noaa.gov/
 
@@ -38,3 +35,9 @@ gantt
   section Big Data Program
   RAP : 2021-02-22, 2022-02-22
 ```
+
+## GFS:
+
+## GEFS:
+
+## ECMWF:
