@@ -10,6 +10,7 @@ Where "hrrr" is the name of the template class located in models/hrrr.py.
 import sys
 from pathlib import Path
 
+from herbie import _config_path
 from herbie.misc import ANSI
 
 # ======================================================================
@@ -34,7 +35,7 @@ from .urma import *
 # ======================================================================
 #                     Import Private Model Templates
 # ======================================================================
-_custom_template_file = Path("~/.config/herbie/custom_template.py").expand()
+_custom_template_file = _config_path / "custom_template.py"
 
 try:
     if _custom_template_file.exists():
