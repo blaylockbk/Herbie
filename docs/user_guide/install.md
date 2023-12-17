@@ -1,5 +1,7 @@
 # 🐍 Installation
 
+## conda install
+
 [![Conda](https://img.shields.io/conda/v/conda-forge/herbie-data)](https://anaconda.org/conda-forge/herbie-data)
 
 The easiest way to install Herbie and its dependencies is with [Conda](https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html) from conda-forge.
@@ -8,19 +10,7 @@ The easiest way to install Herbie and its dependencies is with [Conda](https://d
 conda install -c conda-forge herbie-data
 ```
 
-## Carpenter Workshop 🧰 (optional)
-
-An _optional_ dependency is my "Carpenter Workshop" package. This has some general tools that are useful for making maps and performing other tasks. You might see me use these tools in the tutorials.
-
-```bash
-pip install git+https://github.com/blaylockbk/Carpenter_Workshop.git
-```
-
-<br>
-<br>
-<br>
-
-# pip install
+## pip install
 
 [![PyPI - Version](https://img.shields.io/pypi/v/herbie-data)](https://pypi.org/project/herbie-data/)
 
@@ -53,4 +43,12 @@ or
 git clone https://github.com/blaylockbk/Herbie.git
 cd Herbie
 pip install -e .
+```
+
+# Carpenter Workshop 🧰 (optional)
+
+An _optional_ dependency is my [Carpenter Workshop](https://github.com/blaylockbk/Carpenter_Workshop) package. This has some general tools that are useful for making maps and performing other tasks. You might see me use these tools in the tutorials.
+
+```bash
+pip install git+https://github.com/blaylockbk/Carpenter_Workshop.git
 ```
