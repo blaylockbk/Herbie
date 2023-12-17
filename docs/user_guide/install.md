@@ -1,5 +1,7 @@
 # 🐍 Installation
 
+[![Conda](https://img.shields.io/conda/v/conda-forge/herbie-data)](https://anaconda.org/conda-forge/herbie-data)
+
 The easiest way to install Herbie and its dependencies is with [Conda](https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html) from conda-forge.
 
 ```bash
@@ -19,6 +21,8 @@ pip install git+https://github.com/blaylockbk/Carpenter_Workshop.git
 <br>
 
 # pip install
+
+[![PyPI - Version](https://img.shields.io/pypi/v/herbie-data)](https://pypi.org/project/herbie-data/)
 
 Herbie is published on PyPI and you can install it with pip, _but_ it requires some dependencies that you will have to install yourself:
 
