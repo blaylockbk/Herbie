@@ -158,6 +158,7 @@ def test_hrrr_file_size_subset2():
 
     assert stated_size == H.get_localFilePath(var).stat().st_size
 
+
 def test_hrrr_file_size_subset3():
     """Test that same level is downloaded correctly."""
     var = ":500 mb:"
