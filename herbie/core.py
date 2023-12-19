@@ -658,11 +658,11 @@ class Herbie:
             )
             df["valid_time"] = df["reference_time"] + pd.to_timedelta(f"{self.fxx}H")
             df["start_byte"] = df["start_byte"].astype(int)
-            df["end_byte"] = df["start_byte"].shift(-1, fill_value="")
-            # TODO: Check this works: Assign the ending byte for the last row...
-            # TODO: df["end_byte"] = df["start_byte"].shift(-1, fill_value=requests.get(self.grib, stream=True).headers['Content-Length'])
-            # TODO: Based on what Karl Schnieder did.
-            df["range"] = df.start_byte.astype(str) + "-" + df.end_byte.astype(str)
+            df["end_byte"] = df["start_byte"].shift(-1) - 1
+            df["range"] = df.apply(
+                lambda x: f"{x.start_byte:.0f}-{x.end_byte:.0f}".replace("nan", ""),
+                axis=1,
+            )
             df = df.reindex(
                 columns=[
                     "grib_message",
@@ -681,7 +681,6 @@ class Herbie:
             )
 
             df = df.dropna(how="all", axis=1)
-            df = df.fillna("")
 
             df["search_this"] = (
                 df.loc[:, "variable":]
@@ -888,40 +887,34 @@ class Herbie:
                     f'📇 Download subset: {self.__repr__()}{" ":60s}\n cURL from {grib_source}'
                 )
 
+            # -----------------------------------------------------
             # Download subsets of the file by byte range with cURL.
-            # > Instead of using a single curl command for each row,
-            # > group adjacent messages in the same curl command.
+            #  Instead of using a single curl command for each row,
+            #  group adjacent messages in the same curl command.
 
             # Find index groupings
-            # TODO: Improve this for readability
-            # https://stackoverflow.com/a/32199363/2383070
-            idx_df = self.inventory(searchString)
-            li = idx_df.index
-            inds = (
-                [0]
-                + [ind for ind, (i, j) in enumerate(zip(li, li[1:]), 1) if j - i > 1]
-                + [len(li) + 1]
-            )
-            curl_groups = [li[i:j] for i, j in zip(inds, inds[1:])]
-
-            curl_ranges = []
-            group_dfs = []
-            for i, group in enumerate(curl_groups):
-                _df = idx_df.loc[group]
-                # cURL ranges are end-inclusive, so subtract one from our end-exclusive end_byte
-                curl_ranges.append(
-                    f"{_df.iloc[0].start_byte}-{_df.iloc[-1].end_byte-1}"
+            idx_df = self.inventory(searchString).copy()
+            if verbose:
+                print(
+                    f"Found {ANSI.bold}{ANSI.green}{len(idx_df)}{ANSI.reset} grib messages."
                 )
-                group_dfs.append(_df)
+            idx_df["download_groups"] = idx_df.grib_message.diff().ne(1).cumsum()
 
-            for i, (range, _df) in enumerate(zip(curl_ranges, group_dfs)):
+            # cURL subsets of each group
+            for i, curl_group in idx_df.groupby("download_groups"):
                 if verbose:
-                    for i, row in _df.iterrows():
+                    print(f"Download subset group {i}")
+
+                if verbose:
+                    for _, row in curl_group.iterrows():
                         print(
                             f"  {row.grib_message:<3g} {ANSI.orange}{row.search_this}{ANSI.reset}"
                         )
+                range = f"{curl_group.start_byte.min():.0f}-{curl_group.end_byte.max():.0f}".replace(
+                    "nan", ""
+                )
 
-                if i == 0:
+                if i == 1:
                     # If we are working on the first item, overwrite the existing file...
                     curl = f'''curl -s --range {range} "{grib_source}" > "{outFile}"'''
                 else:
@@ -1005,12 +998,14 @@ class Herbie:
             # Download the full file from remote source
             urllib.request.urlretrieve(self.grib, outFile, _reporthook)
 
+            original_source = self.grib
+
             self.grib = outFile
             # self.grib_source = "local"  # ?? Why did I turn this off?
 
             if verbose:
                 print(
-                    f"✅ Success! Downloaded {self.model.upper()} from \033[38;5;202m{self.grib_source:20s}\033[0m\n\tsrc: {self.grib}\n\tdst: {outFile}"
+                    f"✅ Success! Downloaded {self.model.upper()} from \033[38;5;202m{self.grib_source:20s}\033[0m\n\tsrc: {original_source}\n\tdst: {outFile}"
                 )
 
         else:
