@@ -658,11 +658,11 @@ class Herbie:
             )
             df["valid_time"] = df["reference_time"] + pd.to_timedelta(f"{self.fxx}H")
             df["start_byte"] = df["start_byte"].astype(int)
-            df["end_byte"] = df["start_byte"].shift(-1, fill_value="")
-            # TODO: Check this works: Assign the ending byte for the last row...
-            # TODO: df["end_byte"] = df["start_byte"].shift(-1, fill_value=requests.get(self.grib, stream=True).headers['Content-Length'])
-            # TODO: Based on what Karl Schnieder did.
-            df["range"] = df.start_byte.astype(str) + "-" + df.end_byte.astype(str)
+            df["end_byte"] = df["start_byte"].shift(-1) - 1
+            df["range"] = df.apply(
+                lambda x: f"{x.start_byte:.0f}-{x.end_byte:.0f}".replace("nan", ""),
+                axis=1,
+            )
             df = df.reindex(
                 columns=[
                     "grib_message",
@@ -908,10 +908,7 @@ class Herbie:
             group_dfs = []
             for i, group in enumerate(curl_groups):
                 _df = idx_df.loc[group]
-                # cURL ranges are end-inclusive, so subtract one from our end-exclusive end_byte
-                curl_ranges.append(
-                    f"{_df.iloc[0].start_byte}-{_df.iloc[-1].end_byte-1}"
-                )
+                curl_ranges.append(_df.iloc[0].range)
                 group_dfs.append(_df)
 
             for i, (range, _df) in enumerate(zip(curl_ranges, group_dfs)):
