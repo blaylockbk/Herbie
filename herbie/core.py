@@ -920,7 +920,9 @@ class Herbie:
                 else:
                     # ...all other messages are appended to the subset file.
                     curl = f'''curl -s --range {range} "{grib_source}" >> "{outFile}"'''
-                print(curl)
+                
+                if verbose:
+                    print(curl)
                 os.system(curl)
 
             if verbose:
