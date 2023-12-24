@@ -65,7 +65,7 @@ docs = [
     "sphinx-markdown-tables",
     "sphinxcontrib-mermaid",
 ]
-test = ["pytest", "black", "isort"]
+test = ["pytest", "ruff"]
 
 [build-system]
 requires = ["setuptools>=42", "wheel", "setuptools_scm[toml]>=3.4"]
