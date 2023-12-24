@@ -39,6 +39,7 @@ dependencies:
   # ===================
   # Formatter & Testing
   # ===================
+  - ruff
   - black
   - black-jupyter
   - isort
