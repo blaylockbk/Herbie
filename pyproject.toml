@@ -79,6 +79,19 @@ version_scheme = "post-release"
 local_scheme = "no-local-version"
 write_to = "herbie/_version.py"
 
+[tool.ruff]
+extend-include = ["*.ipynb"]
+
+[tool.ruff.lint]
+extend-select = [
+    "UP", # pyupgrade
+    "D", # pydocstyle
+
+]
+
+[tool.ruff.lint.pydocstyle]
+convention = "numpy"
+
 [tool.isort]
 profile = "black"
 

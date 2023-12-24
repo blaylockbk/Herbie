@@ -1,28 +1,27 @@
 {
-  "workbench.colorCustomizations": {
-    "activityBar.activeBorder": "#0c3576",
-    "activityBar.background": "#d8c89d",
-    "activityBar.foreground": "#0c3576",
-    "activityBar.activeBackground": "#ffffff56",
-    "activityBar.inactiveForeground": "#88211b",
-    "activityBarBadge.background": "#88211b",
-    "activityBarBadge.foreground": "#f0ead2",
-    "statusBar.background": "#88211b",
-    "statusBar.foreground": "#f0ead2",
-    "titleBar.activeBackground": "#0c3576",
-    "titleBar.activeForeground": "#f0ead2",
-    "menu.selectionBackground": "#0c3576",
-    "button.background": "#0c3576",
-    "button.foreground": "#f0ead2",
-    "statusBarItem.remoteBackground": "#0c3576"
+  "[python]": {
+    "editor.defaultFormatter": "charliermarsh.ruff"
   },
-  "python.formatting.provider": "none",
   "python.testing.pytestArgs": [
     "tests"
   ],
-  "python.testing.unittestEnabled": false,
   "python.testing.pytestEnabled": true,
-  "[python]": {
-    "editor.defaultFormatter": "ms-python.black-formatter"
-  },
+  "python.testing.unittestEnabled": false,
+  "workbench.colorCustomizations": {
+    "activityBar.activeBackground": "#ffffff56",
+    "activityBar.activeBorder": "#0c3576",
+    "activityBar.background": "#d8c89d",
+    "activityBar.foreground": "#0c3576",
+    "activityBar.inactiveForeground": "#88211b",
+    "activityBarBadge.background": "#88211b",
+    "activityBarBadge.foreground": "#f0ead2",
+    "button.background": "#0c3576",
+    "button.foreground": "#f0ead2",
+    "menu.selectionBackground": "#0c3576",
+    "statusBar.background": "#88211b",
+    "statusBar.foreground": "#f0ead2",
+    "statusBarItem.remoteBackground": "#0c3576",
+    "titleBar.activeBackground": "#0c3576",
+    "titleBar.activeForeground": "#f0ead2"
+  }
 }
