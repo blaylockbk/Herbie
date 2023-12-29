@@ -10,7 +10,7 @@ import pytest
 from herbie import Herbie
 from tests.util import is_time_between
 
-today = pd.to_datetime("today").floor("1D")
+today = pd.to_datetime("today").floor("1D")-pd.to_timedelta('1D')
 save_dir = "$TMPDIR/Herbie-Tests/"
 
 
@@ -69,3 +69,26 @@ def test_rap_ncei():
         save_dir=save_dir,
     )
     assert H.grib is not None
+
+
+# ===========================
+# Check Downloaded File Sizes
+# ===========================
+
+
+def test_rap_file_size_subset1():
+    """Test that the U/V wind components are downloaded correctly.
+
+    This test is important for the RAP model which uses
+    GRIB submessages for storing UGRD and VGRD
+
+    See https://github.com/blaylockbk/Herbie/issues/259
+    """
+    var = ":.GRD:10 m"
+    H = Herbie('2023-12-01', model="rap", save_dir=save_dir, overwrite=True)
+    H.download(var)
+
+    idx = H.inventory(var)
+    stated_size = ((idx.end_byte + 1) - idx.start_byte).sum()
+
+    assert stated_size == H.get_localFilePath(var).stat().st_size

@@ -904,9 +904,18 @@ class Herbie:
                         print(
                             f"  {row.grib_message:<3g} {ANSI.orange}{row.search_this}{ANSI.reset}"
                         )
+
                 range = f"{curl_group.start_byte.min():.0f}-{curl_group.end_byte.max():.0f}".replace(
                     "nan", ""
                 )
+
+                if curl_group.end_byte.max() - curl_group.start_byte.min() < 0:
+                    # The byte range for GRIB submessages (like in the
+                    # RAP model's UGRD/VGRD) need to be handled differently.
+                    # See https://github.com/blaylockbk/Herbie/issues/259
+                    if verbose:
+                        print(f"  ERROR: Invalid cURL range {range}; Skip message.")
+                    continue
 
                 if i == 1:
                     # If we are working on the first item, overwrite the existing file...
