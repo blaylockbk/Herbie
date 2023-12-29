@@ -210,9 +210,7 @@ class Herbie:
         verbose=config["default"].get("verbose", True),
         **kwargs,
     ):
-        """
-        Specify model output and find GRIB2 file at one of the sources.
-        """
+        """Specify model output and find GRIB2 file at one of the sources."""
         self.fxx = fxx
 
         if isinstance(self.fxx, (str, pd.Timedelta)):
@@ -291,7 +289,7 @@ class Herbie:
             # ANSI colors added for style points
             if any([self.grib is not None, self.idx is not None]):
                 print(
-                    f"✅ Found",
+                    "✅ Found",
                     f"┊ model={self.model}",
                     f"┊ {ANSI.italic}product={self.product}{ANSI.reset}",
                     f"┊ {ANSI.green}{self.date:%Y-%b-%d %H:%M UTC}{ANSI.bright_green} F{self.fxx:02d}{ANSI.reset}",
@@ -300,14 +298,14 @@ class Herbie:
                 )
             else:
                 print(
-                    f"💔 Did not find",
+                    "💔 Did not find",
                     f"┊ model={self.model}",
                     f"┊ {ANSI.italic}product={self.product}{ANSI.reset}",
                     f"┊ {ANSI.green}{self.date:%Y-%b-%d %H:%M UTC}{ANSI.bright_green} F{self.fxx:02d}{ANSI.reset}",
                 )
 
     def __repr__(self):
-        """Representation in Notebook"""
+        """Representation in Notebook."""
         msg = (
             f"{ANSI.herbie} {self.model.upper()} model",
             f"{ANSI.italic}{self.product}{ANSI.reset} product initialized",
@@ -323,7 +321,7 @@ class Herbie:
         return " ".join(msg)
 
     def tell_me_everything(self):
-        """Print all the attributes of the Herbie object"""
+        """Print all the attributes of the Herbie object."""
         msg = []
         for i in dir(self):
             if isinstance(getattr(self, i), (int, str, dict)):
@@ -333,12 +331,11 @@ class Herbie:
         print(msg)
 
     def __logo__(self):
-        """For Fun, show the Herbie Logo"""
+        """For Fun, show the Herbie Logo."""
         print(ANSI.ascii)
 
     def _validate(self):
-        """Validate the Herbie class input arguments"""
-
+        """Validate the Herbie class input arguments."""
         # Accept model alias
         if self.model.lower() == "alaska":
             self.model = "hrrrak"
@@ -423,20 +420,19 @@ class Herbie:
 
         if verbose:
             print(
-                f"⚠ Herbie didn't find any inventory files that",
+                "⚠ Herbie didn't find any inventory files that",
                 f"exists from {self.IDX_SUFFIX}",
             )
         return False, None
 
     def find_grib(self):
-        """Find a GRIB file from the archive sources
+        """Find a GRIB file from the archive sources.
 
         Returns
         -------
         1) The URL or pathlib.Path to the GRIB2 files that exists
         2) The source of the GRIB2 file
         """
-
         # But first, check if the GRIB2 file exists locally.
         local_grib = self.get_localFilePath()
         if local_grib.exists() and not self.overwrite:
@@ -476,7 +472,7 @@ class Herbie:
         return [None, None]
 
     def find_idx(self):
-        """Find an index file for the GRIB file"""
+        """Find an index file for the GRIB file."""
         # If priority list is set, we want to search SOURCES in that
         # priority order. If priority is None, then search all SOURCES
         # in the order given by the model template file.
@@ -525,7 +521,7 @@ class Herbie:
         return self.LOCALFILE
 
     def get_localFilePath(self, searchString=None):
-        """Get full path to the local file"""
+        """Get full path to the local file."""
 
         # Predict the localFileName from the first model template SOURCE.
         localFilePath = (
@@ -590,7 +586,7 @@ class Herbie:
 
     @functools.cached_property
     def index_as_dataframe(self):
-        """Read and cache the full index file"""
+        """Read and cache the full index file."""
 
         if self.grib_source == "local" and wgrib2:
             # Generate IDX inventory with wgrib2
@@ -867,9 +863,7 @@ class Herbie:
                 )
 
         def subset(searchString, outFile):
-            """
-            Download a subset specified by the regex searchString
-            """
+            """Download a subset specified by the regex searchString."""
             # TODO: Maybe optimize downloading multiple subsets with MultiThreading
 
             # TODO An alternative to downloadling subset with curl is
@@ -910,9 +904,18 @@ class Herbie:
                         print(
                             f"  {row.grib_message:<3g} {ANSI.orange}{row.search_this}{ANSI.reset}"
                         )
+
                 range = f"{curl_group.start_byte.min():.0f}-{curl_group.end_byte.max():.0f}".replace(
                     "nan", ""
                 )
+
+                if curl_group.end_byte.max() - curl_group.start_byte.min() < 0:
+                    # The byte range for GRIB submessages (like in the
+                    # RAP model's UGRD/VGRD) need to be handled differently.
+                    # See https://github.com/blaylockbk/Herbie/issues/259
+                    if verbose:
+                        print(f"  ERROR: Invalid cURL range {range}; Skip message.")
+                    continue
 
                 if i == 1:
                     # If we are working on the first item, overwrite the existing file...
@@ -920,7 +923,7 @@ class Herbie:
                 else:
                     # ...all other messages are appended to the subset file.
                     curl = f'''curl -s --range {range} "{grib_source}" >> "{outFile}"'''
-                
+
                 if verbose:
                     print(curl)
                 os.system(curl)
@@ -1024,7 +1027,7 @@ class Herbie:
         **download_kwargs,
     ):
         """
-        Open GRIB2 data as xarray DataSet
+        Open GRIB2 data as xarray DataSet.
 
         Parameters
         ----------
@@ -1034,7 +1037,6 @@ class Herbie:
             If True, grib file will be removed ONLY IF it didn't exist
             before we downloaded it.
         """
-
         download_kwargs = {**dict(overwrite=False), **download_kwargs}
 
         local_file = self.get_localFilePath(searchString=searchString)
@@ -1151,7 +1153,7 @@ class Herbie:
 
     # Shortcut Methods below
     def terrain(self, water_masked=True):
-        """Return model terrain as an xarray.Dataset"""
+        """Return model terrain as an xarray.Dataset."""
         ds = self.xarray(":(?:HGT|LAND):surface")
         if water_masked:
             ds["orog"] = ds.orog.where(ds.lsm > 0)
