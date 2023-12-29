@@ -10,7 +10,7 @@ import pytest
 from herbie import Herbie
 from tests.util import is_time_between
 
-today = pd.to_datetime("today").floor("1D")-pd.to_timedelta('1D')
+today = pd.to_datetime("today").floor("1D") - pd.to_timedelta("1D")
 save_dir = "$TMPDIR/Herbie-Tests/"
 
 
@@ -85,7 +85,7 @@ def test_rap_file_size_subset1():
     See https://github.com/blaylockbk/Herbie/issues/259
     """
     var = ":.GRD:10 m"
-    H = Herbie('2023-12-01', model="rap", save_dir=save_dir, overwrite=True)
+    H = Herbie("2023-12-01", model="rap", save_dir=save_dir, overwrite=True)
     H.download(var)
 
     idx = H.inventory(var)
