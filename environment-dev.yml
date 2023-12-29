@@ -14,7 +14,7 @@ dependencies:
   # ===========
   # Handy Tools
   # ===========
-  # - cartopy>=0.22
+  - cartopy>=0.22
   - cfgrib>=0.9.10.4
   - eccodes>=2.31
   - geopandas
@@ -64,8 +64,8 @@ dependencies:
   - myst-parser
   - linkify-it-py
 
-  - pip:
-      - cartopy>=0.22
+  #- pip:
+      #- cartopy>=0.22
   # Herbie: Development version from GitHub
   #- git+https://github.com/blaylockbk/Herbie.git
 
