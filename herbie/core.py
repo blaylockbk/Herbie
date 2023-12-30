@@ -343,7 +343,7 @@ class Herbie:
         _models = {m for m in dir(model_templates) if not m.startswith("__")}
         _products = set(self.PRODUCTS)
 
-        assert self.date < datetime.utcnow(), "🔮 `date` cannot be in the future."
+        assert self.date < pd.Timestamp.utcnow().tz_localize(None), "🔮 `date` cannot be in the future."
         assert self.model in _models, f"`model` must be one of {_models}"
         assert self.product in _products, f"`product` must be one of {_products}"
 
@@ -360,7 +360,7 @@ class Herbie:
             # than 14 days ago. NOMADS doesn't keep data that old,
             # (I think this is true of all models).
             if "nomads" in self.priority:
-                expired = datetime.utcnow() - timedelta(days=14)
+                expired = pd.Timestamp.utcnow().tz_localize(None) - timedelta(days=14)
                 expired = pd.to_datetime(f"{expired:%Y-%m-%d}")
                 if self.date < expired:
                     self.priority.remove("nomads")
