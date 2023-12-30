@@ -12,7 +12,17 @@ def test_read_wgrib2_index_hrrr():
         "https://noaa-hrrr-bdp-pds.s3.amazonaws.com/hrrr.20231201/conus/hrrr.t00z.wrfsfcf00.grib2.idx"
     )
 
-    assert df_local.equals(df_remote)
+    # You should get the same DataFrame whether it is read from a remote
+    # server or a local file path. (Disregard a few columns that may
+    # be different if the GRIB file doesn't exist.)
+    disregard = ["range", "end_byte", "bytes"]
+    assert df_local.drop(columns=disregard).equals(
+        df_remote.drop(columns=disregard)
+    )
+
+    # The DataFrame should at least contain a column for the byte range
+    # and a "search_this" column.
+    assert set(["range", "search_this"]).issubset(df_local.columns)
 
 
 def test_read_wgrib2_index_rap():
@@ -24,12 +34,24 @@ def test_read_wgrib2_index_rap():
         "https://noaa-rap-pds.s3.amazonaws.com/rap.20231201/rap.t00z.awp130pgrbf00.grib2.idx"
     )
 
-    assert df_local.equals(df_remote)
+    disregard = ["range", "end_byte", "bytes"]
+    assert df_local.drop(columns=disregard).equals(
+        df_remote.drop(columns=disregard)
+    )
+    assert set(["range", "search_this"]).issubset(df_local.columns)
 
 
 def test_read_eccodes_index_ecmwf():
     """Test reading wgrib2 index files."""
-    df_local = read_eccodes_index("./sample_data/index_files/20231201000000-0h-oper-fc.index")
-    df_remote = read_eccodes_index("https://ai4edataeuwest.blob.core.windows.net/ecmwf/20231201/00z/0p4-beta/oper/20231201000000-0h-oper-fc.index")
+    df_local = read_eccodes_index(
+        "./sample_data/index_files/20231201000000-0h-oper-fc.index"
+    )
+    df_remote = read_eccodes_index(
+        "https://ai4edataeuwest.blob.core.windows.net/ecmwf/20231201/00z/0p4-beta/oper/20231201000000-0h-oper-fc.index"
+    )
 
-    assert df_local.equals(df_remote)
+    disregard = ["range", "end_byte", "bytes"]
+    assert df_local.drop(columns=disregard).equals(
+        df_remote.drop(columns=disregard)
+    )
+    assert set(["range", "search_this"]).issubset(df_local.columns)

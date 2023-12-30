@@ -4,7 +4,6 @@
 ## May 6, 2022
 
 """
-
 ===============================
 Herbie: Retrieve NWP Model Data
 ===============================
@@ -38,7 +37,6 @@ For more details, see https://herbie.readthedocs.io/user_guide/data_sources.html
 
 TODO: Rename 'searchString' to 'subset' (and rename subset function to??) - REJECTED, for now
 TODO: Rename 'fxx' to 'lead' and allow pandas-parsable timedelta string like "6H".
-TODO: add `idx_to_df()` and `df_to_idx()` methods.
 TODO: There are probably use cases for the `Path().suffixes` method
 """
 import functools
@@ -47,11 +45,12 @@ import itertools
 import json
 import logging
 import os
-import sys
+import subprocess
 import urllib.request
 import warnings
-from datetime import datetime, timedelta
+from datetime import timedelta
 from io import StringIO
+from shutil import which
 
 import cfgrib
 import pandas as pd
@@ -59,8 +58,6 @@ import pygrib
 import requests
 import xarray as xr
 from pyproj import CRS
-import subprocess
-from shutil import which
 
 import herbie.models as model_templates
 from herbie import Path, config
@@ -73,12 +70,12 @@ from herbie.misc import ANSI
 
 try:
     # Load custom xarray accessors
-    import herbie.accessors
-except:
+    pass
+except Exception:
     warnings.warn(
-        "herbie xarray accessors could not be imported."
-        "Probably missing a dependency like MetPy."
-        "If you want to use these functions, try"
+        "herbie xarray accessors could not be imported. "
+        "Probably missing a dependency like MetPy. "
+        "If you want to use these functions, try "
         "`pip install metpy`"
     )
     pass
@@ -89,18 +86,18 @@ log = logging.getLogger(__name__)
 wgrib2 = which("wgrib2")
 
 
-def wgrib2_idx(grib2filepath):
+def wgrib2_idx(grib_filepath):
     """
     Produce the GRIB2 inventory index with wgrib2.
 
     Parameters
     ----------
-    grib2filepath : Path
-        Path to a grib2 file.
+    grib_filepath : str or Path object
+        Path to a GRIB2 file.
     """
     if wgrib2:
         p = subprocess.run(
-            f"{wgrib2} -s {grib2filepath}",
+            f"{wgrib2} -s {grib_filepath}",
             shell=True,
             capture_output=True,
             encoding="utf-8",
@@ -117,7 +114,8 @@ def create_index_files(path, overwrite=False):
     Parameters
     ----------
     path : str or pathlib.Path
-        Path to directory or file.
+        Path to directory or file. An index file will be created for
+        all *.grib2 files.
     overwrite : bool
         Overwrite index file if it exists.
     """
@@ -125,13 +123,13 @@ def create_index_files(path, overwrite=False):
     files = []
     if path.is_dir():
         # List all GRIB2 files in the directory
-        files = list(path.rglob("*.grib2*"))
+        files = list(path.rglob("*.grib2"))
     elif path.is_file():
         # The path is a single file
         files = [path]
 
     if not files:
-        raise ValueError(f"No grib2 files were found in {path}")
+        raise FileNotFoundError(f"No GRIB2 files were found in {path}")
 
     for f in files:
         f_idx = Path(str(f) + ".idx")
@@ -210,7 +208,6 @@ class Herbie:
         verbose=config["default"].get("verbose", True),
         **kwargs,
     ):
-        """Specify model output and find GRIB2 file at one of the sources."""
         self.fxx = fxx
 
         if isinstance(self.fxx, (str, pd.Timedelta)):
@@ -343,7 +340,9 @@ class Herbie:
         _models = {m for m in dir(model_templates) if not m.startswith("__")}
         _products = set(self.PRODUCTS)
 
-        assert self.date < pd.Timestamp.utcnow().tz_localize(None), "🔮 `date` cannot be in the future."
+        assert self.date < pd.Timestamp.utcnow().tz_localize(
+            None
+        ), "🔮 `date` cannot be in the future."
         assert self.model in _models, f"`model` must be one of {_models}"
         assert self.product in _products, f"`product` must be one of {_products}"
 
@@ -369,7 +368,7 @@ class Herbie:
         """Pinging the Pando server before downloading can prevent a bad handshake."""
         try:
             requests.head("https://pando-rgw01.chpc.utah.edu/")
-        except:
+        except Exception:
             print("🤝🏻⛔ Bad handshake with pando? Am I able to move on?")
             pass
 
@@ -522,7 +521,6 @@ class Herbie:
 
     def get_localFilePath(self, searchString=None):
         """Get full path to the local file."""
-
         # Predict the localFileName from the first model template SOURCE.
         localFilePath = (
             self.save_dir.expand()
@@ -554,12 +552,12 @@ class Herbie:
             # in the output file name as a unique identifier.
             all_grib_msg = "-".join([f"{i:g}" for i in idx_df.index])
 
-            # To prevent "filename too long" error, create a hash to
-            # that represents the file name and subseted variables to
-            # shorten the name.
+            # To prevent "filename too long" error, create a hash that
+            # represents the file name and subseted variables to shorten
+            # the name.
 
             # I want the files to still be sorted by date, fxx, and
-            # subset fields, so include three separate hashes to similar
+            # subset fields, so include three separate hashes so similar
             # files will be sorted together.
 
             hash_date = hashlib.blake2b(
@@ -587,7 +585,6 @@ class Herbie:
     @functools.cached_property
     def index_as_dataframe(self):
         """Read and cache the full index file."""
-
         if self.grib_source == "local" and wgrib2:
             # Generate IDX inventory with wgrib2
             self.idx = StringIO(wgrib2_idx(self.get_localFilePath()))
@@ -1144,7 +1141,7 @@ class Herbie:
                 data_vars = set(itertools.chain(*[list(i) for i in Hxr]))
                 data_vars.remove("gribfile_projection")
                 Hxr = xr.concat(Hxr, dim="step", data_vars=data_vars)
-            except:
+            except Exception:
                 if self.verbose:
                     print(
                         f"Note: Returning a list of [{len(Hxr)}] xarray.Datasets because cfgrib opened with multiple hypercubes."

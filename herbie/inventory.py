@@ -1,11 +1,14 @@
-"""Reading and deciphering GRIB index files.
+"""Read and decipher GRIB index files.
 
-TODO:
-- [ ] Need to create a "search_this" column for each DataFrame type.
-- [ ] Need to compute byte range for each GRIB message.
-- [ ] Need to include companion GRIB file (remote and/or local)
-- [ ] Need to include GRIB expected file size.
-- [ ] Need to include searchString hash.
+GRIB index files are an ASCII file that describe the contents of a GRIB2
+file. The come in two flavors: (1) wgrib2 and (2) eccodes. Index files
+may be a local file path (like a Path object) or on a remote server and
+accessible via http or https.
+
+In Herbie terminology, an "index" file refers to the actual index file
+produced by wgrib2 or eccodes. The "Inventory" is a representation of
+the index contents in a Pandas DataFrame, which may contain additional
+data derived from the index content, but not explicitly given.
 """
 
 import functools
@@ -20,19 +23,25 @@ from herbie.misc import ANSI
 
 
 def get_grib_filesize(grib_filepath):
-    """Get the size of the GRIB file size in bytes."""
+    """Get the size of a GRIB file in bytes."""
     if str(grib_filepath).startswith("http"):
-        grib_filesize = int(
-            requests.get(grib_filepath, stream=True).headers["Content-Length"]
-        )
+        if requests.head(grib_filepath).status_code < 400:
+            grib_filesize = int(
+                requests.get(grib_filepath, stream=True).headers["Content-Length"]
+            )
+        else:
+            raise FileNotFoundError(f"The GRIB file is not found: {grib_filepath}")
     else:
-        grib_filesize = Path(grib_filepath).stat().st_size
+        if Path(grib_filepath).exists():
+            grib_filesize = Path(grib_filepath).stat().st_size
+        else:
+            raise FileNotFoundError(f"The GRIB file is not found: {grib_filepath}")
 
     return grib_filesize
 
 
 def read_wgrib2_index(index_filepath):
-    """Read and format a wgrib2-style index file as a DataFrame.
+    """Read and format a wgrib2-style index file as an Inventory DataFrame.
 
     Parameters
     ----------
@@ -109,7 +118,7 @@ def read_wgrib2_index(index_filepath):
 
 
 def read_eccodes_index(index_filepath):
-    """Read and format an eccodes-style index file as a DataFrame.
+    """Read and format an eccodes-style index file as an Inventory DataFrame.
 
     The eccodes keywords are explained here:
     https://confluence.ecmwf.int/display/UDOC/Identification+keywords
@@ -194,11 +203,54 @@ def read_eccodes_index(index_filepath):
 
 
 class Inventory:
-    """Inventory of GRIB file contents."""
+    """Inventory of GRIB file contents.
+
+    It is assumed that the GRIB file described by the index file exists
+    in the same location.
+
+    Parameters
+    ----------
+    index_filepath : str or path object
+        Path or URL of an index file.
+
+    Examples
+    --------
+    >>> I = Inventory("/path/to/myFile.grib2.idx")
+    >>> I.dataframe
+    >>> I.filter("UGRD|VGRD")
+    """
 
     def __init__(self, index_filepath):
         self.index_filepath = index_filepath
+        if not self._index_exists():
+            raise FileNotFoundError(
+                f"The index file does not exist: {self.index_filepath}."
+            )
+
         self.grib_filepath, self.index_suffix = index_filepath.rsplit(".", 1)
+
+        if not self._grib_exists():
+            # If the GRIB filepath does exist, maybe try checking for the
+            # file with a different suffix...
+            self.grib_filepath += ".grib2"
+            if not self._grib_exists():
+                raise FileNotFoundError(
+                    f"The GRIB file but does not exist: {self.grib_filepath}."
+                )
+
+    def _index_exists(self):
+        """Check if the index file exists."""
+        if str(self.index_filepath).startswith("http"):
+            return requests.head(self.index_filepath).status_code < 400
+        else:
+            return Path(self.index_filepath).exists()
+
+    def _grib_exists(self):
+        """Check if the GRIB file exists."""
+        if str(self.grib_filepath).startswith("http"):
+            return requests.head(self.grib_filepath).status_code < 400
+        else:
+            return Path(self.grib_filepath).exists()
 
     @functools.cached_property
     def dataframe(self):
@@ -213,8 +265,8 @@ class Inventory:
             except Exception as eccodes_failed:
                 raise ValueError(
                     f"Could not read index file.\n\n"
-                    f"read_wgrib2_index failed because: {wgrib2_failed}\n\n"
-                    f"read_eccodes_index failed because: {eccodes_failed}"
+                    f"read_wgrib2_index() failed because: {wgrib2_failed}\n\n"
+                    f"read_eccodes_index() failed because: {eccodes_failed}"
                 )
         return df
 
@@ -234,12 +286,13 @@ class Inventory:
         if searchString not in [None, ":"]:
             logic = self.dataframe["search_this"].str.contains(searchString)
             if logic.sum() == 0:
+                msg = f"`searchString='{searchString}'`"
                 print(
                     f" ╭─{ANSI.herbie}─────────────────────────────────────────────╮\n"
                     f" │ WARNING: No GRIB messages found with                 │\n"
-                    f" │ `searchString='{searchString:50s}'`.       │\n"
+                    f" │ {msg:52s} │\n"
                     f" │ Try a different searchString.                        │\n"
-                    f" ╰──────────────────────────────────────────────────────╯\n"
+                    f" ╰──────────────────────────────────────────────────────╯"
                 )
                 print(_searchString_help(style=self.style))
 
