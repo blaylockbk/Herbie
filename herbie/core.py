@@ -47,11 +47,12 @@ import itertools
 import json
 import logging
 import os
-import sys
+import subprocess
 import urllib.request
 import warnings
 from datetime import datetime, timedelta
 from io import StringIO
+from shutil import which
 
 import cfgrib
 import pandas as pd
@@ -59,8 +60,6 @@ import pygrib
 import requests
 import xarray as xr
 from pyproj import CRS
-import subprocess
-from shutil import which
 
 import herbie.models as model_templates
 from herbie import Path, config
@@ -73,7 +72,7 @@ from herbie.misc import ANSI
 
 try:
     # Load custom xarray accessors
-    import herbie.accessors
+    pass
 except:
     warnings.warn(
         "herbie xarray accessors could not be imported."
@@ -522,7 +521,6 @@ class Herbie:
 
     def get_localFilePath(self, searchString=None):
         """Get full path to the local file."""
-
         # Predict the localFileName from the first model template SOURCE.
         localFilePath = (
             self.save_dir.expand()
@@ -587,7 +585,6 @@ class Herbie:
     @functools.cached_property
     def index_as_dataframe(self):
         """Read and cache the full index file."""
-
         if self.grib_source == "local" and wgrib2:
             # Generate IDX inventory with wgrib2
             self.idx = StringIO(wgrib2_idx(self.get_localFilePath()))
@@ -762,7 +759,7 @@ class Herbie:
         )
         return self.inventory(searchString=None)
 
-    def inventory(self, searchString=None):
+    def inventory(self, searchString=None, verbose=None):
         """
         Inspect the GRIB2 file contents by reading the index file.
 
@@ -779,6 +776,10 @@ class Herbie:
 
             Read more in the user guide at
             https://herbie.readthedocs.io/en/latest/user_guide/searchString.html
+        verbose : None, bool
+            If True, then print a help message if no messages are found.
+            If False, does not print a help message if no messages are found.
+            If None (default), then verbose is set in the Herbie.__init__.
 
         Returns
         -------
@@ -787,10 +788,14 @@ class Herbie:
         """
         df = self.index_as_dataframe
 
+        # This overrides the verbose specified in __init__
+        if verbose is not None:
+            self.verbose = verbose
+
         # Filter DataFrame by searchString
         if searchString not in [None, ":"]:
             logic = df.search_this.str.contains(searchString)
-            if logic.sum() == 0:
+            if (logic.sum() == 0) and verbose:
                 print(
                     f"No GRIB messages found. There might be something wrong with {searchString=}"
                 )
