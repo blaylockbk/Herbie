@@ -2,25 +2,30 @@
   align="center"
 >
 
-<img src="images/logo_new/Herbie-logo.png">
+![](https://github.com/blaylockbk/Herbie/blob/main/images/logo_new/Herbie-logo.png?raw=True)
 
 # Herbie: Retrieve NWP Model Data 🏁
 
 <!-- Badges -->
 
-[![](https://img.shields.io/pypi/v/herbie-data)](https://pypi.python.org/pypi/herbie-data/)
-[![Conda Version](https://img.shields.io/conda/vn/conda-forge/herbie-data.svg)](https://anaconda.org/conda-forge/herbie-data)
+[![PyPI](https://img.shields.io/pypi/v/herbie-data)](https://pypi.python.org/pypi/herbie-data/)
+[![Conda Version](https://img.shields.io/conda/vn/conda-forge/herbie-data)
+](https://anaconda.org/conda-forge/herbie-data)
 [![DOI](https://zenodo.org/badge/275214142.svg)](https://zenodo.org/badge/latestdoi/275214142)
 
-![License](https://img.shields.io/github/license/blaylockbk/Herbie)
-[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+[![PyPI - Python Version](https://img.shields.io/pypi/pyversions/herbie-data)
+](https://pypi.org/project/herbie-data/)
+![PyPI - License](https://img.shields.io/pypi/l/herbie-data)
+[![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
+
 [![Tests (Conda)](https://github.com/blaylockbk/Herbie/actions/workflows/tests-conda.yml/badge.svg)](https://github.com/blaylockbk/Herbie/actions/workflows/tests-conda.yml)
 [![Tests (Python)](https://github.com/blaylockbk/Herbie/actions/workflows/tests-python.yml/badge.svg)](https://github.com/blaylockbk/Herbie/actions/workflows/tests-python.yml)
 [![Documentation Status](https://readthedocs.org/projects/herbie/badge/?version=latest)](https://herbie.readthedocs.io/?badge=latest)
-[![Python](https://img.shields.io/pypi/pyversions/herbie-data.svg)](https://pypi.org/project/herbie-data/)
+
 [![Conda Recipe](https://img.shields.io/badge/recipe-herbie--data-green.svg)](https://anaconda.org/conda-forge/herbie-data)
-[![Conda Downloads](https://img.shields.io/conda/dn/conda-forge/herbie-data.svg)](https://anaconda.org/conda-forge/herbie-data)
-[![Conda Platforms](https://img.shields.io/conda/pn/conda-forge/herbie-data.svg)](https://anaconda.org/conda-forge/herbie-data)
+![Conda Downloads](https://img.shields.io/conda/d/conda-forge/herbie-data)
+![PyPI - Downloads](https://img.shields.io/pypi/dm/herbie-data?label=pypi|downloads)
+
 
 <!-- (Badges) -->
 
@@ -175,21 +180,19 @@ If Herbie played an important role in your work, please [tell me about it](https
 
 > A portion of this work used code generously provided by Brian Blaylock's Herbie python package (https://doi.org/10.5281/zenodo.4567540)
 
----
+<hr>
 
 **Thanks for using Herbie, and happy racing!**
 
 🏁 Brian
 
-<br>
-
-|     |                                                                                     |
-| :-: | ----------------------------------------------------------------------------------- |
-| 👨🏻‍💻  | [Contributing Guidelines](https://herbie.readthedocs.io/user_guide/contribute.html) |
-| 💬  | [GitHub Discussions](https://github.com/blaylockbk/Herbie/discussions)              |
-| 🚑  | [GitHub Issues](https://github.com/blaylockbk/Herbie/issues)                        |
-| 🌐  | [Personal Webpage](http://home.chpc.utah.edu/~u0553130/Brian_Blaylock/home.html)    |
-| 🌐  | [University of Utah HRRR archive](http://hrrr.chpc.utah.edu/)                       |
+|     |                                                                                                     |
+| :-: | --------------------------------------------------------------------------------------------------- |
+| 👨🏻‍💻  | [Contributing Guide/Disclaimer](https://herbie.readthedocs.io/en/stable/user_guide/disclaimer.html) |
+| 💬  | [GitHub Discussions](https://github.com/blaylockbk/Herbie/discussions)                              |
+| 🚑  | [GitHub Issues](https://github.com/blaylockbk/Herbie/issues)                                        |
+| 🌐  | [Personal Webpage](http://home.chpc.utah.edu/~u0553130/Brian_Blaylock/home.html)                    |
+| 🌐  | [University of Utah HRRR archive](http://hrrr.chpc.utah.edu/)                                       |
 
 <br>
 

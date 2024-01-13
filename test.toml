@@ -1,0 +1,17 @@
+
+# Herbie defaults
+
+[default]
+model = "hrrr"
+fxx = 0
+save_dir = "{_save_dir}"
+overwrite = false
+verbose = true
+
+# =============================================================================
+# You can set the priority order for checking data sources.
+# If you don't specify a default priority, Herbie will check each source in the
+# order listed in the model template file. Beware: setting a default priority
+# might prevent you from checking all available sources.
+#
+# priority = ['aws', 'nomads', 'google', 'etc.']

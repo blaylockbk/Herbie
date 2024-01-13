@@ -23,7 +23,7 @@ def _searchString_help(kind="wgrib2"):
     """
 
     if kind == "wgrib2":
-        msg = """
+        msg = r"""
 Use regular expression to search for lines in the index file.
 Here are some examples you can use for the wgrib2-style `searchString`
 
