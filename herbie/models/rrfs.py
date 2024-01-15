@@ -1,10 +1,46 @@
-## Added by Brian Blaylock
-## July 26, 2021
-
-# NOTE: The Rapid Refresh Forecast System is rapidly changing
+# NOTE: The Rapid Refresh Forecast System is under development and is rapidly changing
 
 
 class rrfs:
+    def template(self):
+        self.DESCRIPTION = "Rapid Refresh Forecast System (RRFS) Ensemble"
+        self.DETAILS = {
+            "aws product description": "https://registry.opendata.aws/noaa-rrfs/",
+        }
+        self.PRODUCTS = {
+            # Below are ensemble products found in ensprod/
+            "ififip": "",
+            "natlev": "",
+            "prslev": "",
+            "testbed": "",
+        }
+
+        # Format the member argument
+        # member can be one of {'control', 'mem000#'}
+        if self.member.lower() == "control":
+            self.member = "control"
+        elif isinstance(self.member, int):
+            self.member = f"mem{self.member:04d}"
+        else:
+            raise ValueError("`member` must be int or 'control'")
+
+        # Format the domain parameter
+        if self.domain == "conus":
+            self.domain = ".conus_3k"
+        elif self.domain == "alaska":
+            self.domain = ".ak"
+        elif self.domain == "hawaii":
+            self.domain = ".hi"
+        elif self.domain == "puerto rico":
+            self.domain = ".pr"
+
+        self.SOURCES = {
+            "aws": f"https://noaa-rrfs-pds.s3.amazonaws.com/rrfs_a/rrfs_a.{self.date:%Y%m%d/%H}/{self.member}/rrfs.t{self.date:%H}z.{self.product}.f{self.fxx:03d}{self.domain}.grib2",
+        }
+        self.LOCALFILE = f"{self.member}/{self.get_remoteFileName}"
+
+
+class rrfs_old:
     def template(self):
         self.DESCRIPTION = "Rapid Refresh Forecast System (RRFS) Ensemble"
         self.DETAILS = {
