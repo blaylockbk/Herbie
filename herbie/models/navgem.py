@@ -24,6 +24,12 @@ class navgem_godae:
     NAVGEM on GODAE.
 
     Not great implementation.
+
+    TODO: Study the file naming convention
+    https://usgodae.org/docs/layout/mdllayout.pns.html
+
+    For example:
+    https://usgodae.org/ftp/outgoing/fnmoc/models/navgem_0.5/2023/2023011218/US058GMET-GR1mdl.0018_0056_00000F0OF2023011218_0100_010132-000000air_temp
     """
 
     def template(self):
