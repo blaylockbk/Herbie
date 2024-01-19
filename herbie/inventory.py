@@ -9,6 +9,8 @@ In Herbie terminology, an "index" file refers to the actual index file
 produced by wgrib2 or eccodes. The "Inventory" is a representation of
 the index contents in a Pandas DataFrame, which may contain additional
 data derived from the index content, but not explicitly given.
+
+TODO: Parsing info from an index file needs to be as fast as possible.
 """
 
 import functools
