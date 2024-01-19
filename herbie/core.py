@@ -46,7 +46,6 @@ import json
 import logging
 import os
 import subprocess
-import subprocess
 import urllib.request
 import warnings
 from datetime import timedelta
