@@ -53,7 +53,6 @@ def HerbieLatest(
     raise TimeoutError(f"Herbie did not find data for the latest time: {H}")
 
 
-
 def HerbieWait(
     model=config["default"].get("model"),
     priority=["aws", "nomads"],
