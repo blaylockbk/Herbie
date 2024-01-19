@@ -58,7 +58,7 @@ class gefs:
 
         valid_members = {
             "atmos.5": [f"p{i:02d}" for i in range(1, 31)] + ["c00", "spr", "avg"],
-            "atmos.5b": [f"p{i:02d}" for i in range(1, 31)],
+            "atmos.5b": [f"p{i:02d}" for i in range(1, 31)] + ["c00"],
             "atmos.25": [f"p{i:02d}" for i in range(1, 31)] + ["c00", "spr", "avg"],
             "wave": [f"p{i:02d}" for i in range(1, 31)] + ["spread", "mean", "prob"],
             "chem.5": None,
@@ -89,7 +89,7 @@ class gefs:
 
 
 class gefs_reforecast:
-    """Template for GEFS Reforecast data
+    """Template for GEFS Reforecast data.
 
     These grib files are organized different from other model types.
     The files are grouped into variables and clumped by forecast range.

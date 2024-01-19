@@ -46,6 +46,7 @@ import json
 import logging
 import os
 import subprocess
+import subprocess
 import urllib.request
 import warnings
 from datetime import timedelta
@@ -70,15 +71,14 @@ from herbie.misc import ANSI
 
 try:
     # Load custom xarray accessors
-    pass
-except Exception:
+    import herbie.accessors
+except:
     warnings.warn(
         "herbie xarray accessors could not be imported. "
         "Probably missing a dependency like MetPy. "
         "If you want to use these functions, try "
         "`pip install metpy`"
     )
-    pass
 
 log = logging.getLogger(__name__)
 
@@ -759,7 +759,7 @@ class Herbie:
         )
         return self.inventory(searchString=None)
 
-    def inventory(self, searchString=None):
+    def inventory(self, searchString=None, verbose=None):
         """
         Inspect the GRIB2 file contents by reading the index file.
 
@@ -776,6 +776,10 @@ class Herbie:
 
             Read more in the user guide at
             https://herbie.readthedocs.io/en/latest/user_guide/searchString.html
+        verbose : None, bool
+            If True, then print a help message if no messages are found.
+            If False, does not print a help message if no messages are found.
+            If None (default), then verbose is set in the Herbie.__init__.
 
         Returns
         -------
@@ -784,10 +788,14 @@ class Herbie:
         """
         df = self.index_as_dataframe
 
+        # This overrides the verbose specified in __init__
+        if verbose is not None:
+            self.verbose = verbose
+
         # Filter DataFrame by searchString
         if searchString not in [None, ":"]:
             logic = df.search_this.str.contains(searchString)
-            if logic.sum() == 0:
+            if (logic.sum() == 0) and verbose:
                 print(
                     f"No GRIB messages found. There might be something wrong with {searchString=}"
                 )
