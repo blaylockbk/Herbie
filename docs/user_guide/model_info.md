@@ -4,6 +4,8 @@ References to information about each model.
 
 > This is a work in progress. Please help with a PR 😄. Please provide links to the model homepages and GitHub links, contact for model developers, 
 
+> Note: You check the latest model run availability at https://www.nco.ncep.noaa.gov/pmb/nwprod/prodstat/index.html
+
 ## HRRR: High Resolution Rapid Refresh
 
 - [HRRR Homepage (ESRL)](https://rapidrefresh.noaa.gov/hrrr/ "Details about the HRRR model and graphics for the most recent runs.")
