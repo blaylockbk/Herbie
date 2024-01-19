@@ -4,6 +4,7 @@
 
 class navgem_nomads:
     """NAVGEM on NOMADS."""
+
     def template(self):
         self.DESCRIPTION = "Navy Global Environment Model"
         self.DETAILS = {
@@ -36,7 +37,7 @@ class navgem_godae:
             "GCOM": "",
         }
         self.SOURCES = {
-            #"g1": "https://usgodae.org/ftp/outgoing/fnmoc/models/navgem_0.5/2022/2022010306/US058GMET-GR1mdl.0018_0056_00600F0OF2022010306_0100_003500-000000air_temp",
+            # "g1": "https://usgodae.org/ftp/outgoing/fnmoc/models/navgem_0.5/2022/2022010306/US058GMET-GR1mdl.0018_0056_00600F0OF2022010306_0100_003500-000000air_temp",
             "godae": f"https://usgodae.org/ftp/outgoing/fnmoc/models/navgem_0.5/{self.date:%Y/%Y%m%d%H}/US058{self.product}-GR1mdl.0018_0056_{self.fxx:03d}00F0OF{self.date:%Y%m%d%H}_{self.level}{self.variable}",
         }
         self.LOCALFILE = f"{self.get_remoteFileName}"
