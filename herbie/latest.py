@@ -95,6 +95,7 @@ def HerbieWait(
     H = Herbie(now, model=model, priority=priority, **kwargs)
 
     while H.grib is None:
+        now = pd.Timestamp.utcnow().floor("1h").tz_localize(None)
         H = Herbie(now, model=model, priority=priority, **kwargs)
         if H.grib:
             return H
