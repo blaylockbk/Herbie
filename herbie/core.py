@@ -1,12 +1,5 @@
-#!/usr/bin/env python3
-
-## Brian Blaylock
-## May 6, 2022
-
 """
-===============================
-Herbie: Retrieve NWP Model Data
-===============================
+Herbie: Retrieve NWP Model Data.
 
 Herbie is your model output download assistant with a mind of his own!
 Herbie might look small on the outside, but he has a big heart on the
@@ -39,6 +32,7 @@ TODO: Rename 'searchString' to 'subset' (and rename subset function to??) - REJE
 TODO: Rename 'fxx' to 'lead' and allow pandas-parsable timedelta string like "6H".
 TODO: There are probably use cases for the `Path().suffixes` method
 """
+
 import functools
 import hashlib
 import itertools
