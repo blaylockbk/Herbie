@@ -1,4 +1,18 @@
-# NOTE: The Rapid Refresh Forecast System is under development and is rapidly changing
+"""
+NOTE: The Rapid Refresh Forecast System is under development and is rapidly changing
+"""
+
+
+HELP = r"""
+Herbie(date, model='rrfs', ...)
+
+fxx : int
+product : {"prs", "nat", "testbed", "ififip"}
+member : {"control", int}
+domain : {"conus", "alaska", "hawaii", "puerto rico", None}
+
+If product="natlev', then domain must be None
+"""
 
 
 class rrfs:
@@ -7,32 +21,38 @@ class rrfs:
         self.DETAILS = {
             "aws product description": "https://registry.opendata.aws/noaa-rrfs/",
         }
+        self.HELP = HELP
+
         self.PRODUCTS = {
             # Below are ensemble products found in ensprod/
-            "ififip": "",
-            "natlev": "",
             "prslev": "",
+            "natlev": "",
             "testbed": "",
+            "ififip": "",
         }
 
         # Format the member argument
         # member can be one of {'control', 'mem000#'}
-        if self.member.lower() == "control":
-            self.member = "control"
-        elif isinstance(self.member, int):
+        if isinstance(self.member, int):
             self.member = f"mem{self.member:04d}"
-        else:
-            raise ValueError("`member` must be int or 'control'")
+
+        # Format the product parameter
+        if self.product == "prs":
+            self.product = "prslev"
+        elif self.product == "nat":
+            self.product = "natlev"
 
         # Format the domain parameter
         if self.domain == "conus":
-            self.domain = ".conus_3k"
+            self.domain = ".conus_3km"
         elif self.domain == "alaska":
             self.domain = ".ak"
         elif self.domain == "hawaii":
             self.domain = ".hi"
         elif self.domain == "puerto rico":
             self.domain = ".pr"
+        elif self.domain is None:
+            self.domain = ""
 
         self.SOURCES = {
             "aws": f"https://noaa-rrfs-pds.s3.amazonaws.com/rrfs_a/rrfs_a.{self.date:%Y%m%d/%H}/{self.member}/rrfs.t{self.date:%H}z.{self.product}.f{self.fxx:03d}{self.domain}.grib2",

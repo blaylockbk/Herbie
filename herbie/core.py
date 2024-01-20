@@ -319,6 +319,24 @@ class Herbie:
         msg = (f"║HERBIE╠ {self.model.upper()}:{self.product}",)
         return " ".join(msg)
 
+    def help(self):
+        """Print help message if available."""
+        if hasattr(self, "HELP"):
+            HELP = self.HELP.strip().replace("\n", "\n│ ")
+        else:
+            HELP = "│"
+        print(
+            "╭─Herbie────────────────────────────────\n"
+            f"│ Help for model='{self.model}'\n"
+            f"│ \n"
+            f"│ {self.DESCRIPTION}\n"
+            f"│ {str(self.DETAILS).replace(',', '\n│')}\n"
+            f"│ \n"
+            f"│ {HELP}\n"
+            f"│ \n"
+            "╰───────────────────────────────────────\n"
+        )
+
     def tell_me_everything(self):
         """Print all the attributes of the Herbie object."""
         msg = []
