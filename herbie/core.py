@@ -72,7 +72,7 @@ from herbie.misc import ANSI
 
 try:
     # Load custom xarray accessors
-    pass
+    import herbie.accessors  # noqa: F401
 except:
     warnings.warn(
         "herbie xarray accessors could not be imported."
@@ -80,7 +80,6 @@ except:
         "If you want to use these functions, try"
         "`pip install metpy`"
     )
-    pass
 
 log = logging.getLogger(__name__)
 
