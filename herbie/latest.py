@@ -32,7 +32,7 @@ def HerbieLatest(
     **kwargs
         Any other input you want passed to the Herbie class.
     """
-    if model.lower() in ["hrrr", "rap"]:
+    if model.lower() in ["hrrr", "rap", "rrfs"]:
         freq = "1H"
     else:
         freq = "6H"
