@@ -324,20 +324,16 @@ class Herbie:
             HELP = self.HELP.strip().replace("\n", "\n│ ")
         else:
             HELP = "│"
-        print(
-            "╭─ Herbie ────────────────────────────────\n"
-            f"│ Help for model='{self.model}'\n"
-            "│ \n"
-            f"│ {self.DESCRIPTION}"
-        )
+        print("╭─ Herbie ────────────────────────────────")
+        print(f"│ Help for model='{self.model}'")
+        print("│ ")
+        print(f"│ {self.DESCRIPTION}")
         for key, value in self.DETAILS.items():
             print(f"│  {key}: {value}")
-        print(
-            "│ \n"
-            f"│ {HELP}\n"
-            "│ \n"
-            "╰─────────────────────────────────────────\n"
-        )
+        print("│")
+        print(f"│ {HELP}")
+        print("│")
+        print("╰─────────────────────────────────────────")
 
     def tell_me_everything(self):
         """Print all the attributes of the Herbie object."""
