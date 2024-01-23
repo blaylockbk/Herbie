@@ -325,15 +325,18 @@ class Herbie:
         else:
             HELP = "│"
         print(
-            "╭─Herbie────────────────────────────────\n"
+            "╭─ Herbie ────────────────────────────────\n"
             f"│ Help for model='{self.model}'\n"
-            f"│ \n"
-            f"│ {self.DESCRIPTION}\n"
-            f"│ {str(self.DETAILS).replace(',', '\n│')}\n"
-            f"│ \n"
+            "│ \n"
+            f"│ {self.DESCRIPTION}"
+        )
+        for key, value in self.DETAILS.items():
+            print(f"│  {key}: {value}")
+        print(
+            "│ \n"
             f"│ {HELP}\n"
-            f"│ \n"
-            "╰───────────────────────────────────────\n"
+            "│ \n"
+            "╰─────────────────────────────────────────\n"
         )
 
     def tell_me_everything(self):
@@ -666,7 +669,7 @@ class Herbie:
             df["reference_time"] = pd.to_datetime(
                 df.reference_time, format="d=%Y%m%d%H"
             )
-            df["valid_time"] = df["reference_time"] + pd.to_timedelta(f"{self.fxx}H")
+            df["valid_time"] = df["reference_time"] + pd.to_timedelta(f"{self.fxx}h")
             df["start_byte"] = df["start_byte"].astype(int)
             df["end_byte"] = df["start_byte"].shift(-1) - 1
             df["range"] = df.apply(

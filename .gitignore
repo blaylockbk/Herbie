@@ -35,5 +35,6 @@ MANIFEST
 $TMPDIR/
 
 $TMPDIR/
+data/
 
 herbie/_version.py
