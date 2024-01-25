@@ -89,7 +89,9 @@ wgrib2 = which("wgrib2")
 # Location of curl command. Required to download data.
 curl = which("curl")
 if curl is None:
-    warnings.warn("Curl is not in system Path. Herbie won't be able to download GRIB files.")
+    warnings.warn(
+        "Curl is not in system Path. Herbie won't be able to download GRIB files."
+    )
 
 
 def wgrib2_idx(grib2filepath):
