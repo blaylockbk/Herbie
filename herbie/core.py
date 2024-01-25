@@ -83,8 +83,15 @@ except:
 
 log = logging.getLogger(__name__)
 
-# Location of wgrib2 command, if it exists
+# Location of wgrib2 command, if it exists. Required to make missing idx files.
 wgrib2 = which("wgrib2")
+
+# Location of curl command. Required to download data.
+curl = which("curl")
+if curl is None:
+    warnings.warn(
+        "Curl is not in system Path. Herbie won't be able to download GRIB files."
+    )
 
 
 def wgrib2_idx(grib2filepath):
@@ -324,17 +331,16 @@ class Herbie:
             HELP = self.HELP.strip().replace("\n", "\n│ ")
         else:
             HELP = "│"
-        print(
-            "╭─Herbie────────────────────────────────\n"
-            f"│ Help for model='{self.model}'\n"
-            f"│ \n"
-            f"│ {self.DESCRIPTION}\n"
-            f"│ {str(self.DETAILS).replace(',', '\n│')}\n"
-            f"│ \n"
-            f"│ {HELP}\n"
-            f"│ \n"
-            "╰───────────────────────────────────────\n"
-        )
+        print("╭─ Herbie ────────────────────────────────")
+        print(f"│ Help for model='{self.model}'")
+        print("│ ")
+        print(f"│ {self.DESCRIPTION}")
+        for key, value in self.DETAILS.items():
+            print(f"│  {key}: {value}")
+        print("│")
+        print(f"│ {HELP}")
+        print("│")
+        print("╰─────────────────────────────────────────")
 
     def tell_me_everything(self):
         """Print all the attributes of the Herbie object."""
@@ -666,7 +672,7 @@ class Herbie:
             df["reference_time"] = pd.to_datetime(
                 df.reference_time, format="d=%Y%m%d%H"
             )
-            df["valid_time"] = df["reference_time"] + pd.to_timedelta(f"{self.fxx}H")
+            df["valid_time"] = df["reference_time"] + pd.to_timedelta(f"{self.fxx}h")
             df["start_byte"] = df["start_byte"].astype(int)
             df["end_byte"] = df["start_byte"].shift(-1) - 1
             df["range"] = df.apply(
