@@ -81,13 +81,12 @@ Using Herbie looks something like this...
 
    from herbie import Herbie
    
-   # Herbie object for the HRRR model 6-hr surface forecast product
+   # Create Herbie object for the HRRR model 6-hr surface forecast product
    H = Herbie(
-     '2021-01-01 12:00',   # Specify the model initialization time
-     model='hrrr',         # Specify the model you want
-     product='sfc',        # Specify the model product (model specific)
-     fxx=6                 # Specify the forecast lead time in hours
-     # (some models may have other arguments)
+     '2021-01-01 12:00',
+     model='hrrr',
+     product='sfc',
+     fxx=6
    )
    
    # Look at the GRIB2 file contents
