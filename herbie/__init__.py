@@ -194,5 +194,6 @@ if os.getenv("HERBIE_SAVE_DIR"):
     )
 
 from herbie.core import Herbie
-from herbie.fast import FastHerbie, Herbie_latest
+from herbie.fast import FastHerbie
+from herbie.latest import HerbieLatest, HerbieWait
 from herbie.wgrib2 import wgrib2
