@@ -2,7 +2,6 @@
 NOTE: The Rapid Refresh Forecast System is under development and is rapidly changing
 """
 
-
 HELP = r"""
 Herbie(date, model='rrfs', ...)
 
