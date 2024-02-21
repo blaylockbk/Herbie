@@ -6,6 +6,7 @@
    :maxdepth: 1
 
    intro.ipynb
+   inventory.ipynb
    latest.ipynb
    fast.ipynb
    accessors.ipynb
