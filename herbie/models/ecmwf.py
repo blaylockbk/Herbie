@@ -21,8 +21,8 @@ from datetime import datetime
 class ecmwf:
     def template(self):
         # TODO: This will need to be updated someday
-        version = "0p4-beta"
-        # version = '0p4'
+        #version = "0p4-beta"
+        version = '0p25'
 
         self.DESCRIPTION = "ECMWF open data"
         self.DETAILS = {
@@ -39,7 +39,7 @@ class ecmwf:
         }
 
         # example file
-        # https://data.ecmwf.int/forecasts/20220126/00z/0p4-beta/oper/20220126000000-0h-oper-fc.grib2
+        # https://data.ecmwf.int/forecasts/20240229/00z/ifs/0p25/oper/20240229000000-0h-oper-fc.grib2
 
         # product suffix
         if self.product in ["enfo", "waef"]:
@@ -47,7 +47,7 @@ class ecmwf:
         else:
             product_suffix = "fc"
 
-        post_root = f"{self.date:%Y%m%d/%Hz}/{version}/{self.product}/{self.date:%Y%m%d%H%M%S}-{self.fxx}h-{self.product}-{product_suffix}.grib2"
+        post_root = f"{self.date:%Y%m%d/%Hz}/ifs/{version}/{self.product}/{self.date:%Y%m%d%H%M%S}-{self.fxx}h-{self.product}-{product_suffix}.grib2"
 
         # If user asks for 'oper' or 'wave', still look for data in scda and waef for the short cut-off high resolution forecast.
         self.SOURCES = {
