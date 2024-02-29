@@ -21,8 +21,9 @@ from datetime import datetime
 class ecmwf:
     def template(self):
         # TODO: This will need to be updated someday
-        #version = "0p4-beta"
-        version = '0p25'
+        # version = "0p4-beta"
+        model = "ifs"
+        resol = "0p25"
 
         self.DESCRIPTION = "ECMWF open data"
         self.DETAILS = {
@@ -47,7 +48,10 @@ class ecmwf:
         else:
             product_suffix = "fc"
 
-        post_root = f"{self.date:%Y%m%d/%Hz}/ifs/{version}/{self.product}/{self.date:%Y%m%d%H%M%S}-{self.fxx}h-{self.product}-{product_suffix}.grib2"
+        post_root = (
+            f"{self.date:%Y%m%d/%Hz}/{model}/{version}/{self.product}"
+            f"/{self.date:%Y%m%d%H%M%S}-{self.fxx}h-{self.product}-{product_suffix}.grib2"
+        )
 
         # If user asks for 'oper' or 'wave', still look for data in scda and waef for the short cut-off high resolution forecast.
         self.SOURCES = {
