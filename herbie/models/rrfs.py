@@ -14,7 +14,6 @@ If product="natlev', then domain must be None
 """
 
 
-
 class rrfs:
     def template(self):
         self.DESCRIPTION = "Rapid Refresh Forecast System (RRFS) Ensemble"
