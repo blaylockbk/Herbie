@@ -19,7 +19,6 @@ https://confluence.ecmwf.int/display/DAC/ECMWF+open+data%3A+real-time+forecasts
 class ecmwf:
     def template(self):
         # TODO: This will need to be updated someday
-        # version = "0p4-beta"
         model = "ifs"
         resol = "0p25"
 
@@ -47,7 +46,7 @@ class ecmwf:
             product_suffix = "fc"
 
         post_root = (
-            f"{self.date:%Y%m%d/%Hz}/{model}/{version}/{self.product}"
+            f"{self.date:%Y%m%d/%Hz}/{model}/{resol}/{self.product}"
             f"/{self.date:%Y%m%d%H%M%S}-{self.fxx}h-{self.product}-{product_suffix}.grib2"
         )
 
