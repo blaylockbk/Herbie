@@ -10,7 +10,6 @@ The directory structure is very different from the GRIB2 format.
 - https://mesowest.utah.edu/html/hrrr/zarr_documentation/html/xarray_one_day_analysis_example.html
 - https://github.com/ProjectPythia/intake-cookbook/tree/main/notebooks
 """
-
 import datetime
 
 import cartopy.crs as ccrs
