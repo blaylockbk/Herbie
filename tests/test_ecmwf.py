@@ -8,8 +8,8 @@ from datetime import datetime, timedelta
 
 from herbie import Herbie
 
-now = datetime.now()
-yesterday = datetime(now.year, now.month, now.day) - timedelta(days=1)
+now = datetime.now() - timedelta(hours=12)
+yesterday = datetime(now.year, now.month, now.day)
 today_str = yesterday.strftime("%Y-%m-%d %H:%M")
 save_dir = "$TMPDIR/Herbie-Tests/"
 
