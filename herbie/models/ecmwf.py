@@ -23,6 +23,8 @@ class ifs:
         # Sounds like the 0p4-beta product will be deprecated in May 2024.
         if not hasattr(self, "resolution"):
             self.resolution = "0p25"
+        if self.resolution == "0p4":
+            self.resolution == "0p4-beta"
 
         self.DESCRIPTION = "ECMWF Open Data - Integrated Forecast System"
         self.DETAILS = {
@@ -47,10 +49,14 @@ class ifs:
         else:
             product_suffix = "fc"
 
-        post_root = (
-            f"{self.date:%Y%m%d/%Hz}/ifs/{self.resolution}/{self.product}"
-            f"/{self.date:%Y%m%d%H%M%S}-{self.fxx}h-{self.product}-{product_suffix}.grib2"
-        )
+        if False:
+            # TODO: somehow support access to historical 0.4-beta data before 2024-02-29
+            pass
+        else:
+            post_root = (
+                f"{self.date:%Y%m%d/%Hz}/ifs/{self.resolution}/{self.product}"
+                f"/{self.date:%Y%m%d%H%M%S}-{self.fxx}h-{self.product}-{product_suffix}.grib2"
+            )
 
         # If user asks for 'oper' or 'wave', still look for data in scda and waef for the short cut-off high resolution forecast.
         self.SOURCES = {
