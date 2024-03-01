@@ -83,7 +83,7 @@ class aifs:
         product_suffix = "fc"
 
         post_root = (
-            f"{self.date:%Y%m%d/%Hz}/ifs/0p25/{self.product}"
+            f"{self.date:%Y%m%d/%Hz}/aifs/0p25/{self.product}"
             f"/{self.date:%Y%m%d%H%M%S}-{self.fxx}h-{self.product}-{product_suffix}.grib2"
         )
 
