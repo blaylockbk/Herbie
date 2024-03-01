@@ -68,7 +68,7 @@ class ifs:
 class aifs:
     def template(self):
         self.DESCRIPTION = (
-            "ECMWF Open Data - Artificial Inteligence Integrated Forecast System"
+            "ECMWF Open Data - Artificial Intelligence Integrated Forecast System"
         )
         self.DETAILS = {
             "ECMWF": "https://confluence.ecmwf.int/display/DAC/ECMWF+open+data%3A+real-time+forecasts+from+IFS+and+AIFS",
