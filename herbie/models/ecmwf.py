@@ -17,6 +17,7 @@ https://www.ecmwf.int/en/about/media-centre/news/2024/ecmwf-releases-much-larger
 
 from datetime import datetime
 
+
 class ifs:
     def template(self):
         # Allow a user to select the deprecated 0p4-beta resolution,
