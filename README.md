@@ -39,7 +39,7 @@ Herbie helps you discover, download, and read data from:
 - [Rapid Refresh (RAP)](https://herbie.readthedocs.io/en/latest/user_guide/_model_notebooks/rap.html)
 - [Global Forecast System (GFS)](https://herbie.readthedocs.io/en/latest/user_guide/_model_notebooks/gfs.html)
 - [Global Ensemble Forecast System (GEFS)](https://herbie.readthedocs.io/en/latest/user_guide/_model_notebooks/gefs.html)
-- [ECMWF Open Data Forecasts](https://herbie.readthedocs.io/en/latest/user_guide/_model_notebooks/ecmwf.html)
+- [ECMWF Open Data Forecasts](https://herbie.readthedocs.io/en/latest/user_guide/_model_notebooks/ecmwf.html) (IFS and AIFS)
 - [Navy Global Environmental Model (NAVGEM)](https://herbie.readthedocs.io/en/latest/user_guide/_model_notebooks/navgem.html)
 - [North American Mesoscale Model (NAM)](https://github.com/blaylockbk/Herbie/blob/main/docs/user_guide/_model_notebooks/nam.ipynb)
 - [National Blend of Models (NBM)](https://herbie.readthedocs.io/en/latest/user_guide/_model_notebooks/nbm.html)
