@@ -237,6 +237,14 @@ class Herbie:
         self.model = model.lower()
         self.product = product
 
+        if self.model == "ecmwf":
+            self.model = "ifs"
+            warnings.warn(
+                "`model='ecmwf'`is deprecated. Please use model='ifs' instead. Also, did you know you can also access `model='aifs'` too!",
+                DeprecationWarning,
+                stacklevel=2,
+            )
+
         self.priority = priority
         self.save_dir = Path(save_dir).expand()
         self.overwrite = overwrite
