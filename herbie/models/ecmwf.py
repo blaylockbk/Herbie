@@ -15,6 +15,7 @@ https://www.ecmwf.int/en/about/media-centre/news/2024/ecmwf-releases-much-larger
 
 """
 
+from datetime import datetime
 
 class ifs:
     def template(self):
@@ -23,6 +24,8 @@ class ifs:
         # Sounds like the 0p4-beta product will be deprecated in May 2024.
         if not hasattr(self, "resolution") or self.resolution is None:
             self.resolution = "0p25"
+            if self.date < datetime(2024,2,1):
+                self.resolution = "0p4-beta"
 
         self.DESCRIPTION = "ECMWF Open Data - Integrated Forecast System"
         self.DETAILS = {
@@ -47,10 +50,16 @@ class ifs:
         else:
             product_suffix = "fc"
 
-        post_root = (
-            f"{self.date:%Y%m%d/%Hz}/ifs/{self.resolution}/{self.product}"
-            f"/{self.date:%Y%m%d%H%M%S}-{self.fxx}h-{self.product}-{product_suffix}.grib2"
-        )
+        if self.date < datetime(2024,2,28,6):
+            post_root = (
+                f"{self.date:%Y%m%d/%Hz}/{self.resolution}/{self.product}"
+                f"/{self.date:%Y%m%d%H%M%S}-{self.fxx}h-{self.product}-{product_suffix}.grib2"
+            )
+        else:
+            post_root = (
+                f"{self.date:%Y%m%d/%Hz}/ifs/{self.resolution}/{self.product}"
+                f"/{self.date:%Y%m%d%H%M%S}-{self.fxx}h-{self.product}-{product_suffix}.grib2"
+            )
 
         # If user asks for 'oper' or 'wave', still look for data in scda and waef for the short cut-off high resolution forecast.
         self.SOURCES = {
