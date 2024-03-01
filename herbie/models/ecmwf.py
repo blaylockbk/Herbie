@@ -21,7 +21,7 @@ class ifs:
         # Allow a user to select the deprecated 0p4-beta resolution,
         # but default to the 0p25 product if resolution is not specified.
         # Sounds like the 0p4-beta product will be deprecated in May 2024.
-        if self.resolution is None:
+        if not hasattr(self, "resolution"):
             self.resolution = "0p25"
 
         self.DESCRIPTION = "ECMWF Open Data - Integrated Forecast System"
