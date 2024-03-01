@@ -17,6 +17,7 @@ https://www.ecmwf.int/en/about/media-centre/news/2024/ecmwf-releases-much-larger
 
 from datetime import datetime
 
+
 class ifs:
     def template(self):
         # Allow a user to select the deprecated 0p4-beta resolution,
@@ -24,7 +25,7 @@ class ifs:
         # Sounds like the 0p4-beta product will be deprecated in May 2024.
         if not hasattr(self, "resolution") or self.resolution is None:
             self.resolution = "0p25"
-            if self.date < datetime(2024,2,1):
+            if self.date < datetime(2024, 2, 1):
                 self.resolution = "0p4-beta"
 
         self.DESCRIPTION = "ECMWF Open Data - Integrated Forecast System"
@@ -50,7 +51,7 @@ class ifs:
         else:
             product_suffix = "fc"
 
-        if self.date < datetime(2024,2,28,6):
+        if self.date < datetime(2024, 2, 28, 6):
             post_root = (
                 f"{self.date:%Y%m%d/%Hz}/{self.resolution}/{self.product}"
                 f"/{self.date:%Y%m%d%H%M%S}-{self.fxx}h-{self.product}-{product_suffix}.grib2"
