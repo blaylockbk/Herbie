@@ -15,16 +15,17 @@ https://www.ecmwf.int/en/about/media-centre/news/2024/ecmwf-releases-much-larger
 
 """
 
+from datetime import datetime
 
 class ifs:
     def template(self):
         # Allow a user to select the deprecated 0p4-beta resolution,
         # but default to the 0p25 product if resolution is not specified.
         # Sounds like the 0p4-beta product will be deprecated in May 2024.
-        if not hasattr(self, "resolution"):
+        if not hasattr(self, "resolution") or self.resolution is None:
             self.resolution = "0p25"
-        if self.resolution == "0p4":
-            self.resolution == "0p4-beta"
+            if self.date < datetime(2024, 2, 1):
+                self.resolution = "0p4-beta"
 
         self.DESCRIPTION = "ECMWF Open Data - Integrated Forecast System"
         self.DETAILS = {
@@ -49,9 +50,11 @@ class ifs:
         else:
             product_suffix = "fc"
 
-        if False:
-            # TODO: somehow support access to historical 0.4-beta data before 2024-02-29
-            pass
+        if self.date < datetime(2024, 2, 28, 6):
+            post_root = (
+                f"{self.date:%Y%m%d/%Hz}/{self.resolution}/{self.product}"
+                f"/{self.date:%Y%m%d%H%M%S}-{self.fxx}h-{self.product}-{product_suffix}.grib2"
+            )
         else:
             post_root = (
                 f"{self.date:%Y%m%d/%Hz}/ifs/{self.resolution}/{self.product}"
@@ -74,7 +77,7 @@ class ifs:
 class aifs:
     def template(self):
         self.DESCRIPTION = (
-            "ECMWF Open Data - Artificial Intelligence Integrated Forecast System"
+            "ECMWF Open Data - Artificial Inteligence Integrated Forecast System"
         )
         self.DETAILS = {
             "ECMWF": "https://confluence.ecmwf.int/display/DAC/ECMWF+open+data%3A+real-time+forecasts+from+IFS+and+AIFS",
@@ -84,7 +87,7 @@ class aifs:
         }
 
         # example file
-        # https://data.ecmwf.int/forecasts/20240229/00z/ifs/0p25/oper/20240229000000-0h-oper-fc.grib2
+        # https://data.ecmwf.int/forecasts/20240229/00z/aifs/0p25/oper/20240229000000-0h-oper-fc.grib2
 
         product_suffix = "fc"
 
