@@ -109,7 +109,8 @@ pip install git+https://github.com/blaylockbk/Herbie.git
       d2[(RAP)] -.-> H
       d3[(GFS)] -..-> H
       d33[(GEFS)] -.-> H
-      d4[(ECMWF)] -..-> H
+      d4[(IFS)] -..-> H
+      d44[(AIFS)] -..-> H
       d5[(NBM)] -.-> H
       d6[(RRFS)] -..-> H
       d7[(RTMA)] -.-> H
@@ -152,7 +153,7 @@ Herbie downloads model data from the following sources, but can be extended to i
 
 - [NOMADS](https://nomads.ncep.noaa.gov/)
 - [NOAA Open Data Dissemination Program (NODD)](https://www.noaa.gov/information-technology/open-data-dissemination) partners (i.e., AWS, Google, Azure).
-- [ECMWF Open Data}(https://www.ecmwf.int/en/forecasts/datasets/open-data)Azure storage
+- [ECMWF Open Data Forecasts](https://www.ecmwf.int/en/forecasts/datasets/open-data)
 - University of Utah CHPC Pando archive
 - Local file system
 
