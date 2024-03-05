@@ -62,6 +62,7 @@ class ifs:
             "scwv": "short cut-off high-resolution forecast, ocean wave fields (also known as high-frequency products)",
             "mmsf": "multi-model seasonal forecasts fields from the ECMWF model only.",
         }
+        self.PRODUCTS = _products
         if not hasattr(self, "product") or self.product is None:
             self.product = list(_products)[0]
         elif self.product not in set(_products):
@@ -137,6 +138,7 @@ class aifs:
         _products = {
             "oper": "operational high-resolution forecast, atmospheric fields",
         }
+        self.PRODUCTS = _products
         if not hasattr(self, "product") or self.product is None:
             self.product = list(_products)[0]
         elif self.product not in set(_products):

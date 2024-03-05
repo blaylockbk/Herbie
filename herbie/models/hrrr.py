@@ -104,6 +104,7 @@ class hrrr:
             "nat": "Native level fields; 3-km resolution",
             "subh": "Subhourly grids; 3-km resolution",
         }
+        self.PRODUCTS = _products
         if not hasattr(self, "product") or self.product is None:
             self.product = list(_products)[0]
         elif self.product not in set(_products):
@@ -138,6 +139,7 @@ class hrrr:
             } | self.SOURCES
 
         self.LOCALFILE = f"{self.get_remoteFileName}"
+
 
 class hrrrak:
     def template(self):
