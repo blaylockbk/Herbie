@@ -68,44 +68,76 @@ from datetime import datetime
 
 
 class hrrr:
+    """Template for High-Resolution Rapid Refresh model (HRRR)."""
+
     def template(self):
+        # --------
+        # Metadata
         self.DESCRIPTION = "High-Resolution Rapid Refresh - CONUS"
-        self.DETAILS = {
-            "NOMADS product description": "https://www.nco.ncep.noaa.gov/pmb/products/hrrr/",
-            "University of Utah HRRR archive": "http://hrrr.chpc.utah.edu/",
+        self.IDX_SUFFIX = [".grib2.idx"]
+        self.IDX_STYLE = "wgrib2"
+        self.EXPECT_IDX_FILE = "remote"
+        self.SOURCE_LINKS = {
+            "aws": "",
+            "google": "",
+            "azure": "",
+            "nomads": "https://www.nco.ncep.noaa.gov/pmb/products/hrrr/",
+            "pando": "http://hrrr.chpc.utah.edu/",
         }
-        self.PRODUCTS = {
+
+        # ----------
+        # Validation
+
+        # HRRR produces output every hour, so we don't really need to
+        # check that the hour is correct. But let's to it just to
+        # demonstrate (this is an important step for models that run
+        # every 6 hours.)
+        _hours = range(0, 24)
+        if self.date.hour not in _hours:
+            raise ValueError(f"Request date's hour must be one of {list(_hours)}")
+
+        # HRRR produces different output products. If not given, the
+        # default will be the 'sfc' product.
+        _products = {
             "sfc": "2D surface level fields; 3-km resolution",
             "prs": "3D pressure level fields; 3-km resolution",
             "nat": "Native level fields; 3-km resolution",
             "subh": "Subhourly grids; 3-km resolution",
         }
+        if not hasattr(self, "product") or self.product is None:
+            self.product = list(_products)[0]
+        elif self.product not in set(_products):
+            raise ValueError(f"`product` must be one of {list(_products)}")
+
+        # -----------------
+        # Build Source URLs
+
+        post_root = f"hrrr.{self.date:%Y%m%d}/conus/hrrr.t{self.date:%H}z.wrf{self.product}f{self.fxx:02d}.grib2"
+
         self.SOURCES = {
-            "aws": f"https://noaa-hrrr-bdp-pds.s3.amazonaws.com/hrrr.{self.date:%Y%m%d}/conus/hrrr.t{self.date:%H}z.wrf{self.product}f{self.fxx:02d}.grib2",
-            "nomads": f"https://nomads.ncep.noaa.gov/pub/data/nccf/com/hrrr/prod/hrrr.{self.date:%Y%m%d}/conus/hrrr.t{self.date:%H}z.wrf{self.product}f{self.fxx:02d}.grib2",
-            "google": f"https://storage.googleapis.com/high-resolution-rapid-refresh/hrrr.{self.date:%Y%m%d}/conus/hrrr.t{self.date:%H}z.wrf{self.product}f{self.fxx:02d}.grib2",
-            "azure": f"https://noaahrrr.blob.core.windows.net/hrrr/hrrr.{self.date:%Y%m%d}/conus/hrrr.t{self.date:%H}z.wrf{self.product}f{self.fxx:02d}.grib2",
-            "pando": f"https://pando-rgw01.chpc.utah.edu/{self.model}/{self.product}/{self.date:%Y%m%d}/{self.model}.t{self.date:%H}z.wrf{self.product}f{self.fxx:02d}.grib2",
-            "pando2": f"https://pando-rgw02.chpc.utah.edu/{self.model}/{self.product}/{self.date:%Y%m%d}/{self.model}.t{self.date:%H}z.wrf{self.product}f{self.fxx:02d}.grib2",
+            "aws": f"https://noaa-hrrr-bdp-pds.s3.amazonaws.com/{post_root}",
+            "nomads": f"https://nomads.ncep.noaa.gov/pub/data/nccf/com/hrrr/prod/{post_root}",
+            "google": f"https://storage.googleapis.com/high-resolution-rapid-refresh/{post_root}",
+            "azure": f"https://noaahrrr.blob.core.windows.net/hrrr/{post_root}",
         }
-        self.EXPECT_IDX_FILE = "remote"
-        self.LOCALFILE = f"{self.get_remoteFileName}"
 
-        # ----------
-        # CONDITIONS
-        # ----------
+        # Pando HRRR archive has slightly different naming pattern
+        post_root_pando = f"{self.model}/{self.product}/{self.date:%Y%m%d}/{self.model}.t{self.date:%H}z.wrf{self.product}f{self.fxx:02d}.grib2"
+        self.SOURCES |= {
+            "pando": f"https://pando-rgw01.chpc.utah.edu/{post_root_pando}",
+            "pando2": f"https://pando-rgw02.chpc.utah.edu/{post_root_pando}",
+        }
 
-        # Fix Issue #34 (not pretty, but gets the job done for now)
-        # TODO: Allow Herbie to specify the format of the SOURCE manually
         if self.product == "subh" and self.date <= datetime(2018, 9, 16):
+            # Fix Issue #34 (not pretty, but gets the job done for now)
             # The subhourly filenames are different for older files.
             # prepend the self.SOURCES dict with the old filename format.
             # This requires an additional arg for `fxx_subh` when calling Herbie
             self.SOURCES = {
-                "aws_old_subh": f"https://noaa-hrrr-bdp-pds.s3.amazonaws.com/hrrr.{self.date:%Y%m%d}/conus/hrrr.t{self.date:%H}z.wrf{self.product}f{self.fxx:02d}{self.fxx_subh:02d}.grib2",
-                **self.SOURCES,
-            }
+                "aws_old_subh": f"https://noaa-hrrr-bdp-pds.s3.amazonaws.com/hrrr.{self.date:%Y%m%d}/conus/hrrr.t{self.date:%H}z.wrf{self.product}f{self.fxx:02d}{self.fxx_subh:02d}.grib2"
+            } | self.SOURCES
 
+        self.LOCALFILE = f"{self.get_remoteFileName}"
 
 class hrrrak:
     def template(self):

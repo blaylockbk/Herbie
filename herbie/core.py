@@ -266,16 +266,6 @@ class Herbie:
         # (see https://stackoverflow.com/a/7936588/2383070 for what I'm doing here)
         getattr(model_templates, self.model).template(self)
 
-        if product is None:
-            # The user didn't specify a product, so let's use the first
-            # product in the model template.
-            self.product = list(self.PRODUCTS)[0]
-            log.info(f'`product` not specified. Will use "{self.product}".')
-            # We need to rerun this so the sources have the new product value.
-            getattr(model_templates, self.model).template(self)
-
-        self.product_description = self.PRODUCTS[self.product]
-
         # Specify the suffix for the inventory index files.
         # Default value is `.grib2.idx`, but some have weird suffix,
         # like archived RAP on NCEI are `.grb2.inv`.
@@ -371,11 +361,9 @@ class Herbie:
             self.model = "hrrrak"
 
         _models = {m for m in dir(model_templates) if not m.startswith("__")}
-        _products = set(self.PRODUCTS)
 
         assert self.date < datetime.utcnow(), "🔮 `date` cannot be in the future."
         assert self.model in _models, f"`model` must be one of {_models}"
-        assert self.product in _products, f"`product` must be one of {_products}"
 
         if isinstance(self.IDX_SUFFIX, str):
             self.IDX_SUFFIX = [self.IDX_SUFFIX]
