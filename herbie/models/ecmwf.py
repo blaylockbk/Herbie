@@ -22,16 +22,22 @@ class ifs:
     """Template for ECMWF Integrated Forecast System (IFS)."""
 
     def template(self):
+        """Metadata, Validation, and Source URLs."""
         # --------
         # Metadata
+
         self.DESCRIPTION = "ECMWF Open Data - Integrated Forecast System"
-        self.IDX_SUFFIX = [".index"]
-        self.IDX_STYLE = "eccodes"  # 'wgrib2' or 'eccodes'
-        self.SOURCE_LINKS = {
+        self.SOURCE_INFO = {
             "azure": "",
             "aws": "",
             "ecmwf": "https://confluence.ecmwf.int/display/DAC/ECMWF+open+data%3A+real-time+forecasts+from+IFS+and+AIFS",
         }
+
+        # -----------
+        # Index Files
+
+        self.IDX_SUFFIX = [".index"]
+        self.IDX_STYLE = "eccodes"  # 'wgrib2' or 'eccodes'
 
         # ----------
         # Validation
@@ -66,7 +72,9 @@ class ifs:
         if not hasattr(self, "product") or self.product is None:
             self.product = list(_products)[0]
         elif self.product not in set(_products):
-            raise ValueError(f"`product` must be one of {list(_products)}")
+            raise ValueError(
+                f"`product` must be one of... \n{"\n".join(f" | '{key}' - {value}" for key, value in _products.items())}"
+            )
 
         # -----------------
         # Build Source URLs
@@ -118,13 +126,16 @@ class aifs:
         self.DESCRIPTION = (
             "ECMWF Open Data - Artificial Intelligence Integrated Forecast System"
         )
-        self.IDX_SUFFIX = [".index"]
-        self.IDX_STYLE = "eccodes"  # 'wgrib2' or 'eccodes'
-        self.SOURCE_LINKS = {
+        self.SOURCE_INFO = {
             "azure": "",
             "aws": "",
             "ecmwf": "https://confluence.ecmwf.int/display/DAC/ECMWF+open+data%3A+real-time+forecasts+from+IFS+and+AIFS",
         }
+
+        # -----------
+        # Index Files
+        self.IDX_SUFFIX = [".index"]
+        self.IDX_STYLE = "eccodes"  # 'wgrib2' or 'eccodes'
 
         # ----------
         # Validation
@@ -142,7 +153,9 @@ class aifs:
         if not hasattr(self, "product") or self.product is None:
             self.product = list(_products)[0]
         elif self.product not in set(_products):
-            raise ValueError(f"`product` must be one of {list(_products)}")
+            raise ValueError(
+                f"`product` must be one of... \n{"\n".join(f" | '{key}' - {value}" for key, value in _products.items())}"
+            )
 
         # -----------------
         # Build Source URLs
