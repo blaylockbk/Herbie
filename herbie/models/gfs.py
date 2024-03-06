@@ -77,7 +77,7 @@ class gfs:
             self.product = list(_products)[0]
         elif self.product not in set(_products):
             raise ValueError(
-                f"`product` must be one of... \n{"\n".join(f" | '{key}' - {value}" for key, value in _products.items())}"
+                f"""`product` must be one of... \n{"\n".join(f" | '{key}' - {value}" for key, value in _products.items())}"""
             )
 
         post_root = f"gfs.{self.date:%Y%m%d/%H}/atmos/gfs.t{self.date:%H}z.{self.product}.{self.grid}.f{self.fxx:03d}"
@@ -109,7 +109,7 @@ class gfs_wave:
         elif self.grid not in set(_grids):
             raise ValueError(f"`grid` must be one of {_grids}")
 
-        self.PRODUCTS = {
+        _products = {
             "arctic": "Arctic; (`grid` must be '9km'",
             "atlocn": "North Atlantic",
             "epacif": "Eastern Pacific",
@@ -117,6 +117,13 @@ class gfs_wave:
             "gsouth": "Global South",
             "wcoast": "West Coast",
         }
+        self.PRODUCTS = _products
+        if not hasattr(self, "product") or self.product is None:
+            self.product = list(_products)[0]
+        elif self.product not in set(_products):
+            raise ValueError(
+                f"""`product` must be one of... \n{"\n".join(f" | '{key}' - {value}" for key, value in _products.items())}"""
+            )
 
         post_root = f"gfs.{self.date:%Y%m%d/%H}/wave/gridded/gfswave.t{self.date:%H}z.{self.product}.{self.grid}.f{self.fxx:03d}.grib2"
 

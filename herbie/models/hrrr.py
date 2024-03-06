@@ -123,7 +123,7 @@ class hrrr:
             self.product = list(_products)[0]
         elif self.product not in set(_products):
             raise ValueError(
-                f"`product` must be one of... \n{"\n".join(f" | '{key}' - {value}" for key, value in _products.items())}"
+                f"""`product` must be one of... \n{"\n".join(f" | '{key}' - {value}" for key, value in _products.items())}"""
             )
 
         # -----------------
@@ -196,7 +196,7 @@ class hrrrak:
             self.product = list(_products)[0]
         elif self.product not in set(_products):
             raise ValueError(
-                f"`product` must be one of... \n{"\n".join(f" | '{key}' - {value}" for key, value in _products.items())}"
+                f"""`product` must be one of... \n{"\n".join(f" | '{key}' - {value}" for key, value in _products.items())}"""
             )
 
         # -----------------
