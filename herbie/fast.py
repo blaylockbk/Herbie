@@ -241,7 +241,7 @@ class FastHerbie:
         max_threads=None,
         **xarray_kwargs,
     ):
-        """Read many Herbie objects into an xarray Dataset
+        """Read many Herbie objects into an xarray Dataset.
 
         # TODO: Sometimes the Jupyter Cell always crashes when I run this.
         # TODO: "fatal flex scanner internal error--end of buffer missed"
