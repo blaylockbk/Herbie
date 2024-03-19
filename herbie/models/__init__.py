@@ -31,6 +31,7 @@ from .rap import *
 from .rrfs import *
 from .rtma import *
 from .urma import *
+from .cfs import *
 
 # ======================================================================
 #                     Import Private Model Templates
