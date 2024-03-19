@@ -1,28 +1,23 @@
 ## Brian Blaylock
 ## April 12, 2022
 
-"""
-================
-Some Herbie Help
-================
-"""
+"""Herbie help messages."""
 
 
-def _searchString_help(kind="wgrib2"):
+def _searchString_help(style="wgrib2"):
     """
-    Help/Error Message for `searchString`
+    Help/Error message for an invalid `searchString`.
 
     Parameters
     ----------
-    kind : {"wgrib2", "eccodes"}
+    style : {"wgrib2", "eccodes"}
         There are two different utilities used to create index files and
         they create different file output.
 
         - **wgrib2** is the NCEP-style grib messages
         - **eccodes** is the ECMWF-style grib messages
     """
-
-    if kind == "wgrib2":
+    if style == "wgrib2":
         msg = r"""
 Use regular expression to search for lines in the index file.
 Here are some examples you can use for the wgrib2-style `searchString`
@@ -54,8 +49,8 @@ If you need help with regular expression, search the web or look at
 this cheatsheet: https://www.petefreitag.com/cheatsheets/regex/.
 """
 
-    elif kind == "eccodes":
-        msg = """
+    elif style == "eccodes":
+        msg = r"""
 Use regular expression to search for lines in the index file.
 Here are some examples you can use for the ecCodes-style `searchString`
 
