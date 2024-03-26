@@ -27,7 +27,7 @@ import re
 from pathlib import Path
 
 import cartopy.crs as ccrs
-import metpy   # noqa: F401
+import metpy  # noqa: F401
 import numpy as np
 import pandas as pd
 import pygrib
