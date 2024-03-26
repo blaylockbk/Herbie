@@ -18,24 +18,23 @@ To use the herbie xarray accessor, do this...
     ds.herbie.crs
     ds.herbie.plot()
 
-
 # TODO: I like the idea in Salem to mask data by a geographic region
 # TODO: Maybe can use that in Herbie. https://github.com/fmaussion/salem
-
 """
+
 import functools
+import re
+from pathlib import Path
+
 import cartopy.crs as ccrs
-import metpy  # * Needed for metpy accessor
+import metpy   # noqa: F401
 import numpy as np
 import pandas as pd
-import xarray as xr
 import pygrib
-from pyproj import CRS
-from pathlib import Path
-import re
 import shapely
-from shapely.geometry import Polygon, MultiPoint, Point
-
+import xarray as xr
+from pyproj import CRS
+from shapely.geometry import MultiPoint, Point, Polygon
 
 _level_units = dict(
     adiabaticCondensation="adiabatic condensation",
@@ -133,7 +132,6 @@ class HerbieAccessor:
             An xarray.Dataset from a GRIB2 file opened by the cfgrib engine.
 
         """
-
         ds = self._obj
 
         # Get variables that have dimensions
@@ -306,11 +304,11 @@ class HerbieAccessor:
         import matplotlib.pyplot as plt
 
         try:
-            from toolbox.cartopy_tools import EasyMap, pc
             from paint.radar import cm_reflectivity
             from paint.radar2 import cm_reflectivity
-            from paint.terrain2 import cm_terrain
             from paint.standard2 import cm_dpt, cm_pcp, cm_rh, cm_tmp, cm_wind
+            from paint.terrain2 import cm_terrain
+            from toolbox.cartopy_tools import EasyMap, pc
         except:
             print("The plotting accessor requires my Carpenter Workshop. Try:")
             print(
@@ -325,7 +323,7 @@ class HerbieAccessor:
         if vars is None:
             vars = ds.data_vars
 
-        for var in vars:
+        for i, var in enumerate(vars):
             if "longitude" not in ds[var].coords:
                 # This is the case for the gribfile_projection variable
                 continue
@@ -355,7 +353,7 @@ class HerbieAccessor:
 
             common_features_kw = {**defaults, **common_features_kw}
 
-            ax = EasyMap(**common_features_kw).STATES().ax
+            ax = EasyMap(fignum=i, **common_features_kw).STATES().ax
 
             title = ""
             kwargs.setdefault("shading", "auto")
