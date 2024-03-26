@@ -333,6 +333,10 @@ class Herbie:
         msg = (f"║HERBIE╠ {self.model.upper()}:{self.product}",)
         return " ".join(msg)
 
+    def __bool__(self):
+        """Herbie evaluated True if the GRIB file exists."""
+        return bool(self.grib)
+
     def help(self):
         """Print help message if available."""
         if hasattr(self, "HELP"):
