@@ -306,7 +306,7 @@ class HerbieAccessor:
         import matplotlib.pyplot as plt
 
         try:
-            from toolbox.cartopy_tools import common_features, pc
+            from toolbox.cartopy_tools import EasyMap, pc
             from paint.radar import cm_reflectivity
             from paint.radar2 import cm_reflectivity
             from paint.terrain2 import cm_terrain
@@ -355,7 +355,7 @@ class HerbieAccessor:
 
             common_features_kw = {**defaults, **common_features_kw}
 
-            ax = common_features(**common_features_kw).STATES().ax
+            ax = EasyMap(**common_features_kw).STATES().ax
 
             title = ""
             kwargs.setdefault("shading", "auto")
