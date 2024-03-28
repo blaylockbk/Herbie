@@ -22,7 +22,6 @@ To use the herbie xarray accessor, do this...
 # TODO: Maybe can use that in Herbie. https://github.com/fmaussion/salem
 """
 
-
 import functools
 import pickle
 import re
@@ -183,30 +182,33 @@ class HerbieAccessor:
 
         return domain_polygon, domain_polygon_latlon
 
-    def nearest_neighbor(
-        ds, points, *, how="nearest", use_cached_tree=True, verbose=False
+    def extract_points(
+        self, points, *, method="nearest", use_cached_tree=True, verbose=False
     ):
-        """Match points to the nearest neighbor grid values.
-
-        TODO: Does this need a different name?
+        """Extract nearest neighbor grid values at selected  points.
 
         Parameters
         ----------
-        ds : xarray.dataset
-            Must include latitude and longitude coordinate.
         points : Pandas DataFrame
             A DataFrame with columns 'latitude' and 'longitude' representing
             the points to match to the model grid.
-        how : {'nearest', 'weighted', 'xarray'}
-            If 'nearest', get the grid points nearest the requested point.
-            If 'weighted', get the four nearest grid points and compute the
-            distance-weighted mean.
-            If 'xarray', use xarray.sel to get the points. DOES NOT WORK FOR
-            CURVILINEAR GRIDS.
+        method : {'nearest', 'weighted', 'xarray'}
+            Method used to extract points.
+
+            - `"nearest"` : Gets value from grid nearest the requested
+              point.
+            - `"weighted"`: Gets value from the four nearest grid points
+              and compute the inverse-distance-weighted mean.
+            - `"xarray"` : Select points with xarray.sel to get nearest points.
+               Only works for regular latitude-longitude gris, DOES NOT
+               WORK FOR CURVILINEAR GRIDS.
         use_cached_tree : {True, False, "replant"}
-            If True, Plant+Save BallTree if it doesn't exist; load if one exists.
-            If False, Plant the BalTree, even if one exists.
-            If "replant", Plant a new BallTree and save a new pickle.
+            Controls if the BallTree object is caches for later use.
+            By "plant", I mean, "create a new BallTree object."
+            - `True` : Plant+save BallTree if it doesn't exist; load
+              saved BallTree if one exists.
+            - `False`: Plant the BallTree, even if one exists.
+            - `"replant"` : Plant a new BallTree and save a new pickle.
 
         Returns
         -------
@@ -233,20 +235,22 @@ class HerbieAccessor:
                     print(f"ERROR: Could not save BallTree to {save_pickle}.")
             return tree
 
+        ds = self._obj
+
         # Only consider variables that have dimensions.
         ds = ds[[i for i in ds if ds[i].dims != ()]]
 
-        _how = set("nearest", "weighted", "xarray")
+        _how = set(["nearest", "weighted", "xarray"])
 
-        if how == "nearest":
+        if method == "nearest":
             # Get the nearest grid point.
             k = 1
-        elif how == "weighted":
+        elif method == "weighted":
             # Compute the value of each variable from the inverse-
             # weighted distance of the values of the four nearest
             # neighbors.
             k = 4
-        elif how == "xarray":
+        elif method == "xarray":
             # BallTree is not needed for regular latitude/longitude
             # grids we can do this with xarray.sel, but we won't get the
             # distance to the nearest point.
@@ -301,14 +305,10 @@ class HerbieAccessor:
 
         # -------------------------------------
         # Query points to find nearest neighbor
+        # Note: Order matters, and lat/long must be in radians.
         # TODO: Add option to use MultiProcessing here, to split the
         # TODO: Dataset into chunks; or not because its fast enough.
-        dist, ind = tree.query(
-            np.deg2rad(
-                points[["latitude", "longitude"]]
-            ),  # order matters, and in radians.
-            k=k,
-        )
+        dist, ind = tree.query(np.deg2rad(points[["latitude", "longitude"]]), k=k)
 
         # Convert distance to km by multiplying by the radius of the Earth
         dist *= 6371
@@ -329,6 +329,12 @@ class HerbieAccessor:
                 ],
                 axis=1,
             )
+
+            # TODO: ====================================================
+            # TODO: DON'T CONVERT TO PANDAS! Keep in xarray for each
+            # TODO: point, and let the user decide if they want to
+            # TODO: convert it to Pandas themselves.
+            # TODO: ====================================================
 
             # Get corresponding values from xarray
             # https://docs.xarray.dev/en/stable/user-guide/indexing.html#more-advanced-indexing
@@ -355,10 +361,10 @@ class HerbieAccessor:
 
             k_points.append(result)
 
-        if how == "nearest":
+        if method == "nearest":
             return k_points[0]
 
-        elif how == "weighted":
+        elif method == "weighted":
             # Compute the inverse-distance weighted mean for each variable
             # from the four nearest points.
             # Note: The latitude/longitude of the returned DataFrame is the
