@@ -18,11 +18,10 @@ To use the herbie xarray accessor, do this...
     ds.herbie.crs
     ds.herbie.plot()
 
-
 # TODO: I like the idea in Salem to mask data by a geographic region
 # TODO: Maybe can use that in Herbie. https://github.com/fmaussion/salem
-
 """
+
 
 import functools
 import pickle
@@ -73,7 +72,7 @@ _level_units = dict(
 
 
 def add_proj_info(ds):
-    """Add projection info to a Dataset"""
+    """Add projection info to a Dataset."""
     match = re.search(r'"source": "(.*?)"', ds.history)
     FILE = Path(match.group(1))
 
@@ -150,9 +149,7 @@ class HerbieAccessor:
 
     @functools.cached_property
     def polygon(self):
-        """
-        Get a polygon of the domain boundary.
-        """
+        """Get a polygon of the domain boundary."""
         ds = self._obj
 
         LON = ds.longitude.data
@@ -517,7 +514,7 @@ class HerbieAccessor:
             from paint.radar2 import cm_reflectivity
             from paint.standard2 import cm_dpt, cm_pcp, cm_rh, cm_tmp, cm_wind
             from paint.terrain2 import cm_terrain
-            from toolbox.cartopy_tools import common_features, pc
+            from toolbox.cartopy_tools import EasyMap, pc
         except:
             print("The plotting accessor requires my Carpenter Workshop. Try:")
             print(
@@ -532,7 +529,7 @@ class HerbieAccessor:
         if vars is None:
             vars = ds.data_vars
 
-        for var in vars:
+        for i, var in enumerate(vars):
             if "longitude" not in ds[var].coords:
                 # This is the case for the gribfile_projection variable
                 continue
@@ -562,7 +559,7 @@ class HerbieAccessor:
 
             common_features_kw = {**defaults, **common_features_kw}
 
-            ax = common_features(**common_features_kw).STATES().ax
+            ax = EasyMap(fignum=i, **common_features_kw).STATES().ax
 
             title = ""
             kwargs.setdefault("shading", "auto")

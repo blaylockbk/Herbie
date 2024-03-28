@@ -11,7 +11,7 @@ Herbie supports reading two different types of index files
 
 You can use regular expression to search for lines in the index file. If `H` is a Herbie object, the regex search is performed on the `H.inventory().search_this` column of the DataFrame
 
-> 🔥 **Tip:** If you need help with regular expression, search the web or look at this [cheatsheet](https://www.petefreitag.com/cheatsheets/regex/). Check regular expressions with [regexr](https://regexr.com/) or [regex101](https://regex101.com/).
+> 🔥 **Tip:** If you need help with regular expression, search the web or look at this [cheatsheet](https://www.petefreitag.com/cheatsheets/regex/). Check regular expressions with [regexr](https://regexr.com/), [regex101](https://regex101.com/) or [cyrilex](https://extendsclass.com/regex-tester.html).
 
 ## wgrib2-style index files
 
