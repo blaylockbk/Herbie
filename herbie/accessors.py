@@ -23,11 +23,12 @@ To use the herbie xarray accessor, do this...
 """
 
 import functools
+import pickle
 import re
 from pathlib import Path
 
 import cartopy.crs as ccrs
-import metpy  # noqa: F401
+import metpy  # * Needed for metpy accessor  # noqa: F401
 import numpy as np
 import pandas as pd
 import pygrib
@@ -35,6 +36,9 @@ import shapely
 import xarray as xr
 from pyproj import CRS
 from shapely.geometry import MultiPoint, Point, Polygon
+from sklearn.neighbors import BallTree
+
+import herbie
 
 _level_units = dict(
     adiabaticCondensation="adiabatic condensation",
@@ -67,7 +71,7 @@ _level_units = dict(
 
 
 def add_proj_info(ds):
-    """Add projection info to a Dataset"""
+    """Add projection info to a Dataset."""
     match = re.search(r'"source": "(.*?)"', ds.history)
     FILE = Path(match.group(1))
 
@@ -144,9 +148,7 @@ class HerbieAccessor:
 
     @functools.cached_property
     def polygon(self):
-        """
-        Get a polygon of the domain boundary.
-        """
+        """Get a polygon of the domain boundary."""
         ds = self._obj
 
         LON = ds.longitude.data
@@ -180,9 +182,219 @@ class HerbieAccessor:
 
         return domain_polygon, domain_polygon_latlon
 
+    def extract_points(
+        self, points, *, method="nearest", use_cached_tree=True, verbose=False
+    ):
+        """Extract nearest neighbor grid values at selected  points.
+
+        Parameters
+        ----------
+        points : Pandas DataFrame
+            A DataFrame with columns 'latitude' and 'longitude' representing
+            the points to match to the model grid.
+        method : {'nearest', 'weighted', 'xarray'}
+            Method used to extract points.
+
+            - `"nearest"` : Gets value from grid nearest the requested
+              point.
+            - `"weighted"`: Gets value from the four nearest grid points
+              and compute the inverse-distance-weighted mean.
+            - `"xarray"` : Select points with xarray.sel to get nearest points.
+               Only works for regular latitude-longitude gris, DOES NOT
+               WORK FOR CURVILINEAR GRIDS.
+        use_cached_tree : {True, False, "replant"}
+            Controls if the BallTree object is caches for later use.
+            By "plant", I mean, "create a new BallTree object."
+            - `True` : Plant+save BallTree if it doesn't exist; load
+              saved BallTree if one exists.
+            - `False`: Plant the BallTree, even if one exists.
+            - `"replant"` : Plant a new BallTree and save a new pickle.
+
+        Returns
+        -------
+        The given points DataFrame with columns name having the suffix
+        '_point' and additional columns with values matched from the
+        model grid.
+        """
+
+        def plant_tree(save_pickle=None):
+            """Grow a new BallTree object from seedling."""
+            timer = pd.Timestamp("now")
+            print("INFO: 🌱 Growing new BallTree...", end="")
+            tree = BallTree(np.deg2rad(df_grid), metric="haversine")
+            print(
+                f"🌳 BallTree grew in {(pd.Timestamp('now')-timer).total_seconds():.2} seconds."
+            )
+            if save_pickle:
+                try:
+                    Path(save_pickle).parent.mkdir(parents=True, exist_ok=True)
+                    with open(save_pickle, "wb") as f:
+                        pickle.dump(tree, f)
+                    print(f"INFO: Saved BallTree to {save_pickle}")
+                except OSError:
+                    print(f"ERROR: Could not save BallTree to {save_pickle}.")
+            return tree
+
+        ds = self._obj
+
+        # Only consider variables that have dimensions.
+        ds = ds[[i for i in ds if ds[i].dims != ()]]
+
+        _how = set(["nearest", "weighted", "xarray"])
+
+        if method == "nearest":
+            # Get the nearest grid point.
+            k = 1
+        elif method == "weighted":
+            # Compute the value of each variable from the inverse-
+            # weighted distance of the values of the four nearest
+            # neighbors.
+            k = 4
+        elif method == "xarray":
+            # BallTree is not needed for regular latitude/longitude
+            # grids we can do this with xarray.sel, but we won't get the
+            # distance to the nearest point.
+            if "x" not in ds.dims and "y" not in ds.dims:
+                x = ds.sel(
+                    latitude=points.latitude.to_xarray(),
+                    longitude=points.longitude.to_xarray(),
+                    method="nearest",
+                ).to_dataframe()
+
+                return pd.concat(
+                    [points.add_suffix("_point"), x],
+                    axis=1,
+                )
+            else:
+                raise ValueError("`how='xarray'` does not work for curvilinear grids.")
+        else:
+            raise ValueError(f"`how` must be one of {_how}.")
+
+        if "latitude" in ds.dims and "longitude" in ds.dims:
+            # This is needed for regular latitude-longitude grids
+            # like GFS and IFS.
+            ds = ds.rename_dims({"latitude": "y", "longitude": "x"})
+
+        # Get Dataset's lat/lon grid and coordinate indices as a DataFrame.
+        df_grid = (
+            ds[["latitude", "longitude"]]
+            .drop([i for i, j in ds.coords.items() if not j.ndim])
+            .to_dataframe()
+        )
+
+        # ---------------
+        # BallTree object
+        # Plant, plant+Save, or load
+
+        pkl_BallTree_file = (
+            herbie.config["default"]["save_dir"]
+            / "BallTree"
+            / f"{ds.model}_{ds.x.size}-{ds.y.size}.pkl"
+        )
+
+        if not use_cached_tree:
+            # Create a new BallTree. Do not save pickle.
+            tree = plant_tree(save_pickle=False)
+        elif use_cached_tree == "replant" or not pkl_BallTree_file.exists():
+            # Create a new BallTree and save pickle.
+            tree = plant_tree(save_pickle=pkl_BallTree_file)
+        elif use_cached_tree:
+            # Load BallTree from pickle.
+            with open(pkl_BallTree_file, "rb") as f:
+                tree = pickle.load(f)
+
+        # -------------------------------------
+        # Query points to find nearest neighbor
+        # Note: Order matters, and lat/long must be in radians.
+        # TODO: Add option to use MultiProcessing here, to split the
+        # TODO: Dataset into chunks; or not because its fast enough.
+        dist, ind = tree.query(np.deg2rad(points[["latitude", "longitude"]]), k=k)
+
+        # Convert distance to km by multiplying by the radius of the Earth
+        dist *= 6371
+
+        # Get grid values for each value of k
+        k_points = []
+        df_grid = df_grid.reset_index()
+        for i in range(k):
+            x = points.copy()
+            x["distance_grid"] = dist[:, i]
+            x["index_grid"] = ind[:, i]
+            x = pd.concat(
+                [
+                    x,
+                    df_grid.iloc[x["index_grid"]]
+                    .add_suffix("_grid")
+                    .reset_index(drop=True),
+                ],
+                axis=1,
+            )
+
+            # TODO: ====================================================
+            # TODO: DON'T CONVERT TO PANDAS! Keep in xarray for each
+            # TODO: point, and let the user decide if they want to
+            # TODO: convert it to Pandas themselves.
+            # TODO: ====================================================
+
+            # Get corresponding values from xarray
+            # https://docs.xarray.dev/en/stable/user-guide/indexing.html#more-advanced-indexing
+            matches = ds.sel(
+                x=x.x_grid.to_xarray(),
+                y=x.y_grid.to_xarray(),
+            ).to_pandas()
+
+            result = pd.concat(
+                [
+                    x.drop(
+                        columns=[
+                            "index_grid",
+                            "y_grid",
+                            "x_grid",
+                            "latitude_grid",
+                            "longitude_grid",
+                        ]
+                    ).add_suffix("_point"),
+                    matches,
+                ],
+                axis=1,
+            )
+
+            k_points.append(result)
+
+        if method == "nearest":
+            return k_points[0]
+
+        elif method == "weighted":
+            # Compute the inverse-distance weighted mean for each variable
+            # from the four nearest points.
+            # Note: The latitude/longitude of the returned DataFrame is the
+            # nearest grid point.
+
+            # Get the DataFrame for k=1 and copy computed var values into it.
+            df = k_points[0].copy(deep=True)
+
+            distances = pd.concat([1 / i.distance_grid_point for i in k_points], axis=1)
+            distances.columns = range(4)
+            distances = distances.clip(
+                upper=500000
+            )  # this is needed for the case when 1/distance is zero
+
+            for var in list(ds):
+                _df = pd.concat([i[var] for i in k_points], axis=1)
+                _df.columns = range(4)
+
+                # Calculate inverse-distance weighted mean
+                weighted_sum = (_df * distances).sum(axis=1)
+                sum_of_weights = distances.sum(axis=1)
+                df[var] = weighted_sum / sum_of_weights
+
+            return df
+
     def nearest_points(self, points, names=None, verbose=True):
         """
         Get the nearest latitude/longitude points from a xarray Dataset.
+
+        TODO: Add a deprecation warning.
 
         - Stack Overflow: https://stackoverflow.com/questions/58758480/xarray-select-nearest-lat-lon-with-multi-dimension-coordinates
         - MetPy Details: https://unidata.github.io/MetPy/latest/tutorials/xarray_tutorial.html?highlight=assign_y_x

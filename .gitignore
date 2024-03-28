@@ -38,3 +38,6 @@ $TMPDIR/
 data/
 
 herbie/_version.py
+
+
+*.pkl
