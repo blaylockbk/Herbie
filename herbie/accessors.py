@@ -25,6 +25,7 @@ To use the herbie xarray accessor, do this...
 import functools
 import pickle
 import re
+import warnings
 from pathlib import Path
 
 import cartopy.crs as ccrs
@@ -190,31 +191,53 @@ class HerbieAccessor:
         Parameters
         ----------
         points : Pandas DataFrame
-            A DataFrame with columns 'latitude' and 'longitude' representing
-            the points to match to the model grid.
-        method : {'nearest', 'weighted', 'xarray'}
+            A DataFrame with columns 'latitude' and 'longitude'
+            representing the points to match to the model grid.
+        method : {'nearest', 'weighted', 'xarray', int}
             Method used to extract points.
-
-            - `"nearest"` : Gets value from grid nearest the requested
-              point.
-            - `"weighted"`: Gets value from the four nearest grid points
-              and compute the inverse-distance-weighted mean.
-            - `"xarray"` : Select points with xarray.sel to get nearest points.
-               Only works for regular latitude-longitude gris, DOES NOT
-               WORK FOR CURVILINEAR GRIDS.
+            - `nearest` : Gets grid value nearest the requested point.
+            - `weighted`: Gets four grid value nearest the requested
+                point and compute the inverse-distance-weighted mean.
+            - `xarray` : Select nearest points with `xarray.sel`. This
+                only works for regular latitude-longitude grids; IT DOES
+                NOT WORK FOR CURVILINEAR GRIDS.
+            - An `int` : return separate datasets for each k nearest
+                neighbors.
         use_cached_tree : {True, False, "replant"}
             Controls if the BallTree object is caches for later use.
             By "plant", I mean, "create a new BallTree object."
             - `True` : Plant+save BallTree if it doesn't exist; load
-              saved BallTree if one exists.
+                saved BallTree if one exists.
             - `False`: Plant the BallTree, even if one exists.
             - `"replant"` : Plant a new BallTree and save a new pickle.
 
-        Returns
-        -------
-        The given points DataFrame with columns name having the suffix
-        '_point' and additional columns with values matched from the
-        model grid.
+        Examples
+        --------
+        >>> H = Herbie("2024-03-28 00:00", model="hrrr")
+        >>> ds = H.xarray("TMP:[5,6,7,8,9][0,5]0 mb", remove_grib=False)
+        >>> points = pd.DataFrame(
+        ...     {
+        ...         "longitude": [-100, -105, -98.4],
+        ...         "latitude": [40, 29, 42.3],
+        ...         "stid": ["aa", "bb", "cc"],
+        ...     }
+        ... )
+
+        Extract the nearest neighbor point
+        >>> point_ds = ds.herbie.extract_points(points, method="nearest")
+
+        Get the weighted mean of the four nearest neighbor point
+        >>> point_ds = ds.herbie.extract_points(points, method="weighted")
+
+        A Dataset is returned of the original grid reduced to the
+        requested points, with the values from the `points` dataset
+        added as new coordinates.
+
+        A user can easily convert the result to a Pandas DataFrame
+        >>> point_ds.to_dataframe()
+
+        If you want to select points by a station name, you can do
+        >>> point_ds = point_ds.swap_dims({"point": "point_stid"})
         """
 
         def plant_tree(save_pickle=None):
@@ -240,7 +263,7 @@ class HerbieAccessor:
         # Only consider variables that have dimensions.
         ds = ds[[i for i in ds if ds[i].dims != ()]]
 
-        _how = set(["nearest", "weighted", "xarray"])
+        _method = set(["nearest", "weighted", "xarray"])
 
         if method == "nearest":
             # Get the nearest grid point.
@@ -267,18 +290,21 @@ class HerbieAccessor:
                 )
             else:
                 raise ValueError("`how='xarray'` does not work for curvilinear grids.")
+        elif isinstance(method, int):
+            # Special case: Return Datasets for each k nearest neighbors.
+            k = method
         else:
-            raise ValueError(f"`how` must be one of {_how}.")
+            raise ValueError(f"`method` must be one of {_method} or int.")
 
         if "latitude" in ds.dims and "longitude" in ds.dims:
-            # This is needed for regular latitude-longitude grids
-            # like GFS and IFS.
+            # Dim rename needed for regular latitude-longitude grids
+            # like GFS and IFS model data.
             ds = ds.rename_dims({"latitude": "y", "longitude": "x"})
 
         # Get Dataset's lat/lon grid and coordinate indices as a DataFrame.
         df_grid = (
             ds[["latitude", "longitude"]]
-            .drop([i for i, j in ds.coords.items() if not j.ndim])
+            .drop_vars([i for i, j in ds.coords.items() if not j.ndim])
             .to_dataframe()
         )
 
@@ -306,89 +332,75 @@ class HerbieAccessor:
         # -------------------------------------
         # Query points to find nearest neighbor
         # Note: Order matters, and lat/long must be in radians.
-        # TODO: Add option to use MultiProcessing here, to split the
-        # TODO: Dataset into chunks; or not because its fast enough.
+        # TODO: Maybe add option to use MultiProcessing here, to split
+        # TODO:   the Dataset into chunks; or maybe not needed because
+        # TODO:   the method is fast enought without the complexity.
         dist, ind = tree.query(np.deg2rad(points[["latitude", "longitude"]]), k=k)
 
         # Convert distance to km by multiplying by the radius of the Earth
         dist *= 6371
 
-        # Get grid values for each value of k
+        # Extract grid values for each value of k
         k_points = []
         df_grid = df_grid.reset_index()
         for i in range(k):
-            x = points.copy()
-            x["distance_grid"] = dist[:, i]
-            x["index_grid"] = ind[:, i]
-            x = pd.concat(
+            a = points.copy()
+            a["point_grid_distance"] = dist[:, i]
+            a["grid_index"] = ind[:, i]
+            a = pd.concat(
                 [
-                    x,
-                    df_grid.iloc[x["index_grid"]]
+                    a,
+                    df_grid.iloc[a.grid_index]
                     .add_suffix("_grid")
                     .reset_index(drop=True),
                 ],
                 axis=1,
             )
-
-            # TODO: ====================================================
-            # TODO: DON'T CONVERT TO PANDAS! Keep in xarray for each
-            # TODO: point, and let the user decide if they want to
-            # TODO: convert it to Pandas themselves.
-            # TODO: ====================================================
+            a.index.name = "point"
 
             # Get corresponding values from xarray
             # https://docs.xarray.dev/en/stable/user-guide/indexing.html#more-advanced-indexing
-            matches = ds.sel(
-                x=x.x_grid.to_xarray(),
-                y=x.y_grid.to_xarray(),
-            ).to_pandas()
-
-            result = pd.concat(
-                [
-                    x.drop(
-                        columns=[
-                            "index_grid",
-                            "y_grid",
-                            "x_grid",
-                            "latitude_grid",
-                            "longitude_grid",
-                        ]
-                    ).add_suffix("_point"),
-                    matches,
-                ],
-                axis=1,
+            ds_points = ds.sel(
+                x=a.x_grid.to_xarray(),
+                y=a.y_grid.to_xarray(),
             )
+            ds_points.coords["point_grid_distance"] = a.point_grid_distance.to_xarray()
+            ds_points["point_grid_distance"].attrs[
+                "long_name"
+            ] = "Distance between requested point and nearest grid point."
+            ds_points["point_grid_distance"].attrs["units"] = "km"
 
-            k_points.append(result)
+            for i in points.columns:
+                ds_points.coords[f"point_{i}"] = a[i].to_xarray()
+                ds_points[f"point_{i}"].attrs["long_name"] = f"Requested grid point {i}"
+
+            k_points.append(ds_points.drop_vars("point"))
 
         if method == "nearest":
             return k_points[0]
-
         elif method == "weighted":
-            # Compute the inverse-distance weighted mean for each variable
-            # from the four nearest points.
-            # Note: The latitude/longitude of the returned DataFrame is the
-            # nearest grid point.
+            # Compute the inverse-distance weighted mean for each
+            # variable from the four nearest points.
+            b = xr.concat(k_points, dim="k")
 
-            # Get the DataFrame for k=1 and copy computed var values into it.
-            df = k_points[0].copy(deep=True)
+            # Note: clip accounts for the divide by zero case.
+            weights = (1 / b.point_grid_distance).clip(max=1e6)
 
-            distances = pd.concat([1 / i.distance_grid_point for i in k_points], axis=1)
-            distances.columns = range(4)
-            distances = distances.clip(
-                upper=500000
-            )  # this is needed for the case when 1/distance is zero
+            # Compute weighted mean of variables
+            sum_of_weights = weights.sum(dim="k")
+            weighted_sum = (b * weights).sum(dim="k")
 
-            for var in list(ds):
-                _df = pd.concat([i[var] for i in k_points], axis=1)
-                _df.columns = range(4)
+            c = weighted_sum / sum_of_weights
 
-                # Calculate inverse-distance weighted mean
-                weighted_sum = (_df * distances).sum(axis=1)
-                sum_of_weights = distances.sum(axis=1)
-                df[var] = weighted_sum / sum_of_weights
+            # Include some coordinates that were dropped as a result of
+            # the line `weights.sum(dim='k')`.
+            c.coords["latitude"] = b.coords["latitude"]
+            c.coords["longitude"] = b.coords["longitude"]
+            c.coords["point_grid_distance"] = b.coords["point_grid_distance"]
 
-            return df
+            return c
+        else:
+            return k_points
 
     def nearest_points(self, points, names=None, verbose=True):
         """
@@ -431,6 +443,12 @@ class HerbieAccessor:
             - Or possibly scipy BallTree method.
 
         """
+        warnings.warn(
+            "The accessor `ds.herbie.nearest_points` is deprecated. Use the MUCH better `ds.herbie.extract_points` instead.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+
         ds = self._obj
 
         # Longitude and Latitude point DataFrame
