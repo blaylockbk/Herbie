@@ -30,15 +30,16 @@ keywords = [
     "HRRR",
 ]
 dependencies = [
+    "cartopy",
+    "cfgrib",
     "matplotlib",
+    "metpy",
     "numpy",
     "pandas",
-    "xarray",
-    "cfgrib",
-    "metpy",
-    "cartopy",
-    "toml",
     "pygrib",
+    "scikit-learn",
+    "toml",
+    "xarray",
 ]
 dynamic = ["version"]
 
