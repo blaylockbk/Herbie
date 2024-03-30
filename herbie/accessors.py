@@ -400,6 +400,12 @@ class HerbieAccessor:
         if method == "nearest":
             return k_points[0]
         elif method == "weighted":
+            # TODO: I wonder if there is any reason a user would
+            # TODO:   want to do a weighted mean for the nearest for
+            # TODO:   more than the nearest 4 points, like the nearest
+            # TODO:   9 point, or more? It wouldn't be hard, just need
+            # TODO:   to allow the logic to reach this code.
+
             # Compute the inverse-distance weighted mean for each
             # variable from the four nearest points.
             b = xr.concat(k_points, dim="k")
