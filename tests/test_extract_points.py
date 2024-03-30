@@ -1,6 +1,7 @@
 """Test the ds.herbie.extrac_points() accessor."""
 
 import pandas as pd
+import xarray as xr
 
 from herbie import Herbie
 
@@ -26,22 +27,31 @@ def test_extract_points():
         x8 = ds.herbie.extract_points(points, method=8)
 
 
-def test_simple_test():
-    """Test extract points with model's own grid points."""
-    pass
+def test_extract_points_simple():
+    """Test a  very simple grid."""
+    ds = xr.Dataset(
+        {"a": (["latitude", "longitude"], [[1, 0], [0, 0]])},
+        coords={
+            "latitude": (["latitude"], [45, 46]),
+            "longitude": (["longitude"], [100, 101]),
+        },
+    )
+    point = pd.DataFrame({"latitude": [45.25], "longitude": [100.25]})
+
+    p = ds.herbie.extract_points(point, method='nearest')
+    assert all(
+        [
+            p.latitude == 45,
+            p.longitude == 100,
+            p.point_grid_distance.round(2) == 34.02,
+            p.point_latitude == 45.25,
+            p.point_longitude == 100.25,
+            p.a == 1,
+        ]
+    )
 
 
-def test_with_model_own_grid_method_nearest():
-    """Test extract points with model's own grid points."""
-    pass
-
-
-def test_with_model_own_grid_method_weighted():
-    """Test extract points with model's own grid points."""
-    pass
-
-
-def test_with_model_own_grid_method_xarray():
+def test_extract_points_self_points():
     """Test extract points with model's own grid points."""
     pass
 

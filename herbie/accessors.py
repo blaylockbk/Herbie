@@ -184,7 +184,13 @@ class HerbieAccessor:
         return domain_polygon, domain_polygon_latlon
 
     def extract_points(
-        self, points, *, method="nearest", use_cached_tree=True, verbose=False
+        self,
+        points,
+        *,
+        method="nearest",
+        use_cached_tree=True,
+        tree_name=None,
+        verbose=False,
     ):
         """Extract nearest neighbor grid values at selected  points.
 
@@ -210,6 +216,10 @@ class HerbieAccessor:
                 saved BallTree if one exists.
             - `False`: Plant the BallTree, even if one exists.
             - `"replant"` : Plant a new BallTree and save a new pickle.
+        tree_name : str
+            If None, use the ds.model and domain size as the tree's name.
+            If ds.model does not exists, then the BallTree will not be
+            cached, unless you provide the tree_name.
 
         Examples
         --------
@@ -312,10 +322,21 @@ class HerbieAccessor:
         # BallTree object
         # Plant, plant+Save, or load
 
+        if tree_name is None:
+            name = getattr(ds, "model", "UNKNOWN")
+
+        if use_cached_tree and tree_name == "UNKNOWN":
+            use_cached_tree = False
+            print(
+                "WARNING: I won't cache the tree because I'm not sure"
+                " what to name it. Please specify `tree_name` to cache"
+                " the tree for later."
+            )
+
         pkl_BallTree_file = (
             herbie.config["default"]["save_dir"]
             / "BallTree"
-            / f"{ds.model}_{ds.x.size}-{ds.y.size}.pkl"
+            / f"{name}_{ds.x.size}-{ds.y.size}.pkl"
         )
 
         if not use_cached_tree:
@@ -365,9 +386,9 @@ class HerbieAccessor:
                 y=a.y_grid.to_xarray(),
             )
             ds_points.coords["point_grid_distance"] = a.point_grid_distance.to_xarray()
-            ds_points["point_grid_distance"].attrs[
-                "long_name"
-            ] = "Distance between requested point and nearest grid point."
+            ds_points["point_grid_distance"].attrs["long_name"] = (
+                "Distance between requested point and nearest grid point."
+            )
             ds_points["point_grid_distance"].attrs["units"] = "km"
 
             for i in points.columns:

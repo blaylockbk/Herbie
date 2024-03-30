@@ -41,6 +41,7 @@ TODO: Rename 'fxx' to 'lead' and allow pandas-parsable timedelta string like "6H
 TODO: add `idx_to_df()` and `df_to_idx()` methods.
 TODO: There are probably use cases for the `Path().suffixes` method
 """
+
 import functools
 import hashlib
 import itertools
@@ -1159,9 +1160,9 @@ class Herbie:
             # http://cfconventions.org/Data/cf-conventions/cf-conventions-1.8/cf-conventions.html#appendix-grid-mappings
             ds["gribfile_projection"] = None
             ds["gribfile_projection"].attrs = cf_params
-            ds["gribfile_projection"].attrs[
-                "long_name"
-            ] = f"{self.model.upper()} model grid projection"
+            ds["gribfile_projection"].attrs["long_name"] = (
+                f"{self.model.upper()} model grid projection"
+            )
 
             # Assign this grid_mapping for all variables
             for var in list(ds):
