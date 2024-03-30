@@ -377,7 +377,7 @@ class Herbie:
         _models = {m for m in dir(model_templates) if not m.startswith("__")}
         _products = set(self.PRODUCTS)
 
-        assert self.date < datetime.utcnow(), "🔮 `date` cannot be in the future."
+        assert self.date < pd.Timestamp.utcnow(), "🔮 `date` cannot be in the future."
         assert self.model in _models, f"`model` must be one of {_models}"
         assert self.product in _products, f"`product` must be one of {_products}"
 
