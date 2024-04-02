@@ -27,7 +27,7 @@ class nbm:
 
 class nbmqmd:
     def template(self):
-        self.DESCRIPTION = "National Blend of Models"
+        self.DESCRIPTION = "National Blend of Models - QMD"
         self.DETAILS = {
             "NOMADS product description": "https://www.nco.ncep.noaa.gov/pmb/products/blend/",
             "AWS Registry": "https://registry.opendata.aws/noaa-nbm/",
