@@ -53,6 +53,7 @@ dynamic = ["version"]
 [project.optional-dependencies]
 docs = [
     "autodocsumm",
+    "ipython",
     "linkify-it-py",
     "myst-parser",
     "nbconvert",
