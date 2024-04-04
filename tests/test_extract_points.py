@@ -38,7 +38,7 @@ def test_extract_points_simple():
     )
     point = pd.DataFrame({"latitude": [45.25], "longitude": [100.25]})
 
-    p = ds.herbie.extract_points(point, method='nearest')
+    p = ds.herbie.extract_points(point, method="nearest")
     assert all(
         [
             p.latitude == 45,

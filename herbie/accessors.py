@@ -386,9 +386,9 @@ class HerbieAccessor:
                 y=a.y_grid.to_xarray(),
             )
             ds_points.coords["point_grid_distance"] = a.point_grid_distance.to_xarray()
-            ds_points["point_grid_distance"].attrs["long_name"] = (
-                "Distance between requested point and nearest grid point."
-            )
+            ds_points["point_grid_distance"].attrs[
+                "long_name"
+            ] = "Distance between requested point and nearest grid point."
             ds_points["point_grid_distance"].attrs["units"] = "km"
 
             for i in points.columns:
@@ -433,8 +433,6 @@ class HerbieAccessor:
         """
         Get the nearest latitude/longitude points from a xarray Dataset.
 
-        TODO: Add a deprecation warning.
-
         - Stack Overflow: https://stackoverflow.com/questions/58758480/xarray-select-nearest-lat-lon-with-multi-dimension-coordinates
         - MetPy Details: https://unidata.github.io/MetPy/latest/tutorials/xarray_tutorial.html?highlight=assign_y_x
 
@@ -471,7 +469,9 @@ class HerbieAccessor:
 
         """
         warnings.warn(
-            "The accessor `ds.herbie.nearest_points` is deprecated. Use the MUCH better `ds.herbie.extract_points` instead.",
+            "The accessor `ds.herbie.nearest_points` is deprecated in "
+            "favor of the `ds.herbie.extract_points` which uses the "
+            "BallTree algorithm instead.",
             DeprecationWarning,
             stacklevel=2,
         )
@@ -527,18 +527,18 @@ class HerbieAccessor:
         transformed_data = crs.transform_points(
             ccrs.PlateCarree(), point_df.longitude, point_df.latitude
         )
-        xs = transformed_data[:, 0]
-        ys = transformed_data[:, 1]
+
+        a = pd.DataFrame({"x": transformed_data[:, 0], "y": transformed_data[:, 1]})
+        a.index.name = "point"
 
         # Select the nearest points from the projection coordinates.
-        # TODO: Is there a better way?
-        # There doesn't seem to be a way to get just the points like this
-        # ds = ds.sel(x=xs, y=ys, method='nearest')
-        # because it gives a 2D array, and not a point-by-point index.
-        # Instead, I have too loop the ds.sel method
-        new_ds = xr.concat(
-            [ds.sel(x=xi, y=yi, method="nearest") for xi, yi in zip(xs, ys)],
-            dim="point",
+        # Get corresponding values from xarray
+        # https://docs.xarray.dev/en/stable/user-guide/indexing.html#more-advanced-indexing
+        #
+        new_ds = ds.sel(
+            x=a["x"].to_xarray(),
+            y=a["y"].to_xarray(),
+            method="nearest",
         )
 
         new_ds.coords["point"] = ("point", point_df.index.to_list())

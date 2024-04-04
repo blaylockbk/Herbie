@@ -378,7 +378,9 @@ class Herbie:
         _models = {m for m in dir(model_templates) if not m.startswith("__")}
         _products = set(self.PRODUCTS)
 
-        assert self.date < pd.Timestamp.utcnow().tz_localize(None), "🔮 `date` cannot be in the future."
+        assert self.date < pd.Timestamp.utcnow().tz_localize(
+            None
+        ), "🔮 `date` cannot be in the future."
         assert self.model in _models, f"`model` must be one of {_models}"
         assert self.product in _products, f"`product` must be one of {_products}"
 
@@ -739,7 +741,7 @@ class Herbie:
             df["reference_time"] = pd.to_datetime(
                 df.date + df.time, format="%Y%m%d%H%M"
             )
-            df["step"] = pd.to_timedelta(df.step.astype(int), unit="H")
+            df["step"] = pd.to_timedelta(df.step.astype(int), unit="h")
             df["valid_time"] = df.reference_time + df.step
 
             df = df.reindex(
@@ -1160,9 +1162,9 @@ class Herbie:
             # http://cfconventions.org/Data/cf-conventions/cf-conventions-1.8/cf-conventions.html#appendix-grid-mappings
             ds["gribfile_projection"] = None
             ds["gribfile_projection"].attrs = cf_params
-            ds["gribfile_projection"].attrs["long_name"] = (
-                f"{self.model.upper()} model grid projection"
-            )
+            ds["gribfile_projection"].attrs[
+                "long_name"
+            ] = f"{self.model.upper()} model grid projection"
 
             # Assign this grid_mapping for all variables
             for var in list(ds):
