@@ -188,6 +188,7 @@ class HerbieAccessor:
         points,
         *,
         method="nearest",
+        k=None,
         use_cached_tree=True,
         tree_name=None,
         verbose=False,
@@ -199,16 +200,15 @@ class HerbieAccessor:
         points : Pandas DataFrame
             A DataFrame with columns 'latitude' and 'longitude'
             representing the points to match to the model grid.
-        method : {'nearest', 'weighted', 'xarray', int}
+        method : {'nearest', 'weighted'}
             Method used to extract points.
             - `nearest` : Gets grid value nearest the requested point.
             - `weighted`: Gets four grid value nearest the requested
                 point and compute the inverse-distance-weighted mean.
-            - `xarray` : Select nearest points with `xarray.sel`. This
-                only works for regular latitude-longitude grids; IT DOES
-                NOT WORK FOR CURVILINEAR GRIDS.
-            - An `int` : return separate datasets for each k nearest
-                neighbors.
+        k : None or int
+            If None and method is nearest, `k=1`.
+            If None and method is weighted, `k=4`.
+            Else, specify the number of neighbors to find.
         use_cached_tree : {True, False, "replant"}
             Controls if the BallTree object is caches for later use.
             By "plant", I mean, "create a new BallTree object."
@@ -270,45 +270,53 @@ class HerbieAccessor:
 
         ds = self._obj
 
-        # Only consider variables that have dimensions.
-        ds = ds[[i for i in ds if ds[i].dims != ()]]
+        _method = set(["nearest", "weighted"])
 
-        _method = set(["nearest", "weighted", "xarray"])
+        if (
+            (method == "nearest")
+            and (k is None)
+            and (ds.latitude.ndim == 1)
+            and (ds.longitude.ndim == 1)
+        ):
+            # We can use the trivial xarray.sel method to extract values
+            # nearest the requested points. I won't return distances,
+            # that would require the BallTree method. If you want to
+            # use the BallTree method, then set `k=1`.
+            points.index.name = "point"
+            ds_points = ds.sel(
+                latitude=points.latitude.to_xarray(),
+                longitude=points.longitude.to_xarray(),
+                method="nearest",
+            )
+            for i in points.columns:
+                ds_points.coords[f"point_{i}"] = points[i].to_xarray()
+                ds_points[f"point_{i}"].attrs["long_name"] = f"Requested grid point {i}"
+            return ds_points
 
-        if method == "nearest":
-            # Get the nearest grid point.
+        if method == "nearest" and k is None:
+            # Get the value at the nearest grid point using BallTree
             k = 1
-        elif method == "weighted":
+        elif method == "weighted" and k is None:
             # Compute the value of each variable from the inverse-
             # weighted distance of the values of the four nearest
             # neighbors.
             k = 4
-        elif method == "xarray":
-            # BallTree is not needed for regular latitude/longitude
-            # grids we can do this with xarray.sel, but we won't get the
-            # distance to the nearest point.
-            if "x" not in ds.dims and "y" not in ds.dims:
-                x = ds.sel(
-                    latitude=points.latitude.to_xarray(),
-                    longitude=points.longitude.to_xarray(),
-                    method="nearest",
-                ).to_dataframe()
-
-                return pd.concat(
-                    [points.add_suffix("_point"), x],
-                    axis=1,
-                )
-            else:
-                raise ValueError("`how='xarray'` does not work for curvilinear grids.")
-        elif isinstance(method, int):
-            # Special case: Return Datasets for each k nearest neighbors.
-            k = method
+        elif method in _method and isinstance(k, int):
+            # Get the k nearest neighbors and return the values (nearest)
+            # or compute the distance-weighted mean (weighted).
+            pass
         else:
-            raise ValueError(f"`method` must be one of {_method} or int.")
+            raise ValueError(
+                f"`method` must be one of {_method} and `k` must be an int or None."
+            )
+
+        # Only consider variables that have dimensions.
+        ds = ds[[i for i in ds if ds[i].dims != ()]]
 
         if "latitude" in ds.dims and "longitude" in ds.dims:
-            # Dim rename needed for regular latitude-longitude grids
-            # like GFS and IFS model data.
+            # Rename dims to x and y
+            # This is needed for regular latitude-longitude grids like
+            # GFS and IFS model data.
             ds = ds.rename_dims({"latitude": "y", "longitude": "x"})
 
         # Get Dataset's lat/lon grid and coordinate indices as a DataFrame.
@@ -355,7 +363,7 @@ class HerbieAccessor:
         # Note: Order matters, and lat/long must be in radians.
         # TODO: Maybe add option to use MultiProcessing here, to split
         # TODO:   the Dataset into chunks; or maybe not needed because
-        # TODO:   the method is fast enought without the complexity.
+        # TODO:   the method is fast enough without the complexity.
         dist, ind = tree.query(np.deg2rad(points[["latitude", "longitude"]]), k=k)
 
         # Convert distance to km by multiplying by the radius of the Earth
@@ -386,9 +394,9 @@ class HerbieAccessor:
                 y=a.y_grid.to_xarray(),
             )
             ds_points.coords["point_grid_distance"] = a.point_grid_distance.to_xarray()
-            ds_points["point_grid_distance"].attrs[
-                "long_name"
-            ] = "Distance between requested point and nearest grid point."
+            ds_points["point_grid_distance"].attrs["long_name"] = (
+                "Distance between requested point and nearest grid point."
+            )
             ds_points["point_grid_distance"].attrs["units"] = "km"
 
             for i in points.columns:
@@ -397,20 +405,20 @@ class HerbieAccessor:
 
             k_points.append(ds_points.drop_vars("point"))
 
-        if method == "nearest":
+        if method == "nearest" and k == 1:
             return k_points[0]
-        elif method == "weighted":
-            # TODO: I wonder if there is any reason a user would
-            # TODO:   want to do a weighted mean for the nearest for
-            # TODO:   more than the nearest 4 points, like the nearest
-            # TODO:   9 point, or more? It wouldn't be hard, just need
-            # TODO:   to allow the logic to reach this code.
 
+        elif method == "nearest" and k > 1:
+            # New dimension k is the index of the n-th nearest neighbor
+            return xr.concat(k_points, dim="k")
+
+        elif method == "weighted":
             # Compute the inverse-distance weighted mean for each
             # variable from the four nearest points.
             b = xr.concat(k_points, dim="k")
 
-            # Note: clip accounts for the divide by zero case.
+            # Note: clipping accounts for the "divide by zero" case when
+            # the requested point is exactly the nearest grid point.
             weights = (1 / b.point_grid_distance).clip(max=1e6)
 
             # Compute weighted mean of variables
@@ -427,7 +435,7 @@ class HerbieAccessor:
 
             return c
         else:
-            return k_points
+            raise ValueError("I didn't expect to be here.")
 
     def nearest_points(self, points, names=None, verbose=True):
         """
