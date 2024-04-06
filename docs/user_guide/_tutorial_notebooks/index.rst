@@ -16,7 +16,9 @@
    :caption: Extra Features
 
    extract_points.ipynb
-   accessors.ipynb
+   cartopy_crs.ipynb
+   domain_polygon.ipynb
+   quick_maps.ipynb
    demo_map.ipynb
    wgrib2-wrapper.ipynb
 
