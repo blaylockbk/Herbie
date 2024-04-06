@@ -186,9 +186,10 @@ class HerbieAccessor:
     def extract_points(
         self,
         points,
-        *,
         method="nearest",
+        *,
         k=None,
+        max_distance=500,
         use_cached_tree=True,
         tree_name=None,
         verbose=False,
@@ -209,6 +210,11 @@ class HerbieAccessor:
             If None and method is nearest, `k=1`.
             If None and method is weighted, `k=4`.
             Else, specify the number of neighbors to find.
+        max_distance : int or float
+            Maximum distance in kilometers allowed for nearest neighbor
+            search. Default is 500 km, which is very generous for any
+            model grid. This can help the case when a requested point
+            is off the grid.
         use_cached_tree : {True, False, "replant"}
             Controls if the BallTree object is caches for later use.
             By "plant", I mean, "create a new BallTree object."
@@ -233,21 +239,22 @@ class HerbieAccessor:
         ...     }
         ... )
 
-        Extract the nearest neighbor point
-        >>> point_ds = ds.herbie.extract_points(points, method="nearest")
+        Extract value at the nearest neighbor point
+        >>> dsp = ds.herbie.extract_points(points, method="nearest")
 
-        Get the weighted mean of the four nearest neighbor point
-        >>> point_ds = ds.herbie.extract_points(points, method="weighted")
+        Get the weighted mean of the four nearest neighbor points
+        >>> dsp = ds.herbie.extract_points(points, method="weighted")
 
         A Dataset is returned of the original grid reduced to the
         requested points, with the values from the `points` dataset
         added as new coordinates.
 
         A user can easily convert the result to a Pandas DataFrame
-        >>> point_ds.to_dataframe()
+        >>> dsp.to_dataframe()
 
-        If you want to select points by a station name, you can do
-        >>> point_ds = point_ds.swap_dims({"point": "point_stid"})
+        If you want to select points by a station name, swap the
+        dimension.
+        >>> dsp = dsp.swap_dims({"point": "point_stid"})
         """
 
         def plant_tree(save_pickle=None):
@@ -331,20 +338,20 @@ class HerbieAccessor:
         # Plant, plant+Save, or load
 
         if tree_name is None:
-            name = getattr(ds, "model", "UNKNOWN")
+            tree_name = getattr(ds, "model", "UNKNOWN")
 
         if use_cached_tree and tree_name == "UNKNOWN":
             use_cached_tree = False
             print(
-                "WARNING: I won't cache the tree because I'm not sure"
-                " what to name it. Please specify `tree_name` to cache"
-                " the tree for later."
+                "WARNING: Herbie won't cache the BallTree because it\n"
+                "         doesn't know what to name it. Please specify\n"
+                "         `tree_name` to cache the tree for use later."
             )
 
         pkl_BallTree_file = (
             herbie.config["default"]["save_dir"]
             / "BallTree"
-            / f"{name}_{ds.x.size}-{ds.y.size}.pkl"
+            / f"{tree_name}_{ds.x.size}-{ds.y.size}.pkl"
         )
 
         if not use_cached_tree:
@@ -363,7 +370,7 @@ class HerbieAccessor:
         # Note: Order matters, and lat/long must be in radians.
         # TODO: Maybe add option to use MultiProcessing here, to split
         # TODO:   the Dataset into chunks; or maybe not needed because
-        # TODO:   the method is fast enough without the complexity.
+        # TODO:   the method is fast enough without the added complexity.
         dist, ind = tree.query(np.deg2rad(points[["latitude", "longitude"]]), k=k)
 
         # Convert distance to km by multiplying by the radius of the Earth
@@ -376,6 +383,7 @@ class HerbieAccessor:
             a = points.copy()
             a["point_grid_distance"] = dist[:, i]
             a["grid_index"] = ind[:, i]
+
             a = pd.concat(
                 [
                     a,
@@ -386,6 +394,16 @@ class HerbieAccessor:
                 axis=1,
             )
             a.index.name = "point"
+
+            if max_distance:
+                flagged = a.loc[a.point_grid_distance > max_distance]
+                a = a.loc[a.point_grid_distance <= max_distance]
+                if len(flagged):
+                    print(
+                        f"WARNING: {len(flagged)} points removed for exceeding {max_distance=} km threshold."
+                    )
+                    print(f"{flagged}")
+                    print("")
 
             # Get corresponding values from xarray
             # https://docs.xarray.dev/en/stable/user-guide/indexing.html#more-advanced-indexing
