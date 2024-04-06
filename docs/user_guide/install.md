@@ -45,7 +45,7 @@ cd Herbie
 pip install -e .
 ```
 
-# Carpenter Workshop 🧰 (optional)
+## Carpenter Workshop 🧰
 
 An _optional_ dependency is my [Carpenter Workshop](https://github.com/blaylockbk/Carpenter_Workshop) package. This has some general tools that are useful for making maps and performing other tasks. You might see me use these tools in the tutorials.
 

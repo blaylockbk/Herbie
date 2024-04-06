@@ -88,9 +88,9 @@ rclone ls publicAWS:noaa-hrrr-bdp-pds/hrrr.20210101/conus
 rclone copy publicAWS:noaa-goes16/ABI-L2-MCMIPC/2018/283/00/OR_ABI-L2-MCMIPC-M3_G16_s20182830057203_e20182830059576_c20182830100076.nc ./
 ```
 
-# Rclone Snippets
+## Examples
 
-## HRRR
+### HRRR
 
 For accessing HRRR from AWS and/or [Azure](https://planetarycomputer.microsoft.com/dataset/storage/noaa-hrrr), this should be in your `~/.config/rclone/rclone.conf` file:
 
@@ -114,7 +114,7 @@ rclone lsd publicAWS:noaa-hrrr-bdp-pds
 rclone lsd azure-hrrr:hrrr
 ```
 
-## ECMWF
+### ECMWF
 
 For accessing ECMWF open data on AWS or Azure, this should be in your `~/.config/rclone/rclone.conf` file:
 
