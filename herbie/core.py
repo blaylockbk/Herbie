@@ -1160,16 +1160,14 @@ class Herbie:
             # Attach CF grid mapping
             # ----------------------
             # http://cfconventions.org/Data/cf-conventions/cf-conventions-1.8/cf-conventions.html#appendix-grid-mappings
-            ds["gribfile_projection"] = None
-            ds["gribfile_projection"].attrs = cf_params
-            ds["gribfile_projection"].attrs[
+            ds.coords["gribfile_projection"] = None
+            ds.coords["gribfile_projection"].attrs = cf_params
+            ds.coords["gribfile_projection"].attrs[
                 "long_name"
             ] = f"{self.model.upper()} model grid projection"
 
             # Assign this grid_mapping for all variables
             for var in list(ds):
-                if var == "gribfile_projection":
-                    continue
                 ds[var].attrs["grid_mapping"] = "gribfile_projection"
 
         if remove_grib:
