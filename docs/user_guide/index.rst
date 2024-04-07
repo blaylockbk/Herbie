@@ -8,6 +8,7 @@ User Guide
 
    install
    configure
+   overview.ipynb
 
 .. toctree::
    :caption: Background Knowledge
