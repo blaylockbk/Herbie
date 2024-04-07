@@ -1,6 +1,6 @@
 # 🖋 How to Cite
 
-If Herbie played an important role in your work, please [tell me about it](https://github.com/blaylockbk/Herbie/discussions/categories/show-and-tell)! Also, consider including a citation or acknowledgement in your article or product.
+If Herbie played an important role in your work, please [tell me about it](https://github.com/blaylockbk/Herbie/discussions/categories/show-and-tell)! I love to hear from you. Also, consider including a citation or acknowledgement in your article or product.
 
 ***Suggested Citation***
 
@@ -10,7 +10,6 @@ If Herbie played an important role in your work, please [tell me about it](https
 
 > A portion of this work used code generously provided by Brian Blaylock's Herbie python package (<https://doi.org/10.5281/zenodo.4567540>)
 
----
 
 Also, I wrote a paper about archiving and accessing weather data in the cloud. You also may find that a useful reference.
 

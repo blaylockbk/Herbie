@@ -23,12 +23,12 @@ def test_extract_points():
     for ds in [ds1, ds2]:
         x1 = ds.herbie.extract_points(points, method="nearest")
         xw = ds.herbie.extract_points(points, method="weighted")
-        x4 = ds.herbie.extract_points(points, method=4)
-        x8 = ds.herbie.extract_points(points, method=8)
+        x4 = ds.herbie.extract_points(points, method="nearest", k=4)
+        x8 = ds.herbie.extract_points(points, method="weighted", k=8)
 
 
 def test_extract_points_simple():
-    """Test a  very simple grid."""
+    """Test a very simple grid."""
     ds = xr.Dataset(
         {"a": (["latitude", "longitude"], [[1, 0], [0, 0]])},
         coords={

@@ -6,6 +6,7 @@
 Herbie Tools
 ============
 """
+
 from datetime import datetime, timedelta
 
 import logging
@@ -314,7 +315,6 @@ class FastHerbie:
                 concat_dim=["time", "step"],
             )
 
-        ds["gribfile_projection"] = ds.gribfile_projection[0][0]
         ds = ds.squeeze()
 
         return ds

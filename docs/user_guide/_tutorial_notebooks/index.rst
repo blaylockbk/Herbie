@@ -8,8 +8,6 @@
 
    intro.ipynb
    inventory.ipynb
-   latest.ipynb
-   fast.ipynb
 
 .. toctree::
    :maxdepth: 1
@@ -20,5 +18,7 @@
    domain_polygon.ipynb
    quick_maps.ipynb
    demo_map.ipynb
+   latest.ipynb
+   fast.ipynb
    wgrib2-wrapper.ipynb
 
