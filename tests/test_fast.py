@@ -9,7 +9,7 @@ save_dir = "$TMPDIR/Herbie-Tests/"
 
 
 def test_FastHerbie():
-    DATES = pd.date_range("2022-01-01", "2022-01-01 02:00", freq="1H")
+    DATES = pd.date_range("2022-01-01", "2022-01-01 02:00", freq="1h")
 
     # Create Fast Herbie
     FH = FastHerbie(
