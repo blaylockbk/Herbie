@@ -8,7 +8,7 @@ User Guide
 
    install
    configure
-   overview.ipynb
+   start-your-engines.ipynb
 
 .. toctree::
    :caption: Background Knowledge
