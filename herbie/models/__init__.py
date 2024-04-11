@@ -17,6 +17,7 @@ from herbie.misc import ANSI
 #                     Import Public Model Templates
 # ======================================================================
 from .ecmwf import *
+from .gdps import *
 from .gefs import *
 from .gfs import *
 from .hafs import *
@@ -28,6 +29,7 @@ from .nbm import *
 from .nexrad import *
 from .nogaps import *
 from .rap import *
+from .rdps import *
 from .rrfs import *
 from .rtma import *
 from .urma import *
