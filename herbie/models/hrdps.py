@@ -95,7 +95,7 @@ _variable = {
     "WEAPE",
     "WEARN",
     "WEASN",
-    "WIND"
+    "WIND",
 }
 
 _level = {
@@ -139,7 +139,7 @@ _level = {
     "MSL",
     "NTAT",
     "Sfc",
-    "TGL_10"
+    "TGL_10",
 }
 
 

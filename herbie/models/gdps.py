@@ -88,7 +88,7 @@ _variable = {
     "WEAPE",
     "WEARN",
     "WEASN",
-    "WIND"
+    "WIND",
 }
 
 _level = {
@@ -139,7 +139,7 @@ _level = {
     "TGL_120",
     "TGL_2",
     "TGL_40",
-    "TGL_80"
+    "TGL_80",
 }
 
 
@@ -160,9 +160,7 @@ class gdps:
                 "For full list of files, see https://dd.weather.gc.ca/model_gem_global/15km/grib2/lat_lon/"
             )
 
-        self.DESCRIPTION = (
-            "Canada's Global Deterministic Prediction System (GDPS)"
-        )
+        self.DESCRIPTION = "Canada's Global Deterministic Prediction System (GDPS)"
         self.DETAILS = {
             "Datamart product description": "https://eccc-msc.github.io/open-data/msc-data/nwp_gdps/readme_gdps-datamart_en/#data-location",
         }

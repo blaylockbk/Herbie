@@ -89,7 +89,7 @@ _variable = {
     "WEAPE",
     "WEARN",
     "WEASN",
-    "WIND"
+    "WIND",
 }
 
 _level = {
@@ -140,7 +140,7 @@ _level = {
     "TGL_120",
     "TGL_2",
     "TGL_40",
-    "TGL_80"
+    "TGL_80",
 }
 
 
@@ -161,9 +161,7 @@ class rdps:
                 "For full list of files, see https://dd.weather.gc.ca/model_gem_regional/10km/grib2/"
             )
 
-        self.DESCRIPTION = (
-            "Canada's Regional Deterministic Prediction System (RDPS)"
-        )
+        self.DESCRIPTION = "Canada's Regional Deterministic Prediction System (RDPS)"
         self.DETAILS = {
             "Datamart product description": "https://eccc-msc.github.io/open-data/msc-data/nwp_rdps/readme_rdps-datamart_en/#data-location",
         }
