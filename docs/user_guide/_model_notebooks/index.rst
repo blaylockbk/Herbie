@@ -4,6 +4,7 @@
 
 .. toctree::
    :maxdepth: 1
+   :caption: NOAA Models
 
    hrrr.ipynb
    hrrrak.ipynb
@@ -13,9 +14,26 @@
    nam.ipynb
    gfs.ipynb
    gefs.ipynb
-   ecmwf.ipynb
    nbm.ipynb
-   navgem.ipynb
    nogaps.ipynb
-   hrdps.ipynb
    rrfs.ipynb
+
+.. toctree::
+   :maxdepth: 1
+   :caption: ECMWF Models
+
+   ecmwf.ipynb
+
+.. toctree::
+   :maxdepth: 1
+   :caption: Canadian Models
+
+   hrdps.ipynb
+   rdps.ipynb
+   gdps.ipynb
+
+.. toctree::
+   :maxdepth: 1
+   :caption: US Navy Models
+
+   navgem.ipynb
