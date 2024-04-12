@@ -279,27 +279,6 @@ class HerbieAccessor:
 
         _method = set(["nearest", "weighted"])
 
-        if (
-            (method == "nearest")
-            and (k is None)
-            and (ds.latitude.ndim == 1)
-            and (ds.longitude.ndim == 1)
-        ):
-            # We can use the trivial xarray.sel method to extract values
-            # nearest the requested points. I won't return distances,
-            # that would require the BallTree method. If you want to
-            # use the BallTree method, then set `k=1`.
-            points.index.name = "point"
-            ds_points = ds.sel(
-                latitude=points.latitude.to_xarray(),
-                longitude=points.longitude.to_xarray(),
-                method="nearest",
-            )
-            for i in points.columns:
-                ds_points.coords[f"point_{i}"] = points[i].to_xarray()
-                ds_points[f"point_{i}"].attrs["long_name"] = f"Requested grid point {i}"
-            return ds_points
-
         if method == "nearest" and k is None:
             # Get the value at the nearest grid point using BallTree
             k = 1
