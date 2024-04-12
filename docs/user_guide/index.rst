@@ -4,7 +4,7 @@ User Guide
 
 .. toctree::
    :caption: Get Started
-   :maxdepth: 4
+   :maxdepth: 2
 
    install
    configure
@@ -12,6 +12,7 @@ User Guide
 
 .. toctree::
    :caption: Background Knowledge
+   :maxdepth: 2
 
    history
    grib2
@@ -21,6 +22,7 @@ User Guide
 
 .. toctree::
    :caption: Using Herbie
+   :maxdepth: 2
 
    _tutorial_notebooks/index
    _model_notebooks/index
@@ -30,6 +32,7 @@ User Guide
 
 .. toctree::
    :caption: Housekeeping
+   :maxdepth: 2
 
    citation
    disclaimer

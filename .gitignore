@@ -32,9 +32,10 @@ MANIFEST
 *.so
 .eggs/
 *.h5
-$TMPDIR/
+
 
 $TMPDIR/
+Herbie-Tests-Data/
 data/
 
 herbie/_version.py

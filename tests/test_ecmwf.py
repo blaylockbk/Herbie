@@ -2,59 +2,66 @@
 
 from datetime import datetime, timedelta
 
-from herbie import Herbie
+import pytest
+
+from herbie import Herbie, config
 
 now = datetime.now() - timedelta(hours=12)
 yesterday = datetime(now.year, now.month, now.day)
 today_str = yesterday.strftime("%Y-%m-%d %H:%M")
-save_dir = "$TMPDIR/Herbie-Tests/"
+save_dir = config["default"]["save_dir"] / "Herbie-Tests-Data/"
+
+DATES = [
+    datetime(2024, 1, 31),  # older 0.4 degree IFS data
+    datetime(2024, 2, 26),  # newer 0.25 degree IFS data
+]
 
 
-def test_ifs_old_0p4():
+@pytest.mark.parametrize("date", DATES)
+def test_ifs_download(date):
     H = Herbie(
-        datetime(2024, 1, 31),
+        date,
         model="ifs",
         product="oper",
         save_dir=save_dir,
     )
 
     # Test full file download
-    H.download()
+    f = H.download()
     assert H.get_localFilePath().exists()
-
-    # Test partial file download
-    # temperature at all levels
-    H.download(":t:")
-    assert H.get_localFilePath(":t:").exists()
-
-    # Test partial file xarray
-    H.xarray(":10(?:u|v):", remove_grib=False)
-    assert H.get_localFilePath(":10(?:u|v):").exists()
+    f.unlink()
 
 
-def test_ifs_old_0p25():
+@pytest.mark.parametrize("date", DATES)
+def test_ifs_download_partial(date):
     H = Herbie(
-        datetime(2024, 2, 26),
+        date,
         model="ifs",
         product="oper",
         save_dir=save_dir,
     )
 
-    # Test full file download
-    H.download()
-    assert H.get_localFilePath().exists()
-
     # Test partial file download
     # temperature at all levels
-    H.download(":t:")
+    f = H.download(":t:")
     assert H.get_localFilePath(":t:").exists()
+    f.unlink()
 
+
+@pytest.mark.parametrize("date", DATES)
+def test_ifs_xarray(date):
+    H = Herbie(
+        date,
+        model="ifs",
+        product="oper",
+        save_dir=save_dir,
+    )
     # Test partial file xarray
     H.xarray(":10(?:u|v):", remove_grib=False)
     assert H.get_localFilePath(":10(?:u|v):").exists()
 
 
-def test_ifs():
+def test_ifs_yesterday():
     H = Herbie(
         yesterday,
         model="ifs",
@@ -63,20 +70,22 @@ def test_ifs():
     )
 
     # Test full file download
-    H.download()
+    f = H.download()
     assert H.get_localFilePath().exists()
+    f.unlink()
 
     # Test partial file download
     # temperature at all levels
-    H.download(":t:")
+    f = H.download(":t:")
     assert H.get_localFilePath(":t:").exists()
+    f.unlink()
 
     # Test partial file xarray
     H.xarray(":10(?:u|v):", remove_grib=False)
     assert H.get_localFilePath(":10(?:u|v):").exists()
 
 
-def test_aifs():
+def test_aifs_yesterday():
     H = Herbie(
         yesterday,
         model="aifs",
@@ -84,13 +93,15 @@ def test_aifs():
     )
 
     # Test full file download
-    H.download()
+    f = H.download()
     assert H.get_localFilePath().exists()
+    f.unlink()
 
     # Test partial file download
     # temperature at all levels
-    H.download(":t:")
+    f = H.download(":t:")
     assert H.get_localFilePath(":t:").exists()
+    f.unlink()
 
     # Test partial file xarray
     H.xarray(":10(?:u|v):", remove_grib=False)
