@@ -13,7 +13,7 @@
    :maxdepth: 1
    :caption: Extra Features
 
-   extract_points.ipynb
+   pick_points.ipynb
    cartopy_crs.ipynb
    domain_polygon.ipynb
    quick_maps.ipynb

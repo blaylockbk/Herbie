@@ -183,7 +183,7 @@ class HerbieAccessor:
 
         return domain_polygon, domain_polygon_latlon
 
-    def extract_points(
+    def pick_points(
         self,
         points,
         method="nearest",
@@ -194,7 +194,7 @@ class HerbieAccessor:
         tree_name=None,
         verbose=False,
     ):
-        """Extract nearest neighbor grid values at selected  points.
+        """Pick nearest neighbor grid values at selected  points.
 
         Parameters
         ----------
@@ -202,7 +202,7 @@ class HerbieAccessor:
             A DataFrame with columns 'latitude' and 'longitude'
             representing the points to match to the model grid.
         method : {'nearest', 'weighted'}
-            Method used to extract points.
+            Method used to pick points.
             - `nearest` : Gets grid value nearest the requested point.
             - `weighted`: Gets four grid value nearest the requested
                 point and compute the inverse-distance-weighted mean.
@@ -239,11 +239,11 @@ class HerbieAccessor:
         ...     }
         ... )
 
-        Extract value at the nearest neighbor point
-        >>> dsp = ds.herbie.extract_points(points, method="nearest")
+        Pick value at the nearest neighbor point
+        >>> dsp = ds.herbie.pick_points(points, method="nearest")
 
         Get the weighted mean of the four nearest neighbor points
-        >>> dsp = ds.herbie.extract_points(points, method="weighted")
+        >>> dsp = ds.herbie.pick_points(points, method="weighted")
 
         A Dataset is returned of the original grid reduced to the
         requested points, with the values from the `points` dataset
@@ -355,7 +355,7 @@ class HerbieAccessor:
         # Convert distance to km by multiplying by the radius of the Earth
         dist *= 6371
 
-        # Extract grid values for each value of k
+        # Pick grid values for each value of k
         k_points = []
         df_grid = df_grid.reset_index()
         for i in range(k):
@@ -391,9 +391,9 @@ class HerbieAccessor:
                 y=a.y_grid.to_xarray(),
             )
             ds_points.coords["point_grid_distance"] = a.point_grid_distance.to_xarray()
-            ds_points["point_grid_distance"].attrs[
-                "long_name"
-            ] = "Distance between requested point and nearest grid point."
+            ds_points["point_grid_distance"].attrs["long_name"] = (
+                "Distance between requested point and nearest grid point."
+            )
             ds_points["point_grid_distance"].attrs["units"] = "km"
 
             for i in points.columns:
@@ -475,7 +475,7 @@ class HerbieAccessor:
         """
         warnings.warn(
             "The accessor `ds.herbie.nearest_points` is deprecated in "
-            "favor of the `ds.herbie.extract_points` which uses the "
+            "favor of the `ds.herbie.pick_points` which uses the "
             "BallTree algorithm instead.",
             DeprecationWarning,
             stacklevel=2,

@@ -73,14 +73,14 @@ Specifically, Herbie can
 - Download *subsets*  of the data.
 - Read the data with xarray.
 - Accessors to help with plotting.
-- Accessors for extracting data.
+- Accessors for picking data.
 
 Using Herbie looks something like this...
 
 .. code-block:: python
 
    from herbie import Herbie
-   
+
    # Create Herbie object for the HRRR model 6-hr surface forecast product
    H = Herbie(
      '2021-01-01 12:00',
@@ -88,16 +88,16 @@ Using Herbie looks something like this...
      product='sfc',
      fxx=6
    )
-   
+
    # Look at the GRIB2 file contents
    H.inventory()
-   
+
    # Download the full GRIB2 file
    H.download()
-   
+
    # Download a subset of the file, like all fields at 500 mb
    H.download(":500 mb")
-   
+
    # Read a subset of the file with xarray, like 2-m temperature.
    H.xarray("TMP:2 m")
 

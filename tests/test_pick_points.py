@@ -1,8 +1,8 @@
 """Test the ds.herbie.extrac_points() accessor."""
 
 import pandas as pd
-import xarray as xr
 import pytest
+import xarray as xr
 
 from herbie import Herbie
 
@@ -13,8 +13,8 @@ ds4 = Herbie("2024-03-01 00:00", model="gfs").xarray("[U|V]GRD:10 m above")
 
 
 @pytest.mark.parametrize("ds", [ds1, ds2, ds3, ds4])
-def test_extract_points(ds):
-    """Test extract_points accessor on real data."""
+def test_pick_points(ds):
+    """Test pick_points accessor on real data."""
     points = pd.DataFrame(
         {
             "longitude": [-100, -105, -98.4],
@@ -23,13 +23,13 @@ def test_extract_points(ds):
         }
     )
 
-    x1 = ds.herbie.extract_points(points, method="nearest")
-    xw = ds.herbie.extract_points(points, method="weighted")
-    x4 = ds.herbie.extract_points(points, method="nearest", k=4)
-    x8 = ds.herbie.extract_points(points, method="weighted", k=8)
+    x1 = ds.herbie.pick_points(points, method="nearest")
+    xw = ds.herbie.pick_points(points, method="weighted")
+    x4 = ds.herbie.pick_points(points, method="nearest", k=4)
+    x8 = ds.herbie.pick_points(points, method="weighted", k=8)
 
 
-def test_extract_points_simple():
+def test_pick_points_simple():
     """Test a very simple grid."""
     ds = xr.Dataset(
         {"a": (["latitude", "longitude"], [[1, 0], [0, 0]])},
@@ -40,7 +40,7 @@ def test_extract_points_simple():
     )
     point = pd.DataFrame({"latitude": [45.25], "longitude": [100.25]})
 
-    p = ds.herbie.extract_points(point, method="nearest", k=1)
+    p = ds.herbie.pick_points(point, method="nearest", k=1)
     assert all(
         [
             p.latitude.item() == 45,
@@ -53,8 +53,8 @@ def test_extract_points_simple():
     )
 
 
-def test_extract_points_self_points():
-    """Test extract points with model's own grid points."""
+def test_pick_points_self_points():
+    """Test pick points with model's own grid points."""
     pass
 
 
