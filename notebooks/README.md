@@ -1,5 +1,5 @@
 # 📝 Jupyter Notebooks
 
-These notebooks are a reference for miscellaneous tasks. For examples using Herbie to access different types of NWP models, refer to the documentation:
+These notebooks are a reference for miscellaneous tasks. 
 
-## [More Herbie Examples](https://herbie.readthedocs.io/user_guide/notebooks/index.html)
+For examples using Herbie, refer to the Herbie [User Guide](https://herbie.readthedocs.io/en/stable/user_guide/index.html) or look in the [docs/user_guide](../docs/user_guide) folder.
