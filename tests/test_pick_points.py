@@ -3,6 +3,8 @@
 import pandas as pd
 import pytest
 import xarray as xr
+import random
+import string
 
 from herbie import Herbie
 
@@ -10,6 +12,10 @@ ds1 = Herbie("2024-03-01 00:00", model="hrrr").xarray("TMP:[5,6,7,8,9][0,5]0 mb"
 ds2 = Herbie("2024-03-01 00:00", model="hrrr").xarray("[U|V]GRD:10 m above")
 ds3 = Herbie("2024-03-01 00:00", model="gfs").xarray("TMP:[5,6,7,8,9][0,5]0 mb")
 ds4 = Herbie("2024-03-01 00:00", model="gfs").xarray("[U|V]GRD:10 m above")
+
+def generate_random_string(len=8):
+    """Generate a random string."""
+    return "".join(random.choices(string.ascii_letters + string.digits, k=len))
 
 
 @pytest.mark.parametrize("ds", [ds1, ds2, ds3, ds4])
@@ -55,7 +61,20 @@ def test_pick_points_simple():
 
 def test_pick_points_self_points():
     """Test pick points with model's own grid points."""
-    pass
+    H = Herbie("2024-03-01", model="hrrr")
+    ds = H.xarray(":TMP:2 m")
+
+    n = 100
+    points_self = (
+        ds[["latitude", "longitude"]]
+        .to_dataframe()[["latitude", "longitude"]]
+        .sample(n)
+        .reset_index(drop=True)
+    )
+    points_self["stid"] = [generate_random_string() for _ in range(n)]
+
+    r1 = ds.herbie.pick_points(points_self)
+    assert all(r1.point_grid_distance == 0)
 
 
 def test_caching_tree():

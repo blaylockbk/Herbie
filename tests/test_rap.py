@@ -1,17 +1,21 @@
 ## Brian Blaylock
 ## October 13, 2021
 
-"""
-Tests for downloading RAP model
-"""
+"""Tests for downloading RAP model."""
+
 import pandas as pd
 import pytest
 
-from herbie import Herbie
+from herbie import Herbie, config
 from tests.util import is_time_between
 
 today = pd.to_datetime("today").floor("1D") - pd.to_timedelta("1D")
-save_dir = "$TMPDIR/Herbie-Tests/"
+save_dir = config["default"]["save_dir"] / "Herbie-Tests-Data/"
+
+# Remove all previous test data
+for i in (save_dir / "rap").rglob("*"):
+    if i.is_file():
+        i.unlink()
 
 
 @pytest.mark.skipif(
@@ -25,6 +29,7 @@ def test_rap_aws():
         today,
         model="rap",
         save_dir=save_dir,
+        overwrite=True
     )
     assert H.grib is not None
 
@@ -42,7 +47,7 @@ def test_rap_aws():
 
 
 def test_rap_historical():
-    """Search for RAP urls on NCEI that I know exist"""
+    """Search for RAP urls on NCEI that I know exist."""
 
     H = Herbie(
         "2019-11-23",
