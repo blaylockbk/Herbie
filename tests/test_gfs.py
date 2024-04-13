@@ -21,7 +21,7 @@ def test_gfs():
         product="pgrb2.0p25",
         model="gfs",
         save_dir=save_dir,
-        overwrite=True
+        overwrite=True,
     )
 
     assert H.grib, "GFS grib2 file not found"

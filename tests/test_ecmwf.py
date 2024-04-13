@@ -18,8 +18,8 @@ DATES = [
 ]
 
 FILTERS = [
-    ":10(?:u|v):", # 10 meter wind variables
-    ":t:", # temperature at all levels
+    ":10(?:u|v):",  # 10 meter wind variables
+    ":t:",  # temperature at all levels
 ]
 
 

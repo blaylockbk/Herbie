@@ -391,9 +391,9 @@ class HerbieAccessor:
                 y=a.y_grid.to_xarray(),
             )
             ds_points.coords["point_grid_distance"] = a.point_grid_distance.to_xarray()
-            ds_points["point_grid_distance"].attrs["long_name"] = (
-                "Distance between requested point and nearest grid point."
-            )
+            ds_points["point_grid_distance"].attrs[
+                "long_name"
+            ] = "Distance between requested point and nearest grid point."
             ds_points["point_grid_distance"].attrs["units"] = "km"
 
             for i in points.columns:

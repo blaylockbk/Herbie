@@ -13,6 +13,7 @@ ds2 = Herbie("2024-03-01 00:00", model="hrrr").xarray("[U|V]GRD:10 m above")
 ds3 = Herbie("2024-03-01 00:00", model="gfs").xarray("TMP:[5,6,7,8,9][0,5]0 mb")
 ds4 = Herbie("2024-03-01 00:00", model="gfs").xarray("[U|V]GRD:10 m above")
 
+
 def generate_random_string(len=8):
     """Generate a random string."""
     return "".join(random.choices(string.ascii_letters + string.digits, k=len))

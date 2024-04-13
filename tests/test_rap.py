@@ -25,12 +25,7 @@ for i in (save_dir / "rap").rglob("*"):
 )
 def test_rap_aws():
     # Test
-    H = Herbie(
-        today,
-        model="rap",
-        save_dir=save_dir,
-        overwrite=True
-    )
+    H = Herbie(today, model="rap", save_dir=save_dir, overwrite=True)
     assert H.grib is not None
 
     # Test downloading the file
