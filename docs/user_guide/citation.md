@@ -4,7 +4,7 @@ If Herbie played an important role in your work, please [tell me about it](https
 
 ***Suggested Citation***
 
-> Blaylock, B. K. (2022). Herbie: Retrieve Numerical Weather Prediction Model Data (Version 2022.9.0) [Computer software]. <https://doi.org/10.5281/zenodo.4567540>
+> Blaylock, B. K. (2022). Herbie: Retrieve Numerical Weather Prediction Model Data (Version 2024.3.1) [Computer software]. <https://doi.org/10.5281/zenodo.4567540>
 
 ***Suggested Acknowledgment***
 

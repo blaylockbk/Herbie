@@ -1,5 +1,7 @@
 # 🎨 Style Guide
 
+Herbie is a race car themed Python package.
+
 ## Font
 Franklin Gothic Heavy
 
