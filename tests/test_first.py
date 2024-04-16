@@ -1,9 +1,7 @@
 ## Brian Blaylock
 ## October 1, 2021
 
-"""
-I have no idea what I'm doing yet. First time making a test.
-"""
+"""My first test."""
 import numpy as np
 
 

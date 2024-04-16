@@ -133,7 +133,11 @@ But beware; setting a default priority might prevent you from checking all avail
 
 > **📝 Default Download Priority Rational**
 > 
-> The default download priority for HRRR is `['aws', 'nomads', 'google', 'azure', 'pando', 'pando2']` because I anticipate a user will most often request model grids from the recent past or earlier rather than relying on Herbie for operational, real-time needs.
+> The default download priority order for HRRR is 
+> ```
+> ['aws', 'nomads', 'google', 'azure', 'pando', 'pando2']
+> ```
+> because I anticipate a user will most often request model grids from the recent past or earlier rather than relying on Herbie for operational, real-time needs.
 > 
 > While NOMADS is the official operational source of model output data and has the most recent model output available, NOMADS only retains data for a few days, so likely won't have the data you are looking for. Furthermore, NOMADS will throttle the download speed or block users who violate their usage agreement and download too much data within an hour. For most cases, it makes sense to look for the data on AWS first, then look for it at other sources. 
 > 
