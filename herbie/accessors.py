@@ -1,25 +1,12 @@
 ## Brian Blaylock
 ## April 23, 2021
 
-"""
-==================================
-Herbie Extension: xarray accessors
-==================================
+"""Herbie's xarray accessors.
 
-Extend the xarray capabilities with a custom accessor.
-http://xarray.pydata.org/en/stable/internals.html#extending-xarray
+Other useful packages
 
-To use the herbie xarray accessor, do this...
-
-.. code-block:: python
-
-    H = Herbie('2021-01-01', model='hrrr')
-    ds = H.xarray('TMP:2 m')
-    ds.herbie.crs
-    ds.herbie.plot()
-
-# TODO: I like the idea in Salem to mask data by a geographic region
-# TODO: Maybe can use that in Herbie. https://github.com/fmaussion/salem
+- salem: mask data by a geographic region: https://github.com/fmaussion/salem
+- xoak: xarray nearest neighbor https://github.com/xarray-contrib/xoak
 """
 
 import functools
