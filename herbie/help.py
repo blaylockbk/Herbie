@@ -8,9 +8,9 @@ Some Herbie Help
 """
 
 
-def _searchString_help(kind="wgrib2"):
+def _search_help(kind="wgrib2"):
     """
-    Help/Error Message for `searchString`
+    Help/Error Message for `search`
 
     Parameters
     ----------
@@ -21,14 +21,13 @@ def _searchString_help(kind="wgrib2"):
         - **wgrib2** is the NCEP-style grib messages
         - **eccodes** is the ECMWF-style grib messages
     """
-
     if kind == "wgrib2":
         msg = r"""
 Use regular expression to search for lines in the index file.
-Here are some examples you can use for the wgrib2-style `searchString`
+Here are some examples you can use for the wgrib2-style `search`
 
     ==================================== ==========================================================
-    ``searchString=``                    GRIB messages that will be downloaded
+    ``search=``                    GRIB messages that will be downloaded
     ==================================== ==========================================================
     ":TMP:2 m"                           Temperature at 2 m.
     ":TMP:"                              Temperature fields at all levels.
@@ -57,13 +56,13 @@ this cheatsheet: https://www.petefreitag.com/cheatsheets/regex/.
     elif kind == "eccodes":
         msg = """
 Use regular expression to search for lines in the index file.
-Here are some examples you can use for the ecCodes-style `searchString`
+Here are some examples you can use for the ecCodes-style `search`
 
 Look at the ECMWF GRIB Parameter Database
 https://apps.ecmwf.int/codes/grib/param-db
 
 ======================== ==============================================
-searchString (oper/enso) Messages that will be downloaded
+search (oper/enso) Messages that will be downloaded
 ======================== ==============================================
 ":2t:"                   2-m temperature
 ":10u:"                  10-m u wind vector
@@ -89,7 +88,7 @@ searchString (oper/enso) Messages that will be downloaded
 ":500:"                  All variables on the 500 hPa level
 
 ======================== ==============================================
-searchString (wave/waef) Messages that will be downloaded
+search (wave/waef) Messages that will be downloaded
 ======================== ==============================================
 ":swh:"                  Significant height of wind waves + swell
 ":mwp:"                  Mean wave period

@@ -1,8 +1,8 @@
-# 🪂 Subset with `searchString`
+# 🪂 Subset with `search`
 
 Subsetting is done using the GRIB2 index files. Index files define the grib variables/parameters of each message (sometimes it is useful to think of a grib message as a "layer" of the file) and define the byte range of the message.
 
-Herbie can subset a file by grib message by downloading a byte range of the file. This way, instead of downloading the full file, you can download just the "layer" of the file you want. The searchString method implemented in Herbie to do a partial download is similar to what is explained in the [wgrib2 docs](https://www.cpc.ncep.noaa.gov/products/wesley/fast_downloading_grib.html).
+Herbie can subset a file by grib message by downloading a byte range of the file. This way, instead of downloading the full file, you can download just the "layer" of the file you want. The search method implemented in Herbie to do a partial download is similar to what is explained in the [wgrib2 docs](https://www.cpc.ncep.noaa.gov/products/wesley/fast_downloading_grib.html).
 
 Herbie supports reading two different types of index files
 
@@ -15,9 +15,9 @@ You can use regular expression to search for lines in the index file. If `H` is 
 
 ## wgrib2-style index files
 
-Here are some examples you can use for the `searchString` argument for the **wgrib2**-style index files.
+Here are some examples you can use for the `search` argument for the **wgrib2**-style index files.
 
-| `searchString=`                         | GRIB messages that will be downloaded                     |
+| `search=`                               | GRIB messages that will be downloaded                     |
 | --------------------------------------- | --------------------------------------------------------- |
 | `":TMP:2 m"`                            | Temperature at 2 m.                                       |
 | `":TMP:"`                               | Temperature fields at all levels.                         |
@@ -43,14 +43,14 @@ Here are some examples you can use for the `searchString` argument for the **wgr
 If you can't figure out the right search string, you may also _Brute Force_ the search string for complex rules.
 
 ```python
-searchString = "(string1|string2|string3|string4|string5|string6)"
+search = "(string1|string2|string3|string4|string5|string6)"
 ```
 
 For example, here is another way to get 1-hr precipiation variables using the brute force approach
 
 ```python
 match_these = [f":APCP:surface:{i}-{i+1} h*" for i in range(47)]
-searchString = f"({'|'.join(match_these)})"
+search = f"({'|'.join(match_these)})"
 ```
 
 will produce a long string with many regex groups:
@@ -61,13 +61,13 @@ will produce a long string with many regex groups:
 
 ## ecCodes-style index files
 
-Here are some examples you can use for the `searchString` argument for the **grib_ls**-style index files.
+Here are some examples you can use for the `search` argument for the **grib_ls**-style index files.
 
 Look at the [ECMWF GRIB Parameter Database](https://apps.ecmwf.int/codes/grib/param-db)
 
 This table is for the operational forecast product (and ensemble product):
 
-| `searchString`     | (oper/enso) Messages that will be downloaded   |
+| `search`           | (oper/enso) Messages that will be downloaded   |
 | ------------------ | ---------------------------------------------- |
 |                    |                                                |
 | `":2t:"`           | 2-m temperature                                |
@@ -95,12 +95,12 @@ This table is for the operational forecast product (and ensemble product):
 
 This table is for the wave product (and ensemble wave product):
 
-| `searchString` (wave/waef) | Messages that will be downloaded         |
-| ------------------------ | ---------------------------------------- |
-| `":swh:"`                | Significant height of wind waves + swell |
-| `":mwp:"`                | Mean wave period                         |
-| `":mwd:"`                | Mean wave direction                      |
-| `":pp1d:"`               | Peak wave period                         |
-| `":mp2:"`                | Mean zero-crossing wave period           |
+| `search` (wave/waef) | Messages that will be downloaded         |
+| -------------------- | ---------------------------------------- |
+| `":swh:"`            | Significant height of wind waves + swell |
+| `":mwp:"`            | Mean wave period                         |
+| `":mwd:"`            | Mean wave direction                      |
+| `":pp1d:"`           | Peak wave period                         |
+| `":mp2:"`            | Mean zero-crossing wave period           |
 
 > 🔥 **Hint:** The [ECMWF Parameter Database](https://apps.ecmwf.int/codes/grib/param-db?filter=grib2) is a useful resource to help you identify ecCodes-style GRIB variable abbreviations and their meanings.

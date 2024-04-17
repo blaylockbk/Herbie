@@ -36,8 +36,7 @@ file in the ``herbie/models`` directory and make a pull-request.
 For more details, see https://herbie.readthedocs.io/user_guide/data_sources.html
 
 
-TODO: Rename 'searchString' to 'subset' (and rename subset function to??) - REJECTED, for now
-TODO: Rename 'fxx' to 'lead' and allow pandas-parsable timedelta string like "6h".
+TODO: Rename 'fxx' to 'step' and allow pandas-parsable timedelta string like "6h".
 TODO: add `idx_to_df()` and `df_to_idx()` methods.
 TODO: There are probably use cases for the `Path().suffixes` method
 """
@@ -64,7 +63,7 @@ from pyproj import CRS
 
 import herbie.models as model_templates
 from herbie import Path, config
-from herbie.help import _searchString_help
+from herbie.help import _search_help
 from herbie.misc import ANSI
 
 # NOTE: The config dict values are retrieved from __init__ and read
@@ -288,7 +287,7 @@ class Herbie:
         # the index files are in a different style.
         self.IDX_STYLE = getattr(self, "IDX_STYLE", "wgrib2")
 
-        self.searchString_help = _searchString_help(self.IDX_STYLE)
+        self.search_help = _search_help(self.IDX_STYLE)
 
         # Check the user input
         self._validate()
@@ -557,8 +556,17 @@ class Herbie:
         """Predict the local file name."""
         return self.LOCALFILE
 
-    def get_localFilePath(self, searchString=None):
+    def get_localFilePath(self, search=None, *, searchString=None):
         """Get full path to the local file."""
+        # TODO: Remove this eventually
+        if searchString is not None:
+            warnings.warn(
+                "The `searchString` argument was renamed `search`.",
+                DeprecationWarning,
+                stacklevel=2,
+            )
+            search = searchString
+
         # Predict the localFileName from the first model template SOURCE.
         localFilePath = (
             self.save_dir.expand()
@@ -579,9 +587,9 @@ class Herbie:
                 localFilePath,
             )
 
-        if searchString is not None:
-            # Reassign the index DataFrame with the requested searchString
-            idx_df = self.inventory(searchString)
+        if search is not None:
+            # Reassign the index DataFrame with the requested search
+            idx_df = self.inventory(search)
 
             # ======================================
             # Make a unique filename for the subset
@@ -753,7 +761,7 @@ class Herbie:
                     "reference_time",
                     "valid_time",
                     "step",
-                    # ---- Used for searchString ------------------------------
+                    # ---- Used for search ------------------------------
                     "param",  # parameter field (variable)
                     "levelist",  # level
                     "levtype",  # sfc=surface, pl=pressure level, pt=potential vorticity
@@ -788,7 +796,7 @@ class Herbie:
 
         return df
 
-    def inventory(self, filter=None, searchString=None, verbose=None):
+    def inventory(self, search=None, *, searchString=None, verbose=None):
         """
         Inspect the GRIB2 file contents by reading the index file.
 
@@ -796,15 +804,15 @@ class Herbie:
 
         Parameters
         ----------
-        searchString : str
-            Filter dataframe by a searchString regular expression.
+        search : str
+            Filter dataframe by a search regular expression.
             Searches for strings in the index file lines, specifically
             the variable, level, and forecast_time columns.
-            Execute ``_searchString_help()`` for examples of a good
-            searchString.
+            Execute ``_search_help()`` for examples of a good
+            search.
 
             Read more in the user guide at
-            https://herbie.readthedocs.io/en/latest/user_guide/searchString.html
+            https://herbie.readthedocs.io/en/latest/user_guide/search.html
         verbose : None, bool
             If True, then print a help message if no messages are found.
             If False, does not print a help message if no messages are found.
@@ -817,25 +825,35 @@ class Herbie:
         """
         df = self.index_as_dataframe
 
+        # TODO: Remove this eventually
+        if searchString is not None:
+            warnings.warn(
+                "The `searchString` argument was renamed `search`.",
+                DeprecationWarning,
+                stacklevel=2,
+            )
+            search = searchString
+
         # This overrides the verbose specified in __init__
         if verbose is not None:
             self.verbose = verbose
 
-        # Filter DataFrame by searchString
-        if searchString not in [None, ":"]:
-            logic = df.search_this.str.contains(searchString)
+        # Filter DataFrame by regex search
+        if search not in [None, ":"]:
+            logic = df.search_this.str.contains(search)
             if (logic.sum() == 0) and verbose:
                 print(
-                    f"No GRIB messages found. There might be something wrong with {searchString=}"
+                    f"No GRIB messages found. There might be something wrong with {search=}"
                 )
-                print(_searchString_help(kind=self.IDX_STYLE))
+                print(_search_help(kind=self.IDX_STYLE))
             df = df.loc[logic]
         return df
 
     def download(
         self,
-        searchString=None,
+        search=None,
         *,
+        searchString=None,
         source=None,
         save_dir=None,
         overwrite=None,
@@ -853,11 +871,11 @@ class Herbie:
 
         Parameters
         ----------
-        searchString : str
+        search : str
             If None, download the full file. Else, use regex to subset
             the file by specific variables and levels.
             Read more in the user guide:
-            https://herbie.readthedocs.io/en/latest/user_guide/searchString.html
+            https://herbie.readthedocs.io/en/latest/user_guide/search.html
         source : {'nomads', 'aws', 'google', 'azure', 'pando', 'pando2'}
             If None, download GRIB2 file from self.grib2 which is
             the first location the GRIB2 file was found from the
@@ -871,7 +889,7 @@ class Herbie:
         overwrite : bool
             If True, overwrite existing files. Default will skip
             downloading if the full file exists. Not applicable when
-            when searchString is not None because file subsets might
+            when search is not None because file subsets might
             be unique.
         errors : {'warn', 'raise'}
             When an error occurs, send a warning or raise a value error.
@@ -896,8 +914,8 @@ class Herbie:
                     end="",
                 )
 
-        def subset(searchString, outFile):
-            """Download a subset specified by the regex searchString."""
+        def subset(search, outFile):
+            """Download a subset specified by the regex search."""
             # TODO: Maybe optimize downloading multiple subsets with MultiThreading
 
             # TODO An alternative to downloadling subset with curl is
@@ -921,7 +939,7 @@ class Herbie:
             #  group adjacent messages in the same curl command.
 
             # Find index groupings
-            idx_df = self.inventory(searchString).copy()
+            idx_df = self.inventory(search).copy()
             if verbose:
                 print(
                     f"Found {ANSI.bold}{ANSI.green}{len(idx_df)}{ANSI.reset} grib messages."
@@ -965,6 +983,15 @@ class Herbie:
             if verbose:
                 print(f"💾 Saved the subset to {outFile}")
 
+        # TODO: Remove this eventually
+        if searchString is not None:
+            warnings.warn(
+                "The `searchString` argument was renamed `search`.",
+                DeprecationWarning,
+                stacklevel=2,
+            )
+            search = searchString
+
         # This overrides the save_dir specified in __init__
         if save_dir is not None:
             self.save_dir = Path(save_dir).expand()
@@ -974,7 +1001,7 @@ class Herbie:
 
         # If the file exists in the localPath and we don't want to
         # overwrite, then we don't need to download it.
-        outFile = self.get_localFilePath(searchString=searchString)
+        outFile = self.get_localFilePath(search)
 
         if save_dir is not None:
             # Looks like the save_dir was changed.
@@ -1012,7 +1039,7 @@ class Herbie:
                 return  # Can't download anything without a GRIB file URL.
             elif errors == "raise":
                 raise ValueError(msg)
-        if self.idx is None and searchString is not None:
+        if self.idx is None and search is not None:
             msg = f"🦨 Index file not found; cannot download subset: {self.model=} {self.date=} {self.fxx=}"
             if errors == "warn":
                 log.warning(
@@ -1033,7 +1060,7 @@ class Herbie:
         # ===============
         # Do the Download
         # ===============
-        if searchString in [None, ":"] or self.idx is None:
+        if search in [None, ":"] or self.idx is None:
             # Download the full file from remote source
             urllib.request.urlretrieve(self.grib, outFile, _reporthook)
 
@@ -1049,12 +1076,14 @@ class Herbie:
 
         else:
             # Download a subset of the file
-            subset(searchString, outFile)
+            subset(search, outFile)
 
         return outFile
 
     def xarray(
         self,
+        search=None,
+        *,
         searchString=None,
         backend_kwargs={},
         remove_grib=True,
@@ -1065,15 +1094,24 @@ class Herbie:
 
         Parameters
         ----------
-        searchString : str
+        search : str
             Variables to read into xarray Dataset
         remove_grib : bool
             If True, grib file will be removed ONLY IF it didn't exist
             before we downloaded it.
         """
+        # TODO: Remove this eventually
+        if searchString is not None:
+            warnings.warn(
+                "The `searchString` argument was renamed `search`.",
+                DeprecationWarning,
+                stacklevel=2,
+            )
+            search = searchString
+
         download_kwargs = {**dict(overwrite=False), **download_kwargs}
 
-        local_file = self.get_localFilePath(searchString=searchString)
+        local_file = self.get_localFilePath(search)
 
         if "save_dir" in download_kwargs:
             # Looks like the save_dir was changed.
@@ -1095,7 +1133,7 @@ class Herbie:
             remove_grib = False
         #! File can only be be removed if it is a subsetted file.
         #! (We don't want to remove full local files.)
-        if searchString is None and remove_grib:
+        if search is None and remove_grib:
             warnings.warn(
                 "Will not remove GRIB file because Herbie will only remove subsetted files (not full files)."
             )
@@ -1104,7 +1142,7 @@ class Herbie:
 
         # Download file if local file does not exists
         if not local_file.exists() or download_kwargs["overwrite"]:
-            self.download(searchString=searchString, **download_kwargs)
+            self.download(search=search, **download_kwargs)
 
         # Backend kwargs for cfgrib
         backend_kwargs.setdefault("indexpath", "")
@@ -1145,7 +1183,7 @@ class Herbie:
             ds.attrs["description"] = self.DESCRIPTION
             ds.attrs["remote_grib"] = self.grib
             ds.attrs["local_grib"] = str(local_file)
-            ds.attrs["searchString"] = searchString
+            ds.attrs["search"] = search
 
             # ----------------------
             # Attach CF grid mapping
@@ -1153,9 +1191,9 @@ class Herbie:
             # http://cfconventions.org/Data/cf-conventions/cf-conventions-1.8/cf-conventions.html#appendix-grid-mappings
             ds.coords["gribfile_projection"] = None
             ds.coords["gribfile_projection"].attrs = cf_params
-            ds.coords["gribfile_projection"].attrs[
-                "long_name"
-            ] = f"{self.model.upper()} model grid projection"
+            ds.coords["gribfile_projection"].attrs["long_name"] = (
+                f"{self.model.upper()} model grid projection"
+            )
 
             # Assign this grid_mapping for all variables
             for var in list(ds):
