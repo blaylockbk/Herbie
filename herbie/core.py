@@ -37,7 +37,7 @@ For more details, see https://herbie.readthedocs.io/user_guide/data_sources.html
 
 
 TODO: Rename 'searchString' to 'subset' (and rename subset function to??) - REJECTED, for now
-TODO: Rename 'fxx' to 'lead' and allow pandas-parsable timedelta string like "6H".
+TODO: Rename 'fxx' to 'lead' and allow pandas-parsable timedelta string like "6h".
 TODO: add `idx_to_df()` and `df_to_idx()` methods.
 TODO: There are probably use cases for the `Path().suffixes` method
 """
@@ -160,7 +160,7 @@ class Herbie:
         ``valid_date``.
     valid_date : pandas-parsable datetime
         Model *valid* datetime. Must set when ``date`` is None.
-    fxx : int or pandas-parsable timedelta (e.g. "6H")
+    fxx : int or pandas-parsable timedelta (e.g. "6h")
         Forecast lead time *in hours*. Available lead times depend on
         the model type and model version.
     model : {'hrrr', 'hrrrak', 'rap', 'gfs', 'ecmwf', etc.}
@@ -221,7 +221,7 @@ class Herbie:
 
         if isinstance(self.fxx, (str, pd.Timedelta)):
             # Convert pandas-parsable timedelta string to int in hours.
-            self.fxx = pd.to_timedelta(fxx).round("1H").total_seconds() / 60 / 60
+            self.fxx = pd.to_timedelta(fxx).round("1h").total_seconds() / 60 / 60
             self.fxx = int(self.fxx)
 
         if date:

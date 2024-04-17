@@ -62,7 +62,7 @@ def _validate_DATES(DATES):
     return DATES
 
 
-def Herbie_latest(n=6, freq="1H", **kwargs):
+def Herbie_latest(n=6, freq="1h", **kwargs):
     """Search for the most recent GRIB2 file (using multithreading).
 
     Parameters

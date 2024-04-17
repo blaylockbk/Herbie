@@ -33,9 +33,9 @@ def HerbieLatest(
         Any other input you want passed to the Herbie class.
     """
     if model.lower() in ["hrrr", "rap", "rrfs"]:
-        freq = "1H"
+        freq = "1h"
     else:
-        freq = "6H"
+        freq = "6h"
 
     # Create a list of recent dates to try
     dates = pd.date_range(
