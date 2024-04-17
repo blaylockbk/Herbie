@@ -788,16 +788,7 @@ class Herbie:
 
         return df
 
-    # TODO : Remove this in a future Herbie version
-    def read_idx(self, searchString=None):
-        warnings.warn(
-            "The `read_idx` method has been renamed `inventory`.",
-            DeprecationWarning,
-            stacklevel=2,
-        )
-        return self.inventory(searchString=None)
-
-    def inventory(self, searchString=None, verbose=None):
+    def inventory(self, filter=None, searchString=None, verbose=None):
         """
         Inspect the GRIB2 file contents by reading the index file.
 
