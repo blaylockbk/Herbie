@@ -75,7 +75,7 @@ Herbie supports **subsetting GRIB2 files by GRIB message**, provided that an _in
 
 Why would you want to subset GRIB2 files? Well, GRIB files provided by operational forecast centers are usually very large because they can contain hundreds of model output variables, and each variable is its own GRIB message. For example, native grid HRRR files can be ~700 MB each! That adds up quick if you need a lot of days and forecasts and all you are interested in surface temperature. Often, you only need some of the data in the file. The size of a single HRRR message is about 1 MB. If you subset the data as you download it, you will save a lot of disk space and improve your data acquisition time by reducing the download time.
 
-![](../_static/diagrams/GRIB2_file_cURL.png)
+![](../../_static/diagrams/GRIB2_file_cURL.png)
 
 GRIB2 files are made up of messages or _fields_ that can be extracted instead of downloading the full file.
 
@@ -106,7 +106,7 @@ Each GRIB2 file has a unique index file and looks something like this example fr
 
 Each part has meaning as described in the figure
 
-![](../_static/diagrams/index_file_description.png)
+![](../../_static/diagrams/index_file_description.png)
 
 ECMWF products use a different pattern for their index files (I believe created with the ecCodes/grib_ls tool). The important thing here is that these also tell us what variable is in each GRIB message and the start and end byte. Here is an example of one of the ECMWF index files:
 

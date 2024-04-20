@@ -6,8 +6,8 @@
 >
 > > Blaylock B., J. Horel and S. Liston, 2017: Cloud Archiving and Data Mining of High-Resolution Rapid Refresh Model Output. Computers and Geosciences. 109, 43-50. <https://doi.org/10.1016/j.cageo.2017.08.005>.
 
-![alt text](../_static/timeline.png)
+![alt text](../../_static/timeline.png)
 
 **🌹 What's in a name?** I originally released this package under the name "HRRR-B" because it only dealt with the HRRR dataset, and the "B" was for Brian. I added the ability to access data from many more models. Thus, it was re-branded with the name "Herbie," named after a favorite childhood movie.
 
-![](../_static/Herbie3.png)
+![](../../_static/Herbie3.png)
