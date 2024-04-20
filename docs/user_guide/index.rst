@@ -17,7 +17,7 @@ User Guide
    background/history
    background/grib2
    background/data_sources
-   background/model-info
+   background/model-info/index
    background/zarr
 
 .. toctree::
