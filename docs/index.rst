@@ -14,18 +14,18 @@
 Herbie: Retrieve NWP Model Data
 ===============================
 
-**Herbie** is a python package that downloads recent and archived numerical weather prediction (NWP) model output from different cloud archive sources. **Its most popular capability is to download HRRR model data.** NWP data in the GRIB2 format can be read with xarray+cfgrib.
+**Herbie** is a python package that downloads recent and archived numerical weather prediction (NWP) model output from different cloud archive sources. NWP data is distributed in GRIB2 format and can be read with xarray+cfgrib.
 
 Some models Herbie can retrieve data from include:
 
 - High-Resolution Rapid Refresh (HRRR)
 - Rapid Refresh (RAP)
 - Global Forecast System (GFS)
+- ECMWF open data forecast products (IFS and AIFS)
 - National Blend of Models (NBM)
 - Rapid Refresh Forecast System - Prototype (RRFS)
-- ECMWF open data forecast products (ECMWF)
 - Real-Time/Un-Restricted Mesoscale Analysis (RTMA/URMA)
-- and others.
+- and many others (see :ref:`🗺 Model Tutorials`)
 
 .. toctree::
    :maxdepth: 1
@@ -72,8 +72,7 @@ Specifically, Herbie can
 - Download data to your computer.
 - Download *subsets*  of the data.
 - Read the data with xarray.
-- Accessors to help with plotting.
-- Accessors for picking data.
+- Useful xarray accessors (see :ref:`🗃️ Xarray Accessors`)
 
 Using Herbie looks something like this...
 
@@ -102,5 +101,5 @@ Using Herbie looks something like this...
    H.xarray("TMP:2 m")
 
 
-More details at :ref:`👨🏻‍💻 Tutorials` in the User Guide.
+More details in the :ref:`User Guide`.
 

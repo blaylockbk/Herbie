@@ -31,7 +31,9 @@
 
 </div>
 
-**Herbie** is a python package that downloads recent and archived numerical weather prediction (NWP) model output from different cloud archive sources. **Its most popular capability is to download HRRR model data.** NWP data in GRIB2 format can be read with xarray+cfgrib. Much of this data is made available through the [NOAA Open Data Dissemination](https://www.noaa.gov/information-technology/open-data-dissemination) (NODD) Program (formerly the Big Data Program) which has made weather data more accessible than ever before.
+**Herbie** is a python package that downloads recent and archived numerical weather prediction (NWP) model output from different cloud archive sources. NWP data is distributed in GRIB2 format and can be read with xarray+cfgrib. 
+
+# 📓 [Herbie Documentation](https://herbie.readthedocs.io/)
 
 Herbie helps you discover, download, and read data from:
 
@@ -48,7 +50,8 @@ Herbie helps you discover, download, and read data from:
 - [Hurricane Analysis And Forecast System (HAFS)](https://herbie.readthedocs.io/en/latest/user_guide/_model_notebooks/hafs.html)
 - [High Resolution Deterministic Prediction System (HRDPS)](https://herbie.readthedocs.io/en/latest/user_guide/_model_notebooks/hrdps.html)
 
-# 📓 [Herbie Documentation](https://herbie.readthedocs.io/)
+Much of this data is made available through the [NOAA Open Data Dissemination](https://www.noaa.gov/information-technology/open-data-dissemination) (NODD) program (formerly the Big Data Program) which has made weather data more accessible than ever before.
+
 
 ## Installation
 
@@ -75,9 +78,8 @@ conda activate herbie
 
 Alternatively, Herbie is published on PyPI and you can install it with pip, _but_ it requires some dependencies that you will have to install yourself:
 
-- Python 3.8 to 3.11
+- Python 3.9+
 - cURL
-- [Cartopy](https://scitools.org.uk/cartopy/docs/latest/installing.html), which requires GEOS and Proj.
 - [cfgrib](https://github.com/ecmwf/cfgrib), which requires eccodes.
 - _Optional:_ wgrib2
 - _Optional:_ [Carpenter Workshop](https://github.com/blaylockbk/Carpenter_Workshop)
@@ -191,7 +193,7 @@ If Herbie played an important role in your work, please [tell me about it](https
 
 |     |                                                                                                     |
 | :-: | --------------------------------------------------------------------------------------------------- |
-| 👨🏻‍💻  | [Contributing Guide/Disclaimer](https://herbie.readthedocs.io/en/stable/user_guide/disclaimer.html) |
+| 👨🏻‍💻  | [Contributing Guide/Disclaimer](https://herbie.readthedocs.io/en/stable/user_guide/housekeeping/disclaimer.html) |
 | 💬  | [GitHub Discussions](https://github.com/blaylockbk/Herbie/discussions)                              |
 | 🚑  | [GitHub Issues](https://github.com/blaylockbk/Herbie/issues)                                        |
 | 🌐  | [Personal Webpage](http://home.chpc.utah.edu/~u0553130/Brian_Blaylock/home.html)                    |

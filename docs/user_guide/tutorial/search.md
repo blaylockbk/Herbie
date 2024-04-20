@@ -1,6 +1,6 @@
 # 🪂 Subset with `searchString`
 
-Subsetting is done using the GRIB2 index files. Index files define the grib variables/parameters of each message (sometimes it is useful to think of a grib message as a "layer" of the file) and define the byte range of the message.
+Message subsetting is done using the GRIB2 index files. Index files define the grib variables/parameters of each message (sometimes it is useful to think of a grib message as a "layer" of the file) and define the byte range of the message.
 
 Herbie can subset a file by grib message by downloading a byte range of the file. This way, instead of downloading the full file, you can download just the "layer" of the file you want. The searchString method implemented in Herbie to do a partial download is similar to what is explained in the [wgrib2 docs](https://www.cpc.ncep.noaa.gov/products/wesley/fast_downloading_grib.html).
 
