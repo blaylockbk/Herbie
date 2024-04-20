@@ -25,7 +25,7 @@ Some models Herbie can retrieve data from include:
 - National Blend of Models (NBM)
 - Rapid Refresh Forecast System - Prototype (RRFS)
 - Real-Time/Un-Restricted Mesoscale Analysis (RTMA/URMA)
-- and many others.
+- and many others (see :ref:`🗺 Model Tutorials`)
 
 .. toctree::
    :maxdepth: 1
@@ -72,8 +72,7 @@ Specifically, Herbie can
 - Download data to your computer.
 - Download *subsets*  of the data.
 - Read the data with xarray.
-- Xarray accessor for picking data in the grid.
-- Xarray accessors to help with plotting.
+- Useful xarray accessors (see :ref:`🗃️ Xarray Accessors`)
 
 Using Herbie looks something like this...
 
