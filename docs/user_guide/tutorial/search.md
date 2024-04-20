@@ -17,6 +17,13 @@ You can use regular expression to search for lines in the index file. If `H` is 
 
 Here are some examples you can use for the `searchString` argument for the **wgrib2**-style index files.
 
+`":TMP:2 m"`
+: Temperature at 2 m.
+
+`":TMP:"`
+: Temperature fields at all levels.
+
+
 | `searchString=`                         | GRIB messages that will be downloaded                     |
 | --------------------------------------- | --------------------------------------------------------- |
 | `":TMP:2 m"`                            | Temperature at 2 m.                                       |
