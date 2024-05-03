@@ -1,40 +1,5 @@
-#!/usr/bin/env python3
-
-## Brian Blaylock
-## May 6, 2022
-
 """
-
-===============================
-Herbie: Retrieve NWP Model Data
-===============================
-
-Herbie is your model output download assistant with a mind of his own!
-Herbie might look small on the outside, but he has a big heart on the
-inside and will get you to the
-`finish line <https://www.youtube.com/watch?v=4XWufUZ1mxQ&t=189s>`_.
-Happy racing! 🏁
-
-`📓 Documentation <https://herbie.readthedocs.io/>`_
-
-With Herbie's API, you can search and download GRIB2 model output files
-from different archive sources for the High-Resolution Rapid Refresh
-(HRRR) HRRR-Alaska, Rapid Refresh (RAP), Global Forecast System (GFS),
-and others.
-
-Herbie looks for GRIB2 model output data from NOMADS, NOAA's Big Data
-Project partners (Amazon Web Services, Google Cloud Platform, and
-Microsoft Azure), and the CHPC Pando archive at the University of Utah.
-
-Herbie supports subsetting of GRIB2 files by individual GRIB
-messages (i.e. variable and level) when the index (.idx) file exist and
-help you open them with xarray/cfgrib.
-
-Herbie is extendable to support other models. Simply create a template
-file in the ``herbie/models`` directory and make a pull-request.
-
-For more details, see https://herbie.readthedocs.io/user_guide/data_sources.html
-
+You are looking under Herbie's hood, his engine.
 
 TODO: Rename 'fxx' to 'step' and allow pandas-parsable timedelta string like "6h".
 TODO: add `idx_to_df()` and `df_to_idx()` methods.
@@ -73,7 +38,7 @@ from herbie.misc import ANSI
 try:
     # Load custom xarray accessors
     import herbie.accessors  # noqa: F401
-except:
+except Exception:
     warnings.warn(
         "herbie xarray accessors could not be imported."
         "Probably missing a dependency like MetPy."
@@ -405,7 +370,7 @@ class Herbie:
         """Pinging the Pando server before downloading can prevent a bad handshake."""
         try:
             requests.head("https://pando-rgw01.chpc.utah.edu/")
-        except:
+        except Exception:
             print("🤝🏻⛔ Bad handshake with pando? Am I able to move on?")
             pass
 
@@ -561,7 +526,7 @@ class Herbie:
         # TODO: Remove this eventually
         if searchString is not None:
             warnings.warn(
-                "The `searchString` argument was renamed `search`.",
+                "The argument `searchString` was renamed `search`. Please update your scripts.",
                 DeprecationWarning,
                 stacklevel=2,
             )
@@ -828,7 +793,7 @@ class Herbie:
         # TODO: Remove this eventually
         if searchString is not None:
             warnings.warn(
-                "The `searchString` argument was renamed `search`.",
+                "The argument `searchString` was renamed `search`. Please update your scripts.",
                 DeprecationWarning,
                 stacklevel=2,
             )
@@ -986,7 +951,7 @@ class Herbie:
         # TODO: Remove this eventually
         if searchString is not None:
             warnings.warn(
-                "The `searchString` argument was renamed `search`.",
+                "The argument `searchString` was renamed `search`. Please update your scripts.",
                 DeprecationWarning,
                 stacklevel=2,
             )
@@ -1103,7 +1068,7 @@ class Herbie:
         # TODO: Remove this eventually
         if searchString is not None:
             warnings.warn(
-                "The `searchString` argument was renamed `search`.",
+                "The argument `searchString` was renamed `search`. Please update your scripts.",
                 DeprecationWarning,
                 stacklevel=2,
             )
@@ -1214,16 +1179,15 @@ class Herbie:
                 data_vars = set(itertools.chain(*[list(i) for i in Hxr]))
                 data_vars.remove("gribfile_projection")
                 Hxr = xr.concat(Hxr, dim="step", data_vars=data_vars)
-            except:
+            except Exception:
                 if self.verbose:
                     print(
                         f"Note: Returning a list of [{len(Hxr)}] xarray.Datasets because cfgrib opened with multiple hypercubes."
                     )
             return Hxr
 
-    # Shortcut Methods below
     def terrain(self, water_masked=True):
-        """Return model terrain as an xarray.Dataset."""
+        """Shortcut method to return model terrain as an xarray.Dataset."""
         ds = self.xarray(":(?:HGT|LAND):surface")
         if water_masked:
             ds["orog"] = ds.orog.where(ds.lsm > 0)
