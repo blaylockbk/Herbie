@@ -78,8 +78,8 @@ jobs:
       - name: Install project (macOS)
         if: runner.os == 'macOS'
         run: |
-          pipx install --requirement=requirements-test.txt
-          pipx install --editable=.
+          pip3 install --requirement=requirements-test.txt
+          pip3 install --editable=.
 
       - name: Install project (Windows)
         if: runner.os == 'Windows'
