@@ -26,10 +26,10 @@ jobs:
         # matrix slots on other OS than Linux.
         include:
           - os: "macos-latest"
-            python-version: "3.11"
-          # TODO: Building on Windows fails because it fails to install pygrib; eccodes not found
+            python-version: "3.12"
+          # TODO: Building on Windows fails because it fails to install pygrib; eccodes not found. Must use conda env.
           #- os: "windows-latest"
-          #  python-version: "3.11"
+          #  python-version: "3.12"
 
     env:
       OS: ${{ matrix.os }}
@@ -69,10 +69,23 @@ jobs:
         run: |
           echo "Does anything need to be installed?"
 
-      - name: Install project
+      - name: Install project (Linux)
+        if: runner.os == 'Linux'
         run: |
           pip3 install --requirement=requirements-test.txt
           pip3 install --editable=.
+
+      - name: Install project (macOS)
+        if: runner.os == 'macOS'
+        run: |
+          pipx install --requirement=requirements-test.txt
+          pipx install --editable=.
+
+      - name: Install project (Windows)
+        if: runner.os == 'Windows'
+        run: |
+          pipx install --requirement=requirements-test.txt
+          pipx install --editable=.
 
       - name: Run tests
         env:
