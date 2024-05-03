@@ -1,4 +1,4 @@
-"""Some help from Herbie elp."""
+"""Some help messages from Herbie."""
 
 
 def _search_help(kind="wgrib2"):
@@ -61,27 +61,42 @@ product=`oper` or `enfo`
 search=                  GRIB messages that will be downloaded
 ======================== ==============================================
 ":2t:"                   2-m temperature
+":2d:"                   2-m dew point temperature
 ":10u:"                  10-m u wind vector
 ":10v:"                  10-m v wind vector
-":10[u|v]:               10-m u and 10-m v wind
-":d:"                    Divergence (all levels)
-":gh:"                   Geopotential height (all levels)
+":10[uv]:                10-m u and 10-m v wind
+":[tuvr]:"               Temp, u/v wind, RH (all levels)
+":500:"                  All variables on the 500 hPa level
 ":gh:500"                Geopotential height only at 500 hPa
+":gh:"                   Geopotential height (all pressure levels)
+":t:"                    Temperature (all pressure levels)
+":q:"                    Specific Humidity (all pressure levels)
+":r:"                    Relative humidity (all pressure levels)
+":v:"                    v wind vector (all pressure levels)
+":u:"                    u wind vector (all pressure levels)
+":w:"                    Vertical velocity (Pascals per second)
+":lsm:"                  Land-sea mask
+":ttr:"                  Top net long-wave (thermal) radiation
+":ssrd:"                 Surface short-wave (solar) radiation downwards
+":ssr:"                  Surface net short-wave (solar) radiation
+":strd:"                 Surface long-wave (thermal) radiation downwards
+":str:"                  Surface net long-wave (thermal) radiation
+":swvl1:"                Volumetric soil water layer 1 (depth 0 meters)
+":swvl2:"                Volumetric soil water layer 2 (depth 7 meters)
+":swvl3:"                Volumetric soil water layer 3 (depth 28 meters)
+":swvl4:"                Volumetric soil water layer 4 (depth 100 meters)
+":skt:"                  Skin (surface) temperature
+":d:"                    Divergence (all levels)
 ":st:"                   Soil temperature
+":stl2:"                 Soil temperature level 2 (depth 7 meters)
 ":tp:"                   Total precipitation
-":msl:"                  Mean sea level pressure
-":q:"                    Specific Humidity
-":r:"                    Relative humidity
 ":ro:"                   Run-off
-":skt:"                  Skin temperature
+":asn:"                  Snow albedo
+":msl:"                  Mean sea level pressure
 ":sp:"                   Surface pressure
-":t:"                    Temperature
+":cape:"                 CAPE
 ":tcwv:"                 Total column vertically integrated water vapor
 ":vo:"                   Relative vorticity
-":v:"                    v wind vector
-":u:"                    u wind vector
-":[t|u|v|r]:"            Temp, u/v wind, RH (all levels)
-":500:"                  All variables on the 500 hPa level
 
 product=`wave` or `waef`
 ======================== ==============================================

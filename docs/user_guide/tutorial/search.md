@@ -17,10 +17,11 @@ You can use regular expression to search for lines in the index file. If `H` is 
 
 Here are some examples you can use for the `search` argument for the **wgrib2**-style index files.
 
-| `search=`                              | GRIB messages that will be downloaded                     |
+| search=                                | GRIB messages that will be downloaded                     |
 | -------------------------------------- | --------------------------------------------------------- |
 | `":TMP:2 m"`                           | Temperature at 2 m.                                       |
-| `":TMP:"`                              | Temperature fields at all levels.                         |
+| `":TMP:"`                              | All temperature fields (all types of levels).             |
+| `":TMP:\d+ mb"`                        | Temperature fields at all pressure levels.                |
 | `":UGRD:\d+ mb"`                       | U Wind at all pressure levels.                            |
 | `":500 mb:"`                           | All variables on the 500 mb level.                        |
 | `":APCP:"`                             | All accumulated precipitation fields.                     |
@@ -65,42 +66,59 @@ Here are some examples you can use for the `search` argument for the **grib_ls**
 
 Look at the [ECMWF GRIB Parameter Database](https://apps.ecmwf.int/codes/grib/param-db)
 
-This table is for the operational forecast product (and ensemble product):
+This table is for the operational forecast (`product='oper'`) ensemble forecast (`product='enfo'`) products:
 
-| `search`     | (oper/enso) Messages that will be downloaded   |
-| ------------ | ---------------------------------------------- |
-|              |                                                |
-| `":2t:"`     | 2-m temperature                                |
-| `":10u:"`    | 10-m u wind vector                             |
-| `":10v:"`    | 10-m v wind vector                             |
-| `":10[uv]:`  | 10m u and 10m v wind                           |
-| `":d:"`      | Divergence (all levels)                        |
-| `":gh:"`     | geopotential height (all levels)               |
-| `":gh:500`   | geopotential height only at 500 hPa            |
-| `":st:"`     | soil temperature                               |
-| `":tp:"`     | total precipitation                            |
-| `":msl:"`    | mean sea level pressure                        |
-| `":q:"`      | Specific Humidity                              |
-| `":r:"`      | relative humidity                              |
-| `":ro:"`     | Runn-off                                       |
-| `":skt:"`    | skin temperature                               |
-| `":sp:"`     | surface pressure                               |
-| `":t:"`      | temperature                                    |
-| `":tcwv:"`   | Total column vertically integrated water vapor |
-| `":vo:"`     | Relative vorticity                             |
-| `":v:"`      | v wind vector                                  |
-| `":u:"`      | u wind vector                                  |
-| `":[tuvr]:"` | Temp, u/v wind, RH (all levels)                |
-| `":500:"`    | All variables on the 500 hPa level             |
+> Note: Not all variables are avaialble for `model='aifs'`.
 
-This table is for the wave product (and ensemble wave product):
+| search=      | GRIB Messages that will be downloaded           |
+| ------------ | ----------------------------------------------- |
+| `":2t:"`     | 2-m temperature                                 |
+| `":2d:"`     | 2-m dew point temperature                       |
+| `":10u:"`    | 10-m u wind vector                              |
+| `":10v:"`    | 10-m v wind vector                              |
+| `":10[uv]:`  | 10-m u and 10-m v wind                          |
+| `":[tuvr]:"` | Temp, u/v wind, RH (all levels)                 |
+| `":500:"`    | All variables on the 500 hPa level              |
+| `":gh:500"`  | Geopotential height only at 500 hPa             |
+| `":gh:"`     | Geopotential height (all pressure levels)       |
+| `":t:"`      | Temperature (all pressure levels)               |
+| `":q:"`      | Specific Humidity (all pressure levels)         |
+| `":r:"`      | Relative humidity (all pressure levels)         |
+| `":v:"`      | v wind vector (all pressure levels)             |
+| `":u:"`      | u wind vector (all pressure levels)             |
+| `":w:"`      | Vertical velocity (Pascals per second)          |
+| `":lsm:"`    | Land-sea mask                                   |
+| `":ttr:"`    | Top net long-wave (thermal) radiation           |
+| `":ssrd:"`   | Surface short-wave (solar) radiation downwards  |
+| `":ssr:"`    | Surface net short-wave (solar) radiation        |
+| `":strd:"`   | Surface long-wave (thermal) radiation downwards |
+| `":str:"`    | Surface net long-wave (thermal) radiation       |
+| `":swvl1:"`  | Volumetric soil water layer 1 (depth 0 meters)  |
+| `":swvl2:"`  | Volumetric soil water layer 2 (depth 7 meters)  |
+| `":swvl3:"`  | Volumetric soil water layer 3 (depth 28 meters) |
+| `":swvl4:"`  | Volumetric soil water layer 4 (depth 100 meters)|
+| `":skt:"`    | Skin (surface) temperature                      |
+| `":d:"`      | Divergence (all levels)                         |
+| `":st:"`     | Soil temperature                                |
+| `":stl2:"`   | Soil temperature level 2 (depth 7 meters)       |
+| `":tp:"`     | Total precipitation                             |
+| `":ro:"`     | Run-off                                         |
+| `":asn:"`    | Snow albedo                                     |
+| `":msl:"`    | Mean sea level pressure                         |
+| `":sp:"`     | Surface pressure                                |
+| `":cape:"`   | CAPE                                            |
+| `":tcwv:"`   | Total column vertically integrated water vapor  |
+| `":vo:"`     | Relative vorticity                                                       |
 
-| `search` (wave/waef) | Messages that will be downloaded         |
-| -------------------- | ---------------------------------------- |
-| `":swh:"`            | Significant height of wind waves + swell |
-| `":mwp:"`            | Mean wave period                         |
-| `":mwd:"`            | Mean wave direction                      |
-| `":pp1d:"`           | Peak wave period                         |
-| `":mp2:"`            | Mean zero-crossing wave period           |
+
+This table is for the wave (`product='wave`) and ensemble wave (`product='wave'`) products:
+
+| search=    | GRIB Messages that will be downloaded    |
+| ---------- | ---------------------------------------- |
+| `":swh:"`  | Significant height of wind waves + swell |
+| `":mwp:"`  | Mean wave period                         |
+| `":mwd:"`  | Mean wave direction                      |
+| `":pp1d:"` | Peak wave period                         |
+| `":mp2:"`  | Mean zero-crossing wave period           |
 
 > 🔥 **Hint:** The [ECMWF Parameter Database](https://apps.ecmwf.int/codes/grib/param-db?filter=grib2) is a useful resource to help you identify ecCodes-style GRIB variable abbreviations and their meanings.
