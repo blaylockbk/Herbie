@@ -78,8 +78,8 @@ jobs:
       - name: Install project (macOS)
         if: runner.os == 'macOS'
         run: |
-          pip3 install --requirement=requirements-test.txt
-          pip3 install --editable=.
+          pip3 install --break-system-packages --requirement=requirements-test.txt
+          pip3 install --break-system-packages --editable=.
 
       - name: Install project (Windows)
         if: runner.os == 'Windows'
