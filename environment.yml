@@ -27,6 +27,7 @@ dependencies:
   - pyproj>=3.6
   - requests>=2.31
   - s3fs
+  - scikit-learn
   - toml
   #- wgrib2 # ONLY AVAILABLE ON LINUX. Uncomment if you want this optional dependency.
   - jupyter
