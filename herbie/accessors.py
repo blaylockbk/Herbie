@@ -264,6 +264,22 @@ class HerbieAccessor:
 
         ds = self._obj
 
+        # ---------------------
+        # Validate points input
+        if ("latitude" not in points) and ("longitude" not in points):
+            raise ValueError(
+                "`points` DataFrame must have columns 'latitude' and 'longitude'"
+            )
+
+        if not all(points.latitude.between(-90, 90, inclusive="both")):
+            raise ValueError("All latitude points must be [-90,90]")
+
+        if not all(points.longitude.between(0, 360, inclusive="both")):
+            if not all(points.longitude.between(-180, 180, inclusive="both")):
+                raise ValueError("All longitude points must be [-180,180] or [0,360]")
+
+        # ---------------------
+        # Validate method input
         _method = set(["nearest", "weighted"])
 
         if method == "nearest" and k is None:
@@ -378,9 +394,9 @@ class HerbieAccessor:
                 y=a.y_grid.to_xarray(),
             )
             ds_points.coords["point_grid_distance"] = a.point_grid_distance.to_xarray()
-            ds_points["point_grid_distance"].attrs[
-                "long_name"
-            ] = "Distance between requested point and nearest grid point."
+            ds_points["point_grid_distance"].attrs["long_name"] = (
+                "Distance between requested point and nearest grid point."
+            )
             ds_points["point_grid_distance"].attrs["units"] = "km"
 
             for i in points.columns:
