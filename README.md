@@ -149,6 +149,8 @@ H.download(":500 mb")
 H.xarray("TMP:2 m")
 ```
 
+Herbie also provides some custom xarray accessors to help you get the grid projection or pick points from the grid nearest a latitude-longitude location.
+
 ## Data Sources
 
 Herbie downloads model data from the following sources, but can be extended to include others:
