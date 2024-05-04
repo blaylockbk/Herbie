@@ -29,11 +29,14 @@ import cartopy.feature as feature
 import cartopy.io.img_tiles as cimgt
 import matplotlib.pyplot as plt
 import numpy as np
+import requests
 import shapely.geometry as sgeom
 import xarray as xr
 from cartopy.io import shapereader
 from metpy.plots import USCOUNTIES
 from mpl_toolkits.axes_grid1.inset_locator import InsetPosition
+
+from herbie import Path
 
 try:
     import geopandas
@@ -473,6 +476,45 @@ def inset_global_map(
         raise ValueError("`kind` must be either 'point' or 'area'.")
 
     return ax_inset
+
+
+def state_polygon(state=None, country="USA", county=None, verbose=True):
+    """
+    Return a shapely polygon of US state boundaries or country borders.
+
+    GeoJSON Data: https://raw.githubusercontent.com/johan/world.geo.json
+    Helpful tip: https://medium.com/@pramukta/recipe-importing-geojson-into-shapely-da1edf79f41d
+
+    Parameters
+    ----------
+    state : str
+        Abbreviated state {'UT', 'CA', 'ID', etc.}
+    country : str
+        Abbreviated country {'USA', 'CAN', 'MEX', 'DEU', 'FRA', 'CHN', 'RUS', etc.}
+    county : str
+        Abbreviated county (for US states only)
+    """
+    if country == "USA":
+        if county is None:
+            URL = f"https://raw.githubusercontent.com/johan/world.geo.json/master/countries/USA/{state.upper()}.geo.json"
+        else:
+            URL = f"https://raw.githubusercontent.com/johan/world.geo.json/master/countries/USA/{state.upper()}/{county}.geo.json"
+    else:
+        URL = f"https://raw.githubusercontent.com/johan/world.geo.json/master/countries/{country.upper()}.geo.json"
+
+    f = requests.get(URL)
+
+    features = f.json()["features"]
+    poly = sgeom.GeometryCollection(
+        [sgeom.shape(feature["geometry"]).buffer(0) for feature in features]
+    )
+
+    if verbose:
+        print(
+            "Here's the Polygon; you may need to do `_.geoms[i]` to get Polygons from the shape."
+        )
+
+    return poly
 
 
 class EasyMap:
@@ -1243,18 +1285,18 @@ class EasyMap:
         kwargs.setdefault("linewidths", 1)
         if method == "fill":
             kwargs.setdefault("facecolor", (0, 0, 0, facealpha))
-            artist = self.ax.add_feature(
+            self.ax.add_feature(
                 feature.ShapelyFeature([domain_polygon], self.ax.projection),
                 **kwargs,
             )
         elif method == "cutout":
             kwargs.setdefault("facecolor", (0, 0, 0, facealpha))
-            artist = self.ax.add_feature(
+            self.ax.add_feature(
                 feature.ShapelyFeature([cutout], self.ax.projection), **kwargs
             )
         elif method == "border":
             kwargs.setdefault("facecolor", "none")
-            artist = self.ax.add_feature(
+            self.ax.add_feature(
                 feature.ShapelyFeature([domain_polygon.exterior], self.ax.projection),
                 **kwargs,
             )
