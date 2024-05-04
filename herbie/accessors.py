@@ -573,8 +573,8 @@ class HerbieAccessor:
             from paint.radar2 import cm_reflectivity
             from paint.standard2 import cm_dpt, cm_pcp, cm_rh, cm_tmp, cm_wind
             from paint.terrain2 import cm_terrain
-            from toolbox.cartopy_tools import EasyMap, pc
-        except:
+            from herbie.toolbox import EasyMap, pc
+        except Exception:
             print("The plotting accessor requires my Carpenter Workshop. Try:")
             print(
                 "`pip install git+https://github.com/blaylockbk/Carpenter_Workshop.git`"
@@ -738,7 +738,7 @@ class HerbieAccessor:
                         ],
                         crs=ds.herbie.crs,
                     )
-            except:
+            except Exception:
                 pass
 
         return ax
