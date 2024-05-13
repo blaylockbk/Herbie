@@ -56,6 +56,21 @@ class gfs:
         self.IDX_SUFFIX = [".idx"]
         self.LOCALFILE = f"{self.get_remoteFileName}"
 
+class graphcast:
+    def template(self):
+        self.DESCRIPTION = "GraphCast Global Forecast System (EXPERIMENTAL)"
+        self.DETAILS = {
+            "aws document": "https://registry.opendata.aws/noaa-nws-graphcastgfs-pds/",
+        }
+        self.PRODUCTS = {
+            "pgrb2.0p25": "common fields, 0.25 degree resolution",
+        }
+        self.SOURCES = {
+            "aws": f"https://noaa-nws-graphcastgfs-pds.s3.amazonaws.com/graphcastgfs.{self.date:%Y%m%d/%H}/forecasts_13_levels/graphcastgfs.t{self.date:%H}z.{self.product}.f{self.fxx:03d}",
+        }
+        self.IDX_SUFFIX = [".idx"]
+        self.LOCALFILE = f"{self.get_remoteFileName}"
+
 
 class gfs_wave:
     def template(self):

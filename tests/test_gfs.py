@@ -33,3 +33,19 @@ def test_gfs():
     f.unlink()
 
     H.xarray(filter)
+
+def test_graphcast():
+    H = Herbie(
+        today,
+        priority="aws",
+        product="pgrb2.0p25",
+        model="graphcast",
+        save_dir=save_dir,
+        overwrite=True,
+    )
+    
+    f = H.download("HGT:500 mb")
+    assert H.get_localFilePath(filter).exists(), "File doesn't exist!"
+    f.unlink()
+
+    H.xarray(filter)
