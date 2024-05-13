@@ -36,10 +36,11 @@ def test_gfs():
 
 def test_graphcast():
     H = Herbie(
-        today,
+        today-timedelta(hours=12),
         priority="aws",
         product="pgrb2.0p25",
         model="graphcast",
+        fxx=6,
         save_dir=save_dir,
         overwrite=True,
     )
