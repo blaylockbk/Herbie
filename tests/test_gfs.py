@@ -44,8 +44,12 @@ def test_graphcast():
         save_dir=save_dir,
         overwrite=True,
     )
+
+    assert H.grib, "GFS grib2 file not found"
+    assert H.idx, "GFS index file not found"
     
-    f = H.download("HGT:500 mb")
+    filter = "HGT:500 mb"
+    f = H.download(filter)
     assert H.get_localFilePath(filter).exists(), "File doesn't exist!"
     f.unlink()
 
