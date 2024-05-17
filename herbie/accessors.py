@@ -198,18 +198,18 @@ class HerbieAccessor:
                 ds["si10"] = np.sqrt(ds.u10**2 + ds.v10**2)
                 ds["si10"].attrs["GRIB_paramId"] = 207
                 ds["si10"].attrs["long_name"] = "10 metre wind speed"
-                ds["si10"].attrs["units"] = ds.u10.attrs["units"]
+                ds["si10"].attrs["units"] = "m s**-1"
                 ds["si10"].attrs["standard_name"] = "wind_speed"
-                ds["si10"].attrs["grid_mapping"] = ds.u10.attrs["grid_mapping"]
+                ds["si10"].attrs["grid_mapping"] = "gribfile_projection"
                 n_computed += 1
 
             if {"u", "v"}.issubset(ds):
                 ds["ws"] = np.sqrt(ds.u**2 + ds.v**2)
                 ds["ws"].attrs["GRIB_paramId"] = 10
                 ds["ws"].attrs["long_name"] = "wind speed"
-                ds["ws"].attrs["units"] = ds.u.attrs["units"]
+                ds["ws"].attrs["units"] = "m s**-1"
                 ds["ws"].attrs["standard_name"] = "wind_speed"
-                ds["ws"].attrs["grid_mapping"] = ds.u.attrs["grid_mapping"]
+                ds["ws"].attrs["grid_mapping"] = "gribfile_projection"
                 n_computed += 1
 
         if which in ("direction", "both"):
@@ -221,7 +221,7 @@ class HerbieAccessor:
                 ds["wdir10"].attrs["long_name"] = "10 metre wind direction"
                 ds["wdir10"].attrs["units"] = "degree"
                 ds["wdir10"].attrs["standard_name"] = "wind_from_direction"
-                ds["wdir10"].attrs["grid_mapping"] = ds.u10.attrs["grid_mapping"]
+                ds["wdir10"].attrs["grid_mapping"] = "gribfile_projection"
                 n_computed += 1
 
             if {"u", "v"}.issubset(ds):
@@ -232,7 +232,7 @@ class HerbieAccessor:
                 ds["wdir"].attrs["long_name"] = "wind direction"
                 ds["wdir"].attrs["units"] = "degree"
                 ds["wdir"].attrs["standard_name"] = "wind_from_direction"
-                ds["wdir"].attrs["grid_mapping"] = ds.u.attrs["grid_mapping"]
+                ds["wdir"].attrs["grid_mapping"] = "gribfile_projection"
                 n_computed += 1
 
         if n_computed == 0:
