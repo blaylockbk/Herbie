@@ -1112,7 +1112,7 @@ class Herbie:
         # Backend kwargs for cfgrib
         backend_kwargs.setdefault("indexpath", "")
         backend_kwargs.setdefault(
-            "read_keys", ["parameterName", "parameterUnits", "stepRange"]
+            "read_keys", ["parameterName", "parameterUnits", "stepRange", "uvRelativeToGrid"]
         )
         backend_kwargs.setdefault("errors", "raise")
 
