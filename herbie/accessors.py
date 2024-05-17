@@ -170,6 +170,76 @@ class HerbieAccessor:
 
         return domain_polygon, domain_polygon_latlon
 
+    def with_wind(self, which="both"):
+        """Return Dataset with calculated wind speed and/or direction.
+
+        Consistent with the eccodes GRIB parameter database, variables
+        names are assigned as follows:
+
+        - "si10"   : 10 metre wind speed (note this is not ws10 as you might expect)
+        - "wdir10" : 10 metre wind direction
+        - "ws"     : wind speed
+        - "wdir"   : wind direction
+
+        Refer to the eccodes database <https://codes.ecmwf.int/grib/param-db/>.
+
+        Parameters
+        ----------
+        which : {'both', 'speed', 'direction'}
+            Specify which wind quantity to compute.
+
+        """
+        ds = self._obj
+
+        n_computed = 0
+
+        if which in ("speed", "both"):
+            if {"u10", "v10"}.issubset(ds):
+                ds["si10"] = np.sqrt(ds.u10**2 + ds.v10**2)
+                ds["si10"].attrs["GRIB_paramId"] = 207
+                ds["si10"].attrs["long_name"] = "10 metre wind speed"
+                ds["si10"].attrs["units"] = ds.u10.attrs["units"]
+                ds["si10"].attrs["standard_name"] = "wind_speed"
+                ds["si10"].attrs["grid_mapping"] = ds.u10.attrs["grid_mapping"]
+                n_computed += 1
+
+            if {"u", "v"}.issubset(ds):
+                ds["ws"] = np.sqrt(ds.u**2 + ds.v**2)
+                ds["ws"].attrs["GRIB_paramId"] = 10
+                ds["ws"].attrs["long_name"] = "wind speed"
+                ds["ws"].attrs["units"] = ds.u.attrs["units"]
+                ds["ws"].attrs["standard_name"] = "wind_speed"
+                ds["ws"].attrs["grid_mapping"] = ds.u.attrs["grid_mapping"]
+                n_computed += 1
+
+        if which in ("direction", "both"):
+            if {"u10", "v10"}.issubset(ds):
+                ds["wdir10"] = (
+                    (270 - np.rad2deg(np.arctan2(ds.v10, ds.u10))) % 360
+                ).where((ds.u10 != 0) & (ds.v10 != 0))
+                ds["wdir10"].attrs["GRIB_paramId"] = 260260
+                ds["wdir10"].attrs["long_name"] = "10 metre wind direction"
+                ds["wdir10"].attrs["units"] = "degree"
+                ds["wdir10"].attrs["standard_name"] = "wind_from_direction"
+                ds["wdir10"].attrs["grid_mapping"] = ds.u10.attrs["grid_mapping"]
+                n_computed += 1
+
+            if {"u", "v"}.issubset(ds):
+                ds["wdir"] = ((270 - np.rad2deg(np.arctan2(ds.v, ds.u))) % 360).where(
+                    (ds.u != 0) & (ds.v != 0)
+                )
+                ds["wdir"].attrs["GRIB_paramId"] = 3031
+                ds["wdir"].attrs["long_name"] = "wind direction"
+                ds["wdir"].attrs["units"] = "degree"
+                ds["wdir"].attrs["standard_name"] = "wind_from_direction"
+                ds["wdir"].attrs["grid_mapping"] = ds.u.attrs["grid_mapping"]
+                n_computed += 1
+
+        if n_computed == 0:
+            warnings.warn("`with_wind()` did not do anything.")
+
+        return ds
+
     def pick_points(
         self,
         points,
@@ -573,6 +643,7 @@ class HerbieAccessor:
             from paint.radar2 import cm_reflectivity
             from paint.standard2 import cm_dpt, cm_pcp, cm_rh, cm_tmp, cm_wind
             from paint.terrain2 import cm_terrain
+
             from herbie.toolbox import EasyMap, pc
         except Exception:
             print("The plotting accessor requires my Carpenter Workshop. Try:")
