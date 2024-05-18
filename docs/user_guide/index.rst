@@ -32,6 +32,8 @@ User Guide
    tutorial/bonus_notebooks/index
    tutorial/fast.ipynb
    tutorial/latest.ipynb
+   tutorial/EasyMap.ipynb
+   tutorial/paint.ipynb
    tutorial/wgrib2-wrapper.ipynb
    tutorial/extend
 
