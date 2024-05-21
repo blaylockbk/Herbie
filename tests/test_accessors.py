@@ -4,8 +4,6 @@ Note: See `test_pick_points.py` for testing the pick_points accessor.
 """
 
 from herbie import Herbie
-from shapely.geometry import MultiPoint
-import pandas as pd
 
 
 def test_crs():
