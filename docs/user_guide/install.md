@@ -28,7 +28,15 @@ When those are installed within your environment, _then_ you can install Herbie 
 pip install herbie-data
 ```
 
-or
+To install the full functionality in the library which includes
+[xarray accessors](https://github.com/blaylockbk/Herbie/blob/main/herbie/accessors.py) for plotting and data manipulation please install the "extras" dependencies:
+
+```bash
+# Install last published version
+pip install 'herbie-data[extras]'
+```
+
+The code can also be installed directly from github.
 
 ```bash
 # Install current main branch
