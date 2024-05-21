@@ -18,7 +18,6 @@ Herbie is published on PyPI and you can install it with pip, _but_ it requires s
 
 - Python 3.9+
 - cURL
-- [cfgrib](https://github.com/ecmwf/cfgrib), which requires **_eccodes_** (most easily installed with conda)
 - _Optional:_ wgrib2
 - _Optional:_ [Carpenter Workshop](https://github.com/blaylockbk/Carpenter_Workshop)
 
