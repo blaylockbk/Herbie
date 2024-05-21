@@ -15,18 +15,15 @@ import re
 import warnings
 from pathlib import Path
 
-import cartopy.crs as ccrs
-import metpy  # * Needed for metpy accessor  # noqa: F401
 import numpy as np
 import pandas as pd
 import pygrib
-import shapely
 import xarray as xr
 from pyproj import CRS
-from shapely.geometry import MultiPoint, Point, Polygon
-from sklearn.neighbors import BallTree
 
 import herbie
+from herbie.misc import try_import
+
 
 _level_units = dict(
     adiabaticCondensation="adiabatic condensation",
@@ -99,6 +96,12 @@ class HerbieAccessor:
     def __init__(self, xarray_obj):
         self._obj = xarray_obj
         self._center = None
+        try_import("metpy")
+        try_import("cartopy.crs", as_name="ccrs")
+        try_import("shapely")
+        try_import("shapely.geometry", from_list=["Point", "MultiPoint", "Polygon"])
+        try_import("sklearn.neighbors", from_list=["BallTree"])
+        try_import("matplotlib.pyplot", as_name="plt")
 
     @property
     def center(self):
@@ -566,7 +569,6 @@ class HerbieAccessor:
         """
         # From Carpenter_Workshop:
         # https://github.com/blaylockbk/Carpenter_Workshop
-        import matplotlib.pyplot as plt
 
         try:
             from paint.radar import cm_reflectivity
