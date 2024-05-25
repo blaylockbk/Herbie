@@ -33,7 +33,12 @@
 
 **Herbie** is a python package that downloads recent and archived numerical weather prediction (NWP) model output from different cloud archive sources. NWP data is distributed in GRIB2 format and can be read with xarray+cfgrib. 
 
-# 📓 [Herbie Documentation](https://herbie.readthedocs.io/)
+
+||
+|--|
+|<h3>[📘 Documentation](https://herbie.readthedocs.io/)</h3>
+|<h3>[💬 Discussions](https://github.com/blaylockbk/Herbie/discussions) -- [Ask For Help](https://github.com/blaylockbk/Herbie/discussions/categories/q-a)</h3>
+
 
 Herbie helps you discover, download, and read data from:
 
