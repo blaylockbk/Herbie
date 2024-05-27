@@ -18,6 +18,17 @@
   ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██
 """
 
+import warnings
+
+try:
+    import matplotlib.pyplot as plt
+    import matplotlib.patheffects as path_effects
+except ModuleNotFoundError:
+    warnings.warn(
+        "matplotlib is an 'extra' requirement, please use "
+        "`pip install 'herbie-data[extras]'` for the full functionality."
+)
+
 
 class hc:
     """Herbie Color Pallette"""
@@ -82,47 +93,6 @@ class ANSI:
     """
 
 
-def try_import(module_name: str, as_name: str = None, from_list: list = []):
-    """Attempt to import an object, and if it fails, provide a helpful message.
-
-    Parameters
-    ----------
-    module_name : str
-        The name of the module to import.
-    as_name : str
-        Name to import the module as, by default the module name.
-    from_list : list
-        List of attributes to import from the module.
-
-    Examples
-    --------
-    >>> try_import("metpy")
-    >>> try_import("cartopy.crs", as_name="ccrs")
-    >>> try_import("shapely.geometry", from_list=["Point", "MultiPoint", "Polygon"])
-
-    """
-    import warnings
-    import inspect
-    from importlib import import_module
-    namespace = inspect.stack()[1][0].f_globals # Update the globals of the calling function
-    try:
-        module = import_module(module_name)
-        if not from_list:
-            as_name = as_name or module_name
-            namespace[as_name] = module
-        else:
-            for attr in from_list:
-                namespace[attr] = getattr(module, attr)
-    except ModuleNotFoundError:
-        warnings.warn(
-            f"{module_name} is an 'extra' requirement for herbie-data. Please install "
-            "with `pip install 'herbie-data[extras]'` for the full functionality."
-        )
-        return None
-    except AttributeError as err:
-        raise ImportError(f"Cannot import {attr} from {module_name}") from err
-
-
 def rich_herbie():
     """
     Returns "▌▌Herbie" with rich colors (if rich is installed).
@@ -160,8 +130,6 @@ def print_rich(H):
 
 def HerbieLogo(white_line=False):
     """Logo of Herbie The Love Bug"""
-    try_import("matplotlib.pyplot", as_name="plt")
-
     plt.figure(figsize=[5, 5], facecolor=hc.tan)
 
     plt.axis([-10, 10, -10, 10])
@@ -211,9 +179,6 @@ def HerbieLogo2(white_line=False, text_color="tan", text_stroke="black"):
     >>> ax = HerbieLogo2(text_color='tan')
     >>> plt.savefig('Herbie_transparent_tan.svg', bbox_inches="tight", transparent=True)
     """
-    try_import("matplotlib.pyplot", as_name="plt")
-    try_import("matplotlib.patheffects", as_name="path_effects")
-
     plt.figure(figsize=[5, 3], facecolor=hc.tan)
 
     plt.axis([1.5, 20, -10, 10])

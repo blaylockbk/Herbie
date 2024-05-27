@@ -22,7 +22,6 @@ import xarray as xr
 from pyproj import CRS
 
 import herbie
-from herbie.misc import try_import
 
 
 _level_units = dict(
@@ -96,12 +95,30 @@ class HerbieAccessor:
     def __init__(self, xarray_obj):
         self._obj = xarray_obj
         self._center = None
-        try_import("metpy")
-        try_import("cartopy.crs", as_name="ccrs")
-        try_import("shapely")
-        try_import("shapely.geometry", from_list=["Point", "MultiPoint", "Polygon"])
-        try_import("sklearn.neighbors", from_list=["BallTree"])
-        try_import("matplotlib.pyplot", as_name="plt")
+        try:
+            import metpy
+            import matplotlib.pyplot as plt
+        except ModuleNotFoundError:
+            warnings.warn(
+                "metpy is an 'extra' requirement, please use "
+                "`pip install 'herbie-data[extras]'` for the full functionality."
+        )
+        try:
+            import cartopy.crs as ccrs
+            import shapely
+            from shapely.geometry import MultiPoint, Point, Polygon
+        except ModuleNotFoundError:
+            warnings.warn(
+                "cartopy is an 'extra' requirements, please use "
+                "`pip install 'herbie-data[extras]'` for the full functionality."
+            )
+        try:
+            from sklearn.neighbors import BallTree
+        except ModuleNotFoundError:
+            warnings.warn(
+                "sklearn is an 'extra' requirement, please use "
+                "`pip install 'herbie-data[extras]'` for the full functionality."
+            )
 
     @property
     def center(self):

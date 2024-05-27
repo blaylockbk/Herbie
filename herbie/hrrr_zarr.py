@@ -12,12 +12,10 @@ The directory structure is very different from the GRIB2 format.
 """
 
 import datetime
-
+import warnings
 import pandas as pd
 import s3fs
 import xarray as xr
-
-from herbie.misc import try_import
 
 
 def load_dataset(urls):
@@ -27,7 +25,13 @@ def load_dataset(urls):
     and latitude/longitude. We also promote the "time" attribute to a coordinate
     so that combining the datasets for each hour will work later on.
     """
-    try_import("cartopy.crs", as_name="ccrs")
+    try:
+        import cartopy.crs as ccrs
+    except ModuleNotFoundError:
+        warnings.warn(
+            "cartopy is an 'extra' requirement, please use "
+            "`pip install 'herbie-data[extras]'` for the full functionality."
+    )
 
     projection = ccrs.LambertConformal(
         central_longitude=262.5,
