@@ -23,6 +23,32 @@ from pyproj import CRS
 
 import herbie
 
+# Optional dependencies
+try:
+    import metpy
+    import matplotlib.pyplot as plt
+except ModuleNotFoundError:
+    warnings.warn(
+        "metpy is an 'extra' requirement, please use "
+        "`pip install 'herbie-data[extras]'` for the full functionality."
+)
+try:
+    import cartopy.crs as ccrs
+    import shapely
+    from shapely.geometry import MultiPoint, Point, Polygon
+except ModuleNotFoundError:
+    warnings.warn(
+        "cartopy is an 'extra' requirements, please use "
+        "`pip install 'herbie-data[extras]'` for the full functionality."
+    )
+try:
+    from sklearn.neighbors import BallTree
+except ModuleNotFoundError:
+    warnings.warn(
+        "scikit-learn is an 'extra' requirement, please use "
+        "`pip install 'herbie-data[extras]'` for the full functionality."
+    )
+
 
 _level_units = dict(
     adiabaticCondensation="adiabatic condensation",
@@ -95,30 +121,6 @@ class HerbieAccessor:
     def __init__(self, xarray_obj):
         self._obj = xarray_obj
         self._center = None
-        try:
-            import metpy
-            import matplotlib.pyplot as plt
-        except ModuleNotFoundError:
-            warnings.warn(
-                "metpy is an 'extra' requirement, please use "
-                "`pip install 'herbie-data[extras]'` for the full functionality."
-        )
-        try:
-            import cartopy.crs as ccrs
-            import shapely
-            from shapely.geometry import MultiPoint, Point, Polygon
-        except ModuleNotFoundError:
-            warnings.warn(
-                "cartopy is an 'extra' requirements, please use "
-                "`pip install 'herbie-data[extras]'` for the full functionality."
-            )
-        try:
-            from sklearn.neighbors import BallTree
-        except ModuleNotFoundError:
-            warnings.warn(
-                "sklearn is an 'extra' requirement, please use "
-                "`pip install 'herbie-data[extras]'` for the full functionality."
-            )
 
     @property
     def center(self):
