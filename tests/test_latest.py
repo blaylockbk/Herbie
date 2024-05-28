@@ -6,6 +6,6 @@ import pytest
 
 
 def test_HerbieWait():
-    run = pd.Timestamp("now", tz="utc").replace(tzinfo=None).floor('1h') + pd.Timedelta('1h')
+    run = pd.Timestamp("now", tz="utc").replace(tzinfo=None).floor('1h')
     with pytest.raises(TimeoutError):
         H = HerbieWait(run, model="rap", product="awp130pgrb", wait_for="5s", check_interval="1s", fxx=0)
