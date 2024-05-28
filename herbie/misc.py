@@ -18,17 +18,6 @@
   ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██
 """
 
-import warnings
-
-try:
-    import matplotlib.pyplot as plt
-    import matplotlib.patheffects as path_effects
-except ModuleNotFoundError:
-    warnings.warn(
-        "matplotlib is an 'extra' requirement, please use "
-        "`pip install 'herbie-data[extras]'` for the full functionality."
-)
-
 
 class hc:
     """Herbie Color Pallette"""
@@ -130,6 +119,13 @@ def print_rich(H):
 
 def HerbieLogo(white_line=False):
     """Logo of Herbie The Love Bug"""
+    try:
+        import matplotlib.pyplot as plt
+    except ModuleNotFoundError:
+        raise ModuleNotFoundError(
+            "matplotlib is an 'extra' requirement, please use "
+            "`pip install 'herbie-data[extras]'` for the full functionality."
+    )
     plt.figure(figsize=[5, 5], facecolor=hc.tan)
 
     plt.axis([-10, 10, -10, 10])
@@ -179,6 +175,14 @@ def HerbieLogo2(white_line=False, text_color="tan", text_stroke="black"):
     >>> ax = HerbieLogo2(text_color='tan')
     >>> plt.savefig('Herbie_transparent_tan.svg', bbox_inches="tight", transparent=True)
     """
+    try:
+        import matplotlib.pyplot as plt
+        import matplotlib.patheffects as path_effects
+    except ModuleNotFoundError:
+        raise ModuleNotFoundError(
+            "matplotlib is an 'extra' requirement, please use "
+            "`pip install 'herbie-data[extras]'` for the full functionality."
+    )
     plt.figure(figsize=[5, 3], facecolor=hc.tan)
 
     plt.axis([1.5, 20, -10, 10])

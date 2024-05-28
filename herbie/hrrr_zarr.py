@@ -12,7 +12,6 @@ The directory structure is very different from the GRIB2 format.
 """
 
 import datetime
-import warnings
 import pandas as pd
 import s3fs
 import xarray as xr
@@ -28,7 +27,7 @@ def load_dataset(urls):
     try:
         import cartopy.crs as ccrs
     except ModuleNotFoundError:
-        warnings.warn(
+        raise ModuleNotFoundError(
             "cartopy is an 'extra' requirement, please use "
             "`pip install 'herbie-data[extras]'` for the full functionality."
     )
