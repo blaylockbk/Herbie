@@ -151,6 +151,9 @@ class HerbieAccessor:
     @functools.cached_property
     def polygon(self):
         """Get a polygon of the domain boundary."""
+        from shapely.geometry import Polygon
+        import cartopy.crs as ccrs
+
         ds = self._obj
 
         LON = ds.longitude.data
@@ -497,6 +500,10 @@ class HerbieAccessor:
             - Or possibly scipy BallTree method.
 
         """
+        import cartopy.crs as ccrs
+        import shapely
+        from shapely.geometry import MultiPoint, Point
+
         warnings.warn(
             "The accessor `ds.herbie.nearest_points` is deprecated in "
             "favor of the `ds.herbie.pick_points` which uses the "
@@ -599,6 +606,7 @@ class HerbieAccessor:
             print(
                 "`pip install git+https://github.com/blaylockbk/Carpenter_Workshop.git`"
             )
+        import matplotlib.pyplot as plt
 
         ds = self._obj
 
