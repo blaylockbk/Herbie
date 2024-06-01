@@ -95,24 +95,6 @@ class HerbieAccessor:
     def __init__(self, xarray_obj):
         self._obj = xarray_obj
         self._center = None
-        # Optional dependencies
-        try:
-            import metpy
-            import matplotlib.pyplot as plt
-        except ModuleNotFoundError:
-            raise ModuleNotFoundError(
-                "metpy is an 'extra' requirement, please use "
-                "`pip install 'herbie-data[extras]'` for the full functionality."
-        )
-        try:
-            import cartopy.crs as ccrs
-            import shapely
-            from shapely.geometry import MultiPoint, Point, Polygon
-        except ModuleNotFoundError:
-            raise ModuleNotFoundError(
-                "cartopy is an 'extra' requirements, please use "
-                "`pip install 'herbie-data[extras]'` for the full functionality."
-            )
 
     @property
     def center(self):
@@ -138,6 +120,14 @@ class HerbieAccessor:
             An xarray.Dataset from a GRIB2 file opened by the cfgrib engine.
 
         """
+        try:
+            import metpy
+        except ModuleNotFoundError:
+            raise ModuleNotFoundError(
+                "metpy is an 'extra' requirement, please use "
+                "`pip install 'herbie-data[extras]'` for the full functionality."
+            )
+
         ds = self._obj
 
         # Get variables that have dimensions
@@ -151,8 +141,14 @@ class HerbieAccessor:
     @functools.cached_property
     def polygon(self):
         """Get a polygon of the domain boundary."""
-        from shapely.geometry import Polygon
-        import cartopy.crs as ccrs
+        try:
+            import cartopy.crs as ccrs
+            from shapely.geometry import Polygon
+        except ModuleNotFoundError:
+            raise ModuleNotFoundError(
+                "cartopy is an 'extra' requirements, please use "
+                "`pip install 'herbie-data[extras]'` for the full functionality."
+            )
 
         ds = self._obj
 
@@ -260,16 +256,16 @@ class HerbieAccessor:
         dimension.
         >>> dsp = dsp.swap_dims({"point": "point_stid"})
         """
+        try:
+            from sklearn.neighbors import BallTree
+        except ModuleNotFoundError:
+            raise ModuleNotFoundError(
+                "scikit-learn is an 'extra' requirement, please use "
+                "`pip install 'herbie-data[extras]'` for the full functionality."
+            )
 
         def plant_tree(save_pickle=None):
             """Grow a new BallTree object from seedling."""
-            try:
-                from sklearn.neighbors import BallTree
-            except ModuleNotFoundError:
-                raise ModuleNotFoundError(
-                    "scikit-learn is an 'extra' requirement, please use "
-                    "`pip install 'herbie-data[extras]'` for the full functionality."
-                )
             timer = pd.Timestamp("now")
             print("INFO: 🌱 Growing new BallTree...", end="")
             tree = BallTree(np.deg2rad(df_grid), metric="haversine")
@@ -500,9 +496,15 @@ class HerbieAccessor:
             - Or possibly scipy BallTree method.
 
         """
-        import cartopy.crs as ccrs
-        import shapely
-        from shapely.geometry import MultiPoint, Point
+        try:
+            import cartopy.crs as ccrs
+            import shapely
+            from shapely.geometry import MultiPoint, Point
+        except ModuleNotFoundError:
+            raise ModuleNotFoundError(
+                "cartopy is an 'extra' requirements, please use "
+                "`pip install 'herbie-data[extras]'` for the full functionality."
+            )
 
         warnings.warn(
             "The accessor `ds.herbie.nearest_points` is deprecated in "
@@ -596,6 +598,17 @@ class HerbieAccessor:
         # https://github.com/blaylockbk/Carpenter_Workshop
 
         try:
+            import cartopy.crs as ccrs
+            import matplotlib.pyplot as plt
+            import shapely
+            from shapely.geometry import MultiPoint, Point, Polygon
+        except ModuleNotFoundError:
+            raise ModuleNotFoundError(
+                "cartopy is an 'extra' requirements, please use "
+                "`pip install 'herbie-data[extras]'` for the full functionality."
+            )
+
+        try:
             from paint.radar import cm_reflectivity
             from paint.radar2 import cm_reflectivity
             from paint.standard2 import cm_dpt, cm_pcp, cm_rh, cm_tmp, cm_wind
@@ -606,7 +619,6 @@ class HerbieAccessor:
             print(
                 "`pip install git+https://github.com/blaylockbk/Carpenter_Workshop.git`"
             )
-        import matplotlib.pyplot as plt
 
         ds = self._obj
 
