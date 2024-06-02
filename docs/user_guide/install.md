@@ -18,7 +18,6 @@ Herbie is published on PyPI and you can install it with pip, _but_ it requires s
 
 - Python 3.9+
 - cURL
-- [cfgrib](https://github.com/ecmwf/cfgrib), which requires **_eccodes_** (most easily installed with conda)
 - _Optional:_ wgrib2
 - _Optional:_ [Carpenter Workshop](https://github.com/blaylockbk/Carpenter_Workshop)
 
@@ -29,7 +28,15 @@ When those are installed within your environment, _then_ you can install Herbie 
 pip install herbie-data
 ```
 
-or
+To install the full functionality in the library which includes
+[xarray accessors](https://github.com/blaylockbk/Herbie/blob/main/herbie/accessors.py) for plotting and data manipulation please install the "extras" dependencies:
+
+```bash
+# Install last published version
+pip install 'herbie-data[extras]'
+```
+
+The code can also be installed directly from github.
 
 ```bash
 # Install current main branch
