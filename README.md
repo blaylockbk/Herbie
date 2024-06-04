@@ -75,10 +75,9 @@ conda activate herbie
 Alternatively, Herbie is published on PyPI and you can install it with pip, _but_ it requires some dependencies that you will have to install yourself:
 
 - Python 3.9+
-- cURL
-- [cfgrib](https://github.com/ecmwf/cfgrib), which requires eccodes.
-- _Optional:_ wgrib2
-- _Optional:_ [Carpenter Workshop](https://github.com/blaylockbk/Carpenter_Workshop)
+- [cURL](https://anaconda.org/conda-forge/curl)
+- [eccodes](https://anaconda.org/conda-forge/eccodes), a requirement for [cfgrib](https://github.com/ecmwf/cfgrib).
+- _Optional:_ [wgrib2](https://anaconda.org/conda-forge/wgrib2)
 
 When those are installed within your environment, _then_ you can install Herbie with pip.
 
@@ -90,6 +89,9 @@ pip install herbie-data
 
 # Most recent changes
 pip install git+https://github.com/blaylockbk/Herbie.git
+
+# Dependecies for extra features
+pip install herbie-data[extra]
 ```
 
 ## Capabilities
@@ -160,16 +162,16 @@ Herbie downloads model data from the following sources, but can be extended to i
 
 ## Community
 
-Having trouble using Herbie or have a question? [💬 GitHub Discussions/Ask For Help](https://github.com/blaylockbk/Herbie/discussions/categories/q-a)
+Having trouble using Herbie or have a question? [❔ GitHub Discussions/Ask For Help](https://github.com/blaylockbk/Herbie/discussions/categories/q-a)
 
-Just want to talk about Herbie or have an idea? [🗣️ GitHub Discussions](https://github.com/blaylockbk/Herbie/discussions/categories)
+Just want to talk about Herbie or have an idea? [💬 GitHub Discussions](https://github.com/blaylockbk/Herbie/discussions/categories)
 
 See something that might be wrong? [🚑 GitHub Issues](https://github.com/blaylockbk/Herbie/issues)
 
 Want to contribute? Great! I'd love your help.
 
 - "Watch" this repo's discussions and issues.
-- Participate in [🗣️ GitHub Discussions](https://github.com/blaylockbk/Herbie/discussions/categories) and answer questions.
+- Participate in [💬 GitHub Discussions](https://github.com/blaylockbk/Herbie/discussions/categories) and answer questions.
 - Share how you use Herbie in [🙌 GitHub Discussions/Show and tell](https://github.com/blaylockbk/Herbie/discussions/categories/show-and-tell)
 - Open an issue or file a pull request to make Herbie even better!
 - Contribute to documentation.
