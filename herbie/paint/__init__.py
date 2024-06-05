@@ -312,7 +312,7 @@ class LandTan:
     plt.colormaps.register(cmap, force=True)
 
 
-class LandGrey:
+class LandBrown:
     name = "land_brown"
     cmap = mcolors.LinearSegmentedColormap.from_list(
         name,
