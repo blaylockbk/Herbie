@@ -16,7 +16,7 @@ import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
 
 
-def make_custom_cmap(colors, name):
+def make_custom_cmaps(name, colors, bounds):
     linear_cmap = mcolors.LinearSegmentedColormap.from_list(name, colors)
     segment_cmap = mcolors.LinearSegmentedColormap.from_list(
         name + "2", colors, N=len(colors)
@@ -26,9 +26,14 @@ def make_custom_cmap(colors, name):
         mpl.colormaps.register(cmap=cm, force=True)
         mpl.colormaps.register(cmap=cm.reversed(), force=True)
 
+    return (
+        mcolors.Normalize(bounds.min(), bounds.max()),
+        mcolors.BoundaryNorm(bounds, linear_cmap.N),
+    )
+
 
 class NWSTemperature:
-    name = "nws_tmp"
+    name = "nws.tmp"
     colors = np.array(
         [
             "#91003f",
@@ -71,12 +76,19 @@ class NWSTemperature:
             "#280028",
         ]
     )
-    make_custom_cmap(colors, name)
+    # NWS bounds in Fahrenheit
+    bounds = np.linspace(-65, 125, len(colors) + 1)
+    # Convert to Celsius (approximate)
+    bounds = (bounds - 30) / 2
+    norm, norm2 = make_custom_cmaps(name, colors, bounds)
     cmap = plt.get_cmap(name)
+    cmap2 = plt.get_cmap(name + "2")
+    kwargs = dict(cmap=cmap, norm=norm)
+    kwargs2 = dict(cmap=cmap, norm=norm2)
 
 
 class NWSDewPointTemperature:
-    name = "nws_dpt"
+    name = "nws.dpt"
     colors = np.array(
         [
             "#3b2204",
@@ -95,11 +107,20 @@ class NWSDewPointTemperature:
             "#002921",
         ]
     )
-    make_custom_cmap(colors, name)
+    # NWS bounds in F
+    bounds = np.array([0, 10, 20, 30, 40, 45, 50, 55, 60, 65, 70, 75, 80])
+    # convert to C (approximate)
+    bounds = (bounds - 30) / 2
+    bounds = np.array([-18, -13, -8, -3, 2, 7, 10, 13, 16, 19, 22, 25, 28])
+    norm, norm2 = make_custom_cmaps(name, colors, bounds)
+    cmap = plt.get_cmap(name)
+    cmap2 = plt.get_cmap(name + "2")
+    kwargs = dict(cmap=cmap, norm=norm)
+    kwargs2 = dict(cmap=cmap, norm=norm2)
 
 
 class NWSRelativeHumidity:
-    name = "nws_rh"
+    name = "nws.rh"
     colors = np.array(
         [
             "#910022",
@@ -118,11 +139,16 @@ class NWSRelativeHumidity:
             "#00572e",
         ]
     )
-    make_custom_cmap(colors, name)
+    bounds = np.array([0, 5, 10, 15, 20, 25, 30, 35, 40, 50, 60, 70, 80, 90, 100])
+    norm, norm2 = make_custom_cmaps(name, colors, bounds)
+    cmap = plt.get_cmap(name)
+    cmap2 = plt.get_cmap(name + "2")
+    kwargs = dict(cmap=cmap, norm=norm)
+    kwargs2 = dict(cmap=cmap, norm=norm2)
 
 
 class NWSWindSpeed:
-    name = "nws_wind"
+    name = "nws.wind"
     colors = np.array(
         [
             "#103f78",
@@ -144,11 +170,21 @@ class NWSWindSpeed:
             "#ff73df",
         ]
     )
-    make_custom_cmap(colors, name)
+    # MPH
+    bounds = np.array(
+        [0.0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 60, 70, 80, 100, 120, 140]
+    )
+    # Convert to m/s (approximate)
+    bounds *= 0.5
+    norm, norm2 = make_custom_cmaps(name, colors, bounds)
+    cmap = plt.get_cmap(name)
+    cmap2 = plt.get_cmap(name + "2")
+    kwargs = dict(cmap=cmap, norm=norm)
+    kwargs2 = dict(cmap=cmap, norm=norm2)
 
 
 class NWSCloudCover:
-    name = "nws_cloud"
+    name = "nws.cloud"
     colors = np.array(
         [
             "#24a0f2",
@@ -163,11 +199,16 @@ class NWSCloudCover:
             "#505050",
         ]
     )
-    make_custom_cmap(colors, name)
+    bounds = np.linspace(0, 100, len(colors) + 1)
+    norm, norm2 = make_custom_cmaps(name, colors, bounds)
+    cmap = plt.get_cmap(name)
+    cmap2 = plt.get_cmap(name + "2")
+    kwargs = dict(cmap=cmap, norm=norm)
+    kwargs2 = dict(cmap=cmap, norm=norm2)
 
 
 class NWSPrecipitation:
-    name = "nws_pcp"
+    name = "nws.pcp"
     colors = np.array(
         [
             "#ffffff",
@@ -188,11 +229,19 @@ class NWSPrecipitation:
             "#ffdbff",
         ]
     )
-    make_custom_cmap(colors, name)
+    # NWS bounds in inches
+    bounds = np.array([0, 0.01, 0.1, 0.25, 0.5, 1, 1.5, 2, 3, 4, 6, 8, 10, 15, 20, 30])
+    # Convert to mm (approximate)
+    bounds *= 25
+    norm, norm2 = make_custom_cmaps(name, colors, bounds)
+    cmap = plt.get_cmap(name)
+    cmap2 = plt.get_cmap(name + "2")
+    kwargs = dict(cmap=cmap, norm=norm)
+    kwargs2 = dict(cmap=cmap, norm=norm2)
 
 
 class NWSSnowDepth:
-    name = "nws_snow"
+    name = "nws.snow"
     colors = np.array(
         [
             "#ffffff",
@@ -210,11 +259,19 @@ class NWSSnowDepth:
             "#360000",
         ]
     )
-    make_custom_cmap(colors, name)
+    # NWS bounds in inches
+    bounds = np.array([0, 0.1, 1, 2, 3, 4, 6, 8, 12, 18, 24, 30, 36])
+    # Convert to mm (approximate)
+    bounds *= 25
+    norm, norm2 = make_custom_cmaps(name, colors, bounds)
+    cmap = plt.get_cmap(name)
+    cmap2 = plt.get_cmap(name + "2")
+    kwargs = dict(cmap=cmap, norm=norm)
+    kwargs2 = dict(cmap=cmap, norm=norm2)
 
 
 class NWSSnowProbabilityOfPrecipitation:
-    name = "nws_snow_pop"
+    name = "nws.snow_pop"
     colors = np.array(
         [
             "#f5f5f5",
@@ -229,11 +286,16 @@ class NWSSnowProbabilityOfPrecipitation:
             "#002487",
         ]
     )
-    make_custom_cmap(colors, name)
+    bounds = np.linspace(0, 100, len(colors) + 1)
+    norm, norm2 = make_custom_cmaps(name, colors, bounds)
+    cmap = plt.get_cmap(name)
+    cmap2 = plt.get_cmap(name + "2")
+    kwargs = dict(cmap=cmap, norm=norm)
+    kwargs2 = dict(cmap=cmap, norm=norm2)
 
 
 class NWSIceProbabilityOfPrecipitation:
-    name = "nws_ice_pop"
+    name = "nws.ice_pop"
     colors = np.array(
         [
             "#f5f5f5",
@@ -248,11 +310,16 @@ class NWSIceProbabilityOfPrecipitation:
             "#640087",
         ]
     )
-    make_custom_cmap(colors, name)
+    bounds = np.linspace(0, 100, len(colors) + 1)
+    norm, norm2 = make_custom_cmaps(name, colors, bounds)
+    cmap = plt.get_cmap(name)
+    cmap2 = plt.get_cmap(name + "2")
+    kwargs = dict(cmap=cmap, norm=norm)
+    kwargs2 = dict(cmap=cmap, norm=norm2)
 
 
 class NWSRainProbabilityOfPrecipitation:
-    name = "nws_rain_pop"
+    name = "nws.rain_pop"
     colors = np.array(
         [
             "#f5f5f5",
@@ -267,11 +334,16 @@ class NWSRainProbabilityOfPrecipitation:
             "#0b8403",
         ]
     )
-    make_custom_cmap(colors, name)
+    bounds = np.linspace(0, 100, len(colors) + 1)
+    norm, norm2 = make_custom_cmaps(name, colors, bounds)
+    cmap = plt.get_cmap(name)
+    cmap2 = plt.get_cmap(name + "2")
+    kwargs = dict(cmap=cmap, norm=norm)
+    kwargs2 = dict(cmap=cmap, norm=norm2)
 
 
 class NWSWaveHeight:
-    name = "nws_wave"
+    name = "nws.wave"
     colors = np.array(
         [
             "#ebfdff",
@@ -293,7 +365,15 @@ class NWSWaveHeight:
             "#330023",
         ]
     )
-    make_custom_cmap(colors, name)
+    # NWS bounds in feet
+    bounds = np.array([0.0, 1, 2, 3, 4, 5, 7, 10, 12, 15, 20, 25, 30, 35, 40, 50, 60])
+    # convert to meters (approximate)
+    bounds *= 0.3
+    norm, norm2 = make_custom_cmaps(name, colors, bounds)
+    cmap = plt.get_cmap(name)
+    cmap2 = plt.get_cmap(name + "2")
+    kwargs = dict(cmap=cmap, norm=norm)
+    kwargs2 = dict(cmap=cmap, norm=norm2)
 
 
 class LandTan:
