@@ -12,10 +12,13 @@ Standardized colormaps from National Weather Service
 TODO: Change names to match GRIB name.
 """
 
-import numpy as np
-import matplotlib as mpl
-import matplotlib.pyplot as plt
-import matplotlib.colors as mcolors
+try:
+    import numpy as np
+    import matplotlib as mpl
+    import matplotlib.pyplot as plt
+    import matplotlib.colors as mcolors
+except ImportError:
+    raise ImportError("herbie.paint requires matplotlib.")
 
 
 def make_custom_cmaps(name, colors, bounds):
