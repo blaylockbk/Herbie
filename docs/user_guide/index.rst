@@ -33,7 +33,7 @@ User Guide
    tutorial/fast.ipynb
    tutorial/latest.ipynb
    tutorial/EasyMap.ipynb
-   tutorial/paint.ipynb
+   tutorial/paint
    tutorial/wgrib2-wrapper.ipynb
    tutorial/extend
 
