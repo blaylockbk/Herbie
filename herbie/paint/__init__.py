@@ -87,6 +87,116 @@ class NWSTemperature:
     kwargs2 = dict(cmap=cmap, norm=norm2)
 
 
+class NWSWindChill:
+    name = "nws.wind_chill"
+    colors = np.array(
+        [
+            "#91003f",
+            "#ce1256",
+            "#e7298a",
+            "#df65b0",
+            "#ff73df",
+            "#ffbee8",
+            "#ffffff",
+            "#dadaeb",
+            "#bcbddc",
+            "#9e9ac8",
+            "#756bb1",
+            "#54278f",
+            "#0d007d",
+            "#0d3d9c",
+            "#0066c2",
+            "#299eff",
+            "#4ac7ff",
+            "#73d7ff",
+            "#adffff",
+            "#30cfc2",
+            "#009996",
+            "#dcdcdc",  # grey
+            "#dcdcdc",  # grey
+            "#dcdcdc",  # grey
+            "#dcdcdc",  # grey
+            "#dcdcdc",  # grey
+            "#dcdcdc",  # grey
+            "#dcdcdc",  # grey
+            "#ffeda0",
+            "#fed176",
+            "#feae2a",
+            "#fd8d3c",
+            "#fc4e2a",
+            "#e31a1c",
+            "#b10026",
+            "#800026",
+            "#590042",
+            "#280028",
+        ]
+    )
+    # NWS bounds in Fahrenheit
+    bounds = np.linspace(-65, 125, len(colors) + 1)
+    # Convert to Celsius (approximate)
+    bounds = (bounds - 30) / 2
+    norm, norm2 = make_custom_cmaps(name, colors, bounds)
+    cmap = plt.get_cmap(name)
+    cmap2 = plt.get_cmap(name + "2")
+    kwargs = dict(cmap=cmap, norm=norm)
+    kwargs2 = dict(cmap=cmap, norm=norm2)
+
+
+class NWSHeatIndex:
+    name = "nws.heat_index"
+    colors = np.array(
+        [
+            "#91003f",
+            "#ce1256",
+            "#e7298a",
+            "#df65b0",
+            "#ff73df",
+            "#ffbee8",
+            "#ffffff",
+            "#dadaeb",
+            "#bcbddc",
+            "#9e9ac8",
+            "#756bb1",
+            "#54278f",
+            "#0d007d",
+            "#0d3d9c",
+            "#0066c2",
+            "#299eff",
+            "#4ac7ff",
+            "#73d7ff",
+            "#adffff",
+            "#30cfc2",
+            "#009996",
+            "#dcdcdc",  # grey
+            "#dcdcdc",  # grey
+            "#dcdcdc",  # grey
+            "#dcdcdc",  # grey
+            "#dcdcdc",  # grey
+            "#dcdcdc",  # grey
+            "#dcdcdc",  # grey
+            "#ffeda0",
+            "#fed176",
+            "#feae2a",
+            "#fd8d3c",
+            "#fc4e2a",
+            "#e31a1c",
+            "#b10026",
+            "#800026",
+            "#590042",
+            "#280028",
+        ]
+    )
+    # NWS bounds in Fahrenheit
+    bounds = np.linspace(-65, 125, len(colors) + 1)
+    # Convert to Celsius (approximate)
+    bounds = (bounds - 30) / 2
+    norm, norm2 = make_custom_cmaps(name, colors, bounds)
+    cmap = plt.get_cmap(name)
+    cmap2 = plt.get_cmap(name + "2")
+    kwargs = dict(cmap=cmap, norm=norm)
+    kwargs2 = dict(cmap=cmap, norm=norm2)
+
+
 class NWSDewPointTemperature:
     name = "nws.dpt"
     colors = np.array(
@@ -111,7 +221,6 @@ class NWSDewPointTemperature:
     bounds = np.array([0, 10, 20, 30, 40, 45, 50, 55, 60, 65, 70, 75, 80])
     # convert to C (approximate)
     bounds = (bounds - 30) / 2
-    bounds = np.array([-18, -13, -8, -3, 2, 7, 10, 13, 16, 19, 22, 25, 28])
     norm, norm2 = make_custom_cmaps(name, colors, bounds)
     cmap = plt.get_cmap(name)
     cmap2 = plt.get_cmap(name + "2")
