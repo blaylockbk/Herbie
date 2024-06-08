@@ -21,20 +21,25 @@ except ImportError:
     raise ImportError("herbie.paint requires matplotlib.")
 
 
-def make_custom_cmaps(name, colors, bounds):
+def make_custom_cmaps(name, colors, bounds: list = None, N: int = None):
+    if N is None:
+        N = len(colors)
     linear_cmap = mcolors.LinearSegmentedColormap.from_list(name, colors)
-    segment_cmap = mcolors.LinearSegmentedColormap.from_list(
-        name + "2", colors, N=len(colors)
-    )
+    segment_cmap = mcolors.LinearSegmentedColormap.from_list(name + "2", colors, N=N)
+
+    # When data is NaN, set color to transparent
+    linear_cmap.set_bad("#ffffff00")
+    segment_cmap.set_bad("#ffffff00")
 
     for cm in [linear_cmap, segment_cmap]:
         mpl.colormaps.register(cmap=cm, force=True)
         mpl.colormaps.register(cmap=cm.reversed(), force=True)
 
-    return (
-        mcolors.Normalize(bounds.min(), bounds.max()),
-        mcolors.BoundaryNorm(bounds, linear_cmap.N),
-    )
+    if bounds is not None:
+        return (
+            mcolors.Normalize(bounds.min(), bounds.max()),
+            mcolors.BoundaryNorm(bounds, linear_cmap.N),
+        )
 
 
 # ======================================================================
@@ -44,6 +49,8 @@ def make_custom_cmaps(name, colors, bounds):
 
 class NWSTemperature:
     name = "nws.tmp"
+    units = r"$\degree$C"
+    variable = "Temperature"
     colors = np.array(
         [
             "#91003f",
@@ -95,6 +102,8 @@ class NWSTemperature:
     cmap2 = plt.get_cmap(name + "2")
     kwargs = dict(cmap=cmap, norm=norm)
     kwargs2 = dict(cmap=cmap, norm=norm2)
+    cbar_kwargs = dict(label=f"{variable} ({units})")
+    cbar_kwargs2 = cbar_kwargs | dict(spacing="proportional", ticks=bounds[1::2])
 
 
 class NWSWindChill:
@@ -104,6 +113,8 @@ class NWSWindChill:
     """
 
     name = "nws.wind_chill"
+    units = r"$\degree$C"
+    variable = "Wind Chill"
     colors = np.array(
         [
             "#91003f",
@@ -155,12 +166,16 @@ class NWSWindChill:
     cmap2 = plt.get_cmap(name + "2")
     kwargs = dict(cmap=cmap, norm=norm)
     kwargs2 = dict(cmap=cmap, norm=norm2)
+    cbar_kwargs = dict(label=f"{variable} ({units})")
+    cbar_kwargs2 = cbar_kwargs | dict(spacing="proportional", ticks=bounds[1::2])
 
 
 class NWSHeatIndex:
     """Identical to NWSWindChill."""
 
     name = "nws.heat_index"
+    units = r"$\degree$C"
+    variable = "Heat Index"
     colors = np.array(
         [
             "#91003f",
@@ -212,10 +227,14 @@ class NWSHeatIndex:
     cmap2 = plt.get_cmap(name + "2")
     kwargs = dict(cmap=cmap, norm=norm)
     kwargs2 = dict(cmap=cmap, norm=norm2)
+    cbar_kwargs = dict(label=f"{variable} ({units})")
+    cbar_kwargs2 = cbar_kwargs | dict(spacing="proportional", ticks=bounds[1::2])
 
 
 class NWSDewPointTemperature:
     name = "nws.dpt"
+    units = r"$\degree$C"
+    variable = "Dew Point"
     colors = np.array(
         [
             "#3b2204",
@@ -235,7 +254,7 @@ class NWSDewPointTemperature:
         ]
     )
     # NWS bounds in F
-    bounds = np.array([-5, 0, 10, 20, 30, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85])
+    bounds = np.array([-10, 0, 10, 20, 30, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85])
     # convert to C (approximate)
     bounds = (bounds - 30) / 2
     norm, norm2 = make_custom_cmaps(name, colors, bounds)
@@ -243,10 +262,14 @@ class NWSDewPointTemperature:
     cmap2 = plt.get_cmap(name + "2")
     kwargs = dict(cmap=cmap, norm=norm)
     kwargs2 = dict(cmap=cmap, norm=norm2)
+    cbar_kwargs = dict(label=f"{variable} ({units})")
+    cbar_kwargs2 = cbar_kwargs | dict(spacing="proportional", ticks=bounds)
 
 
 class NWSRelativeHumidity:
     name = "nws.rh"
+    units = "%"
+    variable = "Relative Humidity"
     colors = np.array(
         [
             "#910022",
@@ -271,10 +294,14 @@ class NWSRelativeHumidity:
     cmap2 = plt.get_cmap(name + "2")
     kwargs = dict(cmap=cmap, norm=norm)
     kwargs2 = dict(cmap=cmap, norm=norm2)
+    cbar_kwargs = dict(label=f"{variable} ({units})")
+    cbar_kwargs2 = cbar_kwargs | dict(spacing="proportional", ticks=bounds)
 
 
 class NWSWindSpeed:
     name = "nws.wind"
+    units = r"m s$\mathregular{^{-1}}$"
+    variable = "Wind Speed"
     colors = np.array(
         [
             "#103f78",
@@ -307,10 +334,14 @@ class NWSWindSpeed:
     cmap2 = plt.get_cmap(name + "2")
     kwargs = dict(cmap=cmap, norm=norm)
     kwargs2 = dict(cmap=cmap, norm=norm2)
+    cbar_kwargs = dict(label=f"{variable} ({units})")
+    cbar_kwargs2 = cbar_kwargs | dict(spacing="proportional", ticks=bounds)
 
 
 class NWSCloudCover:
     name = "nws.cloud"
+    units = "%"
+    variable = "Cloud Cover"
     colors = np.array(
         [
             "#24a0f2",
@@ -331,10 +362,14 @@ class NWSCloudCover:
     cmap2 = plt.get_cmap(name + "2")
     kwargs = dict(cmap=cmap, norm=norm)
     kwargs2 = dict(cmap=cmap, norm=norm2)
+    cbar_kwargs = dict(label=f"{variable} ({units})")
+    cbar_kwargs2 = cbar_kwargs | dict(spacing="proportional", ticks=bounds)
 
 
 class NWSProbabilityOfPrecipitation:
     name = "nws.pop"
+    units = "%"
+    variable = "Probability of Precipitation"
     colors = np.array(
         [
             "#f5f5f5",
@@ -355,10 +390,14 @@ class NWSProbabilityOfPrecipitation:
     cmap2 = plt.get_cmap(name + "2")
     kwargs = dict(cmap=cmap, norm=norm)
     kwargs2 = dict(cmap=cmap, norm=norm2)
+    cbar_kwargs = dict(label=f"{variable} ({units})")
+    cbar_kwargs2 = cbar_kwargs | dict(spacing="proportional", ticks=bounds)
 
 
 class NWSProbabilityOfPrecipitationSnow:
     name = "nws.pop_snow"
+    units = "%"
+    variable = "Probability of Snow"
     colors = np.array(
         [
             "#f5f5f5",
@@ -379,10 +418,14 @@ class NWSProbabilityOfPrecipitationSnow:
     cmap2 = plt.get_cmap(name + "2")
     kwargs = dict(cmap=cmap, norm=norm)
     kwargs2 = dict(cmap=cmap, norm=norm2)
+    cbar_kwargs = dict(label=f"{variable} ({units})")
+    cbar_kwargs2 = cbar_kwargs | dict(spacing="proportional", ticks=bounds)
 
 
 class NWSProbabilityOfPrecipitationIce:
     name = "nws.pop_ice"
+    units = "%"
+    variable = "Probability of Ice"
     colors = np.array(
         [
             "#f5f5f5",
@@ -403,6 +446,8 @@ class NWSProbabilityOfPrecipitationIce:
     cmap2 = plt.get_cmap(name + "2")
     kwargs = dict(cmap=cmap, norm=norm)
     kwargs2 = dict(cmap=cmap, norm=norm2)
+    cbar_kwargs = dict(label=f"{variable} ({units})")
+    cbar_kwargs2 = cbar_kwargs | dict(spacing="proportional", ticks=bounds[1::2])
 
 
 class NWSPrecipitation:
@@ -412,6 +457,8 @@ class NWSPrecipitation:
     """
 
     name = "nws.pcp"
+    units = "mm"
+    variable = "Precipitation"
     colors = np.array(
         [
             "#ffffff",
@@ -443,10 +490,14 @@ class NWSPrecipitation:
     cmap2 = plt.get_cmap(name + "2")
     kwargs = dict(cmap=cmap, norm=norm)
     kwargs2 = dict(cmap=cmap, norm=norm2)
+    cbar_kwargs = dict(label=f"{variable} ({units})")
+    cbar_kwargs2 = cbar_kwargs | dict(spacing="uniform", ticks=bounds)
 
 
 class NWSPrecipitationSnow:
     name = "nws.pcp_snow"
+    units = "mm"
+    variable = "Snow"
     colors = np.array(
         [
             "#ffffff",
@@ -473,10 +524,14 @@ class NWSPrecipitationSnow:
     cmap2 = plt.get_cmap(name + "2")
     kwargs = dict(cmap=cmap, norm=norm)
     kwargs2 = dict(cmap=cmap, norm=norm2)
+    cbar_kwargs = dict(label=f"{variable} ({units})")
+    cbar_kwargs2 = cbar_kwargs | dict(spacing="uniform", ticks=bounds)
 
 
 class NWSPrecipitationIce:
     name = "nws.pcp_ice"
+    units = "mm"
+    variable = "Ice"
     colors = np.array(
         [
             "#f3ea3b",
@@ -497,10 +552,14 @@ class NWSPrecipitationIce:
     cmap2 = plt.get_cmap(name + "2")
     kwargs = dict(cmap=cmap, norm=norm)
     kwargs2 = dict(cmap=cmap, norm=norm2)
+    cbar_kwargs = dict(label=f"{variable} ({units})")
+    cbar_kwargs2 = cbar_kwargs | dict(spacing="uniform", ticks=bounds)
 
 
 class NWSWaveHeight:
     name = "nws.wave"
+    units = "m"
+    variable = "Wave Height"
     colors = np.array(
         [
             "#ebfdff",
@@ -533,6 +592,8 @@ class NWSWaveHeight:
     cmap2 = plt.get_cmap(name + "2")
     kwargs = dict(cmap=cmap, norm=norm)
     kwargs2 = dict(cmap=cmap, norm=norm2)
+    cbar_kwargs = dict(label=f"{variable} ({units})")
+    cbar_kwargs2 = cbar_kwargs | dict(spacing="proportional", ticks=bounds)
 
 
 # ======================================================================
@@ -600,3 +661,38 @@ class Water:
     )
     plt.colormaps.register(cmap, force=True)
     plt.colormaps.register(cmap.reversed(), force=True)
+
+
+# ======================================================================
+# Other
+# ======================================================================
+
+red = "#88211b"
+blue = "#0c3576"
+tan = "#f0ead2"
+white = "#ffffff"
+black = "#111111"
+
+
+class HerbieWhite:
+    name = "herbie.white"
+    colors = [red, white, blue]
+    make_custom_cmaps(name, colors, N=7)
+    cmap = plt.get_cmap(name)
+    cmap2 = plt.get_cmap(name + "2")
+
+
+class HerbieTan:
+    name = "herbie.tan"
+    colors = [red, tan, blue]
+    make_custom_cmaps(name, colors, N=7)
+    cmap = plt.get_cmap(name)
+    cmap2 = plt.get_cmap(name + "2")
+
+
+class HerbieBlack:
+    name = "herbie.black"
+    colors = [red, black, blue]
+    make_custom_cmaps(name, colors, N=7)
+    cmap = plt.get_cmap(name)
+    cmap2 = plt.get_cmap(name + "2")
