@@ -1,15 +1,14 @@
 """
-Register NWS standard color curves.
+Register custom color maps.
 
-Custom colormaps for standard meteorological variables with the necessary
+Custom color maps for standard meteorological variables with the necessary
 bounds, ticks, and labels for building the colorbar.
 
-Standardized colormaps from National Weather Service
+National Weather Service standard color maps:
 
 - Source: Joseph Moore <joseph.moore@noaa.gov>
-- Document: ./NWS Standard Color Curve Summary.pdf
+- Document: references/NWS Standard Color Curve Summary.pdf
 
-TODO: Change names to match GRIB name.
 """
 
 try:

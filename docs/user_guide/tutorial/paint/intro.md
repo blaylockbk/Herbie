@@ -1,14 +1,16 @@
-# Herbie Paint
+# 🎨 Paint: Herbie's Custom Colormaps
 
-Herbie comes with it's own set of new paint. These custom colormaps are registered with matplotlib when you import Herbie's paint:
+> **🚧 Work in progress:** The implementation of these colormaps are not mature and may change. I'm open to any Pull Requests that would help organize these paint cans so they can be used easier.
 
-```
+Herbie comes with it's own set of paint. These custom colormaps are registered with matplotlib when you import Herbie's paint:
+
+```python
 from herbie import paint
 ```
 
 ## National Weather Service Standard Colormaps
 
-Some years ago I came across a document of the NWS standard color curves, proposed in 2018. I haven't been able to locate that document since.
+Some years ago I came across a document of the NWS standard color curves, proposed in 2018. I haven't been able to locate that document (or an updated official stance) since.
 
 ![](../../../_static/paint/NWS_Continuous.png)
 ![](../../../_static/paint/NWS_Qualitative.png)
@@ -24,6 +26,9 @@ This diverging colormap uses the Herbie color palette.
 ![](../../../_static/paint/Herbie.png)
 
 ## Simple use
+
+You can use the colormaps as is
+
 ```python
 from herbie import Herbie, paint
 from herbie.toolbox import EasyMap, pc
@@ -56,14 +61,35 @@ plt.colorbar(art, ax=ax, orientation="horizontal", pad=0.01)
 
 ## Use with intended bounds
 
-In practice, these colormaps are designed with specific bounds. 
+These colormaps are designed with specific bounds in mind. The classes used to define each colormap have a `kwargs` method which contains the `cmap` and `norm` objects appropriate for that colormap and the colorbar. 
+
+```python
+ax = EasyMap(crs=ds.herbie.crs).BORDERS().STATES().ax
+
+plt.pcolormesh(
+    ds.longitude,
+    ds.latitude,
+    (ds.t2m - 273.15),
+    **paint.NWSTemperature.kwargs2,
+    transform=pc,
+)
+
+plt.colorbar(
+    orientation="horizontal",
+    pad=0.01,
+    shrink=0.8,
+    **paint.NWSTemperature.cbar_kwargs2,
+)
+```
+
+![](../../../_static/paint/herbie_paint_NWSTemperature.png)
+
+Here are other examples of what you can make:
 
 ![](../../../_static/paint/herbie_paint_nws.png)
 
 
-The classes used to define each colormap have a `kwargs` method which contains the `cmap` and `norm` objects appropriate for that colormap.
-
-Your data will need to be in the expected units.
+**NOTE:** Your data will need to be in the expected units.
 
 | Name             | Class                             | Units     |
 | ---------------- | --------------------------------- | --------- |
@@ -87,7 +113,6 @@ Your data will need to be in the expected units.
 | `land.green`     | LandGreen                         | m         |
 | `water`          | Water                             | m         |
 |                  |                                   |           |
-
 
 
 
