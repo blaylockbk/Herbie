@@ -32,10 +32,15 @@ User Guide
    tutorial/bonus_notebooks/index
    tutorial/fast.ipynb
    tutorial/latest.ipynb
+   tutorial/extend
+
+.. toctree::
+   :captions: Extra Features
+   :maxdepth: 2
    tutorial/EasyMap.ipynb
    tutorial/paint
    tutorial/wgrib2-wrapper.ipynb
-   tutorial/extend
+
 
 .. toctree::
    :caption: Housekeeping

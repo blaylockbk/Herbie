@@ -10,24 +10,27 @@ from herbie import paint
 
 ## National Weather Service Standard Colormaps
 
-Some years ago I came across a document of the NWS standard color curves, proposed in 2018. I haven't been able to locate that document (or an updated official stance) since.
+Some years ago I came across a document with the NWS standard color curves, proposed in 2018. I haven't been able to locate that document (or an updated official stance) since.
 
-![](../../../_static/paint/NWS_Continuous.png)
-![](../../../_static/paint/NWS_Qualitative.png)
+![](../../_static/paint/NWS_Continuous.png)
+
+Segmented versions of ach colormaps are also given with the name `nws.{name}2`.
+
+![](../../_static/paint/NWS_Qualitative.png)
 
 ## Custom land color maps
 
-![](../../../_static/paint/Land_Sequential.png)
+![](../../_static/paint/Land_Sequential.png)
 
 ## Herbie Colormaps
 
-This diverging colormap uses the Herbie color palette.
+Diverging colormaps using the Herbie logo color palette are given.
 
-![](../../../_static/paint/Herbie.png)
+![](../../_static/paint/Herbie.png)
 
-## Simple use
+## Basic usage
 
-You can use the colormaps as is
+The most simple way to use these custom colormaps is to refer to the colormap name registered with matplotlib (e.g., `cmap="nws.tmp"`)
 
 ```python
 from herbie import Herbie, paint
@@ -45,7 +48,7 @@ art = ax.pcolormesh(ds.longitude, ds.latitude, ds.t2m, cmap="nws.tmp", transform
 plt.colorbar(art, ax=ax, orientation="horizontal", pad=0.01)
 ```
 
-![](../../../_static/paint/herbie_paint_nwsTmp.png)
+![](../../_static/paint/herbie_paint_nwsTmp.png)
 
 ```python
 t = H.terrain()
@@ -56,12 +59,12 @@ art = ax.pcolormesh(t.longitude, t.latitude, t.orog, cmap="land.green", transfor
 plt.colorbar(art, ax=ax, orientation="horizontal", pad=0.01)
 ```
 
-![](../../../_static/paint/herbie_paint_landGreen.png)
+![](../../_static/paint/herbie_paint_landGreen.png)
 
 
-## Use with intended bounds
+## Paint with intended bounds
 
-These colormaps are designed with specific bounds in mind. The classes used to define each colormap have a `kwargs` method which contains the `cmap` and `norm` objects appropriate for that colormap and the colorbar. 
+These colormaps are designed for specific variable quantities. The paint classes used to define each colormap have a `kwargs` (sequential) and `kwargs2` (segmented) method which contains the `cmap` and `norm` objects appropriate for that colormap and the colorbar. 
 
 ```python
 ax = EasyMap(crs=ds.herbie.crs).BORDERS().STATES().ax
@@ -82,16 +85,16 @@ plt.colorbar(
 )
 ```
 
-![](../../../_static/paint/herbie_paint_NWSTemperature.png)
+![](../../_static/paint/herbie_paint_NWSTemperature.png)
 
-Here are other examples of what you can make:
+Here are other examples:
 
-![](../../../_static/paint/herbie_paint_nws.png)
+![](../../_static/paint/herbie_paint_nws.png)
 
 
 **NOTE:** Your data will need to be in the expected units.
 
-| Name             | Class                             | Units     |
+| cmap Name        | herbie.paint Class                | Norm Units     |
 | ---------------- | --------------------------------- | --------- |
 | `nws.tmp`        | NWSTemperature                    | C         |
 | `nws.wind_chill` | NWSWindChill                      | C         |
@@ -118,7 +121,7 @@ Here are other examples of what you can make:
 
 ## Lightness
 
-![](../../../_static/paint/NWS_Sequential_lightness.png)
-![](../../../_static/paint/NWS_Continuous_lightness.png)
-![](../../../_static/paint/Land_Sequential_lightness.png)
-![](../../../_static/paint/Herbie_lightness.png)
+![](../../_static/paint/NWS_Sequential_lightness.png)
+![](../../_static/paint/NWS_Continuous_lightness.png)
+![](../../_static/paint/Land_Sequential_lightness.png)
+![](../../_static/paint/Herbie_lightness.png)
