@@ -35,7 +35,7 @@ User Guide
    tutorial/extend
 
 .. toctree::
-   :captions: Extra Features
+   :caption: Extra Features
    :maxdepth: 2
 
    tutorial/EasyMap.ipynb
