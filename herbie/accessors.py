@@ -15,18 +15,14 @@ import re
 import warnings
 from pathlib import Path
 
-import cartopy.crs as ccrs
-import metpy  # * Needed for metpy accessor  # noqa: F401
 import numpy as np
 import pandas as pd
 import pygrib
-import shapely
 import xarray as xr
 from pyproj import CRS
-from shapely.geometry import MultiPoint, Point, Polygon
-from sklearn.neighbors import BallTree
 
 import herbie
+
 
 _level_units = dict(
     adiabaticCondensation="adiabatic condensation",
@@ -124,6 +120,14 @@ class HerbieAccessor:
             An xarray.Dataset from a GRIB2 file opened by the cfgrib engine.
 
         """
+        try:
+            import metpy
+        except ModuleNotFoundError:
+            raise ModuleNotFoundError(
+                "metpy is an 'extra' requirement, please use "
+                "`pip install 'herbie-data[extras]'` for the full functionality."
+            )
+
         ds = self._obj
 
         # Get variables that have dimensions
@@ -137,6 +141,15 @@ class HerbieAccessor:
     @functools.cached_property
     def polygon(self):
         """Get a polygon of the domain boundary."""
+        try:
+            import cartopy.crs as ccrs
+            from shapely.geometry import Polygon
+        except ModuleNotFoundError:
+            raise ModuleNotFoundError(
+                "cartopy is an 'extra' requirements, please use "
+                "`pip install 'herbie-data[extras]'` for the full functionality."
+            )
+
         ds = self._obj
 
         LON = ds.longitude.data
@@ -313,6 +326,13 @@ class HerbieAccessor:
         dimension.
         >>> dsp = dsp.swap_dims({"point": "point_stid"})
         """
+        try:
+            from sklearn.neighbors import BallTree
+        except ModuleNotFoundError:
+            raise ModuleNotFoundError(
+                "scikit-learn is an 'extra' requirement, please use "
+                "`pip install 'herbie-data[extras]'` for the full functionality."
+            )
 
         def plant_tree(save_pickle=None):
             """Grow a new BallTree object from seedling."""
@@ -546,6 +566,16 @@ class HerbieAccessor:
             - Or possibly scipy BallTree method.
 
         """
+        try:
+            import cartopy.crs as ccrs
+            import shapely
+            from shapely.geometry import MultiPoint, Point
+        except ModuleNotFoundError:
+            raise ModuleNotFoundError(
+                "cartopy is an 'extra' requirements, please use "
+                "`pip install 'herbie-data[extras]'` for the full functionality."
+            )
+
         warnings.warn(
             "The accessor `ds.herbie.nearest_points` is deprecated in "
             "favor of the `ds.herbie.pick_points` which uses the "
@@ -636,7 +666,17 @@ class HerbieAccessor:
         """
         # From Carpenter_Workshop:
         # https://github.com/blaylockbk/Carpenter_Workshop
-        import matplotlib.pyplot as plt
+
+        try:
+            import cartopy.crs as ccrs
+            import matplotlib.pyplot as plt
+            import shapely
+            from shapely.geometry import MultiPoint, Point, Polygon
+        except ModuleNotFoundError:
+            raise ModuleNotFoundError(
+                "cartopy is an 'extra' requirements, please use "
+                "`pip install 'herbie-data[extras]'` for the full functionality."
+            )
 
         try:
             from paint.radar import cm_reflectivity
