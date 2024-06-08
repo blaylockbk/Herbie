@@ -11,5 +11,7 @@ Docstring reference for the ``herbie`` module
    accessors
    fast
    latest
+   toolbox
+   paint
    wgrib2
    misc

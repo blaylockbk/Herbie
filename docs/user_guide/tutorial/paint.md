@@ -18,6 +18,15 @@ Segmented versions of ach colormaps are also given with the name `nws.{name}2`.
 
 ![](../../_static/paint/NWS_Qualitative.png)
 
+## Radar color maps
+I by no means claim to be an expert in radar data or color scales for radar data. There are probably much better colormaps to use from PyART. But these are some colormaps I've used when plotting simulated radar reflectivity from the HRRR.
+
+![](../../_static/paint/Radar.png)
+
+## Air Quality Index color maps
+
+![](../../_static/paint/AirQualityIndex.png)
+
 ## Custom land color maps
 
 ![](../../_static/paint/Land_Sequential.png)
@@ -123,5 +132,7 @@ Here are other examples:
 
 ![](../../_static/paint/NWS_Sequential_lightness.png)
 ![](../../_static/paint/NWS_Continuous_lightness.png)
+![](../../_static/paint/Radar_lightness.png)
+![](../../_static/paint/AirQualityIndex_lightness.png)
 ![](../../_static/paint/Land_Sequential_lightness.png)
 ![](../../_static/paint/Herbie_lightness.png)

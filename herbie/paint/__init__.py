@@ -596,6 +596,182 @@ class NWSWaveHeight:
 
 
 # ======================================================================
+# NCAR
+# ======================================================================
+class NCARProbability:
+    """Ensemble probability.
+
+    Based on the NCAR Ensemble probability colorscale.
+    https://www2.mmm.ucar.edu/projects/ncar_ensemble/legacy/
+    """
+
+    name = "ncar.probability"
+    units = "%"
+    variable = "Probability"
+    colors = np.array(
+        [
+            "#ffffff",
+            "#d7e3ee",
+            "#b5caff",
+            "#8fb3ff",
+            "#7f97ff",
+            "#abcf63",
+            "#e8f59e",
+            "#fffa14",
+            "#ffd121",
+            "#ffa30a",
+            "#ff4c00",
+        ]
+    )
+    bounds = np.linspace(0, 100, len(colors) + 1)
+    norm, norm2 = make_custom_cmaps(name, colors, bounds)
+    cmap = plt.get_cmap(name)
+    cmap2 = plt.get_cmap(name + "2")
+    kwargs = dict(cmap=cmap, norm=norm)
+    kwargs2 = dict(cmap=cmap, norm=norm2)
+    cbar_kwargs = dict(label=f"{variable} ({units})")
+    cbar_kwargs2 = cbar_kwargs | dict(spacing="proportional", ticks=bounds)
+
+
+# ======================================================================
+# Air Quality Index
+# ======================================================================
+class AQIPm25:
+    """Colormap for PM2.5 air quality index.
+
+    Based on AirNow `Air Quality Index <https://www.airnow.gov/aqi/aqi-basics/>`_
+    and `Utah Division of Air Quality AQI <https://air.utah.gov/currentconditions.php>`_.
+    """
+
+    name = "aqi.pm25"
+    units = r"$\mu$g m$\mathregular{^{-3}}$"
+    variable = "Particular Mater"
+    colors = np.array(
+        [
+            "#00e400",  # Green   - Good
+            "#ffff00",  # Yellow  - Moderate
+            "#ff7e00",  # Orange  - Sensitive Groups
+            "#ff0000",  # Red     - Unhealthy
+            "#99004c",  # Purple  - Hazardous
+            "#4c0026",  # Maroon  - Very Unhealthy
+        ]
+    )
+    bounds = np.array([0, 12.1, 35.5, 55.5, 150.5, 250.5, 300])
+    norm, norm2 = make_custom_cmaps(name, colors, bounds)
+    cmap = plt.get_cmap(name)
+    cmap2 = plt.get_cmap(name + "2")
+    kwargs = dict(cmap=cmap, norm=norm)
+    kwargs2 = dict(cmap=cmap, norm=norm2)
+    cbar_kwargs = dict(label=f"{variable} ({units})")
+    cbar_kwargs2 = cbar_kwargs | dict(spacing="proportional", ticks=bounds)
+
+
+class AQIOzone:
+    """Colormap for ozone air quality index.
+
+    Based on AirNow `Air Quality Index <https://www.airnow.gov/aqi/aqi-basics/>`_
+    and `Utah Division of Air Quality AQI <https://air.utah.gov/currentconditions.php>`_.
+    """
+
+    name = "aqi.ozone"
+    units = "ppb"
+    variable = "Ozone"
+    colors = np.array(
+        [
+            "#00e400",  # Green   - Good
+            "#ffff00",  # Yellow  - Moderate
+            "#ff7e00",  # Orange  - Sensitive Groups
+            "#ff0000",  # Red     - Unhealthy
+            "#99004c",  # Purple  - Hazardous
+            "#4c0026",  # Maroon  - Very Unhealthy
+        ]
+    )
+    bounds = np.array([0, 55, 71, 86, 106, 201, 300])
+    norm, norm2 = make_custom_cmaps(name, colors, bounds)
+    cmap = plt.get_cmap(name)
+    cmap2 = plt.get_cmap(name + "2")
+    kwargs = dict(cmap=cmap, norm=norm)
+    kwargs2 = dict(cmap=cmap, norm=norm2)
+    cbar_kwargs = dict(label=f"{variable} ({units})")
+    cbar_kwargs2 = cbar_kwargs | dict(spacing="proportional", ticks=bounds)
+
+
+# ======================================================================
+# Radar Colormaps
+# ======================================================================
+# I can't remember where I go these, but I didn't make them myself.
+# Maybe I bsed these on PyArt?? I can't remember.
+
+
+class RadarReflectivity:
+    name = "radar.reflectivity"
+    units = "dBZ"
+    variable = "Reflectivity"
+    colors = np.array(
+        [
+            "#00ecec",
+            "#01b5f3",
+            "#0021f6",
+            "#00de20",
+            "#00cb00",
+            "#079300",
+            "#fdf900",
+            "#ebb700",
+            "#fd9500",
+            "#ff0400",
+            "#d50000",
+            "#c80021",
+            "#ea11f4",
+            "#6e3d90",
+            "#000000",
+        ]
+    )
+    # NWS bounds in feet
+    bounds = np.linspace(0, 80, len(colors) + 1)
+    norm, norm2 = make_custom_cmaps(name, colors, bounds)
+    cmap = plt.get_cmap(name)
+    cmap2 = plt.get_cmap(name + "2")
+    kwargs = dict(cmap=cmap, norm=norm)
+    kwargs2 = dict(cmap=cmap, norm=norm2)
+    cbar_kwargs = dict(label=f"{variable} ({units})")
+    cbar_kwargs2 = cbar_kwargs | dict(spacing="proportional", ticks=bounds)
+
+
+class RadarRadialVelocity:
+    name = "radar.velocity"
+    units = r"m s$\mathregular{^{-1}}$"
+    variable = "Radial Velocity"
+    colors = np.array(
+        [
+            "#90009f",
+            "#29b72d",
+            "#00ed00",
+            "#00cc00",
+            "#00b100",
+            "#008f00",
+            "#0c740c",
+            "#7d9177",
+            "#947a77",
+            "#810303",
+            "#a10000",
+            "#bc0000",
+            "#dd0000",
+            "#f30000",
+            "#ff0000",
+        ]
+    )
+    # NWS bounds in feet
+    bounds = np.linspace(0, 80, len(colors) + 1)
+    norm, norm2 = make_custom_cmaps(name, colors, bounds)
+    cmap = plt.get_cmap(name)
+    cmap2 = plt.get_cmap(name + "2")
+    kwargs = dict(cmap=cmap, norm=norm)
+    kwargs2 = dict(cmap=cmap, norm=norm2)
+    cbar_kwargs = dict(label=f"{variable} ({units})")
+    cbar_kwargs2 = cbar_kwargs | dict(spacing="proportional", ticks=bounds)
+
+
+# ======================================================================
 # Terrain height and land cover
 # ======================================================================
 
@@ -660,6 +836,88 @@ class Water:
     )
     plt.colormaps.register(cmap, force=True)
     plt.colormaps.register(cmap.reversed(), force=True)
+
+
+class MODIS21:
+    name = "modis21"
+    landuse = {
+        1: {"color": "#006600", "label": "Evergreen Needleleaf Forest"},
+        2: {"color": "#02522a", "label": "Evergreen Broadleaf Forest"},
+        3: {"color": "#33cc33", "label": "Deciduous Needleleaf Forest"},
+        4: {"color": "#33cc66", "label": "Deciduous Broadleaf Forest"},
+        5: {"color": "#339933", "label": "Mixed Forests"},
+        6: {"color": "#4cb200", "label": "Closed Shrublands"},
+        7: {"color": "#d1691f", "label": "Open Shrublands"},
+        8: {"color": "#bdb569", "label": "Woody Savannas"},
+        9: {"color": "#ffd600", "label": "Savannas"},
+        10: {"color": "#00ff00", "label": "Grasslands"},
+        11: {"color": "#00ffff", "label": "Permanent Wetlands"},
+        12: {"color": "#ffff00", "label": "Croplands"},
+        13: {"color": "#ff0000", "label": "Urban and Built-Up"},
+        14: {"color": "#b2e64c", "label": "Cropland/Natural Vegetation Mosaic"},
+        15: {"color": "#ffffff", "label": "Snow and Ice"},
+        16: {"color": "#e9e9b2", "label": "Barren or Sparsely Vegetated"},
+        17: {"color": "#80b2ff", "label": "Water"},
+        18: {"color": "#ff00bd", "label": "Wooded Tundra"},
+        19: {"color": "#f7804f", "label": "Mixed Tundra"},
+        20: {"color": "#e8967a", "label": "Barren Tundra"},
+        21: {"color": "#0000e0", "label": "Lake"},
+    }
+    colors = np.array([v["color"] for k, v in landuse.items()])
+    bounds = np.array(list(landuse) + [22])
+    labels = np.array([f"{k}  " + v["label"] for k, v in landuse.items()])
+    cmap = mcolors.LinearSegmentedColormap.from_list(name, colors, N=len(bounds) - 1)
+    norm = mcolors.BoundaryNorm(boundaries=bounds, ncolors=len(bounds))
+    plt.colormaps.register(cmap, force=True)
+    cmap = plt.get_cmap(name)
+    kwargs = dict(cmap=cmap, norm=norm)
+    cbar_kwargs = dict(label="MODIS Landuse")
+    cbar_kwargs2 = cbar_kwargs | dict(spacing="proportional", ticks=bounds)
+
+
+class USGS24:
+    """Colormap for 24-category USGS Landuse."""
+
+    name = "usgs24"
+    landuse = {
+        1: {"color": "#ff0000", "label": "Urban and Built-up Land"},
+        2: {"color": "#ffff00", "label": "Dryland Cropland and Pasture"},
+        3: {"color": "#ffff33", "label": "Irrigated Cropland and Pasture"},
+        4: {
+            "color": "#ffff4c",
+            "label": "Mixed Dryland/Irrigated Cropland and Pasture",
+        },
+        5: {"color": "#b2e64c", "label": "Cropland/Grassland Mosaic"},
+        6: {"color": "#b2e64c", "label": "Cropland/Woodland Mosaic"},
+        7: {"color": "#00ff00", "label": "Grassland"},
+        8: {"color": "#4cb200", "label": "Shrubland"},
+        9: {"color": "#d1691f", "label": "Mixed Shrubland/Grassland"},
+        10: {"color": "#ffd600", "label": "Savanna"},
+        11: {"color": "#33cc66", "label": "Deciduous Broadleaf Forest"},
+        12: {"color": "#33cc33", "label": "Deciduous Needleleaf Forest"},
+        13: {"color": "#006633", "label": "Evergreen Broadleaf Forest"},
+        14: {"color": "#006600", "label": "Evergreen Needleleaf Forest"},
+        15: {"color": "#339933", "label": "Mixed Forests"},
+        16: {"color": "#0000e0", "label": "Water Bodies"},
+        17: {"color": "#00ffff", "label": "Herbaceous Wetlands"},
+        18: {"color": "#33ffff", "label": "Wooden Wetlands"},
+        19: {"color": "#e9e9b2", "label": "Barren or Sparsely Vegetated"},
+        20: {"color": "#db143b", "label": "Herbaceous Tundraa"},
+        21: {"color": "#db143b", "label": "Wooded Tundra"},
+        22: {"color": "#f7804f", "label": "Mixed Tundra"},
+        23: {"color": "#e8967a", "label": "Barren Tundra"},
+        24: {"color": "#ffffff", "label": "Snow and Ice"},
+    }
+    colors = np.array([v["color"] for k, v in landuse.items()])
+    bounds = np.array(list(landuse) + [22])
+    labels = np.array([f"{k}  " + v["label"] for k, v in landuse.items()])
+    cmap = mcolors.LinearSegmentedColormap.from_list(name, colors, N=len(bounds) - 1)
+    norm = mcolors.BoundaryNorm(boundaries=bounds, ncolors=len(bounds))
+    plt.colormaps.register(cmap, force=True)
+    cmap = plt.get_cmap(name)
+    kwargs = dict(cmap=cmap, norm=norm)
+    cbar_kwargs = dict(label="USGS Landuse")
+    cbar_kwargs2 = cbar_kwargs | dict(spacing="proportional", ticks=bounds)
 
 
 # ======================================================================
