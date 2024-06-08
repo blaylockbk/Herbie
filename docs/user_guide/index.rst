@@ -37,6 +37,7 @@ User Guide
 .. toctree::
    :captions: Extra Features
    :maxdepth: 2
+
    tutorial/EasyMap.ipynb
    tutorial/paint
    tutorial/wgrib2-wrapper.ipynb
