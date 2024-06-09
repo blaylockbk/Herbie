@@ -32,6 +32,8 @@ Some models Herbie can retrieve data from include:
 
    /user_guide/index
    /api_reference/index
+   /grib_reference/index
+   /gallery/index
 
 .. TODO: I'd like to have the cards here instead of the toctree, but the toctree is needed to show the links in the top banner.
 .. .. card:: User Guide
