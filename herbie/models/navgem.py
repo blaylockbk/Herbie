@@ -36,14 +36,19 @@ class navgem_godae:
         self.DESCRIPTION = "Navy Global Environment Model"
         self.DETAILS = {
             "godae": "https://usgodae.org/",
+            "filename_description": "https://usgodae.org/docs/layout/mdllayout.pns.html",
         }
         self.PRODUCTS = {
             "GMET": "",
             "GLND": "",
             "GCOM": "",
         }
+
+        # Please review https://usgodae.org/docs/layout/mdllayout.pns.html
+        # RL = Realtime https://usgodae.org/docs/layout/pn_rutnime_tbl.pns.html
+        # OF = ?
         self.SOURCES = {
-            # "g1": "https://usgodae.org/ftp/outgoing/fnmoc/models/navgem_0.5/2022/2022010306/US058GMET-GR1mdl.0018_0056_00600F0OF2022010306_0100_003500-000000air_temp",
-            "godae": f"https://usgodae.org/ftp/outgoing/fnmoc/models/navgem_0.5/{self.date:%Y/%Y%m%d%H}/US058{self.product}-GR1mdl.0018_0056_{self.fxx:03d}00F0OF{self.date:%Y%m%d%H}_{self.level}{self.variable}",
+            "realtime": f"https://usgodae.org/ftp/outgoing/fnmoc/models/navgem_0.5/{self.date:%Y/%Y%m%d%H}/US058{self.product}-GR1mdl.0018_0056_{self.fxx:03d}00F0RL{self.date:%Y%m%d%H}_{self.level}{self.variable}",
+            "OF": f"https://usgodae.org/ftp/outgoing/fnmoc/models/navgem_0.5/{self.date:%Y/%Y%m%d%H}/US058{self.product}-GR1mdl.0018_0056_{self.fxx:03d}00F0OF{self.date:%Y%m%d%H}_{self.level}{self.variable}",
         }
         self.LOCALFILE = f"{self.get_remoteFileName}"
