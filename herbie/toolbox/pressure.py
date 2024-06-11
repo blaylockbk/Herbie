@@ -2,11 +2,12 @@
 
 import numpy as np
 
+
 def pres_to_alt(p_hPa, h_m):
     """
     Convert a station pressure and height to an altimeter reading.
 
-    Follows the NOAA converstion found here:
+    Follows the NOAA conversion found here:
     http://www.wrh.noaa.gov/slc/projects/wxcalc/formulas/altimeterSetting.pdf
     Input:
         p_hPa - station pressure in hPa
@@ -85,10 +86,6 @@ def vapor_pressure_deficit(tmp_C, RH):
     """
     Calculate vapor pressure deficit.
 
-    Source:
-        https://physics.stackexchange.com/questions/4343/how-can-i-calculate-vapor-pressure-deficit-from-temperature-and-relative-humidit/35022#35022?newreg=1550370399fc4ae183515472df76c113
-
-    Equation:
         vpd = es * (100-RH)/100
 
     Why this is a meaningful measurement:
@@ -96,8 +93,15 @@ def vapor_pressure_deficit(tmp_C, RH):
     water balance during temperature changes is much more clearly shown
     by noting the vapor pressure deficit than by recording the relative
     humidity."
+
+    Reference
+    ---------
+    https://physics.stackexchange.com/questions/4343/how-can-i-calculate-vapor-pressure-deficit-from-temperature-and-relative-humidit/35022#35022?newreg=1550370399fc4ae183515472df76c113
+
         Anderson, D. B. 1936. Relative humidity or vapor pressure deficit.
         Ecology 17, no. 2: 277-282.
+
+
     """
     vpd = saturation_vapor_pressure(tmp_C) * (100 - RH) / 100.0
     return vpd

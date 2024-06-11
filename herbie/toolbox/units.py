@@ -6,6 +6,7 @@ from Metpy just isn't quick enough for something you need without
 much thought.
 """
 
+
 # ======================================================================
 # Temperature
 def K_to_C(K):
@@ -36,6 +37,7 @@ def F_to_C(F):
 # ======================================================================
 # Wind
 
+
 def ms_to_mph(ms):
     """Convert m/s to MPH."""
     return ms * 2.2369
@@ -44,12 +46,15 @@ def ms_to_mph(ms):
 # ======================================================================
 # Precipitation
 
+
 def mm_to_inches(mm):
     """Convert mm to inches."""
     return mm * 0.0394
 
+
 # ======================================================================
 # Pressure
+
 
 def Pa_to_hPa(Pa):
     """Convert pascals to hectopascals (millibars, mb)."""

@@ -7,6 +7,7 @@ See also for update on effort: https://github.com/SciTools/cartopy/pull/1728
 
 NOTE: ``ax.set_extent()`` must be called *before* adding a scalebar.
 """
+
 import warnings
 
 import cartopy.crs as ccrs
@@ -116,15 +117,21 @@ def _distance_along_line(start, end, distance, dist_func, tol):
 def _point_along_line(ax, start, distance, angle=0, tol=0.01):
     """Point at a given distance from start at a given angle.
 
-    Args:
-        ax:       CartoPy axes.
-        start:    Starting point for the line in axes coordinates.
-        distance: Positive physical distance to travel.
-        angle:    Anti-clockwise angle for the bar, in radians. Default: 0
-        tol:      Relative error in distance to allow. Default: 0.01
+    Parameters
+    ----------
+    ax: cartopy axes
+    start : float
+        Starting point for the line in axes coordinates.
+    distance : float
+        Positive physical distance to travel.
+    angle : float
+        Anti-clockwise angle for the bar, in radians.
+    tol : float
+        Tolerance. Relative error in distance to allow.
 
-    Returns:
-        Coordinates of a point (a (2, 1)-shaped NumPy array).
+    Returns
+    -------
+    Coordinates of a point (a (2, 1)-shaped NumPy array).
     """
     # Direction vector of the line in axes coordinates.
     direction = np.array([np.cos(angle), np.sin(angle)])
@@ -175,23 +182,37 @@ def scale_bar(
     slightly different angles for unknown reasons. To work around this,
     override the 'rotation' keyword argument with text_kwargs.
 
-    Args:
-        ax:              CartoPy axes.
-        location:        Position of left-side of bar in axes coordinates.
-        length:          Geodesic length of the scale bar.
-        metres_per_unit: Number of metres in the given unit. Default: 1000
-        unit_name:       Name of the given unit. Default: 'km'
-        tol:             Allowed relative error in length of bar. Default: 0.01
-        angle:           Anti-clockwise rotation of the bar.
-        color:           Color of the bar and text. Default: 'black'
-        linewidth:       Same argument as for plot.
-        text_offset:     Perpendicular offset for text in axes coordinates.
-                         Default: 0.005
-        ha:              Horizontal alignment. Default: 'center'
-        va:              Vertical alignment. Default: 'bottom'
-        **plot_kwargs:   Keyword arguments for plot, overridden by **kwargs.
-        **text_kwargs:   Keyword arguments for text, overridden by **kwargs.
-        **kwargs:        Keyword arguments for both plot and text.
+    Parameter
+    ---------
+    ax: cartopy axes
+    location:
+        Position of left-side of bar in axes coordinates.
+    length:
+        Geodesic length of the scale bar.
+    metres_per_unit:
+        Number of metres in the given unit.
+    unit_name: {'km'}
+        Name of the given unit.
+    tol:
+        Tollerence. Allowed relative error in length of bar.
+    angle:
+        Anti-clockwise rotation of the bar.
+    color:
+        Color of the bar and text.
+    linewidth:
+        Same argument as for plot.
+    text_offset:
+        Perpendicular offset for text in axes coordinates.
+    ha:
+        Horizontal alignment.
+    va:
+        Vertical alignment.
+    **plot_kwargs:
+        Keyword arguments for plot, overridden by **kwargs.
+    **text_kwargs:
+        Keyword arguments for text, overridden by **kwargs.
+    **kwargs:
+        Keyword arguments for both plot and text.
     """
     warnings.warn("``ax.set_extent()`` must be applied before the scale bar")
 

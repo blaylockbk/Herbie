@@ -2,6 +2,8 @@
 herbie.toolbox
 ==============
 
+There might be other undocumented goodies in here if you look for them.
+
 .. toctree::
     :maxdepth: 2
 
@@ -10,10 +12,9 @@ herbie.toolbox
 .. autosummary::
    :toctree: _autosummary
 
-   cartopy_tools.EasyMap
-   cartopy_tools.to_180
-   cartopy_tools.to_360
-   wind
-   pressure
-   units
-
+   EasyMap
+   to_180
+   to_360
+   spddir_to_uv
+   uv_to_spddir
+   wind_degree_labels
