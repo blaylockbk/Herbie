@@ -27,9 +27,6 @@ User Guide
    tutorial/intro.ipynb
    tutorial/search
    tutorial/inventory.ipynb
-   tutorial/model_notebooks/index
-   tutorial/accessor_notebooks/index
-   tutorial/bonus_notebooks/index
    tutorial/fast.ipynb
    tutorial/latest.ipynb
    tutorial/extend
@@ -38,6 +35,7 @@ User Guide
    :caption: Extra Features
    :maxdepth: 2
 
+   tutorial/accessor_notebooks/index
    tutorial/EasyMap.ipynb
    tutorial/paint
    tutorial/wgrib2-wrapper.ipynb
