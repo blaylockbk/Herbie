@@ -18,13 +18,13 @@ Herbie: Retrieve NWP Model Data
 
 Some models Herbie can retrieve data from include:
 
-- High-Resolution Rapid Refresh (:ref:`HRRR`)
-- Rapid Refresh (:ref:`RAP`)
-- Global Forecast System (:ref:`GFS``)
-- ECMWF open data forecast products (:ref:`ECMWF (IFS and AIFS)``)
-- National Blend of Models (:ref:`NBM``)
-- Rapid Refresh Forecast System - Prototype (:ref:`RRFS``)
-- Real-Time/Un-Restricted Mesoscale Analysis (:ref:`RTMA and URMA`)
+- High-Resolution Rapid Refresh (HRRR)
+- Rapid Refresh (RAP)
+- Global Forecast System (GFS)
+- ECMWF open data forecast products (ECMWF (IFS and AIFS))
+- National Blend of Models (NBM)
+- Rapid Refresh Forecast System - Prototype (RRFS)
+- Real-Time/Un-Restricted Mesoscale Analysis (RTMA and URMA)
 - and many others (see :ref:`Gallery`)
 
 .. toctree::

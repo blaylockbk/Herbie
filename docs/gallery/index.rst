@@ -2,15 +2,12 @@
 Gallery
 =======
 
-🕺🏻 The gallery is a collection of notebooks demonstrating various uses of Herbie.
-
-
 .. toctree::
    :glob:
    :maxdepth: 1
    :caption: 🗺 NOAA Models
 
-   ./noaa_models/*.ipynb
+   ./noaa_models/*
 
 
 .. toctree::
@@ -18,7 +15,7 @@ Gallery
    :maxdepth: 1
    :caption: 🗺 ECMWF Models
 
-   ./ecmwf_models/*.ipynb
+   ./ecmwf_models/*
 
 
 .. toctree::
@@ -26,7 +23,7 @@ Gallery
    :maxdepth: 1
    :caption: 🍁 ECCC Models
 
-   ./eccc_models/*.ipynb
+   ./eccc_models/*
 
 
 .. toctree::
@@ -34,7 +31,7 @@ Gallery
    :maxdepth: 1
    :caption: ⚓ US Navy Models
 
-   ./usnavy_models/*.ipynb
+   ./usnavy_models/*
 
 
 .. toctree::
