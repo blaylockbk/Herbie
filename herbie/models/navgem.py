@@ -21,7 +21,7 @@ class navgem_nomads:
 
 class navgem_godae:
     """
-    NAVGEM on GODAE.
+    NAVGEM and NOGAPS on GODAE.
 
     Not great implementation.
 
@@ -29,7 +29,10 @@ class navgem_godae:
     https://usgodae.org/docs/layout/mdllayout.pns.html
 
     For example:
-    https://usgodae.org/ftp/outgoing/fnmoc/models/navgem_0.5/2023/2023011218/US058GMET-GR1mdl.0018_0056_00000F0OF2023011218_0100_010132-000000air_temp
+    https://usgodae.org/ftp/outgoing/fnmoc/models/navgem_0.5/2023/2023021312/US058GMET-GR1mdl.0018_0056_00000F0RL2023021312_0105_000020-000000air_temp
+
+    https://usgodae.org/ftp/outgoing/fnmoc/models/nogaps    /2004/2004010400/US058GMET-GR1mdl.0058_0240_00000F0RL2004010400_0100_000100-000000air_temp
+    https://usgodae.org/ftp/outgoing/fnmoc/models/nogaps    /2009/2009033012/US058GMET-GR1mdl.0058_0240_00000F0RL2009033012_0105_000100-000000wnd_ucmp
     """
 
     def template(self):
@@ -46,9 +49,8 @@ class navgem_godae:
 
         # Please review https://usgodae.org/docs/layout/mdllayout.pns.html
         # RL = Realtime https://usgodae.org/docs/layout/pn_rutnime_tbl.pns.html
-        # OF = ?
         self.SOURCES = {
-            "realtime": f"https://usgodae.org/ftp/outgoing/fnmoc/models/navgem_0.5/{self.date:%Y/%Y%m%d%H}/US058{self.product}-GR1mdl.0018_0056_{self.fxx:03d}00F0RL{self.date:%Y%m%d%H}_{self.level}{self.variable}",
-            "OF": f"https://usgodae.org/ftp/outgoing/fnmoc/models/navgem_0.5/{self.date:%Y/%Y%m%d%H}/US058{self.product}-GR1mdl.0018_0056_{self.fxx:03d}00F0OF{self.date:%Y%m%d%H}_{self.level}{self.variable}",
+            "navgem": f"https://usgodae.org/ftp/outgoing/fnmoc/models/navgem_0.5/{self.date:%Y/%Y%m%d%H}/US058{self.product}-GR1mdl.0018_0056_{self.fxx:03d}00F0RL{self.date:%Y%m%d%H}_{self.level}{self.variable}",
+            "nogaps": f"https://usgodae.org/ftp/outgoing/fnmoc/models/nogaps/{self.date:%Y/%Y%m%d%H}/US058{self.product}-GR1mdl.0058_0240_{self.fxx:03d}00F0RL{self.date:%Y%m%d%H}_{self.level}{self.variable}",
         }
         self.LOCALFILE = f"{self.get_remoteFileName}"
