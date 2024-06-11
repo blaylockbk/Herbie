@@ -14,4 +14,3 @@ Docstring reference for the ``herbie`` module
    paint
    wgrib2
    misc
-   .. toolbox ! Not sure why this isn't working
