@@ -933,7 +933,7 @@ black = "#111111"
 
 class HerbieWhite:
     name = "herbie.white"
-    colors = [red, white, blue]
+    colors = [blue, white, red]
     make_custom_cmaps(name, colors, N=7)
     cmap = plt.get_cmap(name)
     cmap2 = plt.get_cmap(name + "2")
@@ -941,7 +941,7 @@ class HerbieWhite:
 
 class HerbieTan:
     name = "herbie.tan"
-    colors = [red, tan, blue]
+    colors = [blue, tan, red]
     make_custom_cmaps(name, colors, N=7)
     cmap = plt.get_cmap(name)
     cmap2 = plt.get_cmap(name + "2")
@@ -949,7 +949,7 @@ class HerbieTan:
 
 class HerbieBlack:
     name = "herbie.black"
-    colors = [red, black, blue]
+    colors = [blue, black, red]
     make_custom_cmaps(name, colors, N=7)
     cmap = plt.get_cmap(name)
     cmap2 = plt.get_cmap(name + "2")

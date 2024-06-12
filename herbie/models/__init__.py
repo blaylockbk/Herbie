@@ -25,14 +25,13 @@ from .hafs import *
 from .hrdps import *
 from .hrrr import *
 from .nam import *
-from .navgem import *
 from .nbm import *
 from .nexrad import *
-from .nogaps import *
 from .rap import *
 from .rdps import *
 from .rrfs import *
 from .rtma import *
+from .usnavy import *
 from .urma import *
 
 # ======================================================================
