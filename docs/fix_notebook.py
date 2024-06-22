@@ -1,3 +1,9 @@
+"""Fix jupyter notebooks when they have issues.
+
+I've had to use this on my notebooks to fix them after doing find/replace
+operations, and other weird things that happen.
+"""
+
 import nbformat
 from pathlib import Path
 

@@ -658,37 +658,24 @@ class HerbieAccessor:
     def plot(self, ax=None, common_features_kw={}, vars=None, **kwargs):
         """Plot data on a map.
 
+        TODO: Work in progress!
+
         Parameters
         ----------
         vars : list
             List of variables to plot. Default None will plot all
             variables in the DataSet.
         """
-        # From Carpenter_Workshop:
-        # https://github.com/blaylockbk/Carpenter_Workshop
+        raise NotImplementedError("Plotting functionality is not working right now.")
 
         try:
-            import cartopy.crs as ccrs
+            from herbie.toolbox import EasyMap, pc
+            from herbie import paint
             import matplotlib.pyplot as plt
-            import shapely
-            from shapely.geometry import MultiPoint, Point, Polygon
         except ModuleNotFoundError:
             raise ModuleNotFoundError(
-                "cartopy is an 'extra' requirements, please use "
+                "cartopy is an 'extra' requirement. Please use "
                 "`pip install 'herbie-data[extras]'` for the full functionality."
-            )
-
-        try:
-            from paint.radar import cm_reflectivity
-            from paint.radar2 import cm_reflectivity
-            from paint.standard2 import cm_dpt, cm_pcp, cm_rh, cm_tmp, cm_wind
-            from paint.terrain2 import cm_terrain
-
-            from herbie.toolbox import EasyMap, pc
-        except Exception:
-            print("The plotting accessor requires my Carpenter Workshop. Try:")
-            print(
-                "`pip install git+https://github.com/blaylockbk/Carpenter_Workshop.git`"
             )
 
         ds = self._obj
@@ -742,16 +729,19 @@ class HerbieAccessor:
             wind_pair = {"u10": "v10", "u80": "v80", "u": "v"}
 
             if ds[var].GRIB_cfName == "air_temperature":
-                kwargs = {**cm_tmp().cmap_kwargs, **kwargs}
-                cbar_kwargs = {**cm_tmp().cbar_kwargs, **cbar_kwargs}
+                kwargs = {**paint.NWSTemperature.kwargs2, **kwargs}
+                cbar_kwargs = {**paint.NWSTemperature.cbar_kwargs2, **cbar_kwargs}
                 if ds[var].GRIB_units == "K":
                     ds[var] -= 273.15
                     ds[var].attrs["GRIB_units"] = "C"
                     ds[var].attrs["units"] = "C"
 
             elif ds[var].GRIB_cfName == "dew_point_temperature":
-                kwargs = {**cm_dpt().cmap_kwargs, **kwargs}
-                cbar_kwargs = {**cm_dpt().cbar_kwargs, **cbar_kwargs}
+                kwargs = {**paint.NWSDewPointTemperature.kwargs2, **kwargs}
+                cbar_kwargs = {
+                    **paint.NWSDewPointTemperature.cbar_kwargs2,
+                    **cbar_kwargs,
+                }
                 if ds[var].GRIB_units == "K":
                     ds[var] -= 273.15
                     ds[var].attrs["GRIB_units"] = "C"
@@ -762,24 +752,24 @@ class HerbieAccessor:
                     [f"F{int(i):02d}" for i in ds[var].GRIB_stepRange.split("-")]
                 )
                 ds[var] = ds[var].where(ds[var] != 0)
-                kwargs = {**cm_pcp().cmap_kwargs, **kwargs}
-                cbar_kwargs = {**cm_pcp().cbar_kwargs, **cbar_kwargs}
+                kwargs = {**paint.NWSPrecipitation.kwargs2, **kwargs}
+                cbar_kwargs = {**paint.NWSPrecipitation.cbar_kwargs2, **cbar_kwargs}
 
             elif ds[var].GRIB_name == "Maximum/Composite radar reflectivity":
                 ds[var] = ds[var].where(ds[var] >= 0)
-                cbar_kwargs = {**cm_reflectivity().cbar_kwargs, **cbar_kwargs}
-                kwargs = {**cm_reflectivity().cmap_kwargs, **kwargs}
+                kwargs = {**paint.RadarReflectivity.kwargs2, **kwargs}
+                cbar_kwargs = {**paint.RadarReflectivity.cbar_kwargs2, **cbar_kwargs}
 
             elif ds[var].GRIB_cfName == "relative_humidity":
-                cbar_kwargs = {**cm_rh().cbar_kwargs, **cbar_kwargs}
-                kwargs = {**cm_rh().cmap_kwargs, **kwargs}
+                kwargs = {**paint.NWSRelativeHumidity.kwargs2, **kwargs}
+                cbar_kwargs = {**paint.NWSRelativeHumidity.cbar_kwargs2, **cbar_kwargs}
 
             elif ds[var].GRIB_name == "Orography":
                 if "lsm" in ds:
                     ds["orog"] = ds.orog.where(ds.lsm == 1, -100)
 
-                cbar_kwargs = {**cm_terrain().cbar_kwargs, **cbar_kwargs}
-                kwargs = {**cm_terrain().cmap_kwargs, **kwargs}
+                kwargs = {**paint.LandGreen.kwargs, **kwargs}
+                # cbar_kwargs = {**cm_terrain().cbar_kwargs, **cbar_kwargs}
 
             elif "wind" in ds[var].GRIB_cfName or "wind" in ds[var].GRIB_name:
                 cbar_kwargs = {**cm_wind().cbar_kwargs, **cbar_kwargs}
