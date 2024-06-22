@@ -43,7 +43,7 @@ class rrfs:
 
         # Format the domain parameter
         if self.domain == "conus":
-            self.domain = ".conus_3km"
+            self.domain = ".conus"
         elif self.domain == "alaska":
             self.domain = ".ak"
         elif self.domain == "hawaii":
