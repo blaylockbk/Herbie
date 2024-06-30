@@ -26,3 +26,8 @@ def test_polygon():
     ds = H.xarray("TMP:2 m")
     polygons = ds.herbie.polygon
     assert len(polygons) == 2
+
+
+def test_with_wind():
+    ds = Herbie("2024-01-01").xarray("GRD:10 m above").herbie.with_wind()
+    assert len(ds) == 4

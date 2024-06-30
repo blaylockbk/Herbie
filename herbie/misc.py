@@ -22,11 +22,11 @@
 class hc:
     """Herbie Color Pallette"""
 
-    tan = "#f0ead2"
     red = "#88211b"
     blue = "#0c3576"
+    tan = "#f0ead2"
     white = "#ffffff"
-    black = "#000000"
+    black = "#111111"
 
 
 class ANSI:
@@ -42,7 +42,7 @@ class ANSI:
     # Octal: \033
     # Unicode: \u001b
     # Hexadecimal: \x1B
-    ESC = "\x1B"
+    ESC = "\x1b"
 
     # Style
     bold = f"{ESC}[1m"
@@ -83,15 +83,14 @@ class ANSI:
 
 
 def rich_herbie():
-    """
-    Returns "▌▌Herbie" with rich colors (if rich is installed).
-    """
+    """Return "▌▌Herbie" with rich colors (if rich is installed)."""
     return f"[on {hc.tan}][{hc.red} on {hc.white}]▌[/][{hc.blue}]▌[/][bold {hc.black}]Herbie[/][/]"
 
 
 def print_rich(H):
     """
-    Print "rich" display console
+    Print "rich" display console.
+
     TODO: How do I get the __repr__ to do this?
 
     eh, just use my own ANSI class for text coloring.
@@ -125,7 +124,7 @@ def HerbieLogo(white_line=False):
         raise ModuleNotFoundError(
             "matplotlib is an 'extra' requirement, please use "
             "`pip install 'herbie-data[extras]'` for the full functionality."
-    )
+        )
     plt.figure(figsize=[5, 5], facecolor=hc.tan)
 
     plt.axis([-10, 10, -10, 10])
@@ -164,7 +163,7 @@ def HerbieLogo(white_line=False):
 
 def HerbieLogo2(white_line=False, text_color="tan", text_stroke="black"):
     """
-    Herbie logo (main)
+    Herbie logo (main).
 
     >>> ax = HerbieLogo2()
     >>> plt.savefig('Herbie.svg', bbox_inches="tight")
@@ -182,7 +181,7 @@ def HerbieLogo2(white_line=False, text_color="tan", text_stroke="black"):
         raise ModuleNotFoundError(
             "matplotlib is an 'extra' requirement, please use "
             "`pip install 'herbie-data[extras]'` for the full functionality."
-    )
+        )
     plt.figure(figsize=[5, 3], facecolor=hc.tan)
 
     plt.axis([1.5, 20, -10, 10])

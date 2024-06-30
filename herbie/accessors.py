@@ -183,6 +183,76 @@ class HerbieAccessor:
 
         return domain_polygon, domain_polygon_latlon
 
+    def with_wind(self, which="both"):
+        """Return Dataset with calculated wind speed and/or direction.
+
+        Consistent with the eccodes GRIB parameter database, variables
+        names are assigned as follows:
+
+        - "si10"   : 10 metre wind speed (note this is not ws10 as you might expect)
+        - "wdir10" : 10 metre wind direction
+        - "ws"     : wind speed
+        - "wdir"   : wind direction
+
+        Refer to the eccodes database <https://codes.ecmwf.int/grib/param-db/>.
+
+        Parameters
+        ----------
+        which : {'both', 'speed', 'direction'}
+            Specify which wind quantity to compute.
+
+        """
+        ds = self._obj
+
+        n_computed = 0
+
+        if which in ("speed", "both"):
+            if {"u10", "v10"}.issubset(ds):
+                ds["si10"] = np.sqrt(ds.u10**2 + ds.v10**2)
+                ds["si10"].attrs["GRIB_paramId"] = 207
+                ds["si10"].attrs["long_name"] = "10 metre wind speed"
+                ds["si10"].attrs["units"] = "m s**-1"
+                ds["si10"].attrs["standard_name"] = "wind_speed"
+                ds["si10"].attrs["grid_mapping"] = "gribfile_projection"
+                n_computed += 1
+
+            if {"u", "v"}.issubset(ds):
+                ds["ws"] = np.sqrt(ds.u**2 + ds.v**2)
+                ds["ws"].attrs["GRIB_paramId"] = 10
+                ds["ws"].attrs["long_name"] = "wind speed"
+                ds["ws"].attrs["units"] = "m s**-1"
+                ds["ws"].attrs["standard_name"] = "wind_speed"
+                ds["ws"].attrs["grid_mapping"] = "gribfile_projection"
+                n_computed += 1
+
+        if which in ("direction", "both"):
+            if {"u10", "v10"}.issubset(ds):
+                ds["wdir10"] = (
+                    (270 - np.rad2deg(np.arctan2(ds.v10, ds.u10))) % 360
+                ).where((ds.u10 != 0) & (ds.v10 != 0))
+                ds["wdir10"].attrs["GRIB_paramId"] = 260260
+                ds["wdir10"].attrs["long_name"] = "10 metre wind direction"
+                ds["wdir10"].attrs["units"] = "degree"
+                ds["wdir10"].attrs["standard_name"] = "wind_from_direction"
+                ds["wdir10"].attrs["grid_mapping"] = "gribfile_projection"
+                n_computed += 1
+
+            if {"u", "v"}.issubset(ds):
+                ds["wdir"] = ((270 - np.rad2deg(np.arctan2(ds.v, ds.u))) % 360).where(
+                    (ds.u != 0) & (ds.v != 0)
+                )
+                ds["wdir"].attrs["GRIB_paramId"] = 3031
+                ds["wdir"].attrs["long_name"] = "wind direction"
+                ds["wdir"].attrs["units"] = "degree"
+                ds["wdir"].attrs["standard_name"] = "wind_from_direction"
+                ds["wdir"].attrs["grid_mapping"] = "gribfile_projection"
+                n_computed += 1
+
+        if n_computed == 0:
+            warnings.warn("`with_wind()` did not do anything.")
+
+        return ds
+
     def pick_points(
         self,
         points,
@@ -588,36 +658,24 @@ class HerbieAccessor:
     def plot(self, ax=None, common_features_kw={}, vars=None, **kwargs):
         """Plot data on a map.
 
+        TODO: Work in progress!
+
         Parameters
         ----------
         vars : list
             List of variables to plot. Default None will plot all
             variables in the DataSet.
         """
-        # From Carpenter_Workshop:
-        # https://github.com/blaylockbk/Carpenter_Workshop
+        raise NotImplementedError("Plotting functionality is not working right now.")
 
         try:
-            import cartopy.crs as ccrs
+            from herbie.toolbox import EasyMap, pc
+            from herbie import paint
             import matplotlib.pyplot as plt
-            import shapely
-            from shapely.geometry import MultiPoint, Point, Polygon
         except ModuleNotFoundError:
             raise ModuleNotFoundError(
-                "cartopy is an 'extra' requirements, please use "
+                "cartopy is an 'extra' requirement. Please use "
                 "`pip install 'herbie-data[extras]'` for the full functionality."
-            )
-
-        try:
-            from paint.radar import cm_reflectivity
-            from paint.radar2 import cm_reflectivity
-            from paint.standard2 import cm_dpt, cm_pcp, cm_rh, cm_tmp, cm_wind
-            from paint.terrain2 import cm_terrain
-            from toolbox.cartopy_tools import EasyMap, pc
-        except:
-            print("The plotting accessor requires my Carpenter Workshop. Try:")
-            print(
-                "`pip install git+https://github.com/blaylockbk/Carpenter_Workshop.git`"
             )
 
         ds = self._obj
@@ -671,16 +729,19 @@ class HerbieAccessor:
             wind_pair = {"u10": "v10", "u80": "v80", "u": "v"}
 
             if ds[var].GRIB_cfName == "air_temperature":
-                kwargs = {**cm_tmp().cmap_kwargs, **kwargs}
-                cbar_kwargs = {**cm_tmp().cbar_kwargs, **cbar_kwargs}
+                kwargs = {**paint.NWSTemperature.kwargs2, **kwargs}
+                cbar_kwargs = {**paint.NWSTemperature.cbar_kwargs2, **cbar_kwargs}
                 if ds[var].GRIB_units == "K":
                     ds[var] -= 273.15
                     ds[var].attrs["GRIB_units"] = "C"
                     ds[var].attrs["units"] = "C"
 
             elif ds[var].GRIB_cfName == "dew_point_temperature":
-                kwargs = {**cm_dpt().cmap_kwargs, **kwargs}
-                cbar_kwargs = {**cm_dpt().cbar_kwargs, **cbar_kwargs}
+                kwargs = {**paint.NWSDewPointTemperature.kwargs2, **kwargs}
+                cbar_kwargs = {
+                    **paint.NWSDewPointTemperature.cbar_kwargs2,
+                    **cbar_kwargs,
+                }
                 if ds[var].GRIB_units == "K":
                     ds[var] -= 273.15
                     ds[var].attrs["GRIB_units"] = "C"
@@ -691,24 +752,24 @@ class HerbieAccessor:
                     [f"F{int(i):02d}" for i in ds[var].GRIB_stepRange.split("-")]
                 )
                 ds[var] = ds[var].where(ds[var] != 0)
-                kwargs = {**cm_pcp().cmap_kwargs, **kwargs}
-                cbar_kwargs = {**cm_pcp().cbar_kwargs, **cbar_kwargs}
+                kwargs = {**paint.NWSPrecipitation.kwargs2, **kwargs}
+                cbar_kwargs = {**paint.NWSPrecipitation.cbar_kwargs2, **cbar_kwargs}
 
             elif ds[var].GRIB_name == "Maximum/Composite radar reflectivity":
                 ds[var] = ds[var].where(ds[var] >= 0)
-                cbar_kwargs = {**cm_reflectivity().cbar_kwargs, **cbar_kwargs}
-                kwargs = {**cm_reflectivity().cmap_kwargs, **kwargs}
+                kwargs = {**paint.RadarReflectivity.kwargs2, **kwargs}
+                cbar_kwargs = {**paint.RadarReflectivity.cbar_kwargs2, **cbar_kwargs}
 
             elif ds[var].GRIB_cfName == "relative_humidity":
-                cbar_kwargs = {**cm_rh().cbar_kwargs, **cbar_kwargs}
-                kwargs = {**cm_rh().cmap_kwargs, **kwargs}
+                kwargs = {**paint.NWSRelativeHumidity.kwargs2, **kwargs}
+                cbar_kwargs = {**paint.NWSRelativeHumidity.cbar_kwargs2, **cbar_kwargs}
 
             elif ds[var].GRIB_name == "Orography":
                 if "lsm" in ds:
                     ds["orog"] = ds.orog.where(ds.lsm == 1, -100)
 
-                cbar_kwargs = {**cm_terrain().cbar_kwargs, **cbar_kwargs}
-                kwargs = {**cm_terrain().cmap_kwargs, **kwargs}
+                kwargs = {**paint.LandGreen.kwargs, **kwargs}
+                # cbar_kwargs = {**cm_terrain().cbar_kwargs, **cbar_kwargs}
 
             elif "wind" in ds[var].GRIB_cfName or "wind" in ds[var].GRIB_name:
                 cbar_kwargs = {**cm_wind().cbar_kwargs, **cbar_kwargs}
@@ -778,7 +839,7 @@ class HerbieAccessor:
                         ],
                         crs=ds.herbie.crs,
                     )
-            except:
+            except Exception:
                 pass
 
         return ax
