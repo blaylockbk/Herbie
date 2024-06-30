@@ -130,7 +130,7 @@ Here are other examples:
 ## Lightness
 
 ![](../../_static/paint/NWS_Sequential_lightness.png)
-![](../../_static/paint/NWS_Continuous_lightness.png)
+![](../../_static/paint/NWS_Qualitative_lightness.png)
 ![](../../_static/paint/Radar_lightness.png)
 ![](../../_static/paint/AirQualityIndex_lightness.png)
 ![](../../_static/paint/Land_Sequential_lightness.png)
