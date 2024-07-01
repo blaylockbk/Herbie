@@ -5,7 +5,6 @@ Note: See `test_pick_points.py` for testing the pick_points accessor.
 
 from herbie import Herbie
 
-
 def test_crs():
     H = Herbie(
         "2022-12-13 12:00",
@@ -16,6 +15,15 @@ def test_crs():
     crs = ds.herbie.crs
     assert crs
 
+def test_to_180():
+    z = xr.Dataset({"longitude": [0, 90, 180, 270, 360]})
+    z = z.herbie.to_180()
+    assert all(z["longitude"] == [0, 90, -180, -90, 0])
+
+def test_to_360():
+    z = xr.Dataset({"longitude": [-90, -180, 0, 90, 180]})
+    z = z.herbie.to_360()
+    assert all(z["longitude"] == [270, 180, 0, 90, 180])
 
 def test_polygon():
     H = Herbie(
