@@ -107,6 +107,19 @@ class HerbieAccessor:
             self._center = (float(lon.mean()), float(lat.mean()))
         return self._center
 
+    def to_180(self):
+        """Wrap longitude coordinates as range [-180,180]."""
+        ds = self._obj
+        ds["longitude"] = (ds["longitude"] + 180) % 360 - 180
+        return ds
+    
+    def to_360(self):
+        """Wrap longitude coordinates as range [0,360]."""
+        ds = self._obj
+        ds["longitude"] = (ds["longitude"] - 360) % 360
+        return ds
+
+
     @functools.cached_property
     def crs(self):
         """
