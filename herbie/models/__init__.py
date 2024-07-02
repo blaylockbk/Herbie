@@ -33,6 +33,7 @@ from .rrfs import *
 from .rtma import *
 from .usnavy import *
 from .urma import *
+from .cfs import *
 
 # ======================================================================
 #                     Import Private Model Templates
