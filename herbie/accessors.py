@@ -112,7 +112,7 @@ class HerbieAccessor:
         ds = self._obj
         ds["longitude"] = (ds["longitude"] + 180) % 360 - 180
         return ds
-    
+
     def to_360(self):
         """Wrap longitude coordinates as range [0,360]."""
         ds = self._obj
@@ -226,7 +226,7 @@ class HerbieAccessor:
                 ds["si10"].attrs["long_name"] = "10 metre wind speed"
                 ds["si10"].attrs["units"] = "m s**-1"
                 ds["si10"].attrs["standard_name"] = "wind_speed"
-                ds["si10"].attrs["grid_mapping"] = "gribfile_projection"
+                ds["si10"].attrs["grid_mapping"] = ds.u10.attrs.get("grid_mapping")
                 n_computed += 1
 
             if {"u", "v"}.issubset(ds):
@@ -235,7 +235,7 @@ class HerbieAccessor:
                 ds["ws"].attrs["long_name"] = "wind speed"
                 ds["ws"].attrs["units"] = "m s**-1"
                 ds["ws"].attrs["standard_name"] = "wind_speed"
-                ds["ws"].attrs["grid_mapping"] = "gribfile_projection"
+                ds["ws"].attrs["grid_mapping"] = ds.u.attrs.get("grid_mapping")
                 n_computed += 1
 
         if which in ("direction", "both"):
@@ -247,7 +247,7 @@ class HerbieAccessor:
                 ds["wdir10"].attrs["long_name"] = "10 metre wind direction"
                 ds["wdir10"].attrs["units"] = "degree"
                 ds["wdir10"].attrs["standard_name"] = "wind_from_direction"
-                ds["wdir10"].attrs["grid_mapping"] = "gribfile_projection"
+                ds["wdir10"].attrs["grid_mapping"] = ds.u10.attrs.get("grid_mapping")
                 n_computed += 1
 
             if {"u", "v"}.issubset(ds):
@@ -258,7 +258,7 @@ class HerbieAccessor:
                 ds["wdir"].attrs["long_name"] = "wind direction"
                 ds["wdir"].attrs["units"] = "degree"
                 ds["wdir"].attrs["standard_name"] = "wind_from_direction"
-                ds["wdir"].attrs["grid_mapping"] = "gribfile_projection"
+                ds["wdir"].attrs["grid_mapping"] = ds.u.attrs.get("grid_mapping")
                 n_computed += 1
 
         if n_computed == 0:
