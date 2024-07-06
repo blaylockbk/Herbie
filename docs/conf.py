@@ -12,7 +12,7 @@
 #
 import os
 import sys
-from datetime import datetime
+import datetime
 
 import pydata_sphinx_theme
 
@@ -28,11 +28,11 @@ version = ".".join([str(i) for i in herbie.__version_tuple__])
 
 
 # ---- Project information -----------------------------------------------------
-utc_now = datetime.utcnow().strftime("%H:%M UTC %d %b %Y")
+utc_now = datetime.datetime.now(datetime.UTC).strftime("%H:%M UTC %d %b %Y")
 
 project = "Herbie"
-copyright = f"{datetime.utcnow():%Y}, Brian K. Blaylock.    ♻ Updated: {utc_now}"
-author = f"Brian K. Blaylock"
+author = "Brian K. Blaylock"
+copyright = f"{datetime.datetime.now(datetime.UTC).strftime('%Y')}, {author}.    ♻ Updated: {utc_now}"
 
 
 # ---- General configuration ---------------------------------------------------
