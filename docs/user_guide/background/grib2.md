@@ -140,7 +140,7 @@ wgrib2 -s file.grib2 > file.grib2.idx
 
 Generally speaking, index files share the same URL as the GRIB2 file except with `.idx` appended to the end of the file name. If the GRIB2 file `hrrr.t01z.wrfsfcf00.grib2` exists, then the index file would be `hrrr.t01z.wrfsfcf00.grib2.idx`.
 
-> **Note:** This "partial-get/byte-range" method is similar to that used in Wesley Ebisuzaki's [Fast Downloading GRIB](https://www.cpc.ncep.noaa.gov/products/wesley/fast_downloading_grib.html) script. It is also described on ECMWF's example script [here](https://confluence.ecmwf.int/display/UDOC/ECMWF+Open+Data+-+Real+Time#ECMWFOpenDataRealTime-DownloadASingleFieldWithWgetDownloadasinglefieldwithwget).
+> **Note:** This "partial-get/byte-range" method is similar to that used in Wesley Ebisuzaki's [Fast Downloading GRIB](https://www.cpc.ncep.noaa.gov/products/wesley/fast_downloading_grib.html) script. It is also described on ECMWF's example script [here](https://confluence.ecmwf.int/display/DAC/ECMWF+open+data:+real-time+forecasts+from+IFS+and+AIFS#ECMWFopendata:realtimeforecastsfromIFSandAIFS-DownloadASingleFieldWithWgetDownloadasinglefieldwithwget).
 
 ### What about regional subsetting?
 
