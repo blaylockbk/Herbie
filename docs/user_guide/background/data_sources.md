@@ -40,5 +40,5 @@ For example, the following are the most popular data sources:
 
 6. ECMWF Open Data
     - Herbie source string, `"ecmwf"`
-    - Website: <https://confluence.ecmwf.int/display/UDOC/ECMWF+Open+Data+-+Real+Time>
+    - Website: <https://confluence.ecmwf.int/display/DAC/ECMWF+open+data%3A+real-time+forecasts+from+IFS+and+AIFS>
     - ECMWF Open Data Program
