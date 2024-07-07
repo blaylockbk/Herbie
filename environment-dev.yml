@@ -32,6 +32,7 @@ dependencies:
   - requests>=2.31
   - s3fs
   - scipy
+  - scikit-learn
   - toml
   - xarray>=2023.7
   - zarr

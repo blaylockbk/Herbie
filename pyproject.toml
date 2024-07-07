@@ -30,15 +30,13 @@ keywords = [
     "HRRR",
 ]
 dependencies = [
-    "matplotlib",
+    "cfgrib",
     "numpy",
     "pandas",
-    "xarray",
-    "cfgrib",
-    "metpy",
-    "cartopy",
-    "toml",
     "pygrib",
+    "requests",
+    "toml",
+    "xarray",
 ]
 dynamic = ["version"]
 
@@ -50,8 +48,10 @@ dynamic = ["version"]
 "Bug Tracker" = "https://github.com/blaylockbk/Herbie/issues"
 
 [project.optional-dependencies]
+extras = ["cartopy", "metpy", "scikit-learn"]
 docs = [
     "autodocsumm",
+    "ipython",
     "linkify-it-py",
     "myst-parser",
     "nbconvert",

@@ -1,4 +1,6 @@
 """
+Herbie is your model output download assistant with a mind of his own.
+
 ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██
   ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██
 ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██
@@ -17,6 +19,9 @@
   ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██
 ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██
   ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██
+
+Herbie might look small on the outside, but he has a big heart on the
+inside and will get you to the finish line. Happy racing! 🏁
 """
 
 import os
@@ -29,6 +34,9 @@ from herbie.misc import ANSI
 __author__ = "Brian K. Blaylock"
 __meet_Herbie__ = "https://en.wikipedia.org/wiki/Herbie"
 __movie_clips__ = "https://youtube.com/playlist?list=PLrSOkJxBTv53gvwbw9pVlMm-1C2PUHJx7"
+__Herbie_wins__ = "https://www.youtube.com/watch?v=4XWufUZ1mxQ&t=189s"
+__documentation__ = "https://herbie.readthedocs.io/"
+
 
 try:
     ## TODO: Will the `_version.py` file *always* be present?

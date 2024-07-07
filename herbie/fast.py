@@ -6,21 +6,16 @@
 Herbie Tools
 ============
 """
-from datetime import datetime, timedelta
 
 import logging
-import cartopy.crs as ccrs
-import metpy  # accessor needed to parse crs
-import numpy as np
+
+# Multithreading :)
+from concurrent.futures import ThreadPoolExecutor, as_completed
+
 import pandas as pd
 import xarray as xr
 
-from herbie.core import Herbie, wgrib2_idx
-from . import Path
-
-# Multithreading :)
-from concurrent.futures import ThreadPoolExecutor
-from concurrent.futures import as_completed, wait
+from herbie.core import Herbie
 
 log = logging.getLogger(__name__)
 
@@ -61,7 +56,7 @@ def _validate_DATES(DATES):
     return DATES
 
 
-def Herbie_latest(n=6, freq="1H", **kwargs):
+def Herbie_latest(n=6, freq="1h", **kwargs):
     """Search for the most recent GRIB2 file (using multithreading).
 
     Parameters
@@ -177,28 +172,28 @@ class FastHerbie:
             ds_list, index=self.DATES, columns=[f"F{i:02d}" for i in self.fxx]
         )
 
-    def inventory(self, searchString=None):
+    def inventory(self, search=None):
         """Get combined inventory DataFrame.
 
-        Useful for data discovery and checking your searchString before
+        Useful for data discovery and checking your search before
         doing a download.
         """
         # NOTE: In my quick test, you don't gain much speed using multithreading here.
         dfs = []
         for i in self.file_exists:
-            df = i.inventory(searchString)
+            df = i.inventory(search)
             df = df.assign(FILE=i.grib)
             dfs.append(df)
         return pd.concat(dfs, ignore_index=True)
 
-    def download(self, searchString=None, *, max_threads=20, **download_kwargs):
+    def download(self, search=None, *, max_threads=20, **download_kwargs):
         r"""Download many Herbie objects
 
         Uses multithreading.
 
         Parameters
         ----------
-        searchString : string
+        search : string
             Regular expression string to specify which GRIB messages to
             download.
         **download_kwargs :
@@ -221,7 +216,7 @@ class FastHerbie:
         outFiles = []
         with ThreadPoolExecutor(threads) as exe:
             futures = [
-                exe.submit(H.download, searchString, **download_kwargs)
+                exe.submit(H.download, search, **download_kwargs)
                 for H in self.file_exists
             ]
 
@@ -236,12 +231,12 @@ class FastHerbie:
 
     def xarray(
         self,
-        searchString,
+        search,
         *,
         max_threads=None,
         **xarray_kwargs,
     ):
-        """Read many Herbie objects into an xarray Dataset
+        """Read many Herbie objects into an xarray Dataset.
 
         # TODO: Sometimes the Jupyter Cell always crashes when I run this.
         # TODO: "fatal flex scanner internal error--end of buffer missed"
@@ -264,7 +259,7 @@ class FastHerbie:
             - 10 threads took 39 s
             - 50 threads took 37 s
         """
-        xarray_kwargs = dict(searchString=searchString, **xarray_kwargs)
+        xarray_kwargs = dict(search=search, **xarray_kwargs)
 
         # NOTE: Multiprocessing does not seem to work because it looks
         # NOTE: like xarray objects are not pickleable.
@@ -314,7 +309,6 @@ class FastHerbie:
                 concat_dim=["time", "step"],
             )
 
-        ds["gribfile_projection"] = ds.gribfile_projection[0][0]
         ds = ds.squeeze()
 
         return ds

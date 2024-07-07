@@ -8,7 +8,9 @@ Docstring reference for the ``herbie`` module
    :maxdepth: 2
 
    core
-   fast
    accessors
+   fast
+   latest
+   paint
    wgrib2
    misc

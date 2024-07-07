@@ -97,7 +97,7 @@ class gefs_reforecast:
     a file has one variable for many lead times. This changes the way
     a user would use Herbie to access GEFS data. A user will need to supply
     the "variable". For getting specific grib messages, you will use the
-    "searchString" argument to key in on the variable of interest. However,
+    "search" argument to key in on the variable of interest. However,
     you will still need to give a value for "fxx" to tell Herbie which
     directory to look for. Yeah, it's a little different paradigm for Herbie,
     but we can work with it.

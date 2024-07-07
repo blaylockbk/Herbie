@@ -1,10 +1,11 @@
+cartopy
+cfgrib
+matplotlib
+metpy
 numpy
 pandas
-xarray
-cfgrib
-metpy
-toml
 pygrib
-cartopy
-matplotlib
+scikit-learn
+toml
+xarray
 git+https://github.com/blaylockbk/Carpenter_Workshop.git

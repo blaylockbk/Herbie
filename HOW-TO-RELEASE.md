@@ -8,7 +8,7 @@ Update Herbie version number in
 
 - Update `./CITATION.cff` citation document
 - Update `./docs/_static/switcher.json` with a new item for the version you will soon create
-  - (You will need to go into the readthedocs.org dashboard and activate the version later.)
+  - (You will need to go into the _readthedocs.org_ dashboard and activate the version later.)
 - Make sure all leftover changes on main are committed that you want.
 - **Create a tag and release in GitHub**.
 
@@ -34,7 +34,9 @@ After the action completes, confirm the file was uploaded to PyPI at <https://py
 
 ## 🐍 Publish to Conda
 
-Updating the Conda package involves updating the herbie-data feedstock, specifically updating the version in the `meta.yml` file.
+Updating the Conda package involves updating the herbie-data feedstock, specifically updating the version in the `meta.yml` file. You should get a notification from the herbie-data feedstock repo saying that it detected a new version and open a pull request. If it looks good, merge the pull request.
+
+Manually updating the package on conda-forge involves the following steps:
 
 1. Fork the [herbie-data Conda feedstock](https://github.com/conda-forge/herbie-data-feedstock/pull/1/checks?check_run_id=11936300099)
 1. Follow the instructions in the README to update the build
