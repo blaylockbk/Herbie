@@ -7,7 +7,7 @@ accessible via http or https.
 
 In Herbie terminology, an "index" file refers to the actual index file
 produced by wgrib2 or eccodes. The "Inventory" is a representation of
-the index contents in a Pandas DataFrame, which may contain additional
+the index contents as a Pandas DataFrame, which may contain additional
 data derived from the index content, but not explicitly given.
 
 TODO: Parsing info from an index file needs to be as fast as possible.
@@ -20,7 +20,7 @@ import numpy as np
 import pandas as pd
 import requests
 
-from herbie.help import _searchString_help
+from herbie.help import _search_help
 from herbie.misc import ANSI
 
 
@@ -171,7 +171,7 @@ def read_eccodes_index(index_filepath):
         "datetime",
         "valid_time",
         "lead",
-        # ---- Used for searchString ------------------------------
+        # ---- Used for search ------------------------------
         "variable",  # parameter field (variable)
         "level",  # level
         "level_type",  # sfc=surface, pl=pressure level, pt=potential vorticity
@@ -272,31 +272,31 @@ class Inventory:
                 )
         return df
 
-    def filter(self, searchString=None):
+    def filter(self, search=None):
         """Filter the Inventory DataFrame for specific GRIB messages.
 
         Parameters
         ----------
-        searchString : str
+        search : str
             A regular expression string to filter specific GRIB messages
             in the inventory DataFrame.
 
             Read more in the user guide at
-            https://herbie.readthedocs.io/en/latest/user_guide/searchString.html
+            https://herbie.readthedocs.io/en/latest/user_guide/search.html
         """
-        # Filter DataFrame by searchString
-        if searchString not in [None, ":"]:
-            logic = self.dataframe["search_this"].str.contains(searchString)
+        # Filter DataFrame by search
+        if search not in [None, ":"]:
+            logic = self.dataframe["search_this"].str.contains(search)
             if logic.sum() == 0:
-                msg = f"`searchString='{searchString}'`"
+                msg = f"`search='{search}'`"
                 print(
                     f" ╭─{ANSI.herbie}─────────────────────────────────────────────╮\n"
                     f" │ WARNING: No GRIB messages found with                 │\n"
                     f" │ {msg:52s} │\n"
-                    f" │ Try a different searchString.                        │\n"
+                    f" │ Try a different search.                              │\n"
                     f" ╰──────────────────────────────────────────────────────╯"
                 )
-                print(_searchString_help(style=self.style))
+                print(_search_help(style=self.style))
 
             filtered_df = self.dataframe.loc[logic].copy()
         else:
