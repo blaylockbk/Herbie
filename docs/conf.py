@@ -16,7 +16,7 @@ import datetime
 
 import pydata_sphinx_theme
 
-import herbie  # # Required to get herbie version and to for accessors to be documented
+import herbie  # Required to get herbie version and to for accessors to be documented
 
 sys.path.insert(0, os.path.abspath("../.."))
 
