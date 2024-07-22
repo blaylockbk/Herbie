@@ -228,6 +228,23 @@ class HerbieAccessor:
                 ds["si10"].attrs["standard_name"] = "wind_speed"
                 ds["si10"].attrs["grid_mapping"] = ds.u10.attrs.get("grid_mapping")
                 n_computed += 1
+            
+            if {"u100", "v100"}.issubset(ds):
+                ds["si100"] = np.sqrt(ds.u100**2 + ds.v100**2)
+                ds["si100"].attrs["GRIB_paramId"] = 228249
+                ds["si100"].attrs["long_name"] = "100 metre wind speed"
+                ds["si100"].attrs["units"] = "m s**-1"
+                ds["si100"].attrs["standard_name"] = "wind_speed"
+                ds["si100"].attrs["grid_mapping"] = ds.u100.attrs.get("grid_mapping")
+                n_computed += 1
+            
+            if {"u80", "v80"}.issubset(ds):
+                ds["si80"] = np.sqrt(ds.u80**2 + ds.v80**2)
+                ds["si80"].attrs["long_name"] = "80 metre wind speed"
+                ds["si80"].attrs["units"] = "m s**-1"
+                ds["si80"].attrs["standard_name"] = "wind_speed"
+                ds["si80"].attrs["grid_mapping"] = ds.u80.attrs.get("grid_mapping")
+                n_computed += 1
 
             if {"u", "v"}.issubset(ds):
                 ds["ws"] = np.sqrt(ds.u**2 + ds.v**2)
@@ -248,6 +265,26 @@ class HerbieAccessor:
                 ds["wdir10"].attrs["units"] = "degree"
                 ds["wdir10"].attrs["standard_name"] = "wind_from_direction"
                 ds["wdir10"].attrs["grid_mapping"] = ds.u10.attrs.get("grid_mapping")
+                n_computed += 1
+            
+            if {"u100", "v100"}.issubset(ds):
+                ds["wdir100"] = (
+                    (270 - np.rad2deg(np.arctan2(ds.v100, ds.u100))) % 360
+                ).where((ds.u100 != 0) & (ds.v100 != 0))
+                ds["wdir100"].attrs["long_name"] = "100 metre wind direction"
+                ds["wdir100"].attrs["units"] = "degree"
+                ds["wdir100"].attrs["standard_name"] = "wind_from_direction"
+                ds["wdir100"].attrs["grid_mapping"] = ds.u100.attrs.get("grid_mapping")
+                n_computed += 1
+            
+            if {"u80", "v80"}.issubset(ds):
+                ds["wdir80"] = (
+                    (270 - np.rad2deg(np.arctan2(ds.v80, ds.u80))) % 360
+                ).where((ds.u80 != 0) & (ds.v80 != 0))
+                ds["wdir80"].attrs["long_name"] = "80 metre wind direction"
+                ds["wdir80"].attrs["units"] = "degree"
+                ds["wdir80"].attrs["standard_name"] = "wind_from_direction"
+                ds["wdir80"].attrs["grid_mapping"] = ds.u80.attrs.get("grid_mapping")
                 n_computed += 1
 
             if {"u", "v"}.issubset(ds):
