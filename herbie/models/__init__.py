@@ -22,6 +22,7 @@ from .gefs import *
 from .gfs import *
 from .hafs import *
 from .hrdps import *
+from .href import *
 from .hrrr import *
 from .nam import *
 from .navgem import *
