@@ -75,10 +75,9 @@ conda activate herbie
 Alternatively, Herbie is published on PyPI and you can install it with pip, _but_ it requires some dependencies that you will have to install yourself:
 
 - Python 3.9+
-- cURL
-- [cfgrib](https://github.com/ecmwf/cfgrib), which requires eccodes.
-- _Optional:_ wgrib2
-- _Optional:_ [Carpenter Workshop](https://github.com/blaylockbk/Carpenter_Workshop)
+- [cURL](https://anaconda.org/conda-forge/curl)
+- [eccodes](https://anaconda.org/conda-forge/eccodes), a requirement for [cfgrib](https://github.com/ecmwf/cfgrib).
+- _Optional:_ [wgrib2](https://anaconda.org/conda-forge/wgrib2)
 
 When those are installed within your environment, _then_ you can install Herbie with pip.
 
@@ -90,6 +89,9 @@ pip install herbie-data
 
 # Most recent changes
 pip install git+https://github.com/blaylockbk/Herbie.git
+
+# Dependecies for extra features
+pip install herbie-data[extra]
 ```
 
 ## Capabilities
@@ -160,16 +162,16 @@ Herbie downloads model data from the following sources, but can be extended to i
 
 ## Community
 
-Having trouble using Herbie or have a question? [💬 GitHub Discussions/Ask For Help](https://github.com/blaylockbk/Herbie/discussions/categories/q-a)
+Having trouble using Herbie or have a question? [❔ GitHub Discussions/Ask For Help](https://github.com/blaylockbk/Herbie/discussions/categories/q-a)
 
-Just want to talk about Herbie or have an idea? [🗣️ GitHub Discussions](https://github.com/blaylockbk/Herbie/discussions/categories)
+Just want to talk about Herbie or have an idea? [💬 GitHub Discussions](https://github.com/blaylockbk/Herbie/discussions/categories)
 
 See something that might be wrong? [🚑 GitHub Issues](https://github.com/blaylockbk/Herbie/issues)
 
 Want to contribute? Great! I'd love your help.
 
 - "Watch" this repo's discussions and issues.
-- Participate in [🗣️ GitHub Discussions](https://github.com/blaylockbk/Herbie/discussions/categories) and answer questions.
+- Participate in [💬 GitHub Discussions](https://github.com/blaylockbk/Herbie/discussions/categories) and answer questions.
 - Share how you use Herbie in [🙌 GitHub Discussions/Show and tell](https://github.com/blaylockbk/Herbie/discussions/categories/show-and-tell)
 - Open an issue or file a pull request to make Herbie even better!
 - Contribute to documentation.
@@ -204,9 +206,9 @@ Herbie was then developed to access HRRR data from that archive and was first us
 <p style="padding-left: 22px ; text-indent: -22px ;"> Blaylock, B. K., J. D. Horel, and C. Galli, 2018: High-Resolution Rapid Refresh Model Data Analytics Derived on the Open Science Grid to Assist Wildland Fire Weather Assessment. J. Atmos. Oceanic Technol., 35, 2213–2227, <a href="https://doi.org/10.1175/JTECH-D-18-0073.1">https://doi.org/10.1175/JTECH-D-18-0073.1</a>.</p>
 </cite></blockquote>
 
-In the later half of 2020, the HRRR dataset from 2014 to present was made available through the [NODD Program](https://www.noaa.gov/information-technology/open-data-dissemination) (formerly NOAA's Big Data Program). The latest version of Herbie organizes and expands my original download scripts into a more coherent package with the extended ability to download data for other models from many different archive sources.
+In the later half of 2020, the HRRR dataset from 2014 to present was made available through the [NODD Open Data Dissemination Program](https://www.noaa.gov/information-technology/open-data-dissemination) (formerly NOAA's Big Data Program). The latest version of Herbie organizes and expands my original download scripts into a more coherent package with the extended ability to download data for other models from many different archive sources, and it will continues to evolve.
 
-I originally released this package under the name “HRRR-B” because it only worked with the HRRR dataset; the “B” was for my first-name initial. Since then, I have added the ability to download RAP, GFS, ECMWF, GEFS, RRFS, and others with potentially more models in the future. Thus, this package was renamed **_Herbie_**, named after one of my favorite childhood movie characters.
+I originally released this package under the name “HRRR-B” because it only worked with the HRRR dataset; the “B” was for Brian. Since then, I have added the ability to download many more models including RAP, GFS, ECMWF, GEFS, and RRFS with the potential to add more models in the future. Thus, this package was renamed **_Herbie_**, named after one of my favorite childhood movies.
 
 The University of Utah MesoWest group now manages a [HRRR archive in Zarr format](http://hrrr.chpc.utah.edu/). Maybe someday, Herbie will be able to take advantage of that archive.
 
@@ -229,4 +231,4 @@ P.S. If you like Herbie, check out my other repos:
 > **Note**: Alternative Download Tools  
 > As an alternative to Herbie, you can use [rclone](https://rclone.org/) to download files from AWS or GCP. I love rclone. Here is a short [rclone tutorial](https://github.com/blaylockbk/pyBKB_v3/blob/master/rclone_howto.md)
 
-| [Visualize Structure](https://mango-dune-07a8b7110.1.azurestaticapps.net/?repo=blaylockbk%2FHerbie) | [Star History](https://star-history.com/#blaylockbk/Herbie&Date)
+| [Visualize Structure](https://mango-dune-07a8b7110.1.azurestaticapps.net/?repo=blaylockbk%2FHerbie) | [Star History](https://star-history.com/#blaylockbk/Herbie&Date) | [PyPI Download Statistics](https://pypistats.org/packages/herbie-data)

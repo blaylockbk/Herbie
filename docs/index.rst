@@ -21,16 +21,18 @@ Some models Herbie can retrieve data from include:
 - High-Resolution Rapid Refresh (HRRR)
 - Rapid Refresh (RAP)
 - Global Forecast System (GFS)
-- ECMWF open data forecast products (IFS and AIFS)
+- ECMWF open data forecast products (ECMWF (IFS and AIFS))
 - National Blend of Models (NBM)
 - Rapid Refresh Forecast System - Prototype (RRFS)
-- Real-Time/Un-Restricted Mesoscale Analysis (RTMA/URMA)
-- and many others (see :ref:`🗺 Model Tutorials`)
+- Real-Time/Un-Restricted Mesoscale Analysis (RTMA and URMA)
+- and many others (see :ref:`Gallery`)
 
 .. toctree::
    :maxdepth: 1
 
    /user_guide/index
+   /gallery/index
+   /grib_reference/index
    /api_reference/index
 
 .. TODO: I'd like to have the cards here instead of the toctree, but the toctree is needed to show the links in the top banner.
@@ -65,14 +67,14 @@ Herbie helps you discover and use data from many different numerical weather mod
    :class: img-fluid
    :width: 66%
 
-Specifically, Herbie can
+Specifically, Herbie can do the following:
 
 - Locate GRIB2 files in the cloud.
-- Explore the content of those files.
+- Show the content of those files.
 - Download data to your computer.
 - Download *subsets*  of the data.
 - Read the data with xarray.
-- Useful xarray accessors (see :ref:`🗃️ Xarray Accessors`)
+- Help you use the data with xarray accessors (see :ref:`🗃️ Xarray Accessors`)
 
 Using Herbie looks something like this...
 

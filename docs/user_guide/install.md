@@ -17,10 +17,9 @@ conda install -c conda-forge herbie-data
 Herbie is published on PyPI and you can install it with pip, _but_ it requires some dependencies that you will have to install yourself:
 
 - Python 3.9+
-- cURL
-- [cfgrib](https://github.com/ecmwf/cfgrib), which requires **_eccodes_** (most easily installed with conda)
-- _Optional:_ wgrib2
-- _Optional:_ [Carpenter Workshop](https://github.com/blaylockbk/Carpenter_Workshop)
+- [cURL](https://anaconda.org/conda-forge/curl)
+- [eccodes](https://anaconda.org/conda-forge/eccodes), which is required by [cfgrib](https://anaconda.org/conda-forge/cfgrib).
+- _Optional:_ [wgrib2](https://anaconda.org/conda-forge/wgrib2)
 
 When those are installed within your environment, _then_ you can install Herbie with pip.
 
@@ -29,7 +28,15 @@ When those are installed within your environment, _then_ you can install Herbie 
 pip install herbie-data
 ```
 
-or
+To install the full functionality in the library which includes
+[xarray accessors](https://github.com/blaylockbk/Herbie/blob/main/herbie/accessors.py) for plotting and data manipulation, please install the "extras" dependencies:
+
+```bash
+# Install last published version
+pip install 'herbie-data[extras]'
+```
+
+The code can also be installed directly from github.
 
 ```bash
 # Install current main branch
@@ -43,12 +50,4 @@ or
 git clone https://github.com/blaylockbk/Herbie.git
 cd Herbie
 pip install -e .
-```
-
-## Carpenter Workshop 🧰
-
-An _optional_ dependency is my [Carpenter Workshop](https://github.com/blaylockbk/Carpenter_Workshop) package. This has some general tools that are useful for making maps and performing other tasks. You might see me use these tools in the tutorials.
-
-```bash
-pip install git+https://github.com/blaylockbk/Carpenter_Workshop.git
 ```

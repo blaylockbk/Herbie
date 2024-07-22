@@ -54,6 +54,7 @@ def HerbieLatest(
 
 
 def HerbieWait(
+    run=pd.Timestamp("now", tz="utc").floor('1h').replace(tzinfo=None),
     model=config["default"].get("model"),
     priority=["aws", "nomads"],
     wait_for="5min",
@@ -64,6 +65,9 @@ def HerbieWait(
 
     Parameters
     ----------
+    run : datetime or pandas.Timestamp
+        The model run to search for.
+        If not provided, the default value is the current UTC hour.
     model : str
         The name of the model.
     priority : list
@@ -84,24 +88,25 @@ def HerbieWait(
     **kwargs
         Any other input you want passed to the Herbie class.
     """
-    now = pd.Timestamp.utcnow().floor("1h").tz_localize(None)
-
     if isinstance(check_interval, str):
         check_interval = pd.Timedelta(check_interval).total_seconds()
 
     timer = pd.Timestamp("now")
 
-    H = Herbie(now, model=model, priority=priority, **kwargs)
+    H = Herbie(run, model=model, priority=priority, **kwargs)
 
+    # If H.grib does not exist, wait for it
     while H.grib is None:
-        now = pd.Timestamp.utcnow().floor("1h").tz_localize(None)
-        H = Herbie(now, model=model, priority=priority, **kwargs)
-        if H.grib:
-            return H
-
+        # Wait for the specified check interval
         time.sleep(check_interval)
 
-        if (pd.Timestamp("now") - timer) >= pd.Timedelta(wait_for):
+        # Try again; break out of loop if successful
+        H = Herbie(run, model=model, priority=priority, **kwargs)
+        if H.grib is not None:
             break
 
-    raise TimeoutError(f"Herbie did not find data in time: {H}")
+        # Error out if timeout is exceeded
+        if (pd.Timestamp("now") - timer) >= pd.Timedelta(wait_for):
+            raise TimeoutError(f"Herbie did not find data in time: {H}")
+
+    return Herbie(run, model=model, priority=priority, **kwargs)

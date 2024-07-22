@@ -361,8 +361,9 @@ class Herbie:
             # than 14 days ago. NOMADS doesn't keep data that old,
             # (I think this is true of all models).
             if "nomads" in self.priority:
-                expired = datetime.utcnow() - timedelta(days=14)
-                expired = pd.to_datetime(f"{expired:%Y-%m-%d}")
+                expired = pd.Timestamp.utcnow().tz_localize(None) - pd.Timedelta(
+                    days=14
+                )
                 if self.date < expired:
                     self.priority.remove("nomads")
 
@@ -1112,7 +1113,8 @@ class Herbie:
         # Backend kwargs for cfgrib
         backend_kwargs.setdefault("indexpath", "")
         backend_kwargs.setdefault(
-            "read_keys", ["parameterName", "parameterUnits", "stepRange", "uvRelativeToGrid"]
+            "read_keys",
+            ["parameterName", "parameterUnits", "stepRange", "uvRelativeToGrid"],
         )
         backend_kwargs.setdefault("errors", "raise")
 
