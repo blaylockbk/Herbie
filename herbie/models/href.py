@@ -12,7 +12,7 @@ The High Resolution Ensemble Forecast (HREF) produces ensemble products from sev
 12Z (CONUS and Hawaii)
 18Z (CONUS, Alaska, and Puerto Rico)
 
-URL structure: https://nomads.ncep.noaa.gov/pub/data/nccf/com/href/prod/href.{YYYYMMDD}/ensprod/href.t{HH}z.{region}.{product}.f{hh}.grib2
+URL structure: https://nomads.ncep.noaa.gov/pub/data/nccf/com/href/prod/href.{YYYYMMDD}/ensprod/href.t{HH}z.{domain}.{product}.f{hh}.grib2
 
 where `HH` is the model initialization time and `hh` is the forecast lead time.
 
@@ -26,7 +26,7 @@ sprd: The spread of the ensemble, which is a measure of how different the indivi
 prob: Probabilistic output; the percentage of the membership meeting a specified threshold such as > 0.5” of accumulated precipitation in a 6 h period). A mix of point probabilities and neighborhood maximum probabilities.
 eas: Ensemble Agreement Scale (EAS) probability, which is a smoothed fractional probability, where the size of the neighborhood for computing the fractional probability varies over a 10-100 km radius (smaller radius used where model members agree closely; larger radius used where there is less agreement). Only for precipitation and snow probability products.
 
-Available Regions
+Available Domains
 -----------------
 "conus": lower-48 US domain
 "ak": Alaska domain
@@ -35,7 +35,7 @@ Available Regions
 
 """
 
-_region = {
+_domain = {
     "conus",
     "ak",
     "hi",
@@ -45,9 +45,9 @@ _region = {
 
 class href:
     def template(self):
-        if not hasattr(self, "region"):
+        if not hasattr(self, "domain"):
             print(
-                f"HREF requires an argument for 'region'. Here are some ideas:\n{_region}"
+                f"HREF requires an argument for 'domain'. Here are some ideas:\n{_domain}"
             )
         self.DESCRIPTION = "The High Resolution Ensemble Forecast (HREF)"
         self.DETAILS = {
@@ -63,7 +63,7 @@ class href:
             "eas": "Ensemble Agreement Scale (EAS) probability, which is a smoothed fractional probability, where the size of the neighborhood for computing the fractional probability varies over a 10-100 km radius (smaller radius used where model members agree closely; larger radius used where there is less agreement). Only for precipitation and snow probability products.",
         }
         self.SOURCES = {
-            "nomads": f"https://nomads.ncep.noaa.gov/pub/data/nccf/com/href/prod/href.{self.date:%Y%m%d}/ensprod/href.t{self.date:%H}z.{self.region}.{self.product}.f{self.fxx:02d}.grib2"
+            "nomads": f"https://nomads.ncep.noaa.gov/pub/data/nccf/com/href/prod/href.{self.date:%Y%m%d}/ensprod/href.t{self.date:%H}z.{self.domain}.{self.product}.f{self.fxx:02d}.grib2"
         }
         self.IDX_SUFFIX = [".grib2.idx", ".idx"]
         self.LOCALFILE = f"{self.get_remoteFileName}"
