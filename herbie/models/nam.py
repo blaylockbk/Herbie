@@ -1,5 +1,6 @@
 ## Added by Brian Blaylock
 ## August 10, 2022
+## Last Updated July 24, 2024
 
 """
 A Herbie template for the NAM model.
@@ -20,6 +21,12 @@ class nam:
             "hawaiinest.hiresf": "Hawaii 6 km",
             "priconest.hiresf": "Puerto Rico 3 km",
             "afwaca": "Central America/Caribbean",
+            "awphys": "NAM 218 AWIPS Grid - CONUS; 12-km Resolution; full complement of pressure level fields and some surface-based fields",
+            "awip12": "NAM 218 AWIPS Grid - CONUS; 12-km Resolution; 12-km Resolution; full complement of surface-based fields",
+            "goes218": "NAM 218 AWIPS Grid - CONUS; 12-km Resolution; GOES Simulated Brightness Temp",
+            "bgrdsf": "NAM 190 grid - CONUS; 12-km Resolution; Staggered B-grid on rotated latitude/longitude grid",
+            "bgrd3d": "NAM 190 grid - CONUS; 12-km Resolution; Staggered B-grid on rotated lat/lon grid using the 60 NAM hybrid levels",
+            "awip32": "NAM 221 AWIPS Grid; 32-km Resolution; High Resolution North American Master Grid",
         }
         self.SOURCES = {
             "aws": f"https://noaa-nam-pds.s3.amazonaws.com/nam.{self.date:%Y%m%d}/nam.t{self.date:%H}z.{self.product}{self.fxx:02d}.tm00.grib2",
