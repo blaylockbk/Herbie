@@ -15,7 +15,7 @@ import os
 import subprocess
 import urllib.request
 import warnings
-from datetime import datetime, timedelta
+from datetime import timedelta
 from io import StringIO
 from shutil import which
 
@@ -40,9 +40,9 @@ try:
     import herbie.accessors  # noqa: F401
 except Exception:
     warnings.warn(
-        "herbie xarray accessors could not be imported."
-        "Probably missing a dependency like MetPy."
-        "If you want to use these functions, try"
+        "herbie xarray accessors could not be imported. "
+        "Probably missing a dependency like MetPy. "
+        "If you want to use these functions, try "
         "`pip install metpy`"
     )
 
@@ -59,18 +59,18 @@ if curl is None:
     )
 
 
-def wgrib2_idx(grib2filepath):
+def wgrib2_idx(grib_filepath):
     """
     Produce the GRIB2 inventory index with wgrib2.
 
     Parameters
     ----------
-    grib2filepath : Path
-        Path to a grib2 file.
+    grib_filepath : str or Path object
+        Path to a GRIB2 file.
     """
     if wgrib2:
         p = subprocess.run(
-            f"{wgrib2} -s {grib2filepath}",
+            f"{wgrib2} -s {grib_filepath}",
             shell=True,
             capture_output=True,
             encoding="utf-8",
@@ -87,7 +87,8 @@ def create_index_files(path, overwrite=False):
     Parameters
     ----------
     path : str or pathlib.Path
-        Path to directory or file.
+        Path to directory or file. An index file will be created for
+        all *.grib2 files.
     overwrite : bool
         Overwrite index file if it exists.
     """
@@ -95,13 +96,13 @@ def create_index_files(path, overwrite=False):
     files = []
     if path.is_dir():
         # List all GRIB2 files in the directory
-        files = list(path.rglob("*.grib2*"))
+        files = list(path.rglob("*.grib2"))
     elif path.is_file():
         # The path is a single file
         files = [path]
 
     if not files:
-        raise ValueError(f"No grib2 files were found in {path}")
+        raise FileNotFoundError(f"No GRIB2 files were found in {path}")
 
     for f in files:
         f_idx = Path(str(f) + ".idx")
@@ -180,7 +181,6 @@ class Herbie:
         verbose=config["default"].get("verbose", True),
         **kwargs,
     ):
-        """Specify model output and find GRIB2 file at one of the sources."""
         self.fxx = fxx
 
         if isinstance(self.fxx, (str, pd.Timedelta)):
@@ -564,12 +564,12 @@ class Herbie:
             # in the output file name as a unique identifier.
             all_grib_msg = "-".join([f"{i:g}" for i in idx_df.index])
 
-            # To prevent "filename too long" error, create a hash to
-            # that represents the file name and subseted variables to
-            # shorten the name.
+            # To prevent "filename too long" error, create a hash that
+            # represents the file name and subseted variables to shorten
+            # the name.
 
             # I want the files to still be sorted by date, fxx, and
-            # subset fields, so include three separate hashes to similar
+            # subset fields, so include three separate hashes so similar
             # files will be sorted together.
 
             hash_date = hashlib.blake2b(
