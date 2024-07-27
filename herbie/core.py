@@ -169,9 +169,9 @@ class Herbie:
 
     def __init__(
         self,
-        date: Optional[Union[datetime, str]] = None,
+        date: Optional[Union[datetime, pd.Timestamp, str]] = None,
         *,
-        valid_date: Optional[Union[datetime, str]] = None,
+        valid_date: Optional[Union[datetime, pd.Timestamp, str]] = None,
         model: str = config["default"].get("model"),
         fxx: int = config["default"].get("fxx"),
         product: str = config["default"].get("product"),
