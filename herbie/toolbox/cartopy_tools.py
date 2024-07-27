@@ -36,6 +36,7 @@ from cartopy.io import shapereader
 from metpy.plots import USCOUNTIES
 from mpl_toolkits.axes_grid1.inset_locator import InsetPosition
 
+from typing import Literal, Optional, Union
 from herbie import Path
 
 try:
@@ -299,7 +300,11 @@ def check_cartopy_axes(ax=None, crs=pc, *, fignum=None, verbose=False):
             raise TypeError("🌎 Sorry. The `ax` you gave me is not a cartopy axes.")
 
 
-def get_ETOPO1(top="ice", coarsen=None, thin=None):
+def get_ETOPO1(
+    top: Literal["bedrock", "ice"] = "ice",
+    coarsen: Optional[int] = None,
+    thin: Optional[int] = None,
+):
     """
     Return the ETOPO1 elevation and bathymetry DataArray.
 
@@ -381,12 +386,12 @@ def get_ETOPO1(top="ice", coarsen=None, thin=None):
 
 def inset_global_map(
     ax,
-    x=0.95,
-    y=0.95,
-    size=0.3,
+    x: float = 0.95,
+    y: float = 0.95,
+    size: float = 0.3,
     theme=None,
-    facecolor="#f88d0083",
-    kind="area",
+    facecolor: str = "#f88d0083",
+    kind: Literal["point", "area"] = "area",
 ):
     """Add an inset map showing the location of the main map on the globe.
 
@@ -478,7 +483,12 @@ def inset_global_map(
     return ax_inset
 
 
-def state_polygon(state=None, country="USA", county=None, verbose=True):
+def state_polygon(
+    state: Optional[str] = None,
+    country: str = "USA",
+    county: Optional[str] = None,
+    verbose: bool = True,
+):
     """
     Return a shapely polygon of US state boundaries or country borders.
 
@@ -528,18 +538,18 @@ class EasyMap:
 
     def __init__(
         self,
-        scale="110m",
+        scale: Literal["110m", "50m", "10m"] = "110m",
         ax=None,
         crs=pc,
         *,
         figsize=None,
-        fignum=None,
-        dpi=None,
-        theme=None,
-        verbose=False,
-        add_coastlines=True,
-        facecolor=None,
+        fignum: int = None,
+        dpi: int = None,
+        theme: Optional[Literal["dark", "grey"]] = None,
+        add_coastlines: bool = True,
+        facecolor: Optional[str] = None,
         coastlines_kw={},
+        verbose: bool = False,
         **kwargs,
     ):
         """
@@ -804,10 +814,10 @@ class EasyMap:
     # Less commonly needed features
     def TERRAIN(
         self,
-        coarsen=30,
+        coarsen: int = 30,
         *,
-        top="ice",
-        kind="pcolormesh",
+        top: Literal["ice", "bedrock"] = "ice",
+        kind: Literal["pcolormesh", "contourf"] = "pcolormesh",
         extent=None,
         **kwargs,
     ):
@@ -885,10 +895,10 @@ class EasyMap:
 
     def BATHYMETRY(
         self,
-        coarsen=30,
+        coarsen: int = 30,
         *,
-        top="ice",
-        kind="pcolormesh",
+        top: Literal["ice", "bedrock"] = "ice",
+        kind: Literal["pcolormesh", "contourf"] = "pcolormesh",
         extent=None,
         **kwargs,
     ):
@@ -1044,10 +1054,10 @@ class EasyMap:
 
     def PLACES(
         self,
-        country="United States",
-        rank=2,
-        scatter=True,
-        labels=True,
+        country: str = "United States",
+        rank: int = 2,
+        scatter: bool = True,
+        labels: bool = True,
         label_kw={},
         scatter_kw={},
     ):
@@ -1090,7 +1100,14 @@ class EasyMap:
 
     # ============
     # Tiled images
-    def STAMEN(self, style="terrain-background", zoom=3, alpha=1):
+    def STAMEN(
+        self,
+        style: Literal[
+            "terrain-background", "terrain", "toner-background", "toner", "watercolor"
+        ] = "terrain-background",
+        zoom: int = 3,
+        alpha=1,
+    ):
         """
         Add Stamen map tiles to background.
 
@@ -1139,7 +1156,7 @@ class EasyMap:
 
         return self
 
-    def OSM(self, zoom=1, alpha=1):
+    def OSM(self, zoom: int = 1, alpha=1):
         """
         Add Open Street Map tiles as background image.
 
@@ -1187,9 +1204,9 @@ class EasyMap:
         x,
         y=None,
         *,
-        text=None,
-        method="cutout",
-        facealpha=0.25,
+        text: Optional[str] = None,
+        method: Literal["fill", "cutout", "border"] = "cutout",
+        facealpha: Union[Literal[0], Literal[1], float] = 0.25,
         text_kwargs={},
         **kwargs,
     ):

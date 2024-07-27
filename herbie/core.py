@@ -32,6 +32,8 @@ from herbie import Path, config
 from herbie.help import _search_help
 from herbie.misc import ANSI
 
+Datetime = Union[datetime, pd.Timestamp, str]
+
 # NOTE: The config dict values are retrieved from __init__ and read
 # from the file ${HOME}/.config/herbie/config.toml
 # Path is imported from __init__ because it has my custom methods.
@@ -82,7 +84,7 @@ def wgrib2_idx(grib2filepath: Union[Path, str]) -> str:
         raise RuntimeError("wgrib2 command was not found.")
 
 
-def create_index_files(path: Union[Path, str], overwrite: bool = False):
+def create_index_files(path: Union[Path, str], overwrite: bool = False) -> None:
     """Create an index file for all GRIB2 files in a directory.
 
     Parameters
@@ -169,9 +171,9 @@ class Herbie:
 
     def __init__(
         self,
-        date: Optional[Union[datetime, pd.Timestamp, str]] = None,
+        date: Optional[Datetime] = None,
         *,
-        valid_date: Optional[Union[datetime, pd.Timestamp, str]] = None,
+        valid_date: Optional[Datetime] = None,
         model: str = config["default"].get("model"),
         fxx: int = config["default"].get("fxx"),
         product: str = config["default"].get("product"),
@@ -303,7 +305,7 @@ class Herbie:
         """Herbie evaluated True if the GRIB file exists."""
         return bool(self.grib)
 
-    def help(self):
+    def help(self) -> None:
         """Print help message if available."""
         if hasattr(self, "HELP"):
             HELP = self.HELP.strip().replace("\n", "\n│ ")
@@ -320,7 +322,7 @@ class Herbie:
         print("│")
         print("╰─────────────────────────────────────────")
 
-    def tell_me_everything(self):
+    def tell_me_everything(self) -> None:
         """Print all the attributes of the Herbie object."""
         msg = []
         for i in dir(self):
@@ -330,11 +332,11 @@ class Herbie:
         msg = "\n".join(msg)
         print(msg)
 
-    def __logo__(self):
+    def __logo__(self) -> None:
         """For Fun, show the Herbie Logo."""
         print(ANSI.ascii)
 
-    def _validate(self):
+    def _validate(self) -> None:
         """Validate the Herbie class input arguments."""
         # Accept model alias
         if self.model.lower() == "alaska":
@@ -368,7 +370,7 @@ class Herbie:
                 if self.date < expired:
                     self.priority.remove("nomads")
 
-    def _ping_pando(self):
+    def _ping_pando(self) -> None:
         """Pinging the Pando server before downloading can prevent a bad handshake."""
         try:
             requests.head("https://pando-rgw01.chpc.utah.edu/")
@@ -523,9 +525,11 @@ class Herbie:
         """Predict the local file name."""
         return self.LOCALFILE
 
-    def get_localFilePath(self, search: Optional[str] = None, *, searchString=None):
+    def get_localFilePath(
+        self, search: Optional[str] = None, *, searchString=None
+    ) -> Path:
         """Get full path to the local file."""
-        # TODO: Remove this eventually
+        # TODO: Remove this check for searString eventually
         if searchString is not None:
             warnings.warn(
                 "The argument `searchString` was renamed `search`. Please update your scripts.",
