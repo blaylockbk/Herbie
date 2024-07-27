@@ -26,6 +26,7 @@ dependencies:
   - netcdf4
   - numpy>=1.25
   - pandas>=2.0
+  - polars>=1.0
   - pygrib>=2.1.4
   - pylint
   - pyproj>=3.6

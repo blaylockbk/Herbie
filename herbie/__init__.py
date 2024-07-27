@@ -42,7 +42,7 @@ try:
     ## TODO: Will the `_version.py` file *always* be present?
     ## TODO: What if the person doesn't do "pip install"
     from ._version import __version__, __version_tuple__
-except:
+except Exception:
     __version__ = "unknown"
     __version_tuple__ = (999, 999, 999)
 
@@ -50,7 +50,7 @@ except:
 ########################################################################
 # Overload Path object with my custom `expand` method so the user can
 # set environment variables in the config file (e.g., ${HOME}).
-def _expand(self, resolve=False, absolute=False):
+def _expand(self, resolve: bool = False, absolute: bool = False) -> Path:
     """
     Fully expand the Path with the given environment variables.
 
@@ -149,7 +149,7 @@ class model1_name:
 try:
     # Load the Herbie config file
     config = toml.load(_config_file)
-except:
+except Exception:
     try:
         # Create the Herbie config file
         _config_path.mkdir(parents=True, exist_ok=True)
