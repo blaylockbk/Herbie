@@ -18,6 +18,7 @@ import warnings
 from datetime import datetime, timedelta
 from io import StringIO
 from shutil import which
+from typing import Union, Optional, Literal
 
 import cfgrib
 import pandas as pd
@@ -30,6 +31,8 @@ import herbie.models as model_templates
 from herbie import Path, config
 from herbie.help import _search_help
 from herbie.misc import ANSI
+
+Datetime = Union[datetime, pd.Timestamp, str]
 
 # NOTE: The config dict values are retrieved from __init__ and read
 # from the file ${HOME}/.config/herbie/config.toml
@@ -59,7 +62,7 @@ if curl is None:
     )
 
 
-def wgrib2_idx(grib2filepath):
+def wgrib2_idx(grib2filepath: Union[Path, str]) -> str:
     """
     Produce the GRIB2 inventory index with wgrib2.
 
@@ -81,7 +84,7 @@ def wgrib2_idx(grib2filepath):
         raise RuntimeError("wgrib2 command was not found.")
 
 
-def create_index_files(path, overwrite=False):
+def create_index_files(path: Union[Path, str], overwrite: bool = False) -> None:
     """Create an index file for all GRIB2 files in a directory.
 
     Parameters
@@ -91,7 +94,7 @@ def create_index_files(path, overwrite=False):
     overwrite : bool
         Overwrite index file if it exists.
     """
-    path = Path(path).expand()
+    path = Path(path)
     files = []
     if path.is_dir():
         # List all GRIB2 files in the directory
@@ -168,16 +171,16 @@ class Herbie:
 
     def __init__(
         self,
-        date=None,
+        date: Optional[Datetime] = None,
         *,
-        valid_date=None,
-        model=config["default"].get("model"),
-        fxx=config["default"].get("fxx"),
-        product=config["default"].get("product"),
-        priority=config["default"].get("priority"),
-        save_dir=config["default"].get("save_dir"),
-        overwrite=config["default"].get("overwrite", False),
-        verbose=config["default"].get("verbose", True),
+        valid_date: Optional[Datetime] = None,
+        model: str = config["default"].get("model"),
+        fxx: int = config["default"].get("fxx"),
+        product: str = config["default"].get("product"),
+        priority: Union[str, list[str]] = config["default"].get("priority"),
+        save_dir: Union[Path, str] = config["default"].get("save_dir"),
+        overwrite: bool = config["default"].get("overwrite", False),
+        verbose: bool = config["default"].get("verbose", True),
         **kwargs,
     ):
         """Specify model output and find GRIB2 file at one of the sources."""
@@ -282,7 +285,7 @@ class Herbie:
                     f"┊ {ANSI.green}{self.date:%Y-%b-%d %H:%M UTC}{ANSI.bright_green} F{self.fxx:02d}{ANSI.reset}",
                 )
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         """Representation in Notebook."""
         msg = (
             f"{ANSI.herbie} {self.model.upper()} model",
@@ -292,17 +295,17 @@ class Herbie:
         )
         return " ".join(msg)
 
-    def __str__(self):
+    def __str__(self) -> str:
         """When Herbie class object is printed, print all properties."""
         # * Keep this simple so it runs fast.
         msg = (f"║HERBIE╠ {self.model.upper()}:{self.product}",)
         return " ".join(msg)
 
-    def __bool__(self):
+    def __bool__(self) -> bool:
         """Herbie evaluated True if the GRIB file exists."""
         return bool(self.grib)
 
-    def help(self):
+    def help(self) -> None:
         """Print help message if available."""
         if hasattr(self, "HELP"):
             HELP = self.HELP.strip().replace("\n", "\n│ ")
@@ -319,7 +322,7 @@ class Herbie:
         print("│")
         print("╰─────────────────────────────────────────")
 
-    def tell_me_everything(self):
+    def tell_me_everything(self) -> None:
         """Print all the attributes of the Herbie object."""
         msg = []
         for i in dir(self):
@@ -329,11 +332,11 @@ class Herbie:
         msg = "\n".join(msg)
         print(msg)
 
-    def __logo__(self):
+    def __logo__(self) -> None:
         """For Fun, show the Herbie Logo."""
         print(ANSI.ascii)
 
-    def _validate(self):
+    def _validate(self) -> None:
         """Validate the Herbie class input arguments."""
         # Accept model alias
         if self.model.lower() == "alaska":
@@ -367,7 +370,7 @@ class Herbie:
                 if self.date < expired:
                     self.priority.remove("nomads")
 
-    def _ping_pando(self):
+    def _ping_pando(self) -> None:
         """Pinging the Pando server before downloading can prevent a bad handshake."""
         try:
             requests.head("https://pando-rgw01.chpc.utah.edu/")
@@ -375,7 +378,7 @@ class Herbie:
             print("🤝🏻⛔ Bad handshake with pando? Am I able to move on?")
             pass
 
-    def _check_grib(self, url, min_content_length=10):
+    def _check_grib(self, url: str, min_content_length: int = 10) -> bool:
         """
         Check that the GRIB2 URL exist and is of useful length.
 
@@ -398,7 +401,7 @@ class Herbie:
         else:
             return False
 
-    def _check_idx(self, url, verbose=False):
+    def _check_idx(self, url: str, verbose: bool = False) -> tuple[bool, Optional[str]]:
         """Check if an index file exist for the GRIB2 URL."""
         # To check inventory files with slightly different URL structure
         # we will loop through the IDX_SUFFIX.
@@ -427,7 +430,7 @@ class Herbie:
             )
         return False, None
 
-    def find_grib(self):
+    def find_grib(self) -> tuple[Optional[Union[Path, str]], Optional[str]]:
         """Find a GRIB file from the archive sources.
 
         Returns
@@ -465,15 +468,15 @@ class Herbie:
             grib_url = self.SOURCES[source]
 
             if source.startswith("local"):
-                grib_path = Path(grib_url).expand()
+                grib_path = Path(grib_url)
                 if grib_path.exists():
-                    return [grib_path, source]
+                    return (grib_path, source)
             elif self._check_grib(grib_url):
-                return [grib_url, source]
+                return (grib_url, source)
 
-        return [None, None]
+        return (None, None)
 
-    def find_idx(self):
+    def find_idx(self) -> tuple[Optional[Union[Path, str]], Optional[str]]:
         """Find an index file for the GRIB file."""
         # If priority list is set, we want to search SOURCES in that
         # priority order. If priority is None, then search all SOURCES
@@ -498,33 +501,35 @@ class Herbie:
             grib_url = self.SOURCES[source]
 
             if source.startswith("local"):
-                local_grib = Path(grib_url).expand()
+                local_grib = Path(grib_url)
                 local_idx = local_grib.with_suffix(self.IDX_SUFFIX[0])
                 if local_idx.exists():
-                    return [local_idx, "local"]
+                    return (local_idx, "local")
             else:
                 idx_exists, idx_url = self._check_idx(grib_url)
 
                 if idx_exists:
-                    return [idx_url, source]
+                    return (idx_url, source)
 
-        return [None, None]
+        return (None, None)
 
     @property
-    def get_remoteFileName(self, source=None):
+    def get_remoteFileName(self, source: Optional[str] = None) -> str:
         """Predict remote file name (assumes all sources are named the same)."""
         if source is None:
             source = list(self.SOURCES)[0]
         return self.SOURCES[source].split("/")[-1]
 
     @property
-    def get_localFileName(self):
+    def get_localFileName(self) -> str:
         """Predict the local file name."""
         return self.LOCALFILE
 
-    def get_localFilePath(self, search=None, *, searchString=None):
+    def get_localFilePath(
+        self, search: Optional[str] = None, *, searchString=None
+    ) -> Path:
         """Get full path to the local file."""
-        # TODO: Remove this eventually
+        # TODO: Remove this check for searString eventually
         if searchString is not None:
             warnings.warn(
                 "The argument `searchString` was renamed `search`. Please update your scripts.",
@@ -535,10 +540,7 @@ class Herbie:
 
         # Predict the localFileName from the first model template SOURCE.
         localFilePath = (
-            self.save_dir.expand()
-            / self.model
-            / f"{self.date:%Y%m%d}"
-            / self.get_localFileName
+            self.save_dir / self.model / f"{self.date:%Y%m%d}" / self.get_localFileName
         )
 
         # Check if any sources in a model template are "local"
@@ -546,9 +548,9 @@ class Herbie:
         if any([i.startswith("local") for i in self.SOURCES.keys()]):
             localFilePath = next(
                 (
-                    Path(self.SOURCES[i]).expand()
+                    Path(self.SOURCES[i])
                     for i in self.SOURCES
-                    if i.startswith("local") and Path(self.SOURCES[i]).expand().exists()
+                    if i.startswith("local") and Path(self.SOURCES[i]).exists()
                 ),
                 localFilePath,
             )
@@ -595,7 +597,7 @@ class Herbie:
         return localFilePath
 
     @functools.cached_property
-    def index_as_dataframe(self):
+    def index_as_dataframe(self) -> pd.DataFrame:
         """Read and cache the full index file."""
         if self.grib_source == "local" and wgrib2:
             # Generate IDX inventory with wgrib2
@@ -762,7 +764,13 @@ class Herbie:
 
         return df
 
-    def inventory(self, search=None, *, searchString=None, verbose=None):
+    def inventory(
+        self,
+        search: Optional[str] = None,
+        *,
+        searchString=None,
+        verbose: Optional[bool] = None,
+    ) -> pd.DataFrame:
         """
         Inspect the GRIB2 file contents by reading the index file.
 
@@ -817,15 +825,15 @@ class Herbie:
 
     def download(
         self,
-        search=None,
+        search: Optional[str] = None,
         *,
         searchString=None,
-        source=None,
-        save_dir=None,
-        overwrite=None,
-        verbose=None,
-        errors="warn",
-    ):
+        source: Optional[str] = None,
+        save_dir: Optional[Union[str, Path]] = None,
+        overwrite: Optional[bool] = None,
+        verbose: Optional[bool] = None,
+        errors: Literal["warn", "raise"] = "warn",
+    ) -> Path:
         """
         Download file from source.
 
@@ -1048,13 +1056,13 @@ class Herbie:
 
     def xarray(
         self,
-        search=None,
+        search: Optional[str] = None,
         *,
         searchString=None,
-        backend_kwargs={},
-        remove_grib=True,
+        backend_kwargs: dict = {},
+        remove_grib: bool = True,
         **download_kwargs,
-    ):
+    ) -> xr.Dataset:
         """
         Open GRIB2 data as xarray DataSet.
 
@@ -1188,7 +1196,7 @@ class Herbie:
                     )
             return Hxr
 
-    def terrain(self, water_masked=True):
+    def terrain(self, water_masked: bool = True) -> xr.Dataset:
         """Shortcut method to return model terrain as an xarray.Dataset."""
         ds = self.xarray(":(?:HGT|LAND):surface")
         if water_masked:

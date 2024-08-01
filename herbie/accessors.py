@@ -14,6 +14,7 @@ import pickle
 import re
 import warnings
 from pathlib import Path
+from typing import Literal, Optional, Union
 
 import numpy as np
 import pandas as pd
@@ -22,7 +23,6 @@ import xarray as xr
 from pyproj import CRS
 
 import herbie
-
 
 _level_units = dict(
     adiabaticCondensation="adiabatic condensation",
@@ -54,7 +54,7 @@ _level_units = dict(
 )
 
 
-def add_proj_info(ds):
+def add_proj_info(ds: xr.Dataset):
     """Add projection info to a Dataset."""
     match = re.search(r'"source": "(.*?)"', ds.history)
     FILE = Path(match.group(1))
@@ -97,7 +97,7 @@ class HerbieAccessor:
         self._center = None
 
     @property
-    def center(self):
+    def center(self) -> tuple[float, float]:
         """Return the geographic center point of this dataset."""
         if self._center is None:
             # we can use a cache on our accessor objects, because accessors
@@ -107,18 +107,17 @@ class HerbieAccessor:
             self._center = (float(lon.mean()), float(lat.mean()))
         return self._center
 
-    def to_180(self):
+    def to_180(self) -> xr.Dataset:
         """Wrap longitude coordinates as range [-180,180]."""
         ds = self._obj
         ds["longitude"] = (ds["longitude"] + 180) % 360 - 180
         return ds
 
-    def to_360(self):
+    def to_360(self) -> xr.Dataset:
         """Wrap longitude coordinates as range [0,360]."""
         ds = self._obj
         ds["longitude"] = (ds["longitude"] - 360) % 360
         return ds
-
 
     @functools.cached_property
     def crs(self):
@@ -196,7 +195,9 @@ class HerbieAccessor:
 
         return domain_polygon, domain_polygon_latlon
 
-    def with_wind(self, which="both"):
+    def with_wind(
+        self, which: Literal["both", "speed", "direction"] = "both"
+    ) -> xr.Dataset:
         """Return Dataset with calculated wind speed and/or direction.
 
         Consistent with the eccodes GRIB parameter database, variables
@@ -228,7 +229,7 @@ class HerbieAccessor:
                 ds["si10"].attrs["standard_name"] = "wind_speed"
                 ds["si10"].attrs["grid_mapping"] = ds.u10.attrs.get("grid_mapping")
                 n_computed += 1
-            
+
             if {"u100", "v100"}.issubset(ds):
                 ds["si100"] = np.sqrt(ds.u100**2 + ds.v100**2)
                 ds["si100"].attrs["GRIB_paramId"] = 228249
@@ -237,7 +238,7 @@ class HerbieAccessor:
                 ds["si100"].attrs["standard_name"] = "wind_speed"
                 ds["si100"].attrs["grid_mapping"] = ds.u100.attrs.get("grid_mapping")
                 n_computed += 1
-            
+
             if {"u80", "v80"}.issubset(ds):
                 ds["si80"] = np.sqrt(ds.u80**2 + ds.v80**2)
                 ds["si80"].attrs["long_name"] = "80 metre wind speed"
@@ -266,7 +267,7 @@ class HerbieAccessor:
                 ds["wdir10"].attrs["standard_name"] = "wind_from_direction"
                 ds["wdir10"].attrs["grid_mapping"] = ds.u10.attrs.get("grid_mapping")
                 n_computed += 1
-            
+
             if {"u100", "v100"}.issubset(ds):
                 ds["wdir100"] = (
                     (270 - np.rad2deg(np.arctan2(ds.v100, ds.u100))) % 360
@@ -276,7 +277,7 @@ class HerbieAccessor:
                 ds["wdir100"].attrs["standard_name"] = "wind_from_direction"
                 ds["wdir100"].attrs["grid_mapping"] = ds.u100.attrs.get("grid_mapping")
                 n_computed += 1
-            
+
             if {"u80", "v80"}.issubset(ds):
                 ds["wdir80"] = (
                     (270 - np.rad2deg(np.arctan2(ds.v80, ds.u80))) % 360
@@ -305,15 +306,15 @@ class HerbieAccessor:
 
     def pick_points(
         self,
-        points,
-        method="nearest",
+        points: pd.DataFrame,
+        method: Literal["nearest", "weighted"] = "nearest",
         *,
-        k=None,
-        max_distance=500,
-        use_cached_tree=True,
-        tree_name=None,
-        verbose=False,
-    ):
+        k: Optional[int] = None,
+        max_distance: Union[int, float] = 500,
+        use_cached_tree: Union[bool, Literal["replant"]] = True,
+        tree_name: Optional[str] = None,
+        verbose: bool = False,
+    ) -> xr.Dataset:
         """Pick nearest neighbor grid values at selected  points.
 
         Parameters
@@ -384,7 +385,7 @@ class HerbieAccessor:
                 "`pip install 'herbie-data[extras]'` for the full functionality."
             )
 
-        def plant_tree(save_pickle=None):
+        def plant_tree(save_pickle: Optional[Union[Path, str]] = None):
             """Grow a new BallTree object from seedling."""
             timer = pd.Timestamp("now")
             print("INFO: 🌱 Growing new BallTree...", end="")
@@ -719,9 +720,10 @@ class HerbieAccessor:
         raise NotImplementedError("Plotting functionality is not working right now.")
 
         try:
-            from herbie.toolbox import EasyMap, pc
-            from herbie import paint
             import matplotlib.pyplot as plt
+
+            from herbie import paint
+            from herbie.toolbox import EasyMap, pc
         except ModuleNotFoundError:
             raise ModuleNotFoundError(
                 "cartopy is an 'extra' requirement. Please use "
