@@ -47,7 +47,7 @@ except Exception:
     # )
     pass
 
-type ExtentPadding = Union[Literal["auto"], float, dict[str, float]]
+ExtentPadding = Union[Literal["auto"], float, dict[str, float]]
 
 pc = ccrs.PlateCarree()
 pc._threshold = 0.01  # https://github.com/SciTools/cartopy/issues/8
