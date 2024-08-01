@@ -47,6 +47,8 @@ except Exception:
     # )
     pass
 
+type ExtentPadding = Union[Literal["auto"], float, dict[str, float]]
+
 pc = ccrs.PlateCarree()
 pc._threshold = 0.01  # https://github.com/SciTools/cartopy/issues/8
 
@@ -89,7 +91,12 @@ _extents = dict(
 
 ########################################################################
 # Methods attached to axes created by `EasyMap`
-def _adjust_extent(self, pad="auto", fraction=0.05, verbose=False):
+def _adjust_extent(
+    self,
+    pad: ExtentPadding = "auto",
+    fraction: float = 0.05,
+    verbose: bool = False,
+):
     """
     Adjust the extent of an existing cartopy axes.
 
@@ -148,13 +155,13 @@ def _adjust_extent(self, pad="auto", fraction=0.05, verbose=False):
 
 def _center_extent(
     self,
-    lon=None,
-    lat=None,
-    city=None,
-    state=None,
+    lon: Optional[Union[int, float]] = None,
+    lat: Optional[Union[int, float]] = None,
+    city: Optional[str] = None,
+    state: Optional[str] = None,
     *,
-    pad="auto",
-    verbose=False,
+    pad: ExtentPadding = "auto",
+    verbose: bool = False,
 ):
     """
     Change the map extent to be centered on a point and adjust padding.
@@ -252,7 +259,9 @@ def _copy_extent(self, src_ax):
 
 ########################################################################
 # Main Functions
-def check_cartopy_axes(ax=None, crs=pc, *, fignum=None, verbose=False):
+def check_cartopy_axes(
+    ax=None, crs=pc, *, fignum: Optional[int] = None, verbose: bool = False
+):
     """
     Check if an axes is a cartopy axes, else create a new cartopy axes.
 
@@ -389,7 +398,7 @@ def inset_global_map(
     x: float = 0.95,
     y: float = 0.95,
     size: float = 0.3,
-    theme=None,
+    theme: Optional[Literal["dark", "grey"]] = None,
     facecolor: str = "#f88d0083",
     kind: Literal["point", "area"] = "area",
 ):
