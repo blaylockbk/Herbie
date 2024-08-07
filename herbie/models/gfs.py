@@ -4,15 +4,34 @@ from datetime import datetime
 
 
 class gfs:
-    """Global Forecast System Atmosphere Products."""
+    """Global Forecast System Atmosphere Products.
+
+    Notes
+    -----
+    The NODD program provides GFS data on all major cloud partners
+    - aws: Archive begins 2021-01-01
+    - google: Archive begins 2021-01-01
+    - azure: Last 30 days
+
+    The NCAR RDA archive only provides GFS data at 0.25 degree
+    resolution and these files do not have index files which makes
+    variable subsetting impossible.
+
+    NCEI archive is spotty at best.
+    """
 
     def template(self):
         self.DESCRIPTION = "Global Forecast System"
         self.DETAILS = {
             "nomads product description": "https://www.nco.ncep.noaa.gov/pmb/products/gfs",
             "google cloud platform": "https://console.cloud.google.com/marketplace/product/noaa-public/gfs?q=search&referrer=search&project=python-232920",
-            "azure document": "https://github.com/microsoft/AIforEarthDatasets#noaa-global-forecast-system-gfs",
+            "azure document": [
+                "https://github.com/microsoft/AIforEarthDatasets#noaa-global-forecast-system-gfs",
+                "https://microsoft.github.io/AIforEarthDataSets/data/noaa-gfs.html",
+            ],
             "aws document": "https://registry.opendata.aws/noaa-gfs-bdp-pds",
+            "NCAR Research Data Archive (RDA)": "https://rda.ucar.edu/datasets/d084001/",
+            "NCEI": "https://www.ncei.noaa.gov/products/weather-climate-models/global-forecast",
         }
         self.PRODUCTS = {
             "pgrb2.0p25": "common fields, 0.25 degree resolution",
@@ -42,6 +61,7 @@ class gfs:
             "nomads": f"https://nomads.ncep.noaa.gov/pub/data/nccf/com/gfs/prod/{post_root}",
             "google": f"https://storage.googleapis.com/global-forecast-system/{post_root}",
             "azure": f"https://noaagfs.blob.core.windows.net/gfs/{post_root}",
+            "ncar_rda": f"https://data.rda.ucar.edu/d084001/{self.date:%Y/%Y%m%d}/gfs.0p25.{self.date:%Y%m%d%H}.f{self.fxx:03d}.grib2",
         }
         self.IDX_SUFFIX = [".idx"]
         self.LOCALFILE = f"{self.get_remoteFileName}"
