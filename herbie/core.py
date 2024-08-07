@@ -515,9 +515,15 @@ class Herbie:
 
     @property
     def get_remoteFileName(self, source: Optional[str] = None) -> str:
-        """Predict remote file name (assumes all sources are named the same)."""
+        """Predict remote file name."""
         if source is None:
-            source = list(self.SOURCES)[0]
+            if hasattr(self, "grib_source") and self.grib_source != "local":
+                source = self.grib_source
+            else:
+                # Just pick the first source in the template
+                # Note: this might not always be the best approach
+                # the file names are not consistent between sources.
+                source = list(self.SOURCES)[0]
         return self.SOURCES[source].split("/")[-1]
 
     @property
