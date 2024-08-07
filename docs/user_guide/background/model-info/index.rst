@@ -6,6 +6,7 @@ References to information about each model (links to the model homepages, and Gi
 
 **This is a work in progress. Please help with a PR 😄**
 
+NOAA's model upgrades and changes can be found at https://www.nco.ncep.noaa.gov/pmb/changes/
 
 .. toctree::
    :glob:
