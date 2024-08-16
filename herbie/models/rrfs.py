@@ -54,7 +54,8 @@ class rrfs:
             self.domain = ""
 
         def generate_url(domain_suffix, member_prefix=""):
-            return f"https://noaa-rrfs-pds.s3.amazonaws.com/rrfs_a/rrfs_a.{self.date:%Y%m%d/%H}/{self.member}/rrfs.t{self.date:%H}z{member_prefix}.{self.product}.f{self.fxx:03d}.{domain_suffix}.grib2"
+            url = f"https://noaa-rrfs-pds.s3.amazonaws.com/rrfs_a/rrfs_a.{self.date:%Y%m%d/%H}/{self.member}/rrfs.t{self.date:%H}z{member_prefix}.{self.product}.f{self.fxx:03d}.{domain_suffix}.grib2"
+            return url.replace("..", ".")
 
         urls = []
 
