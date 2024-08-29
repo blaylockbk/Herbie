@@ -8,6 +8,8 @@ References to information about each model (links to the model homepages, and Gi
 
 NOAA's model upgrades and changes can be found at https://www.nco.ncep.noaa.gov/pmb/changes/
 
+MetED's NWP Encyclopedia at https://sites.google.com/ucar.edu/operational-models-encyclo/home
+
 .. toctree::
    :glob:
    :maxdepth: 1
