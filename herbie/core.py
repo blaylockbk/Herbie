@@ -1159,12 +1159,12 @@ class Herbie:
             # Add some details
             # ----------------
             # Note: all attributes should still work with the `ds.to_netcdf()` method.
-            ds.attrs["model"] = self.model
-            ds.attrs["product"] = self.product
+            ds.attrs["model"] = str(self.model)
+            ds.attrs["product"] = str(self.product)
             ds.attrs["description"] = self.DESCRIPTION
-            ds.attrs["remote_grib"] = self.grib
+            ds.attrs["remote_grib"] = str(self.grib)
             ds.attrs["local_grib"] = str(local_file)
-            ds.attrs["search"] = search
+            ds.attrs["search"] = str(search)
 
             # ----------------------
             # Attach CF grid mapping
