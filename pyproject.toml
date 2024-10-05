@@ -65,7 +65,7 @@ docs = [
     "sphinx-markdown-tables",
     "sphinxcontrib-mermaid",
 ]
-test = ["pytest", "ruff"]
+test = ["pytest", "pytest-cov", "ruff"]
 
 [build-system]
 requires = ["setuptools>=42", "wheel", "setuptools_scm[toml]>=3.4"]
@@ -97,7 +97,7 @@ profile = "black"
 
 [tool.pytest.ini_options]
 minversion = "2.0"
-addopts = "-rsfEX -p pytester --strict-markers --verbosity=3"
+addopts = "-rsfEX -p pytester --strict-markers --verbosity=3 --cov=herbie"
 log_level = "DEBUG"
 testpaths = ["tests"]
 xfail_strict = true

@@ -18,6 +18,7 @@ dependencies:
   - pandas
   - pygrib
   - pytest
+  - pytest-cov
   - requests
   - scikit-learn
   - toml

@@ -47,6 +47,7 @@ dependencies:
   - isort
   - pylint
   - pytest
+  - pytest-cov
   - line_profiler
 
   # =============
