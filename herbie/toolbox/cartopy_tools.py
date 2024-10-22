@@ -1206,6 +1206,66 @@ class EasyMap:
         self.ax.stock_img()
         return self
 
+    def NASA(
+        self,
+        DATE,
+        layer="VIIRS_NOAA20_CorrectedReflectance_TrueColor",
+        pixels=1000,
+    ):
+        """Add NASA image from Global Imagery Browse Service (GIBS).
+
+        Parameters
+        ----------
+        DATE : date or datetime
+            The a date for the image.
+        layer : str
+            The layer to add. Default is NOAA20 TrueColor. Others may
+            be found at https://nasa-gibs.github.io/gibs-api-docs/available-visualizations/,
+            or look at the URL for any map on NASA's Worldview tool
+            https://worldview.earthdata.nasa.gov/
+
+            - VIIRS_SNPP_L2_Sea_Surface_Temp_Day
+            - MODIS_Terra_SurfaceReflectance_Bands143
+            - MODIS_Combined_L3_White_Sky_Albedo_Daily
+            - OrbitTracks_NOAA-20_Ascending
+
+        pixels : int
+            I don't actually think this number is pixels, but it is the number
+            used at the HEIGHT and WIDTH argument in the URL. Larger number is
+            higher resolution image.
+        """
+        try:
+            from skimage import io
+        except ImportError:
+            raise ImportError(
+                "Requires skimage; try `conda install -c conda-forge scikit-image`."
+            )
+
+        # Get Image
+        proj4326 = (
+            "https://gibs.earthdata.nasa.gov/wms/epsg4326/best/wms.cgi?version=1.3.0"
+            "&service=WMS"
+            "&request=GetMap"
+            "&format=image/png"
+            "&STYLE=default"
+            "&bbox=-90,-180,90,180"
+            "&CRS=EPSG:4326"
+            f"&HEIGHT={pixels}"
+            f"&WIDTH={pixels}"
+            f"&TIME={DATE:%Y-%m-%d}"
+            f"&layers={layer}"
+        )
+
+        # Display image on map.
+        self.ax.imshow(
+            io.imread(proj4326),
+            transform=pc,
+            extent=(-180, 180, -90, 90),
+            origin="upper",
+        )
+
+        return self
+
     # ==================
     # Other map elements
     def DOMAIN(

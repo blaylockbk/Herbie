@@ -42,3 +42,4 @@ herbie/_version.py
 
 
 *.pkl
+.coverage
