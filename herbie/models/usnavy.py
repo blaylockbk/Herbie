@@ -44,6 +44,7 @@ class navgem_godae:
         # - `variable='UGRD:10 m'`
         # - `variable='SNOD:surface'`
         # See https://usgodae.org/docs/layout/pn_level_type_tbl.pns.html
+        # See https://codes.ecmwf.int/grib/format/grib1/level/3/
 
         # Map of wgrib2 variable names to GODAE variable names
         variable_map = {
