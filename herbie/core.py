@@ -792,7 +792,7 @@ class Herbie:
             search.
 
             Read more in the user guide at
-            https://herbie.readthedocs.io/en/latest/user_guide/search.html
+            https://herbie.readthedocs.io/en/latest/user_guide/tutorial/search.html
         verbose : None, bool
             If True, then print a help message if no messages are found.
             If False, does not print a help message if no messages are found.
@@ -855,7 +855,7 @@ class Herbie:
             If None, download the full file. Else, use regex to subset
             the file by specific variables and levels.
             Read more in the user guide:
-            https://herbie.readthedocs.io/en/latest/user_guide/search.html
+            https://herbie.readthedocs.io/en/latest/user_guide/tutorial/search.html
         source : {'nomads', 'aws', 'google', 'azure', 'pando', 'pando2'}
             If None, download GRIB2 file from self.grib2 which is
             the first location the GRIB2 file was found from the
