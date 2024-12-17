@@ -34,7 +34,6 @@ import shapely.geometry as sgeom
 import xarray as xr
 from cartopy.io import shapereader
 from metpy.plots import USCOUNTIES
-from mpl_toolkits.axes_grid1.inset_locator import InsetPosition
 
 from typing import Literal, Optional, Union
 from herbie import Path
@@ -433,13 +432,12 @@ def inset_global_map(
 
     # Create and position inset
     ortho = ccrs.Orthographic(central_latitude=center_lat, central_longitude=center_lon)
-    ax_inset = plt.axes([0, 0, 1, 1], projection=ortho)
-    ax_inset.set_global()
-
-    ip = InsetPosition(
-        ax, [inset_x - inset_size / 2, inset_y - inset_size / 2, inset_size, inset_size]
+    ax_inset = ax.inset_axes(
+        [inset_x - inset_size / 2, inset_y - inset_size / 2, inset_size, inset_size],
+        projection=ortho,
     )
-    ax_inset.set_axes_locator(ip)
+    ax_inset.set_global()
+    ax_inset.set_zorder(1000000)  # make sure the inset is on top of everything
 
     # ===================
     # Inset Map Cosmetics
