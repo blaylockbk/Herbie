@@ -16,6 +16,9 @@ https://www.ecmwf.int/en/about/media-centre/news/2024/ecmwf-releases-much-larger
 """
 
 from datetime import datetime
+from herbie.azure_token import AzureBlobStorage
+
+azure_token = AzureBlobStorage("ecmwf-forecast")
 
 
 class ifs:
@@ -31,6 +34,7 @@ class ifs:
         self.DESCRIPTION = "ECMWF Open Data - Integrated Forecast System"
         self.DETAILS = {
             "ECMWF": "https://confluence.ecmwf.int/display/DAC/ECMWF+open+data%3A+real-time+forecasts+from+IFS+and+AIFS",
+            "azure": "https://planetarycomputer.microsoft.com/dataset/ecmwf-forecast",
         }
         self.PRODUCTS = {
             "oper": "operational high-resolution forecast, atmospheric fields",
@@ -64,9 +68,12 @@ class ifs:
 
         # If user asks for 'oper' or 'wave', still look for data in scda and waef for the short cut-off high resolution forecast.
         self.SOURCES = {
-            "azure": f"https://ai4edataeuwest.blob.core.windows.net/ecmwf/{post_root}",
-            "azure-scda": f"https://ai4edataeuwest.blob.core.windows.net/ecmwf/{post_root.replace('oper', 'scda')}",
-            "azure-waef": f"https://ai4edataeuwest.blob.core.windows.net/ecmwf/{post_root.replace('wave', 'waef')}",
+            "azure": f"https://ai4edataeuwest.blob.core.windows.net/ecmwf/{post_root}"
+            + azure_token,
+            "azure-scda": f"https://ai4edataeuwest.blob.core.windows.net/ecmwf/{post_root.replace('oper', 'scda')}"
+            + azure_token,
+            "azure-waef": f"https://ai4edataeuwest.blob.core.windows.net/ecmwf/{post_root.replace('wave', 'waef')}"
+            + azure_token,
             "aws": f"https://ecmwf-forecasts.s3.eu-central-1.amazonaws.com/{post_root}",
             "ecmwf": f"https://data.ecmwf.int/forecasts/{post_root}",
         }
@@ -98,7 +105,8 @@ class aifs:
         )
 
         self.SOURCES = {
-            "azure": f"https://ai4edataeuwest.blob.core.windows.net/ecmwf/{post_root}",
+            "azure": f"https://ai4edataeuwest.blob.core.windows.net/ecmwf/{post_root}"
+            + azure_token,
             "aws": f"https://ecmwf-forecasts.s3.eu-central-1.amazonaws.com/{post_root}",
             "ecmwf": f"https://data.ecmwf.int/forecasts/{post_root}",
         }
