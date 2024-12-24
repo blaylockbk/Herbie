@@ -16,9 +16,9 @@ https://www.ecmwf.int/en/about/media-centre/news/2024/ecmwf-releases-much-larger
 """
 
 from datetime import datetime
-from herbie.azure_token import AzureBlobStorage
+from herbie.azure_token import AzureBlobToken
 
-azure_token = AzureBlobStorage("ecmwf-forecast")
+azure_token = AzureBlobToken("ecmwf-forecast")
 
 
 class ifs:
