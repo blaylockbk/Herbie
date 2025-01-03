@@ -12,9 +12,11 @@
 #
 import os
 import sys
+import datetime
+
 import pydata_sphinx_theme
-from datetime import datetime
-import herbie  ## Required to get herbie version and to for accessors to be documented
+
+import herbie  # Required to get herbie version and to for accessors to be documented
 
 sys.path.insert(0, os.path.abspath("../.."))
 
@@ -26,11 +28,11 @@ version = ".".join([str(i) for i in herbie.__version_tuple__])
 
 
 # ---- Project information -----------------------------------------------------
-utc_now = datetime.utcnow().strftime("%H:%M UTC %d %b %Y")
+utc_now = datetime.datetime.now(datetime.UTC).strftime("%H:%M UTC %d %b %Y")
 
 project = "Herbie"
-copyright = f"{datetime.utcnow():%Y}, Brian K. Blaylock.    ♻ Updated: {utc_now}"
-author = f"Brian K. Blaylock"
+author = "Brian K. Blaylock"
+copyright = f"{datetime.datetime.now(datetime.UTC).strftime('%Y')}, {author}.    ♻ Updated: {utc_now}"
 
 
 # ---- General configuration ---------------------------------------------------
@@ -45,6 +47,8 @@ extensions = [
     "sphinx.ext.autosectionlabel",
     "sphinx.ext.napoleon",
     "sphinx.ext.viewcode",
+    "sphinx_copybutton",
+    "sphinx.ext.todo",
     "sphinx_design",
     "autodocsumm",
     "sphinx_markdown_tables",
@@ -96,20 +100,9 @@ exclude_patterns = [
 # a list of builtin themes.
 #
 html_theme = "pydata_sphinx_theme"
+html_favicon = "_static/logo_new/Herbie-icon.ico"
 
 html_theme_options = {
-    "github_url": "https://github.com/blaylockbk/Herbie",
-    "twitter_url": "https://twitter.com/blaylockbk",
-    "navbar_start": ["navbar-logo"],
-    "navbar_center": ["version-switcher", "navbar-nav"],
-    "navbar_end": ["theme-switcher", "navbar-icon-links.html", "search-field.html"],
-    "switcher": {
-        "json_url": "https://herbie.readthedocs.io/en/latest/_static/switcher.json",
-        "version_match": os.environ.get("READTHEDOCS_VERSION"),
-    },
-    "use_edit_page_button": True,
-    "analytics": {"google_analytics_id": "G-PT9LX1B7B8"},
-    "show_toc_level": 1,
     "external_links": [
         {
             "name": "SynopticPy",
@@ -120,15 +113,38 @@ html_theme_options = {
             "url": "https://goes2go.readthedocs.io/",
         },
     ],
+    "header_links_before_dropdown": 4,
+    "icon_links": [
+        {
+            "name": "GitHub",
+            "url": "https://github.com/blaylockbk/Herbie",
+            "icon": "fa-brands fa-github",
+        },
+        {
+            "name": "PyPI",
+            "url": "https://pypi.org/project/herbie-data",
+            "icon": "fa-custom fa-pypi",
+        },
+    ],
     "logo": {
         "image_light": "_static/logo_new/Herbie-logo.png",
         "image_dark": "_static/logo_new/Herbie-logo.png",
+    },
+    "use_edit_page_button": True,
+    "show_toc_level": 1,
+    "navbar_align": "left",
+    "show_version_warning_banner": True,
+    "navbar_center": ["version-switcher", "navbar-nav"],
+    "footer_start": ["copyright"],
+    "footer_center": ["sphinx-version"],
+    "switcher": {
+        "json_url": "https://herbie.readthedocs.io/en/latest/_static/switcher.json",
+        "version_match": os.environ.get("READTHEDOCS_VERSION"),
     },
 }
 
 html_sidebars = {}
 
-html_favicon = "_static/logo_new/Herbie-icon.ico"
 
 html_context = {
     "github_user": "blaylockbk",
@@ -141,16 +157,11 @@ html_context = {
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ["_static", "../images"]
-
-
-fontawesome_included = True
-panels_add_bootstrap_css = False  # False, because pydata theme already loads it
-
 html_css_files = ["css/brian_style.css"]
+html_js_files = []
+todo_include_todos = True
 
-html_js_files = [
-    "https://kit.fontawesome.com/f6cc126dcc.js",
-]
+# ---- Options for autosummary/autodoc output ---------------------------------
 
 # Set autodoc defaults
 autodoc_default_options = {

@@ -9,36 +9,60 @@ from shutil import which
 
 import pytest
 
-from herbie import Herbie, Path
+from herbie import Herbie, Path, config
 import os
+import requests
+import pandas as pd
 
 now = datetime.now()
 today = datetime(now.year, now.month, now.day, now.hour) - timedelta(hours=6)
 yesterday = today - timedelta(days=1)
 today_str = today.strftime("%Y-%m-%d %H:%M")
 yesterday_str = yesterday.strftime("%Y-%m-%d %H:%M")
-save_dir = Path("$TMPDIR/Herbie-Tests/").expand()
+
+save_dir = config["default"]["save_dir"] / "Herbie-Tests-Data/"
+
+# Remove all previous test data
+for i in (save_dir / "hrrr").rglob("*"):
+    if i.is_file():
+        i.unlink()
 
 # Location of wgrib2 command, if it exists
 wgrib2 = which("wgrib2")
 
 
-def test_hrrr_aws1():
-    # Test HRRR with datetime.datetime date
+def test_hrrr_download():
     H = Herbie(
         today,
         model="hrrr",
         product="sfc",
+        overwrite=True,
         save_dir=save_dir,
     )
-    H.download()
+    f = H.download()
     assert H.get_localFilePath().exists()
+    f.unlink()
+
+
+def test_hrrr_xarray():
+    H = Herbie(
+        today,
+        model="hrrr",
+        product="sfc",
+        overwrite=True,
+        save_dir=save_dir,
+    )
     H.xarray("TMP:2 m", remove_grib=False)
     assert H.get_localFilePath("TMP:2 m").exists()
+    H.get_localFilePath("TMP:2 m").unlink()
 
 
 def test_hrrr_to_netcdf():
-    """Check that a xarray Dataset can be written to a NetCDF file."""
+    """Check that a xarray Dataset can be written to a NetCDF file.
+
+    It is important that I have haven't put any python objects in the
+    xarray Dataset attributes.
+    """
     H = Herbie(
         "2022-01-01 06:00",
         model="hrrr",
@@ -116,3 +140,54 @@ def test_create_idx_with_wgrib2():
     H.download()
     H.idx = None
     assert len(H.index_as_dataframe) > 0
+
+
+# ===========================
+# Check Downloaded File Sizes
+# ===========================
+
+
+def test_hrrr_file_size_full():
+    """Test that theoretical size matches actual size for full (non-subset) files."""
+    H = Herbie(today, model="hrrr", product="sfc", save_dir=save_dir, overwrite=True)
+    stated_size = int(
+        requests.get(H.SOURCES["aws"], stream=True).headers["Content-Length"]
+    )
+    H.download()
+    assert stated_size == H.get_localFilePath().stat().st_size
+
+
+def test_hrrr_file_size_subset1():
+    """Test that the U/V wind components are downloaded correctly."""
+    var = ":.GRD:"
+    H = Herbie(today, model="hrrr", product="sfc", save_dir=save_dir, overwrite=True)
+    H.download(var)
+
+    idx = H.inventory(var)
+    stated_size = ((idx.end_byte + 1) - idx.start_byte).sum()
+
+    assert stated_size == H.get_localFilePath(var).stat().st_size
+
+
+def test_hrrr_file_size_subset2():
+    """Test that the temperatures are downloaded correctly."""
+    var = ":TMP:"
+    H = Herbie(today, model="hrrr", product="sfc", save_dir=save_dir, overwrite=True)
+    H.download(var)
+
+    idx = H.inventory(var)
+    stated_size = ((idx.end_byte + 1) - idx.start_byte).sum()
+
+    assert stated_size == H.get_localFilePath(var).stat().st_size
+
+
+def test_hrrr_file_size_subset3():
+    """Test that same level is downloaded correctly."""
+    var = ":500 mb:"
+    H = Herbie(today, model="hrrr", product="sfc", save_dir=save_dir, overwrite=True)
+    H.download(var)
+
+    idx = H.inventory(var)
+    stated_size = ((idx.end_byte + 1) - idx.start_byte).sum()
+
+    assert stated_size == H.get_localFilePath(var).stat().st_size

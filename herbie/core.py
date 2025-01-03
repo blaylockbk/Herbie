@@ -1,57 +1,24 @@
-#!/usr/bin/env python3
-
-## Brian Blaylock
-## May 6, 2022
-
 """
+You are looking under Herbie's hood, his engine.
 
-===============================
-Herbie: Retrieve NWP Model Data
-===============================
-
-Herbie is your model output download assistant with a mind of his own!
-Herbie might look small on the outside, but he has a big heart on the
-inside and will get you to the
-`finish line <https://www.youtube.com/watch?v=4XWufUZ1mxQ&t=189s>`_.
-Happy racing! 🏁
-
-`📓 Documentation <https://herbie.readthedocs.io/>`_
-
-With Herbie's API, you can search and download GRIB2 model output files
-from different archive sources for the High-Resolution Rapid Refresh
-(HRRR) HRRR-Alaska, Rapid Refresh (RAP), Global Forecast System (GFS),
-and others.
-
-Herbie looks for GRIB2 model output data from NOMADS, NOAA's Big Data
-Project partners (Amazon Web Services, Google Cloud Platform, and
-Microsoft Azure), and the CHPC Pando archive at the University of Utah.
-
-Herbie supports subsetting of GRIB2 files by individual GRIB
-messages (i.e. variable and level) when the index (.idx) file exist and
-help you open them with xarray/cfgrib.
-
-Herbie is extendable to support other models. Simply create a template
-file in the ``herbie/models`` directory and make a pull-request.
-
-For more details, see https://herbie.readthedocs.io/user_guide/data_sources.html
-
-
-TODO: Rename 'searchString' to 'subset' (and rename subset function to??) - REJECTED, for now
-TODO: Rename 'fxx' to 'lead' and allow pandas-parsable timedelta string like "6H".
+TODO: Rename 'fxx' to 'step' and allow pandas-parsable timedelta string like "6h".
 TODO: add `idx_to_df()` and `df_to_idx()` methods.
 TODO: There are probably use cases for the `Path().suffixes` method
 """
+
 import functools
 import hashlib
 import itertools
 import json
 import logging
 import os
-import sys
+import subprocess
 import urllib.request
 import warnings
 from datetime import datetime, timedelta
 from io import StringIO
+from shutil import which
+from typing import Union, Optional, Literal
 
 import cfgrib
 import pandas as pd
@@ -59,13 +26,13 @@ import pygrib
 import requests
 import xarray as xr
 from pyproj import CRS
-import subprocess
-from shutil import which
 
 import herbie.models as model_templates
 from herbie import Path, config
-from herbie.help import _searchString_help
+from herbie.help import _search_help
 from herbie.misc import ANSI
+
+Datetime = Union[datetime, pd.Timestamp, str]
 
 # NOTE: The config dict values are retrieved from __init__ and read
 # from the file ${HOME}/.config/herbie/config.toml
@@ -73,23 +40,29 @@ from herbie.misc import ANSI
 
 try:
     # Load custom xarray accessors
-    import herbie.accessors
-except:
+    import herbie.accessors  # noqa: F401
+except Exception:
     warnings.warn(
         "herbie xarray accessors could not be imported."
         "Probably missing a dependency like MetPy."
         "If you want to use these functions, try"
         "`pip install metpy`"
     )
-    pass
 
 log = logging.getLogger(__name__)
 
-# Location of wgrib2 command, if it exists
+# Location of wgrib2 command, if it exists. Required to make missing idx files.
 wgrib2 = which("wgrib2")
 
+# Location of curl command. Required to download data.
+curl = which("curl")
+if curl is None:
+    warnings.warn(
+        "Curl is not in system Path. Herbie won't be able to download GRIB files."
+    )
 
-def wgrib2_idx(grib2filepath):
+
+def wgrib2_idx(grib2filepath: Union[Path, str]) -> str:
     """
     Produce the GRIB2 inventory index with wgrib2.
 
@@ -111,7 +84,7 @@ def wgrib2_idx(grib2filepath):
         raise RuntimeError("wgrib2 command was not found.")
 
 
-def create_index_files(path, overwrite=False):
+def create_index_files(path: Union[Path, str], overwrite: bool = False) -> None:
     """Create an index file for all GRIB2 files in a directory.
 
     Parameters
@@ -121,7 +94,7 @@ def create_index_files(path, overwrite=False):
     overwrite : bool
         Overwrite index file if it exists.
     """
-    path = Path(path).expand()
+    path = Path(path)
     files = []
     if path.is_dir():
         # List all GRIB2 files in the directory
@@ -154,7 +127,7 @@ class Herbie:
         ``valid_date``.
     valid_date : pandas-parsable datetime
         Model *valid* datetime. Must set when ``date`` is None.
-    fxx : int or pandas-parsable timedelta (e.g. "6H")
+    fxx : int or pandas-parsable timedelta (e.g. "6h")
         Forecast lead time *in hours*. Available lead times depend on
         the model type and model version.
     model : {'hrrr', 'hrrrak', 'rap', 'gfs', 'ecmwf', etc.}
@@ -198,26 +171,24 @@ class Herbie:
 
     def __init__(
         self,
-        date=None,
+        date: Optional[Datetime] = None,
         *,
-        valid_date=None,
-        model=config["default"].get("model"),
-        fxx=config["default"].get("fxx"),
-        product=config["default"].get("product"),
-        priority=config["default"].get("priority"),
-        save_dir=config["default"].get("save_dir"),
-        overwrite=config["default"].get("overwrite", False),
-        verbose=config["default"].get("verbose", True),
+        valid_date: Optional[Datetime] = None,
+        model: str = config["default"].get("model"),
+        fxx: int = config["default"].get("fxx"),
+        product: str = config["default"].get("product"),
+        priority: Union[str, list[str]] = config["default"].get("priority"),
+        save_dir: Union[Path, str] = config["default"].get("save_dir"),
+        overwrite: bool = config["default"].get("overwrite", False),
+        verbose: bool = config["default"].get("verbose", True),
         **kwargs,
     ):
-        """
-        Specify model output and find GRIB2 file at one of the sources.
-        """
+        """Specify model output and find GRIB2 file at one of the sources."""
         self.fxx = fxx
 
         if isinstance(self.fxx, (str, pd.Timedelta)):
             # Convert pandas-parsable timedelta string to int in hours.
-            self.fxx = pd.to_timedelta(fxx).round("1H").total_seconds() / 60 / 60
+            self.fxx = pd.to_timedelta(fxx).round("1h").total_seconds() / 60 / 60
             self.fxx = int(self.fxx)
 
         if date:
@@ -233,6 +204,14 @@ class Herbie:
 
         self.model = model.lower()
         self.product = product
+
+        if self.model == "ecmwf":
+            self.model = "ifs"
+            warnings.warn(
+                "`model='ecmwf'`is deprecated. Please use model='ifs' instead. Also, did you know you can also access `model='aifs'` too!",
+                DeprecationWarning,
+                stacklevel=2,
+            )
 
         self.priority = priority
         self.save_dir = Path(save_dir).expand()
@@ -276,7 +255,7 @@ class Herbie:
         # the index files are in a different style.
         self.IDX_STYLE = getattr(self, "IDX_STYLE", "wgrib2")
 
-        self.searchString_help = _searchString_help(self.IDX_STYLE)
+        self.search_help = _search_help(self.IDX_STYLE)
 
         # Check the user input
         self._validate()
@@ -291,7 +270,7 @@ class Herbie:
             # ANSI colors added for style points
             if any([self.grib is not None, self.idx is not None]):
                 print(
-                    f"✅ Found",
+                    "✅ Found",
                     f"┊ model={self.model}",
                     f"┊ {ANSI.italic}product={self.product}{ANSI.reset}",
                     f"┊ {ANSI.green}{self.date:%Y-%b-%d %H:%M UTC}{ANSI.bright_green} F{self.fxx:02d}{ANSI.reset}",
@@ -300,14 +279,14 @@ class Herbie:
                 )
             else:
                 print(
-                    f"💔 Did not find",
+                    "💔 Did not find",
                     f"┊ model={self.model}",
                     f"┊ {ANSI.italic}product={self.product}{ANSI.reset}",
                     f"┊ {ANSI.green}{self.date:%Y-%b-%d %H:%M UTC}{ANSI.bright_green} F{self.fxx:02d}{ANSI.reset}",
                 )
 
-    def __repr__(self):
-        """Representation in Notebook"""
+    def __repr__(self) -> str:
+        """Representation in Notebook."""
         msg = (
             f"{ANSI.herbie} {self.model.upper()} model",
             f"{ANSI.italic}{self.product}{ANSI.reset} product initialized",
@@ -316,14 +295,35 @@ class Herbie:
         )
         return " ".join(msg)
 
-    def __str__(self):
+    def __str__(self) -> str:
         """When Herbie class object is printed, print all properties."""
         # * Keep this simple so it runs fast.
         msg = (f"║HERBIE╠ {self.model.upper()}:{self.product}",)
         return " ".join(msg)
 
-    def tell_me_everything(self):
-        """Print all the attributes of the Herbie object"""
+    def __bool__(self) -> bool:
+        """Herbie evaluated True if the GRIB file exists."""
+        return bool(self.grib)
+
+    def help(self) -> None:
+        """Print help message if available."""
+        if hasattr(self, "HELP"):
+            HELP = self.HELP.strip().replace("\n", "\n│ ")
+        else:
+            HELP = "│"
+        print("╭─ Herbie ────────────────────────────────")
+        print(f"│ Help for model='{self.model}'")
+        print("│ ")
+        print(f"│ {self.DESCRIPTION}")
+        for key, value in self.DETAILS.items():
+            print(f"│  {key}: {value}")
+        print("│")
+        print(f"│ {HELP}")
+        print("│")
+        print("╰─────────────────────────────────────────")
+
+    def tell_me_everything(self) -> None:
+        """Print all the attributes of the Herbie object."""
         msg = []
         for i in dir(self):
             if isinstance(getattr(self, i), (int, str, dict)):
@@ -332,13 +332,12 @@ class Herbie:
         msg = "\n".join(msg)
         print(msg)
 
-    def __logo__(self):
-        """For Fun, show the Herbie Logo"""
+    def __logo__(self) -> None:
+        """For Fun, show the Herbie Logo."""
         print(ANSI.ascii)
 
-    def _validate(self):
-        """Validate the Herbie class input arguments"""
-
+    def _validate(self) -> None:
+        """Validate the Herbie class input arguments."""
         # Accept model alias
         if self.model.lower() == "alaska":
             self.model = "hrrrak"
@@ -346,7 +345,9 @@ class Herbie:
         _models = {m for m in dir(model_templates) if not m.startswith("__")}
         _products = set(self.PRODUCTS)
 
-        assert self.date < datetime.utcnow(), "🔮 `date` cannot be in the future."
+        assert self.date < pd.Timestamp.utcnow().tz_localize(
+            None
+        ), "🔮 `date` cannot be in the future."
         assert self.model in _models, f"`model` must be one of {_models}"
         assert self.product in _products, f"`product` must be one of {_products}"
 
@@ -363,20 +364,21 @@ class Herbie:
             # than 14 days ago. NOMADS doesn't keep data that old,
             # (I think this is true of all models).
             if "nomads" in self.priority:
-                expired = datetime.utcnow() - timedelta(days=14)
-                expired = pd.to_datetime(f"{expired:%Y-%m-%d}")
+                expired = pd.Timestamp.utcnow().tz_localize(None) - pd.Timedelta(
+                    days=14
+                )
                 if self.date < expired:
                     self.priority.remove("nomads")
 
-    def _ping_pando(self):
+    def _ping_pando(self) -> None:
         """Pinging the Pando server before downloading can prevent a bad handshake."""
         try:
             requests.head("https://pando-rgw01.chpc.utah.edu/")
-        except:
+        except Exception:
             print("🤝🏻⛔ Bad handshake with pando? Am I able to move on?")
             pass
 
-    def _check_grib(self, url, min_content_length=10):
+    def _check_grib(self, url: str, min_content_length: int = 10) -> bool:
         """
         Check that the GRIB2 URL exist and is of useful length.
 
@@ -399,7 +401,7 @@ class Herbie:
         else:
             return False
 
-    def _check_idx(self, url, verbose=False):
+    def _check_idx(self, url: str, verbose: bool = False) -> tuple[bool, Optional[str]]:
         """Check if an index file exist for the GRIB2 URL."""
         # To check inventory files with slightly different URL structure
         # we will loop through the IDX_SUFFIX.
@@ -423,20 +425,19 @@ class Herbie:
 
         if verbose:
             print(
-                f"⚠ Herbie didn't find any inventory files that",
+                "⚠ Herbie didn't find any inventory files that",
                 f"exists from {self.IDX_SUFFIX}",
             )
         return False, None
 
-    def find_grib(self):
-        """Find a GRIB file from the archive sources
+    def find_grib(self) -> tuple[Optional[Union[Path, str]], Optional[str]]:
+        """Find a GRIB file from the archive sources.
 
         Returns
         -------
         1) The URL or pathlib.Path to the GRIB2 files that exists
         2) The source of the GRIB2 file
         """
-
         # But first, check if the GRIB2 file exists locally.
         local_grib = self.get_localFilePath()
         if local_grib.exists() and not self.overwrite:
@@ -467,16 +468,16 @@ class Herbie:
             grib_url = self.SOURCES[source]
 
             if source.startswith("local"):
-                grib_path = Path(grib_url).expand()
+                grib_path = Path(grib_url)
                 if grib_path.exists():
-                    return [grib_path, source]
+                    return (grib_path, source)
             elif self._check_grib(grib_url):
-                return [grib_url, source]
+                return (grib_url, source)
 
-        return [None, None]
+        return (None, None)
 
-    def find_idx(self):
-        """Find an index file for the GRIB file"""
+    def find_idx(self) -> tuple[Optional[Union[Path, str]], Optional[str]]:
+        """Find an index file for the GRIB file."""
         # If priority list is set, we want to search SOURCES in that
         # priority order. If priority is None, then search all SOURCES
         # in the order given by the model template file.
@@ -500,39 +501,52 @@ class Herbie:
             grib_url = self.SOURCES[source]
 
             if source.startswith("local"):
-                local_grib = Path(grib_url).expand()
+                local_grib = Path(grib_url)
                 local_idx = local_grib.with_suffix(self.IDX_SUFFIX[0])
                 if local_idx.exists():
-                    return [local_idx, "local"]
+                    return (local_idx, "local")
             else:
                 idx_exists, idx_url = self._check_idx(grib_url)
 
                 if idx_exists:
-                    return [idx_url, source]
+                    return (idx_url, source)
 
-        return [None, None]
+        return (None, None)
 
     @property
-    def get_remoteFileName(self, source=None):
-        """Predict remote file name (assumes all sources are named the same)."""
+    def get_remoteFileName(self, source: Optional[str] = None) -> str:
+        """Predict remote file name."""
         if source is None:
-            source = list(self.SOURCES)[0]
+            if hasattr(self, "grib_source") and self.grib_source != "local":
+                source = self.grib_source
+            else:
+                # Just pick the first source in the template
+                # Note: this might not always be the best approach
+                # the file names are not consistent between sources.
+                source = list(self.SOURCES)[0]
         return self.SOURCES[source].split("/")[-1]
 
     @property
-    def get_localFileName(self):
+    def get_localFileName(self) -> str:
         """Predict the local file name."""
         return self.LOCALFILE
 
-    def get_localFilePath(self, searchString=None):
-        """Get full path to the local file"""
+    def get_localFilePath(
+        self, search: Optional[str] = None, *, searchString=None
+    ) -> Path:
+        """Get full path to the local file."""
+        # TODO: Remove this check for searString eventually
+        if searchString is not None:
+            warnings.warn(
+                "The argument `searchString` was renamed `search`. Please update your scripts.",
+                DeprecationWarning,
+                stacklevel=2,
+            )
+            search = searchString
 
         # Predict the localFileName from the first model template SOURCE.
         localFilePath = (
-            self.save_dir.expand()
-            / self.model
-            / f"{self.date:%Y%m%d}"
-            / self.get_localFileName
+            self.save_dir / self.model / f"{self.date:%Y%m%d}" / self.get_localFileName
         )
 
         # Check if any sources in a model template are "local"
@@ -540,16 +554,16 @@ class Herbie:
         if any([i.startswith("local") for i in self.SOURCES.keys()]):
             localFilePath = next(
                 (
-                    Path(self.SOURCES[i]).expand()
+                    Path(self.SOURCES[i])
                     for i in self.SOURCES
-                    if i.startswith("local") and Path(self.SOURCES[i]).expand().exists()
+                    if i.startswith("local") and Path(self.SOURCES[i]).exists()
                 ),
                 localFilePath,
             )
 
-        if searchString is not None:
-            # Reassign the index DataFrame with the requested searchString
-            idx_df = self.inventory(searchString)
+        if search is not None:
+            # Reassign the index DataFrame with the requested search
+            idx_df = self.inventory(search)
 
             # ======================================
             # Make a unique filename for the subset
@@ -589,9 +603,8 @@ class Herbie:
         return localFilePath
 
     @functools.cached_property
-    def index_as_dataframe(self):
-        """Read and cache the full index file"""
-
+    def index_as_dataframe(self) -> pd.DataFrame:
+        """Read and cache the full index file."""
         if self.grib_source == "local" and wgrib2:
             # Generate IDX inventory with wgrib2
             self.idx = StringIO(wgrib2_idx(self.get_localFilePath()))
@@ -656,13 +669,13 @@ class Herbie:
             df["reference_time"] = pd.to_datetime(
                 df.reference_time, format="d=%Y%m%d%H"
             )
-            df["valid_time"] = df["reference_time"] + pd.to_timedelta(f"{self.fxx}H")
+            df["valid_time"] = df["reference_time"] + pd.to_timedelta(f"{self.fxx}h")
             df["start_byte"] = df["start_byte"].astype(int)
-            df["end_byte"] = df["start_byte"].shift(-1, fill_value="")
-            # TODO: Check this works: Assign the ending byte for the last row...
-            # TODO: df["end_byte"] = df["start_byte"].shift(-1, fill_value=requests.get(self.grib, stream=True).headers['Content-Length'])
-            # TODO: Based on what Karl Schnieder did.
-            df["range"] = df.start_byte.astype(str) + "-" + df.end_byte.astype(str)
+            df["end_byte"] = df["start_byte"].shift(-1) - 1
+            df["range"] = df.apply(
+                lambda x: f"{x.start_byte:.0f}-{x.end_byte:.0f}".replace("nan", ""),
+                axis=1,
+            )
             df = df.reindex(
                 columns=[
                     "grib_message",
@@ -681,7 +694,6 @@ class Herbie:
             )
 
             df = df.dropna(how="all", axis=1)
-            df = df.fillna("")
 
             df["search_this"] = (
                 df.loc[:, "variable":]
@@ -711,7 +723,7 @@ class Herbie:
             df["reference_time"] = pd.to_datetime(
                 df.date + df.time, format="%Y%m%d%H%M"
             )
-            df["step"] = pd.to_timedelta(df.step.astype(int), unit="H")
+            df["step"] = pd.to_timedelta(df.step.astype(int), unit="h")
             df["valid_time"] = df.reference_time + df.step
 
             df = df.reindex(
@@ -723,7 +735,7 @@ class Herbie:
                     "reference_time",
                     "valid_time",
                     "step",
-                    # ---- Used for searchString ------------------------------
+                    # ---- Used for search ------------------------------
                     "param",  # parameter field (variable)
                     "levelist",  # level
                     "levtype",  # sfc=surface, pl=pressure level, pt=potential vorticity
@@ -758,16 +770,13 @@ class Herbie:
 
         return df
 
-    # TODO : Remove this in a future Herbie version
-    def read_idx(self, searchString=None):
-        warnings.warn(
-            "The `read_idx` method has been renamed `inventory`.",
-            DeprecationWarning,
-            stacklevel=2,
-        )
-        return self.inventory(searchString=None)
-
-    def inventory(self, searchString=None):
+    def inventory(
+        self,
+        search: Optional[str] = None,
+        *,
+        searchString=None,
+        verbose: Optional[bool] = None,
+    ) -> pd.DataFrame:
         """
         Inspect the GRIB2 file contents by reading the index file.
 
@@ -775,15 +784,19 @@ class Herbie:
 
         Parameters
         ----------
-        searchString : str
-            Filter dataframe by a searchString regular expression.
+        search : str
+            Filter dataframe by a search regular expression.
             Searches for strings in the index file lines, specifically
             the variable, level, and forecast_time columns.
-            Execute ``_searchString_help()`` for examples of a good
-            searchString.
+            Execute ``_search_help()`` for examples of a good
+            search.
 
             Read more in the user guide at
-            https://herbie.readthedocs.io/en/latest/user_guide/searchString.html
+            https://herbie.readthedocs.io/en/latest/user_guide/tutorial/search.html
+        verbose : None, bool
+            If True, then print a help message if no messages are found.
+            If False, does not print a help message if no messages are found.
+            If None (default), then verbose is set in the Herbie.__init__.
 
         Returns
         -------
@@ -792,27 +805,41 @@ class Herbie:
         """
         df = self.index_as_dataframe
 
-        # Filter DataFrame by searchString
-        if searchString not in [None, ":"]:
-            logic = df.search_this.str.contains(searchString)
-            if logic.sum() == 0:
+        # TODO: Remove this eventually
+        if searchString is not None:
+            warnings.warn(
+                "The argument `searchString` was renamed `search`. Please update your scripts.",
+                DeprecationWarning,
+                stacklevel=2,
+            )
+            search = searchString
+
+        # This overrides the verbose specified in __init__
+        if verbose is not None:
+            self.verbose = verbose
+
+        # Filter DataFrame by regex search
+        if search not in [None, ":"]:
+            logic = df.search_this.str.contains(search)
+            if (logic.sum() == 0) and verbose:
                 print(
-                    f"No GRIB messages found. There might be something wrong with {searchString=}"
+                    f"No GRIB messages found. There might be something wrong with {search=}"
                 )
-                print(_searchString_help(kind=self.IDX_STYLE))
+                print(_search_help(kind=self.IDX_STYLE))
             df = df.loc[logic]
         return df
 
     def download(
         self,
-        searchString=None,
+        search: Optional[str] = None,
         *,
-        source=None,
-        save_dir=None,
-        overwrite=None,
-        verbose=None,
-        errors="warn",
-    ):
+        searchString=None,
+        source: Optional[str] = None,
+        save_dir: Optional[Union[str, Path]] = None,
+        overwrite: Optional[bool] = None,
+        verbose: Optional[bool] = None,
+        errors: Literal["warn", "raise"] = "warn",
+    ) -> Path:
         """
         Download file from source.
 
@@ -824,11 +851,11 @@ class Herbie:
 
         Parameters
         ----------
-        searchString : str
+        search : str
             If None, download the full file. Else, use regex to subset
             the file by specific variables and levels.
             Read more in the user guide:
-            https://herbie.readthedocs.io/en/latest/user_guide/searchString.html
+            https://herbie.readthedocs.io/en/latest/user_guide/tutorial/search.html
         source : {'nomads', 'aws', 'google', 'azure', 'pando', 'pando2'}
             If None, download GRIB2 file from self.grib2 which is
             the first location the GRIB2 file was found from the
@@ -842,7 +869,7 @@ class Herbie:
         overwrite : bool
             If True, overwrite existing files. Default will skip
             downloading if the full file exists. Not applicable when
-            when searchString is not None because file subsets might
+            when search is not None because file subsets might
             be unique.
         errors : {'warn', 'raise'}
             When an error occurs, send a warning or raise a value error.
@@ -867,10 +894,8 @@ class Herbie:
                     end="",
                 )
 
-        def subset(searchString, outFile):
-            """
-            Download a subset specified by the regex searchString
-            """
+        def subset(search, outFile):
+            """Download a subset specified by the regex search."""
             # TODO: Maybe optimize downloading multiple subsets with MultiThreading
 
             # TODO An alternative to downloadling subset with curl is
@@ -888,47 +913,64 @@ class Herbie:
                     f'📇 Download subset: {self.__repr__()}{" ":60s}\n cURL from {grib_source}'
                 )
 
+            # -----------------------------------------------------
             # Download subsets of the file by byte range with cURL.
-            # > Instead of using a single curl command for each row,
-            # > group adjacent messages in the same curl command.
+            #  Instead of using a single curl command for each row,
+            #  group adjacent messages in the same curl command.
 
             # Find index groupings
-            # TODO: Improve this for readability
-            # https://stackoverflow.com/a/32199363/2383070
-            idx_df = self.inventory(searchString)
-            li = idx_df.index
-            inds = (
-                [0]
-                + [ind for ind, (i, j) in enumerate(zip(li, li[1:]), 1) if j - i > 1]
-                + [len(li) + 1]
-            )
-            curl_groups = [li[i:j] for i, j in zip(inds, inds[1:])]
+            idx_df = self.inventory(search).copy()
+            if verbose:
+                print(
+                    f"Found {ANSI.bold}{ANSI.green}{len(idx_df)}{ANSI.reset} grib messages."
+                )
+            idx_df["download_groups"] = idx_df.grib_message.diff().ne(1).cumsum()
 
-            curl_ranges = []
-            group_dfs = []
-            for i, group in enumerate(curl_groups):
-                _df = idx_df.loc[group]
-                curl_ranges.append(f"{_df.iloc[0].start_byte}-{_df.iloc[-1].end_byte}")
-                group_dfs.append(_df)
-
-            for i, (range, _df) in enumerate(zip(curl_ranges, group_dfs)):
+            # cURL subsets of each group
+            for i, curl_group in idx_df.groupby("download_groups"):
                 if verbose:
-                    for i, row in _df.iterrows():
+                    print(f"Download subset group {i}")
+
+                if verbose:
+                    for _, row in curl_group.iterrows():
                         print(
                             f"  {row.grib_message:<3g} {ANSI.orange}{row.search_this}{ANSI.reset}"
                         )
 
-                if i == 0:
+                range = f"{curl_group.start_byte.min():.0f}-{curl_group.end_byte.max():.0f}".replace(
+                    "nan", ""
+                )
+
+                if curl_group.end_byte.max() - curl_group.start_byte.min() < 0:
+                    # The byte range for GRIB submessages (like in the
+                    # RAP model's UGRD/VGRD) need to be handled differently.
+                    # See https://github.com/blaylockbk/Herbie/issues/259
+                    if verbose:
+                        print(f"  ERROR: Invalid cURL range {range}; Skip message.")
+                    continue
+
+                if i == 1:
                     # If we are working on the first item, overwrite the existing file...
                     curl = f'''curl -s --range {range} "{grib_source}" > "{outFile}"'''
                 else:
                     # ...all other messages are appended to the subset file.
                     curl = f'''curl -s --range {range} "{grib_source}" >> "{outFile}"'''
-                print(curl)
+
+                if verbose:
+                    print(curl)
                 os.system(curl)
 
             if verbose:
                 print(f"💾 Saved the subset to {outFile}")
+
+        # TODO: Remove this eventually
+        if searchString is not None:
+            warnings.warn(
+                "The argument `searchString` was renamed `search`. Please update your scripts.",
+                DeprecationWarning,
+                stacklevel=2,
+            )
+            search = searchString
 
         # This overrides the save_dir specified in __init__
         if save_dir is not None:
@@ -939,7 +981,7 @@ class Herbie:
 
         # If the file exists in the localPath and we don't want to
         # overwrite, then we don't need to download it.
-        outFile = self.get_localFilePath(searchString=searchString)
+        outFile = self.get_localFilePath(search)
 
         if save_dir is not None:
             # Looks like the save_dir was changed.
@@ -977,7 +1019,7 @@ class Herbie:
                 return  # Can't download anything without a GRIB file URL.
             elif errors == "raise":
                 raise ValueError(msg)
-        if self.idx is None and searchString is not None:
+        if self.idx is None and search is not None:
             msg = f"🦨 Index file not found; cannot download subset: {self.model=} {self.date=} {self.fxx=}"
             if errors == "warn":
                 log.warning(
@@ -995,46 +1037,61 @@ class Herbie:
             outFile.parent.mkdir(parents=True, exist_ok=True)
             print(f"👨🏻‍🏭 Created directory: [{outFile.parent}]")
 
-        if searchString in [None, ":"] or self.idx is None:
+        # ===============
+        # Do the Download
+        # ===============
+        if search in [None, ":"] or self.idx is None:
             # Download the full file from remote source
             urllib.request.urlretrieve(self.grib, outFile, _reporthook)
+
+            original_source = self.grib
 
             self.grib = outFile
             # self.grib_source = "local"  # ?? Why did I turn this off?
 
             if verbose:
                 print(
-                    f"✅ Success! Downloaded {self.model.upper()} from \033[38;5;202m{self.grib_source:20s}\033[0m\n\tsrc: {self.grib}\n\tdst: {outFile}"
+                    f"✅ Success! Downloaded {self.model.upper()} from \033[38;5;202m{self.grib_source:20s}\033[0m\n\tsrc: {original_source}\n\tdst: {outFile}"
                 )
 
         else:
             # Download a subset of the file
-            subset(searchString, outFile)
+            subset(search, outFile)
 
         return outFile
 
     def xarray(
         self,
+        search: Optional[str] = None,
+        *,
         searchString=None,
-        backend_kwargs={},
-        remove_grib=True,
+        backend_kwargs: dict = {},
+        remove_grib: bool = True,
         **download_kwargs,
-    ):
+    ) -> xr.Dataset:
         """
-        Open GRIB2 data as xarray DataSet
+        Open GRIB2 data as xarray DataSet.
 
         Parameters
         ----------
-        searchString : str
+        search : str
             Variables to read into xarray Dataset
         remove_grib : bool
             If True, grib file will be removed ONLY IF it didn't exist
             before we downloaded it.
         """
+        # TODO: Remove this eventually
+        if searchString is not None:
+            warnings.warn(
+                "The argument `searchString` was renamed `search`. Please update your scripts.",
+                DeprecationWarning,
+                stacklevel=2,
+            )
+            search = searchString
 
         download_kwargs = {**dict(overwrite=False), **download_kwargs}
 
-        local_file = self.get_localFilePath(searchString=searchString)
+        local_file = self.get_localFilePath(search)
 
         if "save_dir" in download_kwargs:
             # Looks like the save_dir was changed.
@@ -1056,7 +1113,7 @@ class Herbie:
             remove_grib = False
         #! File can only be be removed if it is a subsetted file.
         #! (We don't want to remove full local files.)
-        if searchString is None and remove_grib:
+        if search is None and remove_grib:
             warnings.warn(
                 "Will not remove GRIB file because Herbie will only remove subsetted files (not full files)."
             )
@@ -1065,12 +1122,13 @@ class Herbie:
 
         # Download file if local file does not exists
         if not local_file.exists() or download_kwargs["overwrite"]:
-            self.download(searchString=searchString, **download_kwargs)
+            self.download(search=search, **download_kwargs)
 
         # Backend kwargs for cfgrib
         backend_kwargs.setdefault("indexpath", "")
         backend_kwargs.setdefault(
-            "read_keys", ["parameterName", "parameterUnits", "stepRange"]
+            "read_keys",
+            ["parameterName", "parameterUnits", "stepRange", "uvRelativeToGrid"],
         )
         backend_kwargs.setdefault("errors", "raise")
 
@@ -1101,27 +1159,25 @@ class Herbie:
             # Add some details
             # ----------------
             # Note: all attributes should still work with the `ds.to_netcdf()` method.
-            ds.attrs["model"] = self.model
-            ds.attrs["product"] = self.product
+            ds.attrs["model"] = str(self.model)
+            ds.attrs["product"] = str(self.product)
             ds.attrs["description"] = self.DESCRIPTION
-            ds.attrs["remote_grib"] = self.grib
+            ds.attrs["remote_grib"] = str(self.grib)
             ds.attrs["local_grib"] = str(local_file)
-            ds.attrs["searchString"] = searchString
+            ds.attrs["search"] = str(search)
 
             # ----------------------
             # Attach CF grid mapping
             # ----------------------
             # http://cfconventions.org/Data/cf-conventions/cf-conventions-1.8/cf-conventions.html#appendix-grid-mappings
-            ds["gribfile_projection"] = None
-            ds["gribfile_projection"].attrs = cf_params
-            ds["gribfile_projection"].attrs[
-                "long_name"
-            ] = f"{self.model.upper()} model grid projection"
+            ds.coords["gribfile_projection"] = None
+            ds.coords["gribfile_projection"].attrs = cf_params
+            ds.coords["gribfile_projection"].attrs["long_name"] = (
+                f"{self.model.upper()} model grid projection"
+            )
 
             # Assign this grid_mapping for all variables
             for var in list(ds):
-                if var == "gribfile_projection":
-                    continue
                 ds[var].attrs["grid_mapping"] = "gribfile_projection"
 
         if remove_grib:
@@ -1139,15 +1195,15 @@ class Herbie:
                 data_vars = set(itertools.chain(*[list(i) for i in Hxr]))
                 data_vars.remove("gribfile_projection")
                 Hxr = xr.concat(Hxr, dim="step", data_vars=data_vars)
-            except:
-                print(
-                    f"Note: Returning a list of [{len(Hxr)}] xarray.Datasets because cfgrib opened with multiple hypercubes."
-                )
+            except Exception:
+                if self.verbose:
+                    print(
+                        f"Note: Returning a list of [{len(Hxr)}] xarray.Datasets because cfgrib opened with multiple hypercubes."
+                    )
             return Hxr
 
-    # Shortcut Methods below
-    def terrain(self, water_masked=True):
-        """Return model terrain as an xarray.Dataset"""
+    def terrain(self, water_masked: bool = True) -> xr.Dataset:
+        """Shortcut method to return model terrain as an xarray.Dataset."""
         ds = self.xarray(":(?:HGT|LAND):surface")
         if water_masked:
             ds["orog"] = ds.orog.where(ds.lsm > 0)

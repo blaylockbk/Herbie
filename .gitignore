@@ -7,6 +7,8 @@ env_pypi.yml
 condaenv*
 .venv*
 
+.DS_Store
+
 .pytest_cache/
 
 *.idx
@@ -30,8 +32,14 @@ MANIFEST
 *.so
 .eggs/
 *.h5
-$TMPDIR/
+
 
 $TMPDIR/
+Herbie-Tests-Data/
+data/
 
 herbie/_version.py
+
+
+*.pkl
+.coverage

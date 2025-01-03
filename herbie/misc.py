@@ -18,17 +18,15 @@
   ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██
 """
 
-from herbie import Path
-
 
 class hc:
     """Herbie Color Pallette"""
 
-    tan = "#f0ead2"
     red = "#88211b"
     blue = "#0c3576"
+    tan = "#f0ead2"
     white = "#ffffff"
-    black = "#000000"
+    black = "#111111"
 
 
 class ANSI:
@@ -44,7 +42,7 @@ class ANSI:
     # Octal: \033
     # Unicode: \u001b
     # Hexadecimal: \x1B
-    ESC = "\x1B"
+    ESC = "\x1b"
 
     # Style
     bold = f"{ESC}[1m"
@@ -85,15 +83,14 @@ class ANSI:
 
 
 def rich_herbie():
-    """
-    Returns "▌▌Herbie" with rich colors (if rich is installed).
-    """
+    """Return "▌▌Herbie" with rich colors (if rich is installed)."""
     return f"[on {hc.tan}][{hc.red} on {hc.white}]▌[/][{hc.blue}]▌[/][bold {hc.black}]Herbie[/][/]"
 
 
 def print_rich(H):
     """
-    Print "rich" display console
+    Print "rich" display console.
+
     TODO: How do I get the __repr__ to do this?
 
     eh, just use my own ANSI class for text coloring.
@@ -112,7 +109,7 @@ def print_rich(H):
             f"[rgb(41, 130, 13)]F{H.fxx:02d}[/] "
             f"┊ [#ff9900 italic]source={H.grib_source}[/]"
         )
-    except:
+    except (ImportError, ModuleNotFoundError):
         print("rich is not working/installed")
 
 
@@ -121,9 +118,13 @@ def print_rich(H):
 
 def HerbieLogo(white_line=False):
     """Logo of Herbie The Love Bug"""
-    import matplotlib.patheffects as path_effects
-    import matplotlib.pyplot as plt
-
+    try:
+        import matplotlib.pyplot as plt
+    except ModuleNotFoundError:
+        raise ModuleNotFoundError(
+            "matplotlib is an 'extra' requirement, please use "
+            "`pip install 'herbie-data[extras]'` for the full functionality."
+        )
     plt.figure(figsize=[5, 5], facecolor=hc.tan)
 
     plt.axis([-10, 10, -10, 10])
@@ -162,7 +163,7 @@ def HerbieLogo(white_line=False):
 
 def HerbieLogo2(white_line=False, text_color="tan", text_stroke="black"):
     """
-    Herbie logo (main)
+    Herbie logo (main).
 
     >>> ax = HerbieLogo2()
     >>> plt.savefig('Herbie.svg', bbox_inches="tight")
@@ -173,9 +174,14 @@ def HerbieLogo2(white_line=False, text_color="tan", text_stroke="black"):
     >>> ax = HerbieLogo2(text_color='tan')
     >>> plt.savefig('Herbie_transparent_tan.svg', bbox_inches="tight", transparent=True)
     """
-    import matplotlib.patheffects as path_effects
-    import matplotlib.pyplot as plt
-
+    try:
+        import matplotlib.pyplot as plt
+        import matplotlib.patheffects as path_effects
+    except ModuleNotFoundError:
+        raise ModuleNotFoundError(
+            "matplotlib is an 'extra' requirement, please use "
+            "`pip install 'herbie-data[extras]'` for the full functionality."
+        )
     plt.figure(figsize=[5, 3], facecolor=hc.tan)
 
     plt.axis([1.5, 20, -10, 10])

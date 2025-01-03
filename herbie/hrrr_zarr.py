@@ -10,9 +10,8 @@ The directory structure is very different from the GRIB2 format.
 - https://mesowest.utah.edu/html/hrrr/zarr_documentation/html/xarray_one_day_analysis_example.html
 - https://github.com/ProjectPythia/intake-cookbook/tree/main/notebooks
 """
-import datetime
 
-import cartopy.crs as ccrs
+import datetime
 import pandas as pd
 import s3fs
 import xarray as xr
@@ -25,6 +24,14 @@ def load_dataset(urls):
     and latitude/longitude. We also promote the "time" attribute to a coordinate
     so that combining the datasets for each hour will work later on.
     """
+    try:
+        import cartopy.crs as ccrs
+    except ModuleNotFoundError:
+        raise ModuleNotFoundError(
+            "cartopy is an 'extra' requirement, please use "
+            "`pip install 'herbie-data[extras]'` for the full functionality."
+    )
+
     projection = ccrs.LambertConformal(
         central_longitude=262.5,
         central_latitude=38.5,

@@ -6,24 +6,21 @@
 Herbie Tools
 ============
 """
-from datetime import datetime, timedelta
 
 import logging
-import cartopy.crs as ccrs
-import metpy  # accessor needed to parse crs
-import numpy as np
+from concurrent.futures import ThreadPoolExecutor, as_completed
+from datetime import datetime
+from typing import Union, Optional
+from pathlib import Path
+
 import pandas as pd
 import xarray as xr
 
-from herbie.core import Herbie, wgrib2_idx
-from . import Path
-
-# Multithreading :)
-from concurrent.futures import ThreadPoolExecutor
-from concurrent.futures import as_completed, wait
+from herbie.core import Herbie
 
 log = logging.getLogger(__name__)
 
+Datetime = Union[datetime, pd.Timestamp, str]
 
 """
 🧵🤹🏻‍♂️ Notice! Multithreading and Multiprocessing is use
@@ -35,8 +32,8 @@ GRIB2 file exists on the internet) and to download a file.
 """
 
 
-def _validate_fxx(fxx):
-    """Fast Herbie requires fxx as a list-like"""
+def _validate_fxx(fxx: Union[int, Union[list[int], range]]) -> Union[list[int], range]:
+    """Fast Herbie requires fxx as a list-like."""
     if isinstance(fxx, int):
         fxx = [fxx]
 
@@ -46,8 +43,8 @@ def _validate_fxx(fxx):
     return fxx
 
 
-def _validate_DATES(DATES):
-    """Fast Herbie requires DATES as a list-like"""
+def _validate_DATES(DATES: Union[Datetime, list[Datetime]]) -> list[Datetime]:
+    """Fast Herbie requires DATES as a list-like."""
     if isinstance(DATES, str):
         DATES = [pd.to_datetime(DATES)]
     elif not hasattr(DATES, "__len__"):
@@ -61,7 +58,7 @@ def _validate_DATES(DATES):
     return DATES
 
 
-def Herbie_latest(n=6, freq="1H", **kwargs):
+def Herbie_latest(n: int = 6, freq: str = "1h", **kwargs) -> Herbie:
     """Search for the most recent GRIB2 file (using multithreading).
 
     Parameters
@@ -90,7 +87,16 @@ def Herbie_latest(n=6, freq="1H", **kwargs):
 
 
 class FastHerbie:
-    def __init__(self, DATES, fxx=[0], *, max_threads=50, **kwargs):
+    """Create many Herbie objects quickly."""
+
+    def __init__(
+        self,
+        DATES: Union[Datetime, list[Datetime]],
+        fxx: Union[int, list[int]] = [0],
+        *,
+        max_threads: int = 50,
+        **kwargs,
+    ):
         """Create many Herbie objects with methods to download or read with xarray.
 
         Uses multithreading.
@@ -161,10 +167,11 @@ class FastHerbie:
                 f"Could not find {len(self.file_not_exists)}/{len(self.file_exists)} GRIB files."
             )
 
-    def __len__(self):
+    def __len__(self) -> int:
+        """Return the number of Herbie objects."""
         return len(self.objects)
 
-    def df(self):
+    def df(self) -> pd.DataFrame:
         """Organize Herbie objects into a DataFrame.
 
         #? Why is this inefficient? Takes several seconds to display because the __str__ does a lot.
@@ -177,28 +184,30 @@ class FastHerbie:
             ds_list, index=self.DATES, columns=[f"F{i:02d}" for i in self.fxx]
         )
 
-    def inventory(self, searchString=None):
+    def inventory(self, search: Optional[str] = None):
         """Get combined inventory DataFrame.
 
-        Useful for data discovery and checking your searchString before
+        Useful for data discovery and checking your search before
         doing a download.
         """
         # NOTE: In my quick test, you don't gain much speed using multithreading here.
         dfs = []
         for i in self.file_exists:
-            df = i.inventory(searchString)
+            df = i.inventory(search)
             df = df.assign(FILE=i.grib)
             dfs.append(df)
         return pd.concat(dfs, ignore_index=True)
 
-    def download(self, searchString=None, *, max_threads=20, **download_kwargs):
-        r"""Download many Herbie objects
+    def download(
+        self, search: Optional[str] = None, *, max_threads: int = 20, **download_kwargs
+    ) -> list[Path]:
+        r"""Download many Herbie objects.
 
         Uses multithreading.
 
         Parameters
         ----------
-        searchString : string
+        search : string
             Regular expression string to specify which GRIB messages to
             download.
         **download_kwargs :
@@ -221,7 +230,7 @@ class FastHerbie:
         outFiles = []
         with ThreadPoolExecutor(threads) as exe:
             futures = [
-                exe.submit(H.download, searchString, **download_kwargs)
+                exe.submit(H.download, search, **download_kwargs)
                 for H in self.file_exists
             ]
 
@@ -236,12 +245,12 @@ class FastHerbie:
 
     def xarray(
         self,
-        searchString,
+        search: Optional[str],
         *,
-        max_threads=None,
+        max_threads: Optional[int] = None,
         **xarray_kwargs,
-    ):
-        """Read many Herbie objects into an xarray Dataset
+    ) -> xr.Dataset:
+        """Read many Herbie objects into an xarray Dataset.
 
         # TODO: Sometimes the Jupyter Cell always crashes when I run this.
         # TODO: "fatal flex scanner internal error--end of buffer missed"
@@ -264,7 +273,7 @@ class FastHerbie:
             - 10 threads took 39 s
             - 50 threads took 37 s
         """
-        xarray_kwargs = dict(searchString=searchString, **xarray_kwargs)
+        xarray_kwargs = dict(search=search, **xarray_kwargs)
 
         # NOTE: Multiprocessing does not seem to work because it looks
         # NOTE: like xarray objects are not pickleable.
@@ -307,14 +316,13 @@ class FastHerbie:
                 concat_dim=["time", "step"],
                 combine_attrs="drop_conflicts",
             )
-        except:
+        except Exception:
             # TODO: I'm not sure why some cases doesn't like the combine_attrs argument
             ds = xr.combine_nested(
                 ds_list,
                 concat_dim=["time", "step"],
             )
 
-        ds["gribfile_projection"] = ds.gribfile_projection[0][0]
         ds = ds.squeeze()
 
         return ds

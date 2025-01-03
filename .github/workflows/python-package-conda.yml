@@ -1,5 +1,8 @@
 name: Python Package using Conda
 
+# THIS WORKFLOW IS NOT USED BECAUSE IT TAKES TOO LONG
+# FOR CONDA TO CREATE THE ENVIRONMENT.
+
 on:
   #push:
   #  branches: [master]
@@ -12,12 +15,12 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ["3.8", "3.9", "3.10"]
+        python-version: ["3.9", "3.10", "3.11", "3.12"]
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v3
+        uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
       - name: Add conda to system path
@@ -26,7 +29,7 @@ jobs:
           echo $CONDA/bin >> $GITHUB_PATH
       - name: Install dependencies
         run: |
-          conda env update --file ci/environment.yml --name base
+          conda env update --file ci/environment.yml --name base --solver classic
       - name: Lint with flake8
         run: |
           conda install flake8

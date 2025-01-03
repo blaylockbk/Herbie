@@ -14,23 +14,25 @@
 Herbie: Retrieve NWP Model Data
 ===============================
 
-**Herbie** is a python package that downloads recent and archived numerical weather prediction (NWP) model output from different cloud archive sources. **Its most popular capability is to download HRRR model data.** NWP data in the GRIB2 format can be read with xarray+cfgrib.
+**Herbie** is a python package that downloads recent and archived numerical weather prediction (NWP) model output from different cloud archive sources. NWP data is distributed in GRIB2 format and can be read with xarray+cfgrib.
 
 Some models Herbie can retrieve data from include:
 
 - High-Resolution Rapid Refresh (HRRR)
 - Rapid Refresh (RAP)
 - Global Forecast System (GFS)
+- ECMWF open data forecast products (ECMWF (IFS and AIFS))
 - National Blend of Models (NBM)
 - Rapid Refresh Forecast System - Prototype (RRFS)
-- ECMWF open data forecast products (ECMWF)
-- Real-Time/Un-Restricted Mesoscale Analysis (RTMA/URMA)
-- and others.
+- Real-Time/Un-Restricted Mesoscale Analysis (RTMA and URMA)
+- and many others (see :ref:`Gallery`)
 
 .. toctree::
    :maxdepth: 1
 
    /user_guide/index
+   /gallery/index
+   /grib_reference/index
    /api_reference/index
 
 .. TODO: I'd like to have the cards here instead of the toctree, but the toctree is needed to show the links in the top banner.
@@ -65,15 +67,41 @@ Herbie helps you discover and use data from many different numerical weather mod
    :class: img-fluid
    :width: 66%
 
-Specifically, Herbie can
+Specifically, Herbie can do the following:
 
 - Locate GRIB2 files in the cloud.
-- Explore the content of those files.
+- Show the content of those files.
 - Download data to your computer.
 - Download *subsets*  of the data.
 - Read the data with xarray.
-- Accessors to help with plotting.
-- Accessors for extracting data.
+- Help you use the data with xarray accessors (see :ref:`🗃️ Xarray Accessors`)
 
-More details at :ref:`👨🏻‍💻 Tutorials` in the User Guide.
+Using Herbie looks something like this...
+
+.. code-block:: python
+
+   from herbie import Herbie
+
+   # Create Herbie object for the HRRR model 6-hr surface forecast product
+   H = Herbie(
+     '2021-01-01 12:00',
+     model='hrrr',
+     product='sfc',
+     fxx=6
+   )
+
+   # Look at the GRIB2 file contents
+   H.inventory()
+
+   # Download the full GRIB2 file
+   H.download()
+
+   # Download a subset of the file, like all fields at 500 mb
+   H.download(":500 mb")
+
+   # Read a subset of the file with xarray, like 2-m temperature.
+   H.xarray("TMP:2 m")
+
+
+More details in the :ref:`User Guide`.
 

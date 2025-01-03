@@ -1,1 +1,2 @@
-pytest<8
+pytest
+pytest-cov

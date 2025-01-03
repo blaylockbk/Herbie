@@ -1,5 +1,8 @@
 :orphan:
 
 404: Page Not Found
+^^^^^^^^^^^^^^^^^^^
 
-[Back to Herbie docs](https://herbie.readthedocs.io/)
+Back to Herbie docs: https://herbie.readthedocs.io/
+
+.. image:: _static/empty.png

@@ -6,6 +6,7 @@
         "ms-python.vscode-pylance",
         "ms-toolsai.jupyter",
         "bungcip.better-toml",
-        "bierner.markdown-mermaid"
+        "bierner.markdown-mermaid",
+        "charliermarsh.ruff"
     ]
 }

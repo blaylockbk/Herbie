@@ -1,15 +1,22 @@
 ## Added by Brian Blaylock
 ## March 11, 2022
 
-"""
-A Herbie template for the GEFS (2017-Present) and GEFS Reforecast (2000-2019)
-GRIB2 products.
+"""A Herbie template for the GEFS (2017-Present) and GEFS Re-forecast (2000-2019) GRIB2 products."""
 
-
-"""
+from datetime import datetime
 
 
 class gefs:
+    """Global Ensemble Forecast System (GEFS).
+
+    Notes
+    -----
+    The NODD program provides GEFS data on all major cloud partners
+    - aws: Archive begins 2017-01-01
+    - google: Archive begins 2021-01-01
+    - azure: Last 30 days?
+    """
+
     def template(self):
         self.DESCRIPTION = "Global Ensemble Forecast System (GEFS)"
         self.DETAILS = {
@@ -47,18 +54,32 @@ class gefs:
             self.member = f"p{self.member:02d}"
 
         filedir = f"gefs.{self.date:%Y%m%d/%H}"
-        filepaths = {
-            "atmos.5": f"{filedir}/atmos/pgrb2ap5/ge{self.member}.t{self.date:%H}z.pgrb2a.0p50.f{self.fxx:03d}",
-            "atmos.5b": f"{filedir}/atmos/pgrb2bp5/ge{self.member}.t{self.date:%H}z.pgrb2b.0p50.f{self.fxx:03d}",
-            "atmos.25": f"{filedir}/atmos/pgrb2sp25/ge{self.member}.t{self.date:%H}z.pgrb2s.0p25.f{self.fxx:03d}",
-            "wave": f"{filedir}/wave/gridded/gefs.wave.t{self.date:%H}z.{self.member}.global.0p25.f{self.fxx:03d}.grib2",
-            "chem.5": f"{filedir}/chem/pgrb2ap25/gefs.chem.t{self.date:%H}z.a2d_0p25.f{self.fxx:03d}.grib2",
-            "chem.25": f"{filedir}/chem/pgrb2ap25/gefs.chem.t{self.date:%H}z.a2d_0p25.f{self.fxx:03d}.grib2",
-        }
+
+        if self.date < datetime(2018, 7, 27):
+            filepaths = {
+                "atmos.5": f"{filedir}/ge{self.member}.t{self.date:%H}z.pgrb2af{self.fxx:03d}",
+                "atmos.5b": f"{filedir}/ge{self.member}.t{self.date:%H}z.pgrb2bf{self.fxx:03d}",
+            }
+        elif self.date < datetime(2020, 9, 23):
+            # Update to GEFS system to put data in directories. Change in form for lead time to fxx.
+            filepaths = {
+                "atmos.5": f"{filedir}/pgrb2a/ge{self.member}.t{self.date:%H}z.pgrb2af{self.fxx:02d}",
+                "atmos.5b": f"{filedir}/pgrb2b/ge{self.member}.t{self.date:%H}z.pgrb2bf{self.fxx:02d}",
+            }
+        else:
+            # Update to GEFS system with wave and chem products. Change in form for lead time to fxxx.
+            filepaths = {
+                "atmos.5": f"{filedir}/atmos/pgrb2ap5/ge{self.member}.t{self.date:%H}z.pgrb2a.0p50.f{self.fxx:03d}",
+                "atmos.5b": f"{filedir}/atmos/pgrb2bp5/ge{self.member}.t{self.date:%H}z.pgrb2b.0p50.f{self.fxx:03d}",
+                "atmos.25": f"{filedir}/atmos/pgrb2sp25/ge{self.member}.t{self.date:%H}z.pgrb2s.0p25.f{self.fxx:03d}",
+                "wave": f"{filedir}/wave/gridded/gefs.wave.t{self.date:%H}z.{self.member}.global.0p25.f{self.fxx:03d}.grib2",
+                "chem.5": f"{filedir}/chem/pgrb2ap25/gefs.chem.t{self.date:%H}z.a2d_0p25.f{self.fxx:03d}.grib2",
+                "chem.25": f"{filedir}/chem/pgrb2ap25/gefs.chem.t{self.date:%H}z.a2d_0p25.f{self.fxx:03d}.grib2",
+            }
 
         valid_members = {
             "atmos.5": [f"p{i:02d}" for i in range(1, 31)] + ["c00", "spr", "avg"],
-            "atmos.5b": [f"p{i:02d}" for i in range(1, 31)],
+            "atmos.5b": [f"p{i:02d}" for i in range(1, 31)] + ["c00"],
             "atmos.25": [f"p{i:02d}" for i in range(1, 31)] + ["c00", "spr", "avg"],
             "wave": [f"p{i:02d}" for i in range(1, 31)] + ["spread", "mean", "prob"],
             "chem.5": None,
@@ -80,6 +101,8 @@ class gefs:
         self.SOURCES = {
             "aws": f"https://noaa-gefs-pds.s3.amazonaws.com/{filepath}",
             "nomads": f"https://nomads.ncep.noaa.gov/pub/data/nccf/com/gens/prod/{filepath}",
+            "google": f"https://storage.googleapis.com/gfs-ensemble-forecast-system/{filepath}",
+            "azure": f"https://noaagefs.blob.core.windows.net/gefs/{filepath}",
         }
 
         self.IDX_SUFFIX = [".idx", ".grb2.idx", ".grib2.idx"]
@@ -87,7 +110,7 @@ class gefs:
 
 
 class gefs_reforecast:
-    """Template for GEFS Reforecast data
+    """Template for GEFS Re-forecast data.
 
     These grib files are organized different from other model types.
     The files are grouped into variables and clumped by forecast range.
@@ -95,7 +118,7 @@ class gefs_reforecast:
     a file has one variable for many lead times. This changes the way
     a user would use Herbie to access GEFS data. A user will need to supply
     the "variable". For getting specific grib messages, you will use the
-    "searchString" argument to key in on the variable of interest. However,
+    "search" argument to key in on the variable of interest. However,
     you will still need to give a value for "fxx" to tell Herbie which
     directory to look for. Yeah, it's a little different paradigm for Herbie,
     but we can work with it.
@@ -122,7 +145,7 @@ class gefs_reforecast:
         # - Members 1-4 are the perturbation members
         if self.member == 0:
             member = f"c{self.member:02d}"
-        elif self.member > 5:
+        elif self.member > 0 and self.member < 5:
             member = f"p{self.member:02d}"
         else:
             raise ValueError("GEFS 'member' must be one of {0,1,2,3,4}.")

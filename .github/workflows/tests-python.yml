@@ -2,9 +2,9 @@ name: Tests (Python)
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
-    branches: [ main ]
+    branches: [main]
 
   # Allow job to be triggered manually.
   workflow_dispatch:
@@ -21,14 +21,15 @@ jobs:
       fail-fast: true
       matrix:
         os: ["ubuntu-latest"]
-        python-version: ["3.9", "3.10", "3.11"]
+        python-version: ["3.9", "3.10", "3.11", "3.12"]
         # In order to save resources, only run particular
         # matrix slots on other OS than Linux.
         include:
           - os: "macos-latest"
-            python-version: "3.11"
+            python-version: "3.12"
+          # TODO: Building on Windows fails because it fails to install pygrib; eccodes not found. Must use conda env.
           #- os: "windows-latest"
-          #  python-version: "3.11"
+          #  python-version: "3.12"
 
     env:
       OS: ${{ matrix.os }}
@@ -40,37 +41,54 @@ jobs:
 
     name: Python ${{ matrix.python-version }} on OS ${{ matrix.os }}
     steps:
+      - name: Acquire sources
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
 
-    - name: Acquire sources
-      uses: actions/checkout@v3
-      with:
-        fetch-depth: 2
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          architecture: x64
+          cache: "pip"
+          cache-dependency-path: "setup.cfg"
 
-    - name: Setup Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: ${{ matrix.python-version }}
-        architecture: x64
-        cache: 'pip'
-        cache-dependency-path: 'setup.cfg'
+      - name: Install prerequisites (Linux)
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt -y install libgeos-dev libeccodes-dev
 
-    - name: Install prerequisites (Linux)
-      if: runner.os == 'Linux'
-      run: |
-        sudo apt -y install libgeos-dev libeccodes-dev
+      - name: Install prerequisites (macOS)
+        if: runner.os == 'macOS'
+        run: |
+          brew install pkg-config geos eccodes
 
-    - name: Install prerequisites (macOS)
-      if: runner.os == 'macOS'
-      run: |
-        brew install pkg-config geos eccodes
+      - name: Install prerequisites (Windows)
+        if: runner.os == 'windows'
+        run: |
+          echo "Does anything need to be installed?"
 
-    - name: Install project
-      run: |
-        pip3 install --requirement=requirements-test.txt
-        pip3 install --editable=.
+      - name: Install project (Linux)
+        if: runner.os == 'Linux'
+        run: |
+          pip3 install --requirement=requirements-test.txt
+          pip3 install --editable='.[extras]'
 
-    - name: Run tests
-      env:
-        TMPDIR: ${{ runner.temp }}
-      run: |
-        pytest
+      - name: Install project (macOS)
+        if: runner.os == 'macOS'
+        run: |
+          pip3 install --break-system-packages --requirement=requirements-test.txt
+          pip3 install --break-system-packages --editable='.[extras]'
+
+      - name: Install project (Windows)
+        if: runner.os == 'Windows'
+        run: |
+          pip3 install --requirement=requirements-test.txt
+          pip3 install --editable='.[extras]'
+
+      - name: Run tests
+        env:
+          TMPDIR: ${{ runner.temp }}
+        run: |
+          pytest

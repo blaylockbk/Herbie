@@ -18,7 +18,9 @@ dependencies:
   - pandas
   - pygrib
   - pytest
+  - pytest-cov
   - requests
+  - scikit-learn
   - toml
   - xarray>=2022.6.0
 
