@@ -1,9 +1,11 @@
 ## Added by Brian Blaylock
 ## May 29, 2023
 
+"""A Herbie template for the CFS (Climate Forecast System).
+
+Details at https://cfs.ncep.noaa.gov/
 """
-A Herbie template for the CFS (Climate Forecast System).
-"""
+
 from pandas import to_datetime
 
 
@@ -14,6 +16,7 @@ class cfs_monthly:
             "NOMADS product description": "https://www.nco.ncep.noaa.gov/pmb/products/cfs/",
             "Amazon Open Data": "https://registry.opendata.aws/noaa-cfs/",
             "Microsoft Azure": "https://planetarycomputer.microsoft.com/dataset/storage/noaa-cfs",
+            "NCEI": "https://www.ncei.noaa.gov/products/weather-climate-models/climate-forecast-system",
         }
         self.PRODUCTS = {
             "flxf": "CFS Surface, Radiative Fluxes",
@@ -46,14 +49,14 @@ class cfs_monthly:
 
         if self.hour is None:
             # Daily average
-            PATH = f"/cfs.{self.date:%Y%m%d/%H}/monthly_grib_{self.member:02d}/{self.product}.{self.member:02d}.{self.date:%Y%m%d%H}.{self.YYYYMM}.avrg.grib.grb2"
+            post_root = f"cfs.{self.date:%Y%m%d/%H}/monthly_grib_{self.member:02d}/{self.product}.{self.member:02d}.{self.date:%Y%m%d%H}.{self.YYYYMM}.avrg.grib.grb2"
         else:
-            PATH = f"/cfs.{self.date:%Y%m%d/%H}/monthly_grib_{self.member:02d}/{self.product}.{self.member:02d}.{self.date:%Y%m%d%H}.{self.YYYYMM}.avrg.grib.{self.hour:02d}Z.grb2"
+            post_root = f"cfs.{self.date:%Y%m%d/%H}/monthly_grib_{self.member:02d}/{self.product}.{self.member:02d}.{self.date:%Y%m%d%H}.{self.YYYYMM}.avrg.grib.{self.hour:02d}Z.grb2"
 
         self.SOURCES = {
-            "aws": f"https://noaa-cfs-pds.s3.amazonaws.com/{PATH}",
-            "nomads": f"https://nomads.ncep.noaa.gov/pub/data/nccf/com/cfs/prod/{PATH}",
-            # "azure": f"https://noaacfs.blob.core.windows.net/cfs/{PATH}"
+            "aws": f"https://noaa-cfs-pds.s3.amazonaws.com/{post_root}",
+            "nomads": f"https://nomads.ncep.noaa.gov/pub/data/nccf/com/cfs/prod/{post_root}",
+            # "azure": f"https://noaacfs.blob.core.windows.net/cfs/{post_root}"
         }
 
         self.IDX_SUFFIX = [".grb2.idx", ".idx", ".grib.idx"]
@@ -90,12 +93,12 @@ class cfs_6_hourly:
                 "'forecast' is not defined. Please set `set` to the forecast datetime."
             )
 
-        PATH = f"/cfs.{self.date:%Y%m%d/%H}/6hrly_grib_{self.member:02d}/{self.product}{self.forecast:%Y%m%d%H}.{self.member:02d}.{self.date:%Y%m%d%H}.grb2"
+        post_root = f"cfs.{self.date:%Y%m%d/%H}/6hrly_grib_{self.member:02d}/{self.product}{self.forecast:%Y%m%d%H}.{self.member:02d}.{self.date:%Y%m%d%H}.grb2"
 
         self.SOURCES = {
-            "aws": f"https://noaa-cfs-pds.s3.amazonaws.com/{PATH}",
-            "nomads": f"https://nomads.ncep.noaa.gov/pub/data/nccf/com/cfs/prod/{PATH}",
-            # "azure": f"https://noaacfs.blob.core.windows.net/cfs/{PATH}"
+            "aws": f"https://noaa-cfs-pds.s3.amazonaws.com/{post_root}",
+            "nomads": f"https://nomads.ncep.noaa.gov/pub/data/nccf/com/cfs/prod/{post_root}",
+            # "azure": f"https://noaacfs.blob.core.windows.net/cfs/{post_root}"
         }
 
         self.IDX_SUFFIX = [".grb2.idx", ".idx", ".grib.idx"]
