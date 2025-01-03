@@ -8,9 +8,15 @@ Details at https://cfs.ncep.noaa.gov/
 
 from pandas import to_datetime
 
+import warnings
+
 
 class cfs_monthly:
     def template(self):
+        warnings.warn(
+            "Herbie's CFC monthly template is ALPHA and subject to major changes. PRs are welcome to improve it."
+        )
+
         self.DESCRIPTION = "Climate Forecast System; Monthly Means"
         self.DETAILS = {
             "NOMADS product description": "https://www.nco.ncep.noaa.gov/pmb/products/cfs/",
@@ -65,6 +71,9 @@ class cfs_monthly:
 
 class cfs_6_hourly:
     def template(self):
+        warnings.warn(
+            "Herbie's CFC 6-hourly template is ALPHA and subject to major changes. PRs are welcome to improve it."
+        )
         self.DESCRIPTION = "Climate Forecast System; 6 hourly"
         self.DETAILS = {
             "NOMADS product description": "https://www.nco.ncep.noaa.gov/pmb/products/cfs/",
