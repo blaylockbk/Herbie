@@ -6,112 +6,9 @@
 Details at https://cfs.ncep.noaa.gov/
 """
 
-from pandas import to_datetime
+from pandas import to_datetime, Timedelta
 
 import warnings
-
-
-class cfs_monthly:
-    def template(self):
-        warnings.warn(
-            "Herbie's CFS templates are and subject to major changes. PRs are welcome to improve it."
-        )
-
-        self.DESCRIPTION = "Climate Forecast System; Monthly Means"
-        self.DETAILS = {
-            "NOMADS product description": "https://www.nco.ncep.noaa.gov/pmb/products/cfs/",
-            "Amazon Open Data": "https://registry.opendata.aws/noaa-cfs/",
-            "Microsoft Azure": "https://planetarycomputer.microsoft.com/dataset/storage/noaa-cfs",
-            "NCEI": "https://www.ncei.noaa.gov/products/weather-climate-models/climate-forecast-system",
-        }
-        self.PRODUCTS = {
-            "flxf": "CFS Surface, Radiative Fluxes",
-            "pgbf": "CFS 3D Pressure Level, 1 degree resolution",
-            "ocnh": "CFS 3D Ocean Data, 0.5 degree resolution",
-            "ocnf": "CFS 3D Ocean Data, 1.0 degree resolution",
-            "ipvf": "CFS 3D Isentropitc Level, 1.0 degree resolution",
-        }
-
-        try:
-            self.member
-        except NameError:
-            print(
-                "'member' is not defined. Please set 'member=1` for monthly data for the 6, 12, and 18 UTC cycles, but may be 1, 2, 3, or 4 for the 0 UTC cycle."
-            )
-
-        try:
-            self.YYYYMM
-        except NameError:
-            print(
-                "'YYYYMM' is not defined. Please specify the 4-digit year and 2-digit month you want forcast data from."
-            )
-
-        try:
-            self.hour
-        except NameError:
-            print(
-                "'hour' is not defined. Please set `hour` to one of {0, 6, 12, 18} or set to None for daily average."
-            )
-
-        if self.hour is None:
-            # Daily average
-            post_root = f"cfs.{self.date:%Y%m%d/%H}/monthly_grib_{self.member:02d}/{self.product}.{self.member:02d}.{self.date:%Y%m%d%H}.{self.YYYYMM}.avrg.grib.grb2"
-        else:
-            post_root = f"cfs.{self.date:%Y%m%d/%H}/monthly_grib_{self.member:02d}/{self.product}.{self.member:02d}.{self.date:%Y%m%d%H}.{self.YYYYMM}.avrg.grib.{self.hour:02d}Z.grb2"
-
-        self.SOURCES = {
-            "aws": f"https://noaa-cfs-pds.s3.amazonaws.com/{post_root}",
-            "nomads": f"https://nomads.ncep.noaa.gov/pub/data/nccf/com/cfs/prod/{post_root}",
-            # "azure": f"https://noaacfs.blob.core.windows.net/cfs/{post_root}"
-        }
-
-        self.IDX_SUFFIX = [".grb2.idx", ".idx", ".grib.idx"]
-        self.LOCALFILE = f"{self.get_remoteFileName}"
-
-
-class cfs_6_hourly:
-    def template(self):
-        warnings.warn(
-            "Herbie's CFS templates are and subject to major changes. PRs are welcome to improve it."
-        )
-        self.DESCRIPTION = "Climate Forecast System; 6 hourly"
-        self.DETAILS = {
-            "NOMADS product description": "https://www.nco.ncep.noaa.gov/pmb/products/cfs/",
-            "Amazon Open Data": "https://registry.opendata.aws/noaa-cfs/",
-            "Microsoft Azure": "https://planetarycomputer.microsoft.com/dataset/storage/noaa-cfs",
-        }
-        self.PRODUCTS = {
-            "flxf": "CFS Surface, Radiative Fluxes",
-            "pgbf": "CFS 3D Pressure Level, 1 degree resolution",
-            "ocnh": "CFS 3D Ocean Data, 0.5 degree resolution",
-            "ocnf": "CFS 3D Ocean Data, 1.0 degree resolution",
-            "ipvf": "CFS 3D Isentropitc Level, 1.0 degree resolution",
-        }
-
-        try:
-            self.member
-        except NameError:
-            print(
-                "'member' is not defined. Please set 'member=1` for monthly data for the 6, 12, and 18 UTC cycles, but may be 1, 2, 3, or 4 for the 0 UTC cycle."
-            )
-
-        try:
-            self.forecast = to_datetime(self.forecast)
-        except NameError:
-            print(
-                "'forecast' is not defined. Please set `set` to the forecast datetime."
-            )
-
-        post_root = f"cfs.{self.date:%Y%m%d/%H}/6hrly_grib_{self.member:02d}/{self.product}{self.forecast:%Y%m%d%H}.{self.member:02d}.{self.date:%Y%m%d%H}.grb2"
-
-        self.SOURCES = {
-            "aws": f"https://noaa-cfs-pds.s3.amazonaws.com/{post_root}",
-            "nomads": f"https://nomads.ncep.noaa.gov/pub/data/nccf/com/cfs/prod/{post_root}",
-            # "azure": f"https://noaacfs.blob.core.windows.net/cfs/{post_root}"
-        }
-
-        self.IDX_SUFFIX = [".grb2.idx", ".idx", ".grib.idx"]
-        self.LOCALFILE = f"{self.get_remoteFileName}"
 
 
 class cfs_time_series:
@@ -254,6 +151,112 @@ class cfs_time_series:
             "aws": f"https://noaa-cfs-pds.s3.amazonaws.com/{post_root}",
             "nomads": f"https://nomads.ncep.noaa.gov/pub/data/nccf/com/cfs/prod/{post_root}",
             # "azure": f"https://noaacfs.blob.core.windows.net/cfs/{PATH}"
+        }
+
+        self.IDX_SUFFIX = [".grb2.idx", ".idx", ".grib.idx"]
+        self.LOCALFILE = f"{self.get_remoteFileName}"
+
+
+class cfs_6_hourly:
+    def template(self):
+        warnings.warn(
+            "Herbie's CFS templates are and subject to major changes. PRs are welcome to improve it."
+        )
+        self.DESCRIPTION = "Climate Forecast System; 6 hourly"
+        self.DETAILS = {
+            "NOMADS product description": "https://www.nco.ncep.noaa.gov/pmb/products/cfs/",
+            "Amazon Open Data": "https://registry.opendata.aws/noaa-cfs/",
+            "Microsoft Azure": "https://planetarycomputer.microsoft.com/dataset/storage/noaa-cfs",
+        }
+
+        # For reference:
+        # https://www.nco.ncep.noaa.gov/pmb/products/cfs/#6HRLY
+        self.PRODUCTS = {
+            "flxf": "CFS Surface, Radiative Fluxes",
+            "pgbf": "CFS 3D Pressure Level, 1 degree resolution",
+            "ocnh": "CFS 3D Ocean Data, 0.5 degree resolution",
+            "ocnf": "CFS 3D Ocean Data, 1.0 degree resolution",
+            "ipvf": "CFS 3D Isentropic Level, 1.0 degree resolution",
+        }
+
+        try:
+            self.member
+        except NameError:
+            print("'member' is not defined; please set to 1, 2, 3, or 4.")
+
+        valid_date = to_datetime(self.date) + Timedelta(hours=self.fxx)
+
+        post_root = f"cfs.{self.date:%Y%m%d/%H}/6hrly_grib_{self.member:02d}/{self.product}{valid_date:%Y%m%d%H}.{self.member:02d}.{self.date:%Y%m%d%H}.grb2"
+
+        self.SOURCES = {
+            "aws": f"https://noaa-cfs-pds.s3.amazonaws.com/{post_root}",
+            "nomads": f"https://nomads.ncep.noaa.gov/pub/data/nccf/com/cfs/prod/{post_root}",
+            # "azure": f"https://noaacfs.blob.core.windows.net/cfs/{post_root}"
+        }
+
+        self.IDX_SUFFIX = [".grb2.idx", ".idx", ".grib.idx"]
+        self.LOCALFILE = f"{self.get_remoteFileName}"
+
+
+class cfs_monthly:
+    def template(self):
+        warnings.warn(
+            "Herbie's CFS templates are and subject to major changes. PRs are welcome to improve it."
+        )
+
+        self.DESCRIPTION = "Climate Forecast System; Monthly Means"
+        self.DETAILS = {
+            "NOMADS product description": "https://www.nco.ncep.noaa.gov/pmb/products/cfs/",
+            "Amazon Open Data": "https://registry.opendata.aws/noaa-cfs/",
+            "Microsoft Azure": "https://planetarycomputer.microsoft.com/dataset/storage/noaa-cfs",
+            "NCEI": "https://www.ncei.noaa.gov/products/weather-climate-models/climate-forecast-system",
+        }
+
+        # For reference:
+        # https://www.nco.ncep.noaa.gov/pmb/products/cfs/???#MONTHLY
+        # filename.member.initialdate.verificationmonth.avrg.grib.cycle.grb2
+        self.PRODUCTS = {
+            "flxf": "CFS Surface, Radiative Fluxes",
+            "pgbf": "CFS 3D Pressure Level, 1 degree resolution",
+            "ocnh": "CFS 3D Ocean Data, 0.5 degree resolution",
+            "ocnf": "CFS 3D Ocean Data, 1.0 degree resolution",
+            "ipvf": "CFS 3D Isentropitc Level, 1.0 degree resolution",
+        }
+
+        try:
+            self.member
+        except NameError:
+            print(
+                "'member' is not defined. Please set 'member=1` for monthly data for the 6, 12, and 18 UTC cycles, but may be 1, 2, 3, or 4 for the 0 UTC cycle."
+            )
+
+        # TODO: My logic might not be correct here.
+        try:
+            self.month
+        except NameError:
+            print(
+                "'month' is not defined. Please set as an integer representing forecast month."
+            )
+
+        try:
+            self.hour
+        except NameError:
+            print(
+                "'hour' is not defined. Please set `hour` to one of {0, 6, 12, 18} or set to None for daily average."
+            )
+
+        valid_month = to_datetime(self.date) + Timedelta(days=30 * self.month - 1)
+
+        if self.hour is None:
+            # Daily average
+            post_root = f"cfs.{self.date:%Y%m%d/%H}/monthly_grib_{self.member:02d}/{self.product}.{self.member:02d}.{self.date:%Y%m%d%H}.{valid_month:%Y%m}.avrg.grib.grb2"
+        else:
+            post_root = f"cfs.{self.date:%Y%m%d/%H}/monthly_grib_{self.member:02d}/{self.product}.{self.member:02d}.{self.date:%Y%m%d%H}.{valid_month:%Y%m}.avrg.grib.{self.hour:02d}Z.grb2"
+
+        self.SOURCES = {
+            "aws": f"https://noaa-cfs-pds.s3.amazonaws.com/{post_root}",
+            "nomads": f"https://nomads.ncep.noaa.gov/pub/data/nccf/com/cfs/prod/{post_root}",
+            # "azure": f"https://noaacfs.blob.core.windows.net/cfs/{post_root}"
         }
 
         self.IDX_SUFFIX = [".grb2.idx", ".idx", ".grib.idx"]
