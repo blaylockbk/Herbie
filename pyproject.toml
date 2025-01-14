@@ -92,10 +92,10 @@ extend-select = [
 [tool.ruff.lint.pydocstyle]
 convention = "numpy"
 
-#[tool.pytest.ini_options]
-#minversion = "2.0"
-#addopts = "-rsfEX -p pytester --strict-markers --verbosity=3 --cov=herbie"
-#log_level = "DEBUG"
-#testpaths = ["tests"]
-#xfail_strict = true
-#markers = []
+[tool.pytest.ini_options]
+minversion = "2.0"
+addopts = "-rsfEX -p pytester --strict-markers --verbosity=3 --cov=herbie"
+log_level = "DEBUG"
+testpaths = ["tests"]
+xfail_strict = true
+markers = []
