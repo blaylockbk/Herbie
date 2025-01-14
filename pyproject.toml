@@ -97,7 +97,8 @@ profile = "black"
 
 [tool.pytest.ini_options]
 minversion = "2.0"
-addopts = "-rsfEX -p pytester --strict-markers --verbosity=3 --cov=herbie"
+#addopts = "-rsfEX -p pytester --strict-markers --verbosity=3 --cov=herbie"
+addopts = "-rsfEX -p pytester --strict-markers --verbosity=3"
 log_level = "DEBUG"
 testpaths = ["tests"]
 xfail_strict = true
