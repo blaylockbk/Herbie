@@ -1142,16 +1142,21 @@ class Herbie:
         # Get CF grid projection information with pygrib and pyproj because
         # this is something cfgrib doesn't do (https://github.com/ecmwf/cfgrib/issues/251)
         # NOTE: Assumes the projection is the same for all variables
-        #        with pygrib.open(str(local_file)) as grb:
-        #            msg = grb.message(1)
-        #            cf_params = CRS(msg.projparams).to_cf()
-        #
-        #        # Funny stuff with polar stereographic (https://github.com/pyproj4/pyproj/issues/856)
-        #        # TODO: Is there a better way to handle this? What about south pole?
-        #        if cf_params["grid_mapping_name"] == "polar_stereographic":
-        #            cf_params["latitude_of_projection_origin"] = cf_params.get(
-        #                "latitude_of_projection_origin", 90
-        #            )
+
+        use_pygrib = False
+        if use_pygrib:
+            with pygrib.open(str(local_file)) as grb:
+                msg = grb.message(1)
+                cf_params = CRS(msg.projparams).to_cf()
+
+            # Funny stuff with polar stereographic (https://github.com/pyproj4/pyproj/issues/856)
+            # TODO: Is there a better way to handle this? What about south pole?
+            if cf_params["grid_mapping_name"] == "polar_stereographic":
+                cf_params["latitude_of_projection_origin"] = cf_params.get(
+                    "latitude_of_projection_origin", 90
+                )
+        else:
+            cf_params = {}
 
         # Here I'm looping over each dataset in the list returned by cfgrib
         for ds in Hxr:
@@ -1171,7 +1176,7 @@ class Herbie:
             # ----------------------
             # http://cfconventions.org/Data/cf-conventions/cf-conventions-1.8/cf-conventions.html#appendix-grid-mappings
             ds.coords["gribfile_projection"] = None
-            #            ds.coords["gribfile_projection"].attrs = cf_params
+            ds.coords["gribfile_projection"].attrs = cf_params
             ds.coords["gribfile_projection"].attrs["long_name"] = (
                 f"{self.model.upper()} model grid projection"
             )
