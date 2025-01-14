@@ -24,7 +24,7 @@ for i in (save_dir / "rap").rglob("*"):
     "because upstream data not available or incomplete at night.",
 )
 def test_rap_aws():
-    # Test
+    """Test downloading the RAP model from AWS."""
     H = Herbie(today, model="rap", save_dir=save_dir, overwrite=True)
     assert H.grib is not None
 
@@ -43,7 +43,6 @@ def test_rap_aws():
 
 def test_rap_historical():
     """Search for RAP urls on NCEI that I know exist."""
-
     H = Herbie(
         "2019-11-23",
         model="rap_historical",
@@ -62,6 +61,7 @@ def test_rap_historical():
 
 
 def test_rap_ncei():
+    """Search for RAP urls on NCEI that I know exist."""
     H = Herbie(
         "2020-03-15",
         model="rap_ncei",
