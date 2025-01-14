@@ -7,7 +7,7 @@ import pandas as pd
 import pytest
 
 from herbie import Herbie, config
-from tests.util import is_time_between
+from util import is_time_between
 
 today = pd.to_datetime("today").floor("1D") - pd.to_timedelta("1D")
 save_dir = config["default"]["save_dir"] / "Herbie-Tests-Data/"
