@@ -1145,9 +1145,9 @@ class Herbie:
         # TODO: Issues with pygrib in tests. Segmentation Fault. Is it Numpy 2???
         use_pygrib = False
         if use_pygrib:
-            # with pygrib.open(str(local_file)) as grb:
-            #    msg = grb.message(1)
-            #    cf_params = CRS(msg.projparams).to_cf()
+            with pygrib.open(str(local_file)) as grb:
+               msg = grb.message(1)
+               cf_params = CRS(msg.projparams).to_cf()
 
             #grb = pygrib.open(str(local_file))
             #msg = grb.message(1)
