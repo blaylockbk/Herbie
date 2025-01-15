@@ -1142,12 +1142,16 @@ class Herbie:
         # Get CF grid projection information with pygrib and pyproj because
         # this is something cfgrib doesn't do (https://github.com/ecmwf/cfgrib/issues/251)
         # NOTE: Assumes the projection is the same for all variables
-
-        use_pygrib = False
+        # TODO: Issues with pygrib in tests. Segmentation Fault. Is it Numpy 2???
+        use_pygrib = True
         if use_pygrib:
-            with pygrib.open(str(local_file)) as grb:
-                msg = grb.message(1)
-                cf_params = CRS(msg.projparams).to_cf()
+            # with pygrib.open(str(local_file)) as grb:
+            #    msg = grb.message(1)
+            #    cf_params = CRS(msg.projparams).to_cf()
+            grb = pygrib.open(str(local_file))
+            msg = grb.message(1)
+            cf_params = CRS(msg.projparams).to_cf()
+            grb.close()
 
             # Funny stuff with polar stereographic (https://github.com/pyproj4/pyproj/issues/856)
             # TODO: Is there a better way to handle this? What about south pole?
