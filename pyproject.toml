@@ -33,7 +33,7 @@ dependencies = [
     "cfgrib>=0.9.15",
     "numpy>=2.2.1",
     "pandas>=2.2.3",
-    "pygrib==2.1.5",
+    "pygrib==2.1.6",
     "requests>=2.23.3",
     "toml>=0.10.2",
     "xarray>=2025.1.1",
