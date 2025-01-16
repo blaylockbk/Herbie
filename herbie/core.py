@@ -409,6 +409,22 @@ class Herbie:
         if verbose:
             print(f"🐜 {self.IDX_SUFFIX=}")
 
+        #! -------------------------------------------------------------
+        #! -------------------------------------------------------------
+        #! HACK for azure token and ecmwf data on azure
+        #! The Azure Token is appended to the end of the URL, so we
+        #! actually need to string replace the index file name.
+        if self.model in ["ifs", "aifs"] and "blob.core.windows" in url:
+            idx_url = url.replace(".grib2?", ".index?")
+            idx_exists = requests.head(idx_url).ok
+            if verbose:
+                print(f"🐜 {idx_url=}")
+                print(f"🐜 {idx_exists=}")
+            if idx_exists:
+                return idx_exists, idx_url
+        #! -------------------------------------------------------------
+        #! -------------------------------------------------------------
+
         # Loop through IDX_SUFFIX options until we find one that exists
         for i in self.IDX_SUFFIX:
             if Path(url).suffix in {".grb", ".grib", ".grb2", ".grib2"}:
