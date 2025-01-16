@@ -18,7 +18,7 @@ import warnings
 from datetime import datetime, timedelta
 from io import StringIO
 from shutil import which
-from typing import Union, Optional, Literal
+from typing import Literal, Optional, Union
 
 import cfgrib
 import pandas as pd
@@ -29,6 +29,7 @@ from pyproj import CRS
 
 import herbie.models as model_templates
 from herbie import Path, config
+from herbie.crs import parse_cf_crs
 from herbie.help import _search_help
 from herbie.misc import ANSI
 
@@ -1128,7 +1129,19 @@ class Herbie:
         backend_kwargs.setdefault("indexpath", "")
         backend_kwargs.setdefault(
             "read_keys",
-            ["parameterName", "parameterUnits", "stepRange", "uvRelativeToGrid"],
+            [
+                "parameterName",
+                "parameterUnits",
+                "stepRange",
+                "uvRelativeToGrid",
+                "shapeOfTheEarth",
+                "orientationOfTheGridInDegrees",
+                "southPoleOnProjectionPlane",
+                "LaDInDegrees",
+                "LoVInDegrees",
+                "Latin1InDegrees",
+                "Latin2InDegrees",
+            ],
         )
         backend_kwargs.setdefault("errors", "raise")
 
@@ -1146,13 +1159,13 @@ class Herbie:
         use_pygrib = False
         if use_pygrib:
             with pygrib.open(str(local_file)) as grb:
-               msg = grb.message(1)
-               cf_params = CRS(msg.projparams).to_cf()
+                msg = grb.message(1)
+                cf_params = CRS(msg.projparams).to_cf()
 
-            #grb = pygrib.open(str(local_file))
-            #msg = grb.message(1)
-            #cf_params = CRS(msg.projparams).to_cf()
-            #grb.close()
+            # grb = pygrib.open(str(local_file))
+            # msg = grb.message(1)
+            # cf_params = CRS(msg.projparams).to_cf()
+            # grb.close()
 
             # Funny stuff with polar stereographic (https://github.com/pyproj4/pyproj/issues/856)
             # TODO: Is there a better way to handle this? What about south pole?
@@ -1161,7 +1174,8 @@ class Herbie:
                     "latitude_of_projection_origin", 90
                 )
         else:
-            cf_params = {}
+            # Note: Assumes all messages in same grib file have smae CRS
+            cf_params = parse_cf_crs(Hxr[0])
 
         # Here I'm looping over each dataset in the list returned by cfgrib
         for ds in Hxr:
