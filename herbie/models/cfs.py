@@ -196,6 +196,11 @@ class cfs:
                 )
                 self.kind = "pgbf"
 
+            if self.kind == "ocnh":
+                raise ValueError(
+                    "kind='ocnh' is not a valid 6 hourly product available. https://www.nco.ncep.noaa.gov/pmb/products/cfs/#6HRLY"
+                )
+
             valid_date = to_datetime(self.date) + Timedelta(hours=self.fxx)
 
             post_root = f"cfs.{self.date:%Y%m%d/%H}/6hrly_grib_{self.member:02d}/{self.kind}{valid_date:%Y%m%d%H}.{self.member:02d}.{self.date:%Y%m%d%H}.grb2"
@@ -209,7 +214,7 @@ class cfs:
         elif self.product == "monthly_means":
             try:
                 self.kind
-            except AttributeError:
+            except Exception as e:
                 warnings.warn(
                     f"'kind' is not defined. Expected `kind='x'` where 'x' is one of the product types {product_kind.keys()}. Default to `kind='pgbf'`"
                 )
@@ -217,20 +222,20 @@ class cfs:
 
             try:
                 self.month
-            except NameError:
-                warnings.warn(
-                    "'month' is not defined. Please set as an integer representing forecast month."
+            except Exception as e:
+                raise AttributeError(
+                    f"{e} Herbie expects an argument 'month' to be set for model='cfs', product='monthly_means'."
                 )
 
             try:
                 self.hour
-            except NameError:
+            except Exception as e:
                 warnings.warn(
                     "'hour' is not defined. Please set `hour` to one of {0, 6, 12, 18, None}. Defaulting to None for daily average."
                 )
                 self.hour = None
 
-            # TODO: My logic might not be correct here.
+            # TODO: My logic might not always be correct here, or is it ok?
             valid_month = to_datetime(self.date) + Timedelta(days=30 * self.month - 1)
 
             if self.hour is None:
