@@ -2,7 +2,7 @@
 name = "herbie-data"
 description = "Download numerical weather prediction GRIB2 model data."
 readme = "README.md"
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 license = { file = "LICENSE" }
 authors = [{ name = "Brian K. Blaylock", email = "blaylockbk@gmail.com" }]
 maintainers = [{ name = "Brian K. Blaylock", email = "blaylockbk@gmail.com" }]
@@ -30,13 +30,13 @@ keywords = [
     "HRRR",
 ]
 dependencies = [
-    "cfgrib",
-    "numpy",
-    "pandas",
-    "pygrib",
-    "requests",
-    "toml",
-    "xarray",
+    "cfgrib>=0.9.15",
+    "numpy>=2.2.1",
+    "pandas>=2.2.3",
+    "pygrib==2.1.6",
+    "requests>=2.23.3",
+    "toml>=0.10.2",
+    "xarray>=2025.1.1",
 ]
 dynamic = ["version"]
 
@@ -91,9 +91,6 @@ extend-select = [
 
 [tool.ruff.lint.pydocstyle]
 convention = "numpy"
-
-[tool.isort]
-profile = "black"
 
 [tool.pytest.ini_options]
 minversion = "2.0"

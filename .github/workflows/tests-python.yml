@@ -21,7 +21,7 @@ jobs:
       fail-fast: true
       matrix:
         os: ["ubuntu-latest"]
-        python-version: ["3.9", "3.10", "3.11", "3.12"]
+        python-version: ["3.10", "3.11", "3.12", "3.13"]
         # In order to save resources, only run particular
         # matrix slots on other OS than Linux.
         include:

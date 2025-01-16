@@ -9,7 +9,7 @@ dependencies:
   - metpy
   - numpy>=1.26.2
   - pandas>=2.1.4
-  - pygrib
+  - pygrib>=2.1.6
   - pytest
   - requests>=2.31.0
   - scikit-learn

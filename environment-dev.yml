@@ -4,51 +4,46 @@ name: herbie-dev
 channels:
   - conda-forge
 dependencies:
-  - python>=3.11
-  - pip
-  - git
   - curl
-  - rclone # Not required, but is an awesome alternative (https://rclone.org/)
-  - wgrib2 # ONLY AVAILABLE ON LINUX. Comment if not using Linux.
+  - eccodes>=2.31
+  - git
+  - pip
+  - python>=3.13
+  - rclone
+  - uv
+  - wgrib2 # Linux only
 
-  # ===========
-  # Handy Tools
-  # ===========
+  # ============
+  # Dependencies
+  # ============
   - cartopy>=0.22
   - cfgrib>=0.9.10.4
-  - eccodes>=2.31
   - geopandas
   - h5py
   - jupyter
-  - jupyterlab
   - matplotlib>=3.4.3
   - metpy
   - netcdf4
   - numpy>=1.25
   - pandas>=2.0
-  - polars>=1.0
+  - polars>=1.17.1
   - pygrib>=2.1.4
   - pylint
   - pyproj>=3.6
   - requests>=2.31
   - s3fs
-  - scipy
+  - scipy>=1.15.1
   - scikit-learn
   - toml
   - xarray>=2023.7
   - zarr
 
-  # ===================
-  # Formatter & Testing
-  # ===================
+  # ===========
+  # Development
+  # ===========
   - ruff
-  - black
-  - black-jupyter
-  - isort
-  - pylint
   - pytest
   - pytest-cov
-  - line_profiler
 
   # =============
   # Documentation
@@ -56,37 +51,26 @@ dependencies:
   - sphinx>=4.4.0
   - nbsphinx
   - nbconvert>=6.5
-  - pydata-sphinx-theme # PyData Sphinx Theme (i.e, Numpy, Pandas, MetPy)
+  - pydata-sphinx-theme
   - sphinx-design
   - recommonmark
   - sphinx-markdown-tables
-  - sphinxcontrib-mermaid # For mermaid diagram support
+  - sphinxcontrib-mermaid
   - autodocsumm
-  - sphinx-autosummary-accessors # pandas and xarray accessor docs
+  - sphinx-autosummary-accessors
   - latexmk
   - myst-parser
   - linkify-it-py
 
-  #- pip:
-      #- cartopy>=0.22
-  # Herbie: Development version from GitHub
-  #- git+https://github.com/blaylockbk/Herbie.git
-
-  # Install a specific branch
-  #- git+https://github.com/blaylockbk/Herbie.git@blaylockbk/issue98
-
-  # Borrow some tools from my garage
-  #- git+https://github.com/blaylockbk/Carpenter_Workshop.git
-
-  # Create idx files on the fly!!  -- Waiting for package maturity
-  #- git+https://github.com/joxtoby/beltzer.git
 # =============================================================================
-#                             Extra Setup Steps
+#                                Setup Steps
 # =============================================================================
-# conda activate herbie-dev
+# mamba activate herbie-dev
+# git clone https://github.com/blaylockbk/Herbie.git
 # cd Herbie
 # pip install -e .
 #
+# cd ~
 # git clone https://github.com/blaylockbk/Carpenter_Workshop.git
 # cd Carpenter_Workshop
 # pi install -e .
