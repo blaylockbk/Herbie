@@ -8,7 +8,7 @@ if TYPE_CHECKING:
     import xarray as xr
 
 
-def get_cf_crs(ds: xr.Dataset, variable: str | None = None) -> dict[str, Any]:
+def get_cf_crs(ds: "xr.Dataset", variable: str | None = None) -> dict[str, Any]:
     """
     Extract the CF coordinate reference system (CRS) from a cfgrib xarray dataset.
 
