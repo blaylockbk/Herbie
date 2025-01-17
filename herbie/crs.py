@@ -1,4 +1,4 @@
-"""CF coordinate reference system (CRS)."""
+"""CF convention coordinate reference system (CRS)."""
 
 from typing import TYPE_CHECKING, Any
 
