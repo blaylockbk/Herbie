@@ -1156,12 +1156,17 @@ class Herbie:
             backend_kwargs=backend_kwargs,
         )
 
+        for ds in Hxr:
+            # Need model attribute before using get_cf_crs
+            ds.attrs["model"] = str(self.model)
+
         # Get CF convention coordinate reference system (crs) information.
         # NOTE: Assumes the projection is the same for all variables.
         if _use_pygrib_for_crs:
             # Get CF grid projection information with pygrib and pyproj because
             # this is something cfgrib doesn't do (https://github.com/ecmwf/cfgrib/issues/251)
             import pygrib
+
             with pygrib.open(str(local_file)) as grb:
                 msg = grb.message(1)
                 cf_params = CRS(msg.projparams).to_cf()

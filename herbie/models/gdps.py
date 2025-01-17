@@ -2,7 +2,7 @@
 ## April 9, 2024
 
 """
-A Herbie template for the GEM Global or Global Deterministic Prediction System (GDPS)
+A Herbie template for the GEM Global or Global Deterministic Prediction System (GDPS).
 
 Meteorological Service of Canada (MSC)
 The GDPS is Canada's 15 km deterministic global model
