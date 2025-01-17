@@ -136,10 +136,6 @@ product_kind = {
 
 class cfs:
     def template(self):
-        warnings.warn(
-            "Herbie's CFS templates are and subject to major changes. PRs are welcome to improve it."
-        )
-
         self.DESCRIPTION = "Climate Forecast System"
         self.DETAILS = {
             "NOMADS product description": "https://www.nco.ncep.noaa.gov/pmb/products/cfs/",
