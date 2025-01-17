@@ -52,16 +52,16 @@ jobs:
           CACHE_NUMBER: 0
 
       - name: INSTALL - Anaconda setup (Mambaforge)
-        uses: conda-incubator/setup-miniconda@v2
+        uses: conda-incubator/setup-miniconda@v3
         with:
           python-version: ${{ matrix.python-version }}
-          miniforge-variant: Mambaforge
           miniforge-version: latest
           mamba-version: "*"
           use-mamba: true
-          channels: conda-forge,defaults
+          channels: conda-forge
           channel-priority: true
           activate-environment: herbie-test
+          environment-file: environment-test.yml
           auto-activate-base: false
           use-only-tar-bz2: true # IMPORTANT: This needs to be set for caching to work properly!
 

@@ -4,7 +4,7 @@
 ## April 9, 2024
 
 """
-A Herbie template for the High Resolution Deterministic Prediction System (HRDPS)
+A Herbie template for the High Resolution Deterministic Prediction System (HRDPS).
 
 Meteorological Service of Canada (MSC)
 The HRDPS is Canada's 2.5 km deterministic model

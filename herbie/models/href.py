@@ -1,7 +1,7 @@
 ## Added by Karl Schneider (June 2024)
 
 """
-A Herbie template for the The High Resolution Ensemble Forecast (HREF)
+A Herbie template for the The High Resolution Ensemble Forecast (HREF).
 
 Description
 -----------

@@ -2,7 +2,7 @@
 ## April 9, 2024
 
 """
-A Herbie template for the GEM Regional or Regional Deterministic Prediction System (RDPS)
+A Herbie template for the GEM Regional or Regional Deterministic Prediction System (RDPS).
 
 Meteorological Service of Canada (MSC)
 The RDPS is Canada's 10 km deterministic regional model
