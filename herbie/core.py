@@ -22,14 +22,13 @@ from typing import Literal, Optional, Union
 
 import cfgrib
 import pandas as pd
-import pygrib
 import requests
 import xarray as xr
 from pyproj import CRS
 
 import herbie.models as model_templates
 from herbie import Path, config
-from herbie.crs import parse_cf_crs
+from herbie.crs import get_cf_crs
 from herbie.help import _search_help
 from herbie.misc import ANSI
 
@@ -1068,6 +1067,7 @@ class Herbie:
         searchString=None,
         backend_kwargs: dict = {},
         remove_grib: bool = True,
+        _use_pygrib_for_crs: bool = False,
         **download_kwargs,
     ) -> xr.Dataset:
         """
@@ -1080,6 +1080,10 @@ class Herbie:
         remove_grib : bool
             If True, grib file will be removed ONLY IF it didn't exist
             before we downloaded it.
+        _use_pygrib_for_crs : bool
+            If you have pygrib, you can use it to extract the CRS
+            information instead of using values extracted from cfgrib
+            by Herbie.
         """
         # TODO: Remove this eventually
         if searchString is not None:
@@ -1152,20 +1156,15 @@ class Herbie:
             backend_kwargs=backend_kwargs,
         )
 
-        # Get CF grid projection information with pygrib and pyproj because
-        # this is something cfgrib doesn't do (https://github.com/ecmwf/cfgrib/issues/251)
-        # NOTE: Assumes the projection is the same for all variables
-        # TODO: Issues with pygrib in tests. Segmentation Fault. Is it Numpy 2???
-        use_pygrib = False
-        if use_pygrib:
+        # Get CF convention coordinate reference system (crs) information.
+        # NOTE: Assumes the projection is the same for all variables.
+        if _use_pygrib_for_crs:
+            # Get CF grid projection information with pygrib and pyproj because
+            # this is something cfgrib doesn't do (https://github.com/ecmwf/cfgrib/issues/251)
+            import pygrib
             with pygrib.open(str(local_file)) as grb:
                 msg = grb.message(1)
                 cf_params = CRS(msg.projparams).to_cf()
-
-            # grb = pygrib.open(str(local_file))
-            # msg = grb.message(1)
-            # cf_params = CRS(msg.projparams).to_cf()
-            # grb.close()
 
             # Funny stuff with polar stereographic (https://github.com/pyproj4/pyproj/issues/856)
             # TODO: Is there a better way to handle this? What about south pole?
@@ -1174,8 +1173,7 @@ class Herbie:
                     "latitude_of_projection_origin", 90
                 )
         else:
-            # Note: Assumes all messages in same grib file have smae CRS
-            cf_params = parse_cf_crs(Hxr[0])
+            cf_params = get_cf_crs(Hxr[0])
 
         # Here I'm looping over each dataset in the list returned by cfgrib
         for ds in Hxr:

@@ -1,10 +1,25 @@
-"""Parse CF coordinate reference system (CRS)."""
+"""CF coordinate reference system (CRS)."""
+
+from typing import TYPE_CHECKING, Any
 
 from pyproj import CRS
 
+if TYPE_CHECKING:
+    import xarray as xr
 
-def parse_cf_crs(ds, variable=None):
-    """Parse CF coordinate reference system (CRS) from a xarray dataset."""
+
+def get_cf_crs(ds: xr.Dataset, variable: str | None = None) -> dict[str, Any]:
+    """
+    Extract the CF coordinate reference system (CRS) from a cfgrib xarray dataset.
+
+    Note:
+    I originally used pygrib to do this, but it was hard to maintain an
+    additional grib package dependency. I had issues with pygrib after
+    it was updated to support Numpy version 2, so thought it would be
+    best to code this in Herbie. This may be incomplete.
+    """
+    # Assume the first variable in the Dataset has the same grid crs
+    # as all other variables in the Dataset.
     if variable is None:
         variable = next(iter(ds.data_vars))
     da = ds[variable]
