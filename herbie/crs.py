@@ -4,12 +4,11 @@ Check out the notebook `check_pygrib_vs_herbie_crs_extraction.ipynb`
 to test how Herbie and pygrib are extracting the CRS information.
 """
 
-from typing import TYPE_CHECKING, Any
+from typing import Any
 
 from pyproj import CRS
 
-if TYPE_CHECKING:
-    import xarray as xr
+import xarray as xr
 
 
 def get_cf_crs(
