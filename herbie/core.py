@@ -18,7 +18,7 @@ import warnings
 from datetime import datetime, timedelta
 from io import StringIO
 from shutil import which
-from typing import Union, Optional, Literal
+from typing import Literal, Optional, Union
 
 import cfgrib
 import pandas as pd
@@ -31,6 +31,7 @@ import herbie.models as model_templates
 from herbie import Path, config
 from herbie.help import _search_help
 from herbie.misc import ANSI
+from herbie.toolbox import str_to_datetime
 
 Datetime = Union[datetime, pd.Timestamp, str]
 
@@ -190,6 +191,12 @@ class Herbie:
             # Convert pandas-parsable timedelta string to int in hours.
             self.fxx = pd.to_timedelta(fxx).round("1h").total_seconds() / 60 / 60
             self.fxx = int(self.fxx)
+
+        # TODO: Do I really need this if I'm using Pandas?
+        # if isinstance(date, str):
+        #     date = str_to_datetime(date)
+        # if isinstance(valid_date, str):
+        #     valid_date = str_to_datetime(valid_date)
 
         if date:
             # User supplied `date`, which is the model initialization datetime.
@@ -1146,13 +1153,13 @@ class Herbie:
         use_pygrib = False
         if use_pygrib:
             with pygrib.open(str(local_file)) as grb:
-               msg = grb.message(1)
-               cf_params = CRS(msg.projparams).to_cf()
+                msg = grb.message(1)
+                cf_params = CRS(msg.projparams).to_cf()
 
-            #grb = pygrib.open(str(local_file))
-            #msg = grb.message(1)
-            #cf_params = CRS(msg.projparams).to_cf()
-            #grb.close()
+            # grb = pygrib.open(str(local_file))
+            # msg = grb.message(1)
+            # cf_params = CRS(msg.projparams).to_cf()
+            # grb.close()
 
             # Funny stuff with polar stereographic (https://github.com/pyproj4/pyproj/issues/856)
             # TODO: Is there a better way to handle this? What about south pole?
