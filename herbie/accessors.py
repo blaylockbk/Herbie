@@ -18,7 +18,6 @@ from typing import Literal, Optional, Union
 
 import numpy as np
 import pandas as pd
-import pygrib
 import xarray as xr
 from pyproj import CRS
 
