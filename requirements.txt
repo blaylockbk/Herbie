@@ -5,7 +5,6 @@ metpy
 numpy
 pandas
 pyproj
-pygrib
 scikit-learn
 toml
 xarray

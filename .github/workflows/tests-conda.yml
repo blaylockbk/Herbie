@@ -38,22 +38,23 @@ jobs:
         with:
           fetch-depth: 2
 
-      - name: CACHING - Anaconda packages
-        uses: actions/cache@v3
-        id: cache-pkg
-        with:
-          path: ~/conda_pkgs_dir
-          key:
-            conda-pkg-${{ runner.os }}-${{ runner.arch }}-py${{ matrix.python-version }}-${{
-            env.CACHE_NUMBER }}-${{ hashFiles('environment-test.yml') }}
-        env:
-          # Increase this value if `environment-test.yml` has not changed,
-          # but you still want to reset the cache.
-          CACHE_NUMBER: 0
+      #- name: CACHING - Anaconda packages
+      #  uses: actions/cache@v3
+      #  id: cache-pkg
+      #  with:
+      #    path: ~/conda_pkgs_dir
+      #    key:
+      #      conda-pkg-${{ runner.os }}-${{ runner.arch }}-py${{ matrix.python-version }}-${{
+      #      env.CACHE_NUMBER }}-${{ hashFiles('environment-test.yml') }}
+      #  env:
+      #    # Increase this value if `environment-test.yml` has not changed,
+      #    # but you still want to reset the cache.
+      #    CACHE_NUMBER: 0
 
-      - name: INSTALL - Anaconda setup (Mambaforge)
+      - name: INSTALL - Conda/Mamba setup (Miniforge)
         uses: conda-incubator/setup-miniconda@v3
         with:
+          auto-update-conda: true
           python-version: ${{ matrix.python-version }}
           miniforge-version: latest
           mamba-version: "*"
@@ -61,27 +62,29 @@ jobs:
           channels: conda-forge
           channel-priority: true
           activate-environment: herbie-test
-          environment-file: environment-test.yml
+          environment-file: ci/environment-test.yml
           auto-activate-base: false
           use-only-tar-bz2: true # IMPORTANT: This needs to be set for caching to work properly!
 
-      - name: CACHING - Anaconda environment
-        uses: actions/cache@v3
-        id: cache-env
-        with:
-          path: ${{ env.CONDA }}/envs
-          key:
-            conda-env-${{ runner.os }}-${{ runner.arch }}-py${{ matrix.python-version }}-${{
-            env.CACHE_NUMBER }}-${{ hashFiles('environment-test.yml') }}
-        env:
-          # Increase this value if `environment-test.yml` has not changed,
-          # but you still want to reset the cache.
-          CACHE_NUMBER: 0
+      #- name: CACHING - Anaconda environment
+      #  uses: actions/cache@v3
+      #  id: cache-env
+      #  with:
+      #    path: ${{ env.CONDA }}/envs
+      #    key:
+      #      conda-env-${{ runner.os }}-${{ runner.arch }}-py${{ matrix.python-version }}-${{
+      #      env.CACHE_NUMBER }}-${{ hashFiles('environment-test.yml') }}
+      #  env:
+      #    # Increase this value if `environment-test.yml` has not changed,
+      #    # but you still want to reset the cache.
+      #    CACHE_NUMBER: 0
 
-      - name: DEBUG - Anaconda info
-        run: conda info
-      - name: DEBUG - Anaconda configuration
-        run: conda config --show
+      - name: DEBUG - mamba info
+        run: mamba info
+      - name: DEBUG - mamba list
+        run: mamba list
+      - name: DEBUG - mamba configuration
+        run: mamba config --show
       - name: DEBUG - Environment variables
         run: printenv | sort
       - name: DEBUG - Program paths
@@ -89,7 +92,7 @@ jobs:
           command -v conda
           command -v mamba
 
-      - name: INSTALL - Update Anaconda environment
+      - name: INSTALL - Update Mamba environment
         run: mamba env update --name herbie-test --file environment-test.yml
         if: steps.cache-env.outputs.cache-hit != 'true'
 

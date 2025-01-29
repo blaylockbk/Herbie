@@ -1,18 +1,26 @@
-name: herbie
+# Used to for Herbie tests on Windows
+# .github/workflows/tests-conda.yml
+
+name: herbie-test
 channels:
   - conda-forge
 dependencies:
   - curl
-  - cfgrib>=0.9.10.4
   - eccodes
+  - geos
+  - proj
+
+  - cartopy
+  - cfgrib>=0.9.10.4
   - matplotlib>=3.8.2
   - metpy
   - numpy>=1.26.2
   - pandas>=2.1.4
-  - pygrib>=2.1.6
-  - pytest
+  - pyproj
   - requests>=2.31.0
   - scikit-learn
   - toml
   - xarray>=2023.12.0
-  - flake8
+
+  - pytest
+  - pytest-conv

@@ -37,7 +37,6 @@ Datetime = Union[datetime, pd.Timestamp, str]
 # NOTE: The config dict values are retrieved from __init__ and read
 # from the file ${HOME}/.config/herbie/config.toml
 # Path is imported from __init__ because it has my custom methods.
-# Load custom xarray accessors
 
 log = logging.getLogger(__name__)
 
