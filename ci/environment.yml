@@ -11,7 +11,7 @@ dependencies:
   - proj
 
   - cartopy
-  - cfgrib>=0.9.10.4
+  - cfgrib>=0.9
   - matplotlib>=3.8.2
   - metpy
   - numpy>=1.26.2
