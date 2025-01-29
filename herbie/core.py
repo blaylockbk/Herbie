@@ -37,17 +37,7 @@ Datetime = Union[datetime, pd.Timestamp, str]
 # NOTE: The config dict values are retrieved from __init__ and read
 # from the file ${HOME}/.config/herbie/config.toml
 # Path is imported from __init__ because it has my custom methods.
-
-try:
-    # Load custom xarray accessors
-    import herbie.accessors  # noqa: F401
-except Exception:
-    warnings.warn(
-        "herbie xarray accessors could not be imported."
-        "Probably missing a dependency like MetPy."
-        "If you want to use these functions, try"
-        "`pip install metpy`"
-    )
+# Load custom xarray accessors
 
 log = logging.getLogger(__name__)
 
