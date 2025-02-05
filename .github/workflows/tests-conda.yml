@@ -65,7 +65,7 @@ jobs:
           activate-environment: herbie-test
           environment-file: ci/environment.yml
           auto-activate-base: false
-          use-only-tar-bz2: true # IMPORTANT: This needs to be set for caching to work properly!
+          #use-only-tar-bz2: true # IMPORTANT: This needs to be set for caching to work properly!
 
       #- name: CACHING - Anaconda environment
       #  uses: actions/cache@v3
@@ -81,7 +81,9 @@ jobs:
       #    CACHE_NUMBER: 0
 
       - name: DEBUG - mamba info
-        run: mamba info
+        run: |
+          mamba --version
+          mamba info
       - name: DEBUG - mamba list
         run: mamba list
       - name: DEBUG - mamba configuration
