@@ -45,9 +45,9 @@ jobs:
       #    path: ~/conda_pkgs_dir
       #    key:
       #      conda-pkg-${{ runner.os }}-${{ runner.arch }}-py${{ matrix.python-version }}-${{
-      #      env.CACHE_NUMBER }}-${{ hashFiles('environment-test.yml') }}
+      #      env.CACHE_NUMBER }}-${{ hashFiles('ci/environment.yml') }}
       #  env:
-      #    # Increase this value if `environment-test.yml` has not changed,
+      #    # Increase this value if `environment.yml` has not changed,
       #    # but you still want to reset the cache.
       #    CACHE_NUMBER: 0
 
@@ -74,9 +74,9 @@ jobs:
       #    path: ${{ env.CONDA }}/envs
       #    key:
       #      conda-env-${{ runner.os }}-${{ runner.arch }}-py${{ matrix.python-version }}-${{
-      #      env.CACHE_NUMBER }}-${{ hashFiles('environment-test.yml') }}
+      #      env.CACHE_NUMBER }}-${{ hashFiles('ci/environment.yml') }}
       #  env:
-      #    # Increase this value if `environment-test.yml` has not changed,
+      #    # Increase this value if `ci/environment.yml` has not changed,
       #    # but you still want to reset the cache.
       #    CACHE_NUMBER: 0
 
@@ -84,19 +84,23 @@ jobs:
         run: |
           mamba --version
           mamba info
+
       - name: DEBUG - mamba list
         run: mamba list
+
       - name: DEBUG - mamba configuration
         run: mamba config --show
+
       - name: DEBUG - Environment variables
         run: printenv | sort
+
       - name: DEBUG - Program paths
         run: |
           command -v conda
           command -v mamba
 
       - name: INSTALL - Update Mamba environment
-        run: mamba env update --name herbie-test --file environment-test.yml
+        run: mamba env update --name herbie-test --file ci/environment.yml
         if: steps.cache-env.outputs.cache-hit != 'true'
 
       - name: INSTALL - Project
