@@ -9,10 +9,10 @@ maintainers = [{ name = "Brian K. Blaylock", email = "blaylockbk@gmail.com" }]
 classifiers = [
     "Development Status :: 4 - Beta",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
     "Operating System :: MacOS",
     "Operating System :: Microsoft :: Windows",
     "Operating System :: POSIX :: Linux",
@@ -33,9 +33,9 @@ dependencies = [
     "cfgrib>=0.9.15",
     "numpy>=2.2.1",
     "pandas>=2.2.3",
-    "pygrib==2.1.6",
+    "pyproj>=3.7.0",
     "requests>=2.23.3",
-    "toml>=0.10.2",
+    "toml>=0.10.2",  # TODO: Drop in favor of tomllib when Python >=3.11 is required.
     "xarray>=2025.1.1",
 ]
 dynamic = ["version"]
@@ -49,6 +49,8 @@ dynamic = ["version"]
 
 [project.optional-dependencies]
 extras = ["cartopy", "metpy", "scikit-learn"]
+test = ["pytest", "pytest-cov", "ruff"]
+pygrib = ["pygrib"]
 docs = [
     "autodocsumm",
     "ipython",
@@ -65,7 +67,6 @@ docs = [
     "sphinx-markdown-tables",
     "sphinxcontrib-mermaid",
 ]
-test = ["pytest", "pytest-cov", "ruff"]
 
 [build-system]
 requires = ["setuptools>=42", "wheel", "setuptools_scm[toml]>=3.4"]

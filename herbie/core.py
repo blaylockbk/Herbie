@@ -18,17 +18,17 @@ import warnings
 from datetime import datetime, timedelta
 from io import StringIO
 from shutil import which
-from typing import Union, Optional, Literal
+from typing import Literal, Optional, Union
 
 import cfgrib
 import pandas as pd
-import pygrib
 import requests
 import xarray as xr
 from pyproj import CRS
 
 import herbie.models as model_templates
 from herbie import Path, config
+from herbie.crs import get_cf_crs
 from herbie.help import _search_help
 from herbie.misc import ANSI
 
@@ -37,17 +37,6 @@ Datetime = Union[datetime, pd.Timestamp, str]
 # NOTE: The config dict values are retrieved from __init__ and read
 # from the file ${HOME}/.config/herbie/config.toml
 # Path is imported from __init__ because it has my custom methods.
-
-try:
-    # Load custom xarray accessors
-    import herbie.accessors  # noqa: F401
-except Exception:
-    warnings.warn(
-        "herbie xarray accessors could not be imported."
-        "Probably missing a dependency like MetPy."
-        "If you want to use these functions, try"
-        "`pip install metpy`"
-    )
 
 log = logging.getLogger(__name__)
 
@@ -1067,6 +1056,7 @@ class Herbie:
         searchString=None,
         backend_kwargs: dict = {},
         remove_grib: bool = True,
+        _use_pygrib_for_crs: bool = False,
         **download_kwargs,
     ) -> xr.Dataset:
         """
@@ -1079,6 +1069,10 @@ class Herbie:
         remove_grib : bool
             If True, grib file will be removed ONLY IF it didn't exist
             before we downloaded it.
+        _use_pygrib_for_crs : bool
+            If you have pygrib, you can use it to extract the CRS
+            information instead of using values extracted from cfgrib
+            by Herbie.
         """
         # TODO: Remove this eventually
         if searchString is not None:
@@ -1128,7 +1122,19 @@ class Herbie:
         backend_kwargs.setdefault("indexpath", "")
         backend_kwargs.setdefault(
             "read_keys",
-            ["parameterName", "parameterUnits", "stepRange", "uvRelativeToGrid"],
+            [
+                "parameterName",
+                "parameterUnits",
+                "stepRange",
+                "uvRelativeToGrid",
+                "shapeOfTheEarth",
+                "orientationOfTheGridInDegrees",
+                "southPoleOnProjectionPlane",
+                "LaDInDegrees",
+                "LoVInDegrees",
+                "Latin1InDegrees",
+                "Latin2InDegrees",
+            ],
         )
         backend_kwargs.setdefault("errors", "raise")
 
@@ -1139,20 +1145,20 @@ class Herbie:
             backend_kwargs=backend_kwargs,
         )
 
-        # Get CF grid projection information with pygrib and pyproj because
-        # this is something cfgrib doesn't do (https://github.com/ecmwf/cfgrib/issues/251)
-        # NOTE: Assumes the projection is the same for all variables
-        # TODO: Issues with pygrib in tests. Segmentation Fault. Is it Numpy 2???
-        use_pygrib = False
-        if use_pygrib:
-            with pygrib.open(str(local_file)) as grb:
-               msg = grb.message(1)
-               cf_params = CRS(msg.projparams).to_cf()
+        for ds in Hxr:
+            # Need model attribute before using get_cf_crs
+            ds.attrs["model"] = str(self.model)
 
-            #grb = pygrib.open(str(local_file))
-            #msg = grb.message(1)
-            #cf_params = CRS(msg.projparams).to_cf()
-            #grb.close()
+        # Get CF convention coordinate reference system (crs) information.
+        # NOTE: Assumes the projection is the same for all variables.
+        if _use_pygrib_for_crs:
+            # Get CF grid projection information with pygrib and pyproj because
+            # this is something cfgrib doesn't do (https://github.com/ecmwf/cfgrib/issues/251)
+            import pygrib
+
+            with pygrib.open(str(local_file)) as grb:
+                msg = grb.message(1)
+                cf_params = CRS(msg.projparams).to_cf()
 
             # Funny stuff with polar stereographic (https://github.com/pyproj4/pyproj/issues/856)
             # TODO: Is there a better way to handle this? What about south pole?
@@ -1161,7 +1167,7 @@ class Herbie:
                     "latitude_of_projection_origin", 90
                 )
         else:
-            cf_params = {}
+            cf_params = get_cf_crs(Hxr[0])
 
         # Here I'm looping over each dataset in the list returned by cfgrib
         for ds in Hxr:

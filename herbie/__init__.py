@@ -205,3 +205,4 @@ from herbie.core import Herbie
 from herbie.fast import FastHerbie
 from herbie.latest import HerbieLatest, HerbieWait
 from herbie.wgrib2 import wgrib2
+from herbie.accessors import HerbieAccessor
