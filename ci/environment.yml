@@ -5,22 +5,26 @@ name: herbie-test
 channels:
   - conda-forge
 dependencies:
+  # Binaries
   - curl
   - eccodes
   - geos
   - proj
+  - python
 
+  # Python requirements
   - cartopy
-  - cfgrib>=0.9
-  - matplotlib>=3.8.2
+  - cfgrib
+  - matplotlib
   - metpy
-  - numpy>=1.26.2
-  - pandas>=2.1.4
+  - numpy
+  - pandas
   - pyproj
-  - requests>=2.31.0
+  - requests
   - scikit-learn
   - toml
-  - xarray>=2023.12.0
+  - xarray
 
+  # Testing
   - pytest
-  - pytest-conv
+  - pytest-cov
