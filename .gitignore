@@ -43,3 +43,5 @@ herbie/_version.py
 
 *.pkl
 .coverage
+
+.ruff_cache/

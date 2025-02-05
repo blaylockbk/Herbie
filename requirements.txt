@@ -4,7 +4,7 @@ matplotlib
 metpy
 numpy
 pandas
-pygrib
+pyproj
 scikit-learn
 toml
 xarray

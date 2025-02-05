@@ -14,6 +14,7 @@ import os
 import requests
 import pandas as pd
 
+
 now = datetime.now()
 today = datetime(now.year, now.month, now.day, now.hour) - timedelta(hours=6)
 yesterday = today - timedelta(days=1)
@@ -108,7 +109,7 @@ def test_do_not_remove_file():
 
 
 @pytest.mark.skipif(wgrib2 is None, reason="wgrib2 not installed")
-def test_make_idx_with_wgrib():
+def test_make_idx_with_wgrib2():
     H = Herbie(
         "2022-12-13 6:00",
         model="hrrr",
@@ -126,20 +127,6 @@ def test_make_idx_with_wgrib():
     df = H.inventory()
     assert len(df), "Length of index file is 0."
     assert H.idx_source == "generated", "Doesn't look like a generated idx file."
-
-
-@pytest.mark.skipif(wgrib2 is None, reason="wgrib2 not installed")
-def test_create_idx_with_wgrib2():
-    """Test that Herbie can make an index file with wgrib2 when an index file is not found"""
-    H = Herbie(
-        today_str,
-        model="hrrr",
-        product="sfc",
-        save_dir=save_dir,
-    )
-    H.download()
-    H.idx = None
-    assert len(H.index_as_dataframe) > 0
 
 
 # ===========================

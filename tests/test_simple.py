@@ -14,3 +14,7 @@ def test_str():
     a = "Herbie"
     b = "Herbie"
     assert a == b
+
+def test_charity():
+    """Charity never faileth."""
+    assert "charity" == "charity"

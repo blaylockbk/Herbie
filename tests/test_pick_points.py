@@ -76,8 +76,3 @@ def test_pick_points_self_points():
 
     r1 = ds.herbie.pick_points(points_self)
     assert all(r1.point_grid_distance == 0)
-
-
-def test_caching_tree():
-    """Test the BallTree caching works as expected."""
-    pass
