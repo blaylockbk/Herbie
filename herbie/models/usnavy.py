@@ -24,16 +24,78 @@ class navgem_godae:
             "godae": "https://usgodae.org/",
             "filename_description": "https://usgodae.org/docs/layout/mdllayout.pns.html",
         }
-        self.PRODUCTS = {
-            "GMET": "",
-            "GLND": "",
-            "GCOM": "",
+
+        if self.variable == "HGT:surface":
+            # Special case for terrain height
+            self.PRODUCTS = {
+                "GLND": "Land fields (terrain)",
+            }
+        else:
+            self.PRODUCTS = {
+                "GMET": "Meteorological fields",
+                "GLND": "Land fields (terrain)",
+                "GOCN": "Ocean fields",
+                "GCOM": "?",
+            }
+
+        # Facilitate familiar shortcuts using wgrib2-style terms to allow
+        # - `variable='TMP:2 m'`
+        # - `variable='TMP:500 mb'`
+        # - `variable='UGRD:10 m'`
+        # - `variable='SNOD:surface'`
+        # See https://usgodae.org/docs/layout/pn_level_type_tbl.pns.html
+        # See https://codes.ecmwf.int/grib/format/grib1/level/3/
+
+        # Map of wgrib2 variable names to GODAE variable names
+        variable_map = {
+            "TMP": "air_temp",  # Air temperature
+            "DEPR": "dwpt_dprs",  # Dew point depression
+            "ABSV": "abs_vort",  # Absolute vorticity
+            "RH": "rltv_hum",  # Relative Humidity
+            "PRES": "pres",  # Pressure
+            "UGRD": "wnd_ucmp",  # Wind u-component
+            "VGRD": "wnd_vcmp",  # Wind v-component
+            "HGT": "geop_ht",  # Geopotential height
+            "VAPP": "vpr_pres",  # Vapor pressure
+            "VVEL": "wnd_vert_vel",  # Vertical velocity
+            "CAPE": "cape",  # CAPE
+            "VIS": "visib",  # Visibility
+            "PWAT": "prcp_h20",  # Precipitable water (use PWAT:surface)
+            "PRATE": "rain_rate",  # Precipitation rate
+            "SHTFL": "snsb_heat_flux",  # Sensible heat flux
+            "SNOD": "snw_dpth",  # Snow depth
+            "NSWRS": "sol_rad",  # Net short-wave radiation flux
+            "UFLX": "wnd_strs_ucmp",  # Momentum flux, u-component
+            "VFLX": "wnd_strs_vcmp",  # Momentum flux, v-component
+            "PRMSL": "pres_msl",  # Mean sea level pressure
         }
 
-        # Please review https://usgodae.org/docs/layout/mdllayout.pns.html
+        if ":" in self.variable:
+            var, lev = self.variable.split(":", maxsplit=1)
+            self.variable = variable_map.get(var)
+            if var == "HGT" and lev == "surface":
+                self.level = "0001_000000-000000"
+                self.variable = "terr_ht"
+            elif var in {"MSLMA", "PRMSL"}:
+                self.level = "0102_000000-000000"
+            elif lev.endswith("mb"):
+                lev = int(lev.strip("mb").strip())
+                self.level = f"0100_{lev:06d}-000000"
+            elif lev == "2 m":
+                self.level = "0105_000020-000000"
+            elif lev == "10 m":
+                self.level = "0105_000100-000000"
+            elif lev == "surface":
+                self.level = "0001_000000-000000"
+            elif lev in {"0C", "0C isotherm"}:
+                self.level = "0006_000000-000000"
+            elif lev in {"tropopause"}:
+                self.level = "0007_000000-000000"
+
         self.SOURCES = {
             "navgem": f"https://usgodae.org/ftp/outgoing/fnmoc/models/navgem_0.5/{self.date:%Y/%Y%m%d%H}/US058{self.product}-GR1mdl.0018_0056_{self.fxx:03d}00F0RL{self.date:%Y%m%d%H}_{self.level}{self.variable}",
             "nogaps": f"https://usgodae.org/ftp/outgoing/fnmoc/models/nogaps/{self.date:%Y/%Y%m%d%H}/US058{self.product}-GR1mdl.0058_0240_{self.fxx:03d}00F0RL{self.date:%Y%m%d%H}_{self.level}{self.variable}",
+            "navgem grib2": f"https://usgodae.org/ftp/outgoing/fnmoc/models/navgem_0.5/{self.date:%Y/%Y%m%d%H}/US058{self.product}-GR2mdl.0018_0056_{self.fxx:03d}00F0RL{self.date:%Y%m%d%H}_{self.level}{self.variable}.gr2",
         }
         self.LOCALFILE = f"{self.get_remoteFileName}"
 

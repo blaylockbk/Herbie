@@ -1,10 +1,10 @@
-## Used to test Herbie install from PyPI
+## Used to test Herbie GitHub Actions for windows
 
 name: herbie-test
 channels:
   - conda-forge
 dependencies:
-  - python>=3.8
+  - python>=3.12
   - pip
 
   #==============

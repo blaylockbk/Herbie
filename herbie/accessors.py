@@ -18,7 +18,6 @@ from typing import Literal, Optional, Union
 
 import numpy as np
 import pandas as pd
-import pygrib
 import xarray as xr
 from pyproj import CRS
 
@@ -56,6 +55,10 @@ _level_units = dict(
 
 def add_proj_info(ds: xr.Dataset):
     """Add projection info to a Dataset."""
+    raise NotImplementedError("This function `add_proj_info` is not yet implemented.")
+
+    # TODO: remove pyproj dependency
+
     match = re.search(r'"source": "(.*?)"', ds.history)
     FILE = Path(match.group(1))
 
