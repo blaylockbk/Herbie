@@ -5,7 +5,7 @@ import pytest
 import xarray as xr
 import random
 import string
-
+import numpy as np
 from herbie import Herbie
 
 ds1 = Herbie("2024-03-01 00:00", model="hrrr").xarray("TMP:[5,6,7,8,9][0,5]0 mb")
@@ -46,6 +46,59 @@ def test_pick_points_simple():
         },
     )
     point = pd.DataFrame({"latitude": [45.25], "longitude": [100.25]})
+
+    p = ds.herbie.pick_points(point, method="nearest", k=1)
+    assert all(
+        [
+            p.latitude.item() == 45,
+            p.longitude.item() == 100,
+            p.point_grid_distance.round(2).item() == 34.02,
+            p.point_latitude.item() == 45.25,
+            p.point_longitude.item() == 100.25,
+            p.a.item() == 1,
+        ]
+    )
+
+
+def test_pick_points_nans_in_grid():
+    """Tests when there are null values in the xarray dataset."""
+    ds = xr.Dataset(
+        {
+            "a": (
+                ["latitude", "longitude"],
+                [[1, 0, np.nan], [0, 0, np.nan], [0, 1, np.nan]],
+            )
+        },
+        coords={
+            "latitude": (["latitude"], [45, 46, 47]),
+            "longitude": (["longitude"], [100, 101, 102]),
+        },
+    )
+    point = pd.DataFrame({"latitude": [45.25], "longitude": [100.25]})
+
+    p = ds.herbie.pick_points(point, method="nearest", k=1)
+    assert all(
+        [
+            p.latitude.item() == 45,
+            p.longitude.item() == 100,
+            p.point_grid_distance.round(2).item() == 34.02,
+            p.point_latitude.item() == 45.25,
+            p.point_longitude.item() == 100.25,
+            p.a.item() == 1,
+        ]
+    )
+
+
+def test_pick_points_pd_index_off():
+    """Test a very simple grid."""
+    ds = xr.Dataset(
+        {"a": (["latitude", "longitude"], [[1, 0], [0, 0]])},
+        coords={
+            "latitude": (["latitude"], [45, 46]),
+            "longitude": (["longitude"], [100, 101]),
+        },
+    )
+    point = pd.DataFrame({"latitude": [45.25], "longitude": [100.25]}, index=[200])
 
     p = ds.herbie.pick_points(point, method="nearest", k=1)
     assert all(
