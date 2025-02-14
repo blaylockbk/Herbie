@@ -53,44 +53,6 @@ _level_units = dict(
 )
 
 
-def add_proj_info(ds: xr.Dataset):
-    """Add projection info to a Dataset."""
-    raise NotImplementedError("This function `add_proj_info` is not yet implemented.")
-
-    # TODO: remove pyproj dependency
-
-    match = re.search(r'"source": "(.*?)"', ds.history)
-    FILE = Path(match.group(1))
-
-    # Get CF grid projection information with pygrib and pyproj because
-    # this is something cfgrib doesn't do (https://github.com/ecmwf/cfgrib/issues/251)
-    # NOTE: Assumes the projection is the same for all variables
-    with pygrib.open(str(FILE)) as grb:
-        msg = grb.message(1)
-        cf_params = CRS(msg.projparams).to_cf()
-
-    # Funny stuff with polar stereographic (https://github.com/pyproj4/pyproj/issues/856)
-    # TODO: Is there a better way to handle this? What about south pole?
-    if cf_params["grid_mapping_name"] == "polar_stereographic":
-        cf_params["latitude_of_projection_origin"] = cf_params.get(
-            "latitude_of_projection_origin", 90
-        )
-
-    # ----------------------
-    # Attach CF grid mapping
-    # ----------------------
-    # http://cfconventions.org/Data/cf-conventions/cf-conventions-1.8/cf-conventions.html#appendix-grid-mappings
-    ds["gribfile_projection"] = None
-    ds["gribfile_projection"].attrs = cf_params
-    ds["gribfile_projection"].attrs["long_name"] = "model grid projection"
-
-    # Assign this grid_mapping for all variables
-    for var in list(ds):
-        if var == "gribfile_projection":
-            continue
-        ds[var].attrs["grid_mapping"] = "gribfile_projection"
-
-
 @xr.register_dataset_accessor("herbie")
 class HerbieAccessor:
     """Accessor for xarray Datasets opened with Herbie."""

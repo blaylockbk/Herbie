@@ -160,14 +160,14 @@ class Herbie:
 
     def __init__(
         self,
-        date: Optional[Datetime] = None,
+        date: Datetime | None = None,
         *,
-        valid_date: Optional[Datetime] = None,
+        valid_date: Datetime | None = None,
         model: str = config["default"].get("model"),
         fxx: int = config["default"].get("fxx"),
         product: str = config["default"].get("product"),
-        priority: Union[str, list[str]] = config["default"].get("priority"),
-        save_dir: Union[Path, str] = config["default"].get("save_dir"),
+        priority: str | list[str] = config["default"].get("priority"),
+        save_dir: Path | str = config["default"].get("save_dir"),
         overwrite: bool = config["default"].get("overwrite", False),
         verbose: bool = config["default"].get("verbose", True),
         **kwargs,
@@ -175,21 +175,24 @@ class Herbie:
         """Specify model output and find GRIB2 file at one of the sources."""
         self.fxx = fxx
 
-        if isinstance(self.fxx, (str, pd.Timedelta)):
+        if isinstance(self.fxx, str | pd.Timedelta):
             # Convert pandas-parsable timedelta string to int in hours.
             self.fxx = pd.to_timedelta(fxx).round("1h").total_seconds() / 60 / 60
             self.fxx = int(self.fxx)
 
-        if date:
-            # User supplied `date`, which is the model initialization datetime.
-            self.date = pd.to_datetime(date)
-            self.valid_date = self.date + timedelta(hours=self.fxx)
-        elif valid_date:
-            # User supplied `valid_date`, which is the model valid datetime.
-            self.valid_date = pd.to_datetime(valid_date)
-            self.date = self.valid_date - timedelta(hours=self.fxx)
-        else:
-            raise ValueError("Must specify either `date` or `valid_date`")
+        match (date, valid_date):
+            case (date, None):
+                # User supplied `date`, which is the model initialization datetime.
+                self.date = pd.to_datetime(date)
+                self.valid_date = self.date + timedelta(hours=self.fxx)
+            case (None, valid_date):
+                # User supplied `valid_date`, which is the model valid datetime.
+                self.valid_date = pd.to_datetime(valid_date)
+                self.date = self.valid_date - timedelta(hours=self.fxx)
+            case _:
+                raise ValueError(
+                    "Must specify either `date` or `valid_date`, but not both"
+                )
 
         self.model = model.lower()
         self.product = product
@@ -820,13 +823,13 @@ class Herbie:
 
     def download(
         self,
-        search: Optional[str] = None,
+        search: str | None = None,
         *,
         searchString=None,
-        source: Optional[str] = None,
-        save_dir: Optional[Union[str, Path]] = None,
-        overwrite: Optional[bool] = None,
-        verbose: Optional[bool] = None,
+        source: str | None = None,
+        save_dir: str | Path | None = None,
+        overwrite: bool | None = None,
+        verbose: bool | None = None,
         errors: Literal["warn", "raise"] = "warn",
     ) -> Path:
         """
@@ -897,6 +900,7 @@ class Herbie:
                 # The GRIB source is local. Curl the local file
                 # See https://stackoverflow.com/a/21023161/2383070
                 grib_source = f"file://{str(self.grib)}"
+
             if verbose:
                 print(
                     f"📇 Download subset: {self.__repr__()}{' ':60s}\n cURL from {grib_source}"
@@ -909,10 +913,12 @@ class Herbie:
 
             # Find index groupings
             idx_df = self.inventory(search).copy()
+
             if verbose:
                 print(
                     f"Found {ANSI.bold}{ANSI.green}{len(idx_df)}{ANSI.reset} grib messages."
                 )
+
             idx_df["download_groups"] = idx_df.grib_message.diff().ne(1).cumsum()
 
             # cURL subsets of each group
@@ -1008,6 +1014,7 @@ class Herbie:
                 return  # Can't download anything without a GRIB file URL.
             elif errors == "raise":
                 raise ValueError(msg)
+
         if self.idx is None and search is not None:
             msg = f"🦨 Index file not found; cannot download subset: {self.model=} {self.date=} {self.fxx=}"
             if errors == "warn":
@@ -1051,14 +1058,15 @@ class Herbie:
 
     def xarray(
         self,
-        search: Optional[str] = None,
+        search: str | None = None,
         *,
-        searchString=None,
+        searchString: str | None = None,
         backend_kwargs: dict = {},
         remove_grib: bool = True,
+        simple_load: bool = False,
         _use_pygrib_for_crs: bool = False,
         **download_kwargs,
-    ) -> xr.Dataset:
+    ) -> xr.Dataset | list[xr.Dataset]:
         """
         Open GRIB2 data as xarray DataSet.
 
@@ -1069,6 +1077,9 @@ class Herbie:
         remove_grib : bool
             If True, grib file will be removed ONLY IF it didn't exist
             before we downloaded it.
+        simple_load : bool
+            If True, return xarray Datasets returned by cfgrib without
+            extra processing (e.g. adding additional attributes).
         _use_pygrib_for_crs : bool
             If you have pygrib, you can use it to extract the CRS
             information instead of using values extracted from cfgrib
@@ -1145,29 +1156,20 @@ class Herbie:
             backend_kwargs=backend_kwargs,
         )
 
+        if simple_load:
+            if len(Hxr) == 1:
+                return Hxr[0]
+            else:
+                return Hxr
+
         for ds in Hxr:
             # Need model attribute before using get_cf_crs
             ds.attrs["model"] = str(self.model)
+            ds.attrs["local_file"] = str(local_file)
 
         # Get CF convention coordinate reference system (crs) information.
         # NOTE: Assumes the projection is the same for all variables.
-        if _use_pygrib_for_crs:
-            # Get CF grid projection information with pygrib and pyproj because
-            # this is something cfgrib doesn't do (https://github.com/ecmwf/cfgrib/issues/251)
-            import pygrib
-
-            with pygrib.open(str(local_file)) as grb:
-                msg = grb.message(1)
-                cf_params = CRS(msg.projparams).to_cf()
-
-            # Funny stuff with polar stereographic (https://github.com/pyproj4/pyproj/issues/856)
-            # TODO: Is there a better way to handle this? What about south pole?
-            if cf_params["grid_mapping_name"] == "polar_stereographic":
-                cf_params["latitude_of_projection_origin"] = cf_params.get(
-                    "latitude_of_projection_origin", 90
-                )
-        else:
-            cf_params = get_cf_crs(Hxr[0])
+        cf_params = get_cf_crs(Hxr[0], use_pygrib=_use_pygrib_for_crs)
 
         # Here I'm looping over each dataset in the list returned by cfgrib
         for ds in Hxr:

@@ -12,8 +12,12 @@ import xarray as xr
 
 
 def get_cf_crs(
-    ds: "xr.Dataset", variable: str | None = None, _return_projparams=False
-) -> dict[str, Any]:
+    ds: "xr.Dataset",
+    variable: str | None = None,
+    *,
+    use_pygrib: bool = False,
+    _return_projparams: bool = False,
+) -> dict:
     """
     Extract the CF coordinate reference system (CRS) from a cfgrib xarray dataset.
 
@@ -22,66 +26,100 @@ def get_cf_crs(
     additional grib package dependency. I had issues with pygrib after
     it was updated to support Numpy version 2, so thought it would be
     best to code this in Herbie. This may be incomplete.
+
+
+    Parameters
+    ----------
+    ds : xr.Dataset
+        An xarray dataset with cfgrib variables.
+    variable : str, optional
+        The variable to extract the CRS from. If None, the first variable
+        in the dataset will be used. Default is None.
+    use_pygrib : bool, optional
+        Use pygrib to extract the CRS. Default is False.
+    _return_projparams : bool, optional
+        Return the projparams dictionary instead of the CF dictionary.
+        Default is False.
     """
-    # Assume the first variable in the Dataset has the same grid crs
-    # as all other variables in the Dataset.
-    if variable is None:
-        variable = next(iter(ds.data_vars))
-    da = ds[variable]
+    if use_pygrib:
+        # Get CF grid projection information with pygrib and pyproj because
+        # this is something cfgrib doesn't do (https://github.com/ecmwf/cfgrib/issues/251)
+        import pygrib
 
-    # Shape of the Earth reference system
-    # https://codes.ecmwf.int/grib/format/grib2/ctables/3/2/
-    shapeOfTheEarth = da.GRIB_shapeOfTheEarth
-    if shapeOfTheEarth == 0:
-        # Earth assumed spherical with radius = 6 367 470.0 m
-        a = 6_367_470
-        b = 6_367_470
-    elif shapeOfTheEarth == 1 and ds.attrs["model"] == "graphcast":
-        # Earth assumed spherical with radius specified (in m) by data producer
-        # TODO: Why is model='graphcast' using this value?
-        a = 4326.0
-        b = 4326.0
-    elif shapeOfTheEarth == 1 and ds.attrs["model"] in ["urma", "rtma"]:
-        # Earth assumed spherical with radius specified (in m) by data producer
-        # TODO: Why is urma and rtma using this value?
-        a = 6371200.0
-        b = 6371200.0
-    elif shapeOfTheEarth == 6:
-        # Earth assumed spherical with radius of 6,371,229.0 m
-        a = 6_371_229
-        b = 6_371_229
+        with pygrib.open(ds.attrs['local_file']) as grb:
+            msg = grb.message(1)
+            projparams = msg.projparams
 
-    # Grid type definition
-    # https://codes.ecmwf.int/grib/format/grib2/ctables/3/1/
-    if da.GRIB_gridType == "lambert":
-        projparams = {"proj": "lcc"}
-        projparams["a"] = a
-        projparams["b"] = b
-        projparams["lon_0"] = da.GRIB_LoVInDegrees
-        projparams["lat_0"] = da.GRIB_LaDInDegrees
-        projparams["lat_1"] = da.GRIB_Latin1InDegrees
-        projparams["lat_2"] = da.GRIB_Latin2InDegrees
-
-    elif da.GRIB_gridType == "regular_ll":
-        projparams = {"proj": "longlat"}
-        projparams["a"] = a
-        projparams["b"] = b
-
-    elif da.GRIB_gridType == "regular_gg":
-        projparams = {"proj": "longlat"}
-        projparams["a"] = a
-        projparams["b"] = b
-
-    elif da.GRIB_gridType == "polar_stereographic":
-        projparams = {"proj": "stere"}
-        projparams["a"] = a
-        projparams["b"] = b
-        projparams["lat_ts"] = da.GRIB_LaDInDegrees
-        projparams["lat_0"] = 90
-        projparams["lon_0"] = da.GRIB_orientationOfTheGridInDegrees
-
+        # Funny stuff with polar stereographic (https://github.com/pyproj4/pyproj/issues/856)
+        # TODO: Is there a better way to handle this? What about south pole?
+        #if cf_params["grid_mapping_name"] == "polar_stereographic":
+        #    cf_params["latitude_of_projection_origin"] = cf_params.get(
+        #        "latitude_of_projection_origin", 90
+        #    )
+        
     else:
-        raise NotImplementedError(f"gridType {da.GRIB_gridType} is not implemented.")
+        # Assume the first variable in the Dataset has the same grid crs
+        # as all other variables in the Dataset.
+        if variable is None:
+            variable = next(iter(ds.data_vars))
+        da = ds[variable]
+
+        # Shape of the Earth reference system
+        # https://codes.ecmwf.int/grib/format/grib2/ctables/3/2/
+        shapeOfTheEarth = da.GRIB_shapeOfTheEarth
+        match shapeOfTheEarth:
+            case 0:
+                # Earth assumed spherical with radius = 6 367 470.0 m
+                a = 6_367_470
+                b = 6_367_470
+            case 1 if ds.attrs["model"] == "graphcast":
+                # Earth assumed spherical with radius specified (in m) by data producer
+                # TODO: Why is model='graphcast' using this value?
+                a = 4_326.0
+                b = 4_326.0
+            case 1 if ds.attrs["model"] in ["urma", "rtma"]:
+                # Earth assumed spherical with radius specified (in m) by data producer
+                # TODO: Why is urma and rtma using this value?
+                a = 6_371_200.0
+                b = 6_371_200.0
+            case 6:
+                # Earth assumed spherical with radius of 6,371,229.0 m
+                a = 6_371_229
+                b = 6_371_229
+            case _:
+                raise ValueError(
+                    f"Unsupported parameters {shapeOfTheEarth=} {ds.attrs.get('model')=}"
+                )
+
+        # Grid type definition
+        # https://codes.ecmwf.int/grib/format/grib2/ctables/3/1/
+        match da.GRIB_gridType:
+            case "lambert":
+                projparams = {"proj": "lcc"}
+                projparams["a"] = a
+                projparams["b"] = b
+                projparams["lon_0"] = da.GRIB_LoVInDegrees
+                projparams["lat_0"] = da.GRIB_LaDInDegrees
+                projparams["lat_1"] = da.GRIB_Latin1InDegrees
+                projparams["lat_2"] = da.GRIB_Latin2InDegrees
+
+            case "regular_ll" | "regular_gg":
+                projparams = {"proj": "longlat"}
+                projparams["a"] = a
+                projparams["b"] = b
+
+            case "polar_stereographic":
+                projparams = {"proj": "stere"}
+                projparams["a"] = a
+                projparams["b"] = b
+                projparams["lat_ts"] = da.GRIB_LaDInDegrees
+                projparams["lat_0"] = 90
+                projparams["lon_0"] = da.GRIB_orientationOfTheGridInDegrees
+
+            case _:
+                raise NotImplementedError(
+                    f"gridType {da.GRIB_gridType} is not implemented."
+                )
 
     if _return_projparams:
         return projparams
