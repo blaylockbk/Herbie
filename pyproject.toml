@@ -100,3 +100,6 @@ log_level = "DEBUG"
 testpaths = ["tests"]
 xfail_strict = true
 markers = []
+
+[project.scripts]
+herbie = "herbie.cli:main"
