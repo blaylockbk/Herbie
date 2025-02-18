@@ -10,6 +10,16 @@
         "url": "https://herbie.readthedocs.io/en/stable/"
     },
     {
+        "name": "2025.2.1",
+        "version": "2025.2.1",
+        "url": "https://herbie.readthedocs.io/en/2025.2.1/"
+    },
+    {
+        "name": "2024.8.0",
+        "version": "2024.8.0",
+        "url": "https://herbie.readthedocs.io/en/2024.8.0/"
+    },
+    {
         "name": "2024.5.0",
         "version": "2024.5.0",
         "url": "https://herbie.readthedocs.io/en/2024.5.0/"
