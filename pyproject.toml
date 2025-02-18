@@ -31,8 +31,8 @@ keywords = [
 ]
 dependencies = [
     "cfgrib>=0.9.15",
-    "numpy>=2.2.1",
-    "pandas>=2.2.3",
+    "numpy>=1.24",
+    "pandas>=2.1",
     "pyproj>=3.7.0",
     "requests>=2.23.3",
     "toml>=0.10.2",  # TODO: Drop in favor of tomllib when Python >=3.11 is required.
@@ -48,7 +48,7 @@ dynamic = ["version"]
 "Bug Tracker" = "https://github.com/blaylockbk/Herbie/issues"
 
 [project.optional-dependencies]
-extras = ["cartopy", "metpy", "scikit-learn"]
+extras = ["cartopy", "matplotlib", "metpy", "scikit-learn"]
 test = ["pytest", "pytest-cov", "ruff"]
 pygrib = ["pygrib"]
 docs = [
