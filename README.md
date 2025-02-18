@@ -34,20 +34,22 @@
 
 Herbie helps you discover, download, and read data from:
 
-- [High Resolution Rapid Refresh (HRRR)](https://herbie.readthedocs.io/en/latest/user_guide/_model_notebooks/hrrr.html) | [HRRR-Alaska](https://herbie.readthedocs.io/en/latest/user_guide/_model_notebooks/hrrrak.html)
-- [Rapid Refresh (RAP)](https://herbie.readthedocs.io/en/latest/user_guide/_model_notebooks/rap.html)
-- [Global Forecast System (GFS)](https://herbie.readthedocs.io/en/latest/user_guide/_model_notebooks/gfs.html)
-- [Global Ensemble Forecast System (GEFS)](https://herbie.readthedocs.io/en/latest/user_guide/_model_notebooks/gefs.html)
-- [ECMWF Open Data Forecasts](https://herbie.readthedocs.io/en/latest/user_guide/_model_notebooks/ecmwf.html) (IFS and AIFS)
-- [Navy Global Environmental Model (NAVGEM)](https://herbie.readthedocs.io/en/latest/user_guide/_model_notebooks/navgem.html)
-- [North American Mesoscale Model (NAM)](https://github.com/blaylockbk/Herbie/blob/main/docs/user_guide/_model_notebooks/nam.ipynb)
-- [National Blend of Models (NBM)](https://herbie.readthedocs.io/en/latest/user_guide/_model_notebooks/nbm.html)
-- [Rapid Refresh Forecast System (RRFS)](https://herbie.readthedocs.io/en/latest/user_guide/_model_notebooks/rrfs.html) _prototype_
-- [Real-Time/Un-Restricted Mesoscale Analysis (RTMA/URMA)](https://herbie.readthedocs.io/en/latest/user_guide/_model_notebooks/rtma.html)
-- [Hurricane Analysis And Forecast System (HAFS)](https://herbie.readthedocs.io/en/latest/user_guide/_model_notebooks/hafs.html)
-- [High Resolution Deterministic Prediction System (HRDPS)](https://herbie.readthedocs.io/en/latest/user_guide/_model_notebooks/hrdps.html)
+- [High Resolution Rapid Refresh (HRRR)](https://herbie.readthedocs.io/en/latest/gallery/noaa_models/hrrr.html) | [HRRR-Alaska](https://herbie.readthedocs.io/en/latest/gallery/noaa_models/hrrrak.html)
+- [Rapid Refresh (RAP)](https://herbie.readthedocs.io/en/latest/gallery/noaa_models/rap.html)
+- [Global Forecast System (GFS)](https://herbie.readthedocs.io/en/latest/gallery/noaa_models/gfs.html)
+- [Global Ensemble Forecast System (GEFS)](https://herbie.readthedocs.io/en/latest/gallery/noaa_models/gefs.html)
+- [ECMWF Open Data Forecasts](https://herbie.readthedocs.io/en/latest/gallery/ecmwf_models/ecmwf.html) (IFS and AIFS)
+- [Navy Global Environmental Model (NAVGEM)](https://herbie.readthedocs.io/en/latest/gallery/usnavy_models/navgem.html)
+- [North American Mesoscale Model (NAM)](https://herbie.readthedocs.io/en/latest/gallery/noaa_models/nam.html)
+- [National Blend of Models (NBM)](https://herbie.readthedocs.io/en/latest/gallery/noaa_models/nbm.html)
+- [Rapid Refresh Forecast System (RRFS)](https://herbie.readthedocs.io/en/latest/gallery/noaa_models/rrfs.html) _prototype_
+- [Real-Time/Un-Restricted Mesoscale Analysis (RTMA/URMA)](https://herbie.readthedocs.io/en/latest/gallery/noaa_models/rtma-urma.html)
+- [Hurricane Analysis And Forecast System (HAFS)](https://herbie.readthedocs.io/en/latest/gallery/noaa_models/hafs.html)
+- [High Resolution Deterministic Prediction System (HRDPS)](https://herbie.readthedocs.io/en/latest/gallery/eccc_models/hrdps.html)
+- [Climate Forecast System (CFS)](https://herbie.readthedocs.io/en/latest/gallery/noaa_models/cfs.html)
+- and more! Check out the [gallery](https://herbie.readthedocs.io/en/latest/gallery/index.html).
 
-Much of this data is made available through the [NOAA Open Data Dissemination](https://www.noaa.gov/information-technology/open-data-dissemination) (NODD) program (formerly the Big Data Program) which has made weather data more accessible than ever before.
+Much of this data is made available through the [NOAA Open Data Dissemination](https://www.noaa.gov/information-technology/open-data-dissemination) (NODD) program which has made weather data more accessible than ever before.
 
 ## Installation
 
