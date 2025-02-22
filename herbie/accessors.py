@@ -394,7 +394,7 @@ class HerbieAccessor:
             print("INFO: 🌱 Growing new BallTree...", end="")
             tree = BallTree(np.deg2rad(df_grid), metric="haversine")
             print(
-                f"🌳 BallTree grew in {(pd.Timestamp('now')-timer).total_seconds():.2} seconds."
+                f"🌳 BallTree grew in {(pd.Timestamp('now') - timer).total_seconds():.2} seconds."
             )
             if save_pickle:
                 try:
@@ -512,7 +512,7 @@ class HerbieAccessor:
 
             a = pd.concat(
                 [
-                    a,
+                    a.reset_index(drop=True),
                     df_grid.iloc[a.grid_index]
                     .add_suffix("_grid")
                     .reset_index(drop=True),
@@ -534,8 +534,8 @@ class HerbieAccessor:
             # Get corresponding values from xarray
             # https://docs.xarray.dev/en/stable/user-guide/indexing.html#more-advanced-indexing
             ds_points = ds.sel(
-                x=a.x_grid.to_xarray(),
-                y=a.y_grid.to_xarray(),
+                x=a.x_grid.to_xarray().dropna("point").astype("int"),
+                y=a.y_grid.to_xarray().dropna("point").astype("int"),
             )
             ds_points.coords["point_grid_distance"] = a.point_grid_distance.to_xarray()
             ds_points["point_grid_distance"].attrs["long_name"] = (
@@ -848,7 +848,7 @@ class HerbieAccessor:
 
             VALID = pd.to_datetime(ds.valid_time.data).strftime("%H:%M UTC %d %b %Y")
             RUN = pd.to_datetime(ds.time.data).strftime("%H:%M UTC %d %b %Y")
-            FXX = f"F{pd.to_timedelta(ds.step.data).total_seconds()/3600:02.0f}"
+            FXX = f"F{pd.to_timedelta(ds.step.data).total_seconds() / 3600:02.0f}"
 
             level_type = ds[var].GRIB_typeOfLevel
             if level_type in _level_units:
