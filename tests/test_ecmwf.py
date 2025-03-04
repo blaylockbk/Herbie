@@ -52,3 +52,9 @@ def test_ifs_xarray(date, filter):
 def test_aifs_yesterday():
     H = Herbie(yesterday, model="aifs", save_dir=save_dir, overwrite=True)
     H.xarray(":10(?:u|v):")
+
+
+def test_ifs_from_azure():
+    H = Herbie("2024-12-15", model="ifs", priority="azure")
+    assert H.grib
+    assert H.idx
