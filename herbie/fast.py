@@ -313,7 +313,8 @@ class FastHerbie:
                     hypercubes[hypercube].append(ds_hypercube)
             elif isinstance(ds, xr.Dataset):
                 log.debug(f"Single hypercube found")
-                hypercube = ds[ds.data_vars[0]].attrs.get('GRIB_typeOfLevel')
+                data_var = list(ds.data_vars)[0]
+                hypercube = ds[data_var].attrs.get('GRIB_typeOfLevel')
                 if hypercube not in hypercubes:
                     hypercubes[hypercube] = []
                 hypercubes[hypercube].append(ds)
