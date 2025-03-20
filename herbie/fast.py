@@ -283,15 +283,12 @@ class FastHerbie:
             # Multithread the downloads
             # ! Only works sometimes
             # ! I get this error: "'EntryPoint' object has no attribute '_key'""
-
             threads = min(self.tasks, max_threads)
             log.info(f"🧵 Working on {self.tasks} tasks with {threads} threads.")
-
             with ThreadPoolExecutor(max_threads) as exe:
                 futures = [
                     exe.submit(H.xarray, **xarray_kwargs) for H in self.file_exists
                 ]
-
                 # Return list of Herbie objects in order completed
                 ds_list = [future.result() for future in as_completed(futures)]
         else:
@@ -309,7 +306,7 @@ class FastHerbie:
                     data_var = list(ds_hypercube.data_vars)[0]
                     hypercube = ds_hypercube[data_var].attrs.get('GRIB_typeOfLevel')
                     hypercube_level_value = ds_hypercube[hypercube].values.tolist()
-                    if hypercube not in hypercubes:
+                    if hypercube + "_" + str(hypercube_level_value) not in hypercubes:
                         hypercubes[hypercube + "_" + str(hypercube_level_value)] = []
                     hypercubes[hypercube + "_" + str(hypercube_level_value)].append(ds_hypercube)
             elif isinstance(ds, xr.Dataset):
@@ -317,7 +314,7 @@ class FastHerbie:
                 data_var = list(ds.data_vars)[0]
                 hypercube = ds[data_var].attrs.get('GRIB_typeOfLevel')
                 hypercube_level_value = ds[hypercube].values[0]
-                if hypercube not in hypercubes:
+                if hypercube + "_" + str(hypercube_level_value) not in hypercubes not in hypercubes:
                     hypercubes[hypercube + "_" + str(hypercube_level_value)] = []
                 hypercubes[hypercube + "_" + str(hypercube_level_value)].append(ds)
             else:
@@ -326,13 +323,11 @@ class FastHerbie:
             # Sort the DataSets, first by lead time (step), then by run time (time)
             hypercube_ds_list.sort(key=lambda x: x.step.data.max() if hasattr(x.step, 'data') else 0)
             hypercube_ds_list.sort(key=lambda x: x.time.data.max() if hasattr(x.time, 'data') else 0)
-
             # Reshape list with dimensions (len(DATES), len(fxx))
             hypercube_ds_list = [
                 hypercube_ds_list[x : x + len(self.fxx)]
                 for x in range(0, len(hypercube_ds_list), len(self.fxx))
             ]
-
             # Concat DataSets
             try:
                 ds = xr.combine_nested(hypercube_ds_list,concat_dim=["time", "step"],combine_attrs="drop_conflicts",)
@@ -343,7 +338,6 @@ class FastHerbie:
                     hypercube_ds_list,
                     concat_dim=["time", "step"],
                 )
-
             ds = ds.squeeze()
             hypercubes[type_of_level] = ds
         return list(hypercubes.values())
