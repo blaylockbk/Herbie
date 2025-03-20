@@ -308,16 +308,18 @@ class FastHerbie:
                     # to one and only one type of level.
                     data_var = list(ds_hypercube.data_vars)[0]
                     hypercube = ds_hypercube[data_var].attrs.get('GRIB_typeOfLevel')
+                    hypercube_level_value = ds_hypercube[hypercube].values.tolist()
                     if hypercube not in hypercubes:
-                        hypercubes[hypercube] = []
-                    hypercubes[hypercube].append(ds_hypercube)
+                        hypercubes[hypercube + "_" + str(hypercube_level_value)] = []
+                    hypercubes[hypercube + "_" + str(hypercube_level_value)].append(ds_hypercube)
             elif isinstance(ds, xr.Dataset):
                 log.debug(f"Single hypercube found")
                 data_var = list(ds.data_vars)[0]
                 hypercube = ds[data_var].attrs.get('GRIB_typeOfLevel')
+                hypercube_level_value = ds[hypercube].values[0]
                 if hypercube not in hypercubes:
-                    hypercubes[hypercube] = []
-                hypercubes[hypercube].append(ds)
+                    hypercubes[hypercube + "_" + str(hypercube_level_value)] = []
+                hypercubes[hypercube + "_" + str(hypercube_level_value)].append(ds)
             else:
                 raise NotImplementedError(f"Unknown object type encountered while reading GRIB files with xarray: {ds}")
         for type_of_level, hypercube_ds_list in hypercubes.items():
@@ -333,11 +335,8 @@ class FastHerbie:
 
             # Concat DataSets
             try:
-                ds = xr.combine_nested(
-                    hypercube_ds_list,
-                    concat_dim=["time", "step"],
-                    combine_attrs="drop_conflicts",
-                )
+                ds = xr.combine_nested(hypercube_ds_list,concat_dim=["time", "step"],combine_attrs="drop_conflicts",)
+                ds = xr.combine_nested(hypercube_ds_list,concat_dim=["time"],combine_attrs="drop_conflicts",)
             except Exception:
                 # TODO: I'm not sure why some cases doesn't like the combine_attrs argument
                 ds = xr.combine_nested(
