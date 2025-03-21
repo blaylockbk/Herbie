@@ -314,7 +314,8 @@ class FastHerbie:
                 data_var = list(ds.data_vars)[0]
                 hypercube = ds[data_var].attrs.get('GRIB_typeOfLevel')
                 hypercube_level_value = ds[hypercube].values.tolist()
-                if hypercube + "_" + str(hypercube_level_value) not in hypercubes not in hypercubes:
+                breakpoint()
+                if hypercube + "_" + str(hypercube_level_value) not in hypercubes:
                     hypercubes[hypercube + "_" + str(hypercube_level_value)] = []
                 hypercubes[hypercube + "_" + str(hypercube_level_value)].append(ds)
             else:
