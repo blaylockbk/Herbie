@@ -73,8 +73,8 @@ class TestAIFS:
             datetime(2025, 1, 1),
             datetime(2025, 2, 9, 6),
             datetime(2025, 2, 9, 12),
-            datetime(2025, 2, 24, 0),
-            datetime(2025, 2, 24, 6),
+            datetime(2025, 2, 25, 0),
+            datetime(2025, 2, 25, 6),
         ),
     )
     def test_aifs_path_changes(self, date):

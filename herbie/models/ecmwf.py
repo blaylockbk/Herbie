@@ -93,7 +93,7 @@ class aifs:
 
         product_suffix = "fc"
 
-        if self.date >= datetime(2025, 2, 24, 6):
+        if self.date >= datetime(2025, 2, 25, 6):
             # ECMWF’s AI forecasts become operational
             # https://www.ecmwf.int/en/about/media-centre/news/2025/ecmwfs-ai-forecasts-become-operational
             post_root = (
