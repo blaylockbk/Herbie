@@ -331,7 +331,6 @@ class FastHerbie:
             # Concat DataSets
             try:
                 ds = xr.combine_nested(hypercube_ds_list,concat_dim=["time", "step"],combine_attrs="drop_conflicts",)
-                ds = xr.combine_nested(hypercube_ds_list,concat_dim=["time"],combine_attrs="drop_conflicts",)
             except Exception:
                 # TODO: I'm not sure why some cases doesn't like the combine_attrs argument
                 ds = xr.combine_nested(
