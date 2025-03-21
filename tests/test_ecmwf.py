@@ -49,6 +49,41 @@ def test_ifs_xarray(date, filter):
     H.get_localFilePath(filter).unlink()
 
 
-def test_aifs_yesterday():
-    H = Herbie(yesterday, model="aifs", save_dir=save_dir, overwrite=True)
-    H.xarray(":10(?:u|v):")
+class TestAIFS:
+    """Tests for ECMWF's AIFS model."""
+
+    def test_aifs_yesterday(self):
+        """Test downloading AIFS data from yesterday."""
+        H = Herbie(
+            yesterday,
+            model="aifs",
+            save_dir=save_dir,
+            overwrite=True,
+        )
+
+        assert H.grib, "AIFS GRIB file not found"
+        assert H.idx, "AIFS index file not found"
+
+        ds = H.xarray(":10(?:u|v):")
+        assert len(ds)
+
+    @pytest.mark.parametrize(
+        "date",
+        (
+            datetime(2025, 1, 1),
+            datetime(2025, 2, 9, 6),
+            datetime(2025, 2, 9, 12),
+            datetime(2025, 2, 24, 0),
+            datetime(2025, 2, 24, 6),
+        ),
+    )
+    def test_aifs_path_changes(self, date):
+        """Test files are valid on dates the paths changed."""
+        H = Herbie(
+            date,
+            model="aifs",
+            save_dir=save_dir,
+            overwrite=True,
+        )
+        assert H.grib
+        assert H.idx

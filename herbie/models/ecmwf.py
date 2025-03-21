@@ -93,20 +93,28 @@ class aifs:
 
         product_suffix = "fc"
 
-        if self.date <= datetime(2025, 2, 9, 12):
+        if self.date >= datetime(2025, 2, 24, 6):
+            # ECMWF’s AI forecasts become operational
+            # https://www.ecmwf.int/en/about/media-centre/news/2025/ecmwfs-ai-forecasts-become-operational
             post_root = (
-                f"{self.date:%Y%m%d/%Hz}/aifs/0p25/{self.product}"
+                f"{self.date:%Y%m%d/%Hz}/aifs-single/0p25/{self.product}"
+                f"/{self.date:%Y%m%d%H%M%S}-{self.fxx}h-{self.product}-{product_suffix}.grib2"
+            )
+        elif self.date >= datetime(2025, 2, 9, 12):
+            # Preparing for the operational phase of the AI forecast
+            post_root = (
+                f"{self.date:%Y%m%d/%Hz}/aifs-single/0p25/experimental/{self.product}"
                 f"/{self.date:%Y%m%d%H%M%S}-{self.fxx}h-{self.product}-{product_suffix}.grib2"
             )
         else:
             post_root = (
-                f"{self.date:%Y%m%d/%Hz}/aifs-single/0p25/{self.product}"
+                f"{self.date:%Y%m%d/%Hz}/aifs/0p25/{self.product}"
                 f"/{self.date:%Y%m%d%H%M%S}-{self.fxx}h-{self.product}-{product_suffix}.grib2"
             )
 
         self.SOURCES = {
             "aws": f"https://ecmwf-forecasts.s3.eu-central-1.amazonaws.com/{post_root}",
-            "ecmwf":  f"https://data.ecmwf.int/forecasts/{post_root}",
+            "ecmwf": f"https://data.ecmwf.int/forecasts/{post_root}",
             "azure": f"https://ai4edataeuwest.blob.core.windows.net/ecmwf/{post_root}",
         }
         self.IDX_SUFFIX = [".index"]
