@@ -140,22 +140,30 @@ class gefs_reforecast:
             "GEFSv12/reforecast": "reforecasts for 2000-2019",
         }
 
+        if self.date.weekday() == 2:
+            # GEFS reforecast has extended ensemble on Wednesdays
+            max_member_size = 10
+            max_fxx = "Days:10-35"
+        else:
+            max_member_size = 4
+            max_fxx = "Days:10-16"
+
         # Adjust "member" argument
         # - Member 0 is the control member
         # - Members 1-4 are the perturbation members
         if self.member == 0:
             member = f"c{self.member:02d}"
-        elif self.member > 0 and self.member < 5:
+        elif self.member > 0 and self.member <= max_member_size:
             member = f"p{self.member:02d}"
         else:
-            raise ValueError("GEFS 'member' must be one of {0,1,2,3,4}.")
+            raise ValueError(f"GEFS 'member' must be within range of [0 - {max_member_size}].")
 
         # Adjust "fxx" argument (given in hours)
         # This is used to define the directory to enter rather than the filename.
         if self.fxx <= 240:
             fxx = "Days:1-10"
         else:
-            fxx = "Days:10-16"
+            fxx = max_fxx
 
         post_root = f"GEFSv12/reforecast/{self.date:%Y/%Y%m%d%H}/{member}/{fxx}/{self.variable_level}_{self.date:%Y%m%d%H}_{member}.grib2"
 
