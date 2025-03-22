@@ -32,24 +32,39 @@ def get_cf_crs(
     # Shape of the Earth reference system
     # https://codes.ecmwf.int/grib/format/grib2/ctables/3/2/
     shapeOfTheEarth = da.GRIB_shapeOfTheEarth
+
     if shapeOfTheEarth == 0:
         # Earth assumed spherical with radius = 6 367 470.0 m
         a = 6_367_470
         b = 6_367_470
+
     elif shapeOfTheEarth == 1 and ds.attrs["model"] == "graphcast":
         # Earth assumed spherical with radius specified (in m) by data producer
         # TODO: Why is model='graphcast' using this value?
         a = 4326.0
         b = 4326.0
-    elif shapeOfTheEarth == 1 and ds.attrs["model"] in ["urma", "rtma"]:
+
+    elif shapeOfTheEarth == 1 and ds.attrs["model"] in {
+        "urma",
+        "rtma",
+        "nbm",
+        "nbmqmd",
+    }:
         # Earth assumed spherical with radius specified (in m) by data producer
-        # TODO: Why is urma and rtma using this value?
-        a = 6371200.0
-        b = 6371200.0
-    elif shapeOfTheEarth == 6:
+        # TODO: Why is urma, rtma, and nbm using this value?
+        a = 6_371_200.0
+        b = 6_371_200.0
+
+    elif shapeOfTheEarth == 6:  # i.e., valid for HRRR model
         # Earth assumed spherical with radius of 6,371,229.0 m
         a = 6_371_229
         b = 6_371_229
+
+    else:
+        raise NotImplementedError(
+            f"{shapeOfTheEarth=} for {ds.attrs['model']=} is not implemented. "
+            "Please open an issue or pull request on GitHub."
+        )
 
     # Grid type definition
     # https://codes.ecmwf.int/grib/format/grib2/ctables/3/1/
