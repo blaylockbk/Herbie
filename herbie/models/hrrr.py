@@ -91,21 +91,6 @@ class hrrr:
         self.EXPECT_IDX_FILE = "remote"
         self.LOCALFILE = f"{self.get_remoteFileName}"
 
-        # ----------
-        # CONDITIONS
-        # ----------
-
-        # Fix Issue #34 (not pretty, but gets the job done for now)
-        # TODO: Allow Herbie to specify the format of the SOURCE manually
-        if self.product == "subh" and self.date <= datetime(2018, 9, 16):
-            # The subhourly filenames are different for older files.
-            # prepend the self.SOURCES dict with the old filename format.
-            # This requires an additional arg for `fxx_subh` when calling Herbie
-            self.SOURCES = {
-                "aws_old_subh": f"https://noaa-hrrr-bdp-pds.s3.amazonaws.com/hrrr.{self.date:%Y%m%d}/conus/hrrr.t{self.date:%H}z.wrf{self.product}f{self.fxx:02d}{self.fxx_subh:02d}.grib2",
-                **self.SOURCES,
-            }
-
 
 class hrrrak:
     def template(self):
