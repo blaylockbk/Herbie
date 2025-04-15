@@ -10,6 +10,7 @@ Where "hrrr" is the name of the template class located in models/hrrr.py.
 """
 
 import sys
+from importlib.metadata import entry_points
 
 from herbie import _config_path
 from herbie.misc import ANSI
@@ -17,6 +18,7 @@ from herbie.misc import ANSI
 # ======================================================================
 #                     Import Public Model Templates
 # ======================================================================
+from .cfs import *
 from .ecmwf import *
 from .gdps import *
 from .gefs import *
@@ -33,9 +35,22 @@ from .rap import *
 from .rdps import *
 from .rrfs import *
 from .rtma import *
-from .usnavy import *
 from .urma import *
-from .cfs import *
+from .usnavy import *
+
+
+# ======================================================================
+#                     Import Model Templates from Plugins
+# ======================================================================
+for ep in entry_points(group="herbie.plugins"):
+    module = ep.load()
+    # Still need to attach this loaded module to the globals
+    # namespace so that Herbie can find it.
+    for name in dir(module):
+        if not name.startswith("_"):
+            globals()[name] = getattr(module, name)
+            print(f"added plugin '{name}' to globals")
+
 
 # ======================================================================
 #                     Import Private Model Templates
