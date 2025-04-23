@@ -49,7 +49,7 @@ for ep in entry_points(group="herbie.plugins"):
     for name in dir(module):
         if not name.startswith("_"):
             globals()[name] = getattr(module, name)
-            print(f"added plugin '{name}' to globals")
+            print(f"Herbie: model template '{name}' from custom plugin was added to globals.")
 
 
 # ======================================================================
