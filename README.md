@@ -53,6 +53,8 @@ Much of this data is made available through the [NOAA Open Data Dissemination](h
 
 ## Installation
 
+### `conda` or `mamba`
+
 The easiest way to instal Herbie and its dependencies is with [Conda](https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html) from conda-forge.
 
 ```bash
@@ -74,14 +76,9 @@ conda env create -f environment.yml
 conda activate herbie
 ```
 
-Alternatively, Herbie is published on PyPI and you can install it with pip, _but_ it requires some dependencies that you will have to install yourself:
+### `pip`
 
-- Python 3.9+
-- [cURL](https://anaconda.org/conda-forge/curl)
-- [eccodes](https://anaconda.org/conda-forge/eccodes), a requirement for [cfgrib](https://github.com/ecmwf/cfgrib).
-- _Optional:_ [wgrib2](https://anaconda.org/conda-forge/wgrib2)
-
-When those are installed within your environment, _then_ you can install Herbie with pip.
+Alternatively, Herbie is published on PyPI and you can install it with pip.
 
 ```bash
 # Latest published version
@@ -95,6 +92,21 @@ pip install git+https://github.com/blaylockbk/Herbie.git
 # Dependecies for extra features
 pip install herbie-data[extra]
 ```
+
+ Keep in mind that Herbie does require the following dependencies that you will have to install yourself if you don't have them in your PATH:
+
+- Python 3.10+
+- [cURL](https://anaconda.org/conda-forge/curl)
+- [wgrib2](https://anaconda.org/conda-forge/wgrib2) (for some extra features)
+
+### `uv`
+
+You can add Herbie to your project with the uv command:
+
+```bash
+uv add herbie-data
+```
+
 
 ## Capabilities
 
