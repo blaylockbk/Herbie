@@ -79,8 +79,11 @@ docs = [
 plot = ["cartopy", "matplotlib", "metpy"]
 metpy = ["metpy"]
 scikit-learn = ["scikit-learn"]
-extras = [plot, metpy, scikit-learn]
 pygrib = ["pygrib"]
+
+extras = [
+  "herbie-data[plot,metpy,scikit-learn]",
+]
 
 [tool.hatch]
 
