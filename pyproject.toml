@@ -31,11 +31,12 @@ keywords = [
 ]
 dependencies = [
     "cfgrib>=0.9.15",
+    "eccodes>=2.37.0",
     "numpy>=1.24",
     "pandas>=2.1",
     "pyproj>=3.7.0",
     "requests>=2.23.3",
-    "toml>=0.10.2",  # TODO: Drop in favor of tomllib when Python >=3.11 is required.
+    "toml>=0.10.2", # TODO: Drop in favor of tomllib when Python >=3.11 is required.
     "xarray>=2025.1.1",
 ]
 dynamic = ["version"]
@@ -58,6 +59,22 @@ dev = [
     "pytest-cov>=6.1.1",
     "ruff>=0.11.6",
 ]
+
+
+[project.optional-dependencies]
+plot = ["cartopy", "matplotlib", "metpy"]
+metpy = ["metpy"]
+scikit-learn = ["scikit-learn"]
+
+pygrib = ["pygrib"]
+
+extras = [
+  "herbie-data[plot,metpy,scikit-learn]", # Didn't include pygrib on purpose
+]
+
+# TODO
+# I think I want docs in the [dependency-groups] section,
+# but I'm not sure how to use that with readthedocs.
 docs = [
     "autodocsumm>=0.2.14",
     "ipython>=8.35.0",
@@ -73,16 +90,6 @@ docs = [
     "sphinx-design>=0.6.1",
     "sphinx-markdown-tables>=0.0.17",
     "sphinxcontrib-mermaid>=1.0.0",
-]
-
-[project.optional-dependencies]
-plot = ["cartopy", "matplotlib", "metpy"]
-metpy = ["metpy"]
-scikit-learn = ["scikit-learn"]
-pygrib = ["pygrib"]
-
-extras = [
-  "herbie-data[plot,metpy,scikit-learn]",
 ]
 
 [tool.hatch]
