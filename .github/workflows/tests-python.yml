@@ -26,10 +26,9 @@ jobs:
         # matrix slots on other OS than Linux.
         include:
           - os: "macos-latest"
-            python-version: "3.12"
-          # TODO: Building on Windows fails because it fails to install pygrib; eccodes not found. Must use conda env.
-          #- os: "windows-latest"
-          #  python-version: "3.12"
+            python-version: "3.13"
+          - os: "windows-latest"
+            python-version: "3.13"
 
     env:
       OS: ${{ matrix.os }}
@@ -54,20 +53,20 @@ jobs:
           cache: "pip"
           cache-dependency-path: "setup.cfg"
 
-      - name: Install prerequisites (Linux)
-        if: runner.os == 'Linux'
-        run: |
-          sudo apt -y install libgeos-dev libeccodes-dev
-
-      - name: Install prerequisites (macOS)
-        if: runner.os == 'macOS'
-        run: |
-          brew install pkg-config geos eccodes
-
-      - name: Install prerequisites (Windows)
-        if: runner.os == 'windows'
-        run: |
-          echo "Does anything need to be installed?"
+      #- name: Install prerequisites (Linux)
+      #  if: runner.os == 'Linux'
+      #  run: |
+      #    sudo apt -y install libgeos-dev libeccodes-dev
+#
+      #- name: Install prerequisites (macOS)
+      #  if: runner.os == 'macOS'
+      #  run: |
+      #    brew install pkg-config geos eccodes
+#
+      #- name: Install prerequisites (Windows)
+      #  if: runner.os == 'windows'
+      #  run: |
+      #    echo "Does anything need to be installed?"
 
       - name: Install project (Linux)
         if: runner.os == 'Linux'
