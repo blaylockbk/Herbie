@@ -32,6 +32,13 @@ User Guide
    tutorial/extend
 
 .. toctree::
+   :caption: Herbie CLI
+   :maxdepth: 2
+
+   tutorial/cli
+
+
+.. toctree::
    :caption: Extra Features
    :maxdepth: 2
 
