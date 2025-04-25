@@ -1,11 +1,20 @@
+# Python-generated files
 __pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# Virtual environments
+.venv
+
 .ipynb_checkpoints
-*.py[cod]
 *$py.class
 *.log
 env_pypi.yml
 condaenv*
-.venv*
+
 
 .DS_Store
 
@@ -14,6 +23,7 @@ condaenv*
 *.idx
 *.grib2
 !sample_data/hrrr/20201214/subset_20201214_hrrr.t00z.wrfsfcf12.grib2
+*.h5
 
 .idea
 sandbox/
@@ -24,24 +34,20 @@ local_B.py
 docs/_build
 docs/**/_autosummary
 
-dist/*
-build/*
-*.egg-info
 *.egg
 MANIFEST
 *.so
 .eggs/
-*.h5
 
 
 $TMPDIR/
 Herbie-Tests-Data/
 data/
 
-herbie/_version.py
-
+src/herbie/_version.py
 
 *.pkl
 .coverage
 
 .ruff_cache/
+uv.lock

@@ -37,7 +37,7 @@ class gfs:
             "NCEI": "https://www.ncei.noaa.gov/products/weather-climate-models/global-forecast",
         }
 
-        if self.date > datetime(2021, 1, 1):
+        if self.date >= datetime(2021, 1, 1):
             self.PRODUCTS = {
                 "pgrb2.0p25": "common fields, 0.25 degree resolution",
                 "pgrb2.0p50": "common fields, 0.50 degree resolution",
