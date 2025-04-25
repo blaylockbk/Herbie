@@ -45,7 +45,7 @@ jobs:
           fetch-depth: 2
 
       - name: Install uv
-        uses: astral-sh/uv-action@v1
+        uses: astral-sh/uv-action@v5
         with:
           python-version: ${{ matrix.python-version }}
 
