@@ -50,17 +50,16 @@ Some models Herbie can retrieve data from include:
 
 Installation
 ------------
-The easiest way to install Herbie and its dependencies is with Conda.
-
-.. code-block:: bash
-
-   conda install -c conda-forge herbie-data
-
-More details at :ref:`🐍 Installation`.
 
 .. tab-set::
 
-    .. tab-item:: conda-forge
+    .. tab-item:: mamba
+
+        .. code-block:: bash
+
+            mamba install -c conda-forge herbie-data
+
+    .. tab-item:: conda
 
         .. code-block:: bash
 
@@ -76,15 +75,18 @@ More details at :ref:`🐍 Installation`.
     .. tab-item:: uv
 
         Add Herbie to your uv project with the following command:
+
         .. code-block:: bash
 
             uv add herbie-data
 
-        Or install Herbie as a tool (Herbie command line tools comming soon!)
+        Or install Herbie as a tool (Herbie command line tools coming soon!)
 
         .. code-block:: uv
 
             uv install herbie-data
+
+More details at :ref:`🐍 Installation`.
 
 
 Capabilities
