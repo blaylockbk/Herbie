@@ -58,6 +58,35 @@ The easiest way to install Herbie and its dependencies is with Conda.
 
 More details at :ref:`🐍 Installation`.
 
+.. tab-set::
+
+    .. tab-item:: conda-forge
+
+        .. code-block:: bash
+
+            conda install -c conda-forge herbie-data
+
+
+    .. tab-item:: pip
+
+        .. code-block:: bash
+
+            pip install herbie-data
+
+    .. tab-item:: uv
+
+        Add Herbie to your uv project with the following command:
+        .. code-block:: bash
+
+            uv add herbie-data
+
+        Or install Herbie as a tool (Herbie command line tools comming soon!)
+
+        .. code-block:: uv
+
+            uv install herbie-data
+
+
 Capabilities
 ------------
 
