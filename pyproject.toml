@@ -31,11 +31,12 @@ keywords = [
 ]
 dependencies = [
     "cfgrib>=0.9.15",
+    "eccodes>=2.37.0",
     "numpy>=1.24",
     "pandas>=2.1",
     "pyproj>=3.7.0",
     "requests>=2.23.3",
-    "toml>=0.10.2",  # TODO: Drop in favor of tomllib when Python >=3.11 is required.
+    "toml>=0.10.2",     # TODO: Drop in favor of tomllib when Python >=3.11 is required.
     "xarray>=2025.1.1",
 ]
 dynamic = ["version"]
@@ -47,38 +48,67 @@ dynamic = ["version"]
 "Changelog" = "https://github.com/blaylockbk/Herbie/releases"
 "Bug Tracker" = "https://github.com/blaylockbk/Herbie/issues"
 
-[project.optional-dependencies]
-extras = ["cartopy", "matplotlib", "metpy", "scikit-learn"]
-test = ["pytest", "pytest-cov", "ruff"]
-pygrib = ["pygrib"]
+[build-system]
+requires = ["hatchling", "hatch-vcs"]
+build-backend = "hatchling.build"
+
+[dependency-groups]
+dev = [
+    "ipykernel>=6.29.5",
+    "pytest>=8.3.5",
+    "pytest-cov>=6.1.1",
+    "ruff>=0.11.6",
+]
 docs = [
-    "autodocsumm",
-    "ipython",
-    "linkify-it-py",
-    "myst-parser",
-    "nbconvert",
-    "nbsphinx",
-    "sphinx-copybutton",
-    "pydata-sphinx-theme",
-    "recommonmark",
-    "sphinx",
-    "sphinx-autosummary-accessors",
-    "sphinx-design",
-    "sphinx-markdown-tables",
-    "sphinxcontrib-mermaid",
+    "autodocsumm>=0.2.14",
+    "ipython>=8.35.0",
+    "linkify-it-py>=2.0.3",
+    "myst-parser>=4.0.1",
+    "nbconvert>=7.16.6",
+    "nbsphinx>=0.9.7",
+    "pydata-sphinx-theme>=0.16.1",
+    "recommonmark>=0.7.1",
+    "sphinx>=8.1.3",
+    "sphinx-autosummary-accessors>=2025.3.1",
+    "sphinx-copybutton>=0.5.2",
+    "sphinx-design>=0.6.1",
+    "sphinx-markdown-tables>=0.0.17",
+    "sphinxcontrib-mermaid>=1.0.0",
 ]
 
-[build-system]
-requires = ["setuptools>=42", "wheel", "setuptools_scm[toml]>=3.4"]
-build-backend = "setuptools.build_meta"
 
-[tool.setuptools]
-packages = ["herbie"]
+[project.optional-dependencies]
+plot = ["cartopy", "matplotlib", "metpy"]
+metpy = ["metpy"]
+scikit-learn = ["scikit-learn"]
 
-[tool.setuptools_scm]
-version_scheme = "post-release"
-local_scheme = "no-local-version"
-write_to = "herbie/_version.py"
+pygrib = ["pygrib"]
+
+extras = [
+    "herbie-data[plot,metpy,scikit-learn]", # Didn't include pygrib on purpose
+]
+
+[tool.hatch]
+
+[tool.hatch.version]
+source = "vcs"
+
+[tool.hatch.build.hooks.vcs]
+version-file = "src/herbie/_version.py"
+
+[tool.hatch.build.targets.sdist]
+exclude = [
+    "/.github",
+    "/docs",
+    "/notebooks",
+    "/.vscode",
+    "/sample_data",
+    "/tests",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/herbie"]
+
 
 [tool.ruff]
 extend-include = ["*.ipynb"]
@@ -86,7 +116,7 @@ extend-include = ["*.ipynb"]
 [tool.ruff.lint]
 extend-select = [
     "UP", # pyupgrade
-    "D", # pydocstyle
+    "D",  # pydocstyle
 
 ]
 
@@ -95,7 +125,7 @@ convention = "numpy"
 
 [tool.pytest.ini_options]
 minversion = "2.0"
-addopts = "-rsfEX -p pytester --strict-markers --verbosity=3 --cov=herbie"
+addopts = "-rsfEX -p pytester --strict-markers --verbosity=3 --cov=src/herbie"
 log_level = "DEBUG"
 testpaths = ["tests"]
 xfail_strict = true
