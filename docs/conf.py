@@ -137,10 +137,6 @@ html_theme_options = {
     "navbar_center": ["version-switcher", "navbar-nav"],
     "footer_start": ["copyright"],
     "footer_center": ["sphinx-version"],
-    "switcher": {
-        "json_url": "https://herbie.readthedocs.io/en/latest/_static/switcher.json",
-        "version_match": os.environ.get("READTHEDOCS_VERSION"),
-    },
 }
 
 html_sidebars = {}
