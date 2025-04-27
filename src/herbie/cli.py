@@ -1,3 +1,10 @@
+"""
+Herbie Command Line Interface (CLI).
+
+TODO:
+- [ ] parse unknown_args so they can be used in the Herbie class for models that have extra arguments
+"""
+
 import argparse
 import re
 import sys
@@ -171,7 +178,9 @@ def main():
             )
         subparser.set_defaults(func=func)
 
-    args = parser.parse_args()
+    args, unknown_args = parser.parse_known_args()
+    # print(args)
+    # print(unknown_args)
 
     if args.version:
         import importlib.metadata
