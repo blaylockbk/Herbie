@@ -41,6 +41,7 @@ def test_rap_aws():
     assert H.get_localFilePath("TMP:2 m").exists()
 
 
+@pytest.mark.skip(reason="NCEI servers seem to be down right now.")
 def test_rap_historical():
     """Search for RAP urls on NCEI that I know exist."""
     H = Herbie(
@@ -60,6 +61,7 @@ def test_rap_historical():
     assert H.grib is not None
 
 
+@pytest.mark.skip(reason="NCEI servers seem to be down right now.")
 def test_rap_ncei():
     """Search for RAP urls on NCEI that I know exist."""
     H = Herbie(
