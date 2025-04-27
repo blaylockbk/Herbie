@@ -1,5 +1,6 @@
 import argparse
 import re
+import sys
 from datetime import datetime, timedelta
 
 import pandas as pd
@@ -32,14 +33,23 @@ def parse_range(arg):
 
 
 def common_arguments(parser):
-    parser.add_argument("-m", "--model", default="hrrr")
+    """Arguments common across all subcommands."""
+    parser.add_argument("-m", "--model", default="hrrr", help="Model name.")
     parser.add_argument(
-        "-d", "--date", nargs="+", required=True, help="One or more dates or ranges"
+        "-d",
+        "--date",
+        nargs="+",
+        required=True,
+        help="One or more dates (model initialization date).",
     )
     parser.add_argument(
-        "-f", "--fxx", nargs="+", default=["0"], help="Forecast lead times or ranges"
+        "-f",
+        "--fxx",
+        nargs="+",
+        default=["0"],
+        help="Forecast lead time, in hours.",
     )
-    parser.add_argument("-p", "--priority", nargs="+", default=["aws", "nomads"])
+    parser.add_argument("-p", "--priority", nargs="+", help="Model source priority.")
     parser.add_argument(
         "--verbose",
         action="store_true",
@@ -59,6 +69,7 @@ def resolve_dates_and_fxx(args):
 
 
 def cmd_data(args):
+    """Execute `data` subcommand; gets URL to requested GRIB2 file."""
     dates, fxxs = resolve_dates_and_fxx(args)
     H_class = FastHerbie if len(dates) > 1 else Herbie
     for d in dates:
@@ -74,6 +85,7 @@ def cmd_data(args):
 
 
 def cmd_index(args):
+    """Execute `index` subcommand; gets URL to requested GRIB2 index file."""
     dates, fxxs = resolve_dates_and_fxx(args)
     for d in dates:
         for f in fxxs:
@@ -88,6 +100,7 @@ def cmd_index(args):
 
 
 def cmd_inventory(args):
+    """Execute `inventory` subcommand; prints inventory from index file."""
     dates, fxxs = resolve_dates_and_fxx(args)
     for d in dates:
         for f in fxxs:
@@ -102,6 +115,7 @@ def cmd_inventory(args):
 
 
 def cmd_download(args):
+    """Execute `download` subcommand; downloads requested."""
     dates, fxxs = resolve_dates_and_fxx(args)
     for d in dates:
         for f in fxxs:
@@ -112,10 +126,15 @@ def cmd_download(args):
                 priority=args.priority,
                 verbose=args.verbose,
             )
-            H.download(args.subset)
+            H.download(args.subset, verbose=args.verbose)
 
 
 def cmd_plot(args):
+    raise NotImplementedError(
+        "The Herbie plotting CLI is not implemented. "
+        "I would love your help building this if you have some ideas. "
+        "Please submit a pull request."
+    )
     from herbie.plot import HerbiePlot
 
     dates, fxxs = resolve_dates_and_fxx(args)
@@ -136,7 +155,18 @@ def main():
     parser = argparse.ArgumentParser(
         prog="herbie", description="Herbie CLI for accessing GRIB2 files."
     )
-    subparsers = parser.add_subparsers(dest="command", required=True)
+    parser.add_argument(
+        "-v",
+        "--version",
+        action="store_true",
+        help="Show Herbie version.",
+    )
+    parser.add_argument(
+        "--show_versions",
+        action="store_true",
+        help="Show versions of Herbie and its dependencies.",
+    )
+    subparsers = parser.add_subparsers(dest="command")
 
     # Subcommands
     for name, func in [
@@ -149,11 +179,31 @@ def main():
         sub = common_arguments(subparsers.add_parser(name, help=f"{name} command"))
         if name in ("download", "plot", "inventory"):
             sub.add_argument(
-                "--subset", help="Search string for subsetting GRIB fields."
+                "--subset",
+                help="Search string for subsetting GRIB fields.",
             )
         sub.set_defaults(func=func)
 
     args = parser.parse_args()
+
+    if args.version:
+        import importlib.metadata
+
+        print(importlib.metadata.version("herbie-data"))
+        sys.exit(0)
+
+    if args.show_versions:
+        from herbie.show_versions import (
+            show_versions,  # <-- you might put the function here
+        )
+
+        show_versions()
+        sys.exit(0)
+
+    if args.command is None:
+        parser.print_help()
+        sys.exit(1)
+
     args.func(args)
 
 
