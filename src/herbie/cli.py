@@ -14,39 +14,27 @@ pd.set_option("display.width", None)  # To avoid line wrapping
 pd.set_option("display.max_colwidth", None)  # To show the full content of each cell
 
 
-def parse_range(arg):
-    """Parses a range string like '2024-01-01T00:2024-01-01T06:3' or '0:12:3' into a list"""
-    if ":" in arg:
-        start, end, step = arg.split(":")
-        try:  # Try parsing as datetime range
-            start_dt = datetime.fromisoformat(start)
-            end_dt = datetime.fromisoformat(end)
-            step = timedelta(hours=int(step))
-            return [
-                start_dt + i * step for i in range(((end_dt - start_dt) // step) + 1)
-            ]
-        except ValueError:
-            # Fallback to int range
-            start, end, step = map(int, (start, end, step))
-            return list(range(start, end + 1, step))
-    return [arg]  # single item
-
-
 def common_arguments(parser):
     """Arguments common across all subcommands."""
-    parser.add_argument("-m", "--model", default="hrrr", help="Model name.")
+    parser.add_argument(
+        "-m",
+        "--model",
+        default="hrrr",
+        help="Model name.",
+    )
     parser.add_argument(
         "-d",
         "--date",
         nargs="+",
         required=True,
-        help="One or more dates (model initialization date).",
+        help="Model initialization date in form YYYYMMDDHH, YYYY-MM-DD, or YYYY-MM-DDTHH:MM.",
     )
     parser.add_argument(
         "-f",
         "--fxx",
         nargs="+",
-        default=["0"],
+        type=int,
+        default=[0],
         help="Forecast lead time, in hours.",
     )
     parser.add_argument("-p", "--priority", nargs="+", help="Model source priority.")
@@ -59,13 +47,8 @@ def common_arguments(parser):
 
 
 def resolve_dates_and_fxx(args):
-    dates = []
-    for d in args.date:
-        dates.extend(parse_range(d))
-    fxxs = []
-    for f in args.fxx:
-        fxxs.extend(parse_range(f))
-    return dates, fxxs
+    # Just return the dates and fxx as they are directly from the input arguments
+    return args.date, args.fxx
 
 
 def cmd_data(args):
@@ -115,7 +98,7 @@ def cmd_inventory(args):
 
 
 def cmd_download(args):
-    """Execute `download` subcommand; downloads requested."""
+    """Execute `download` subcommand; downloads requested files."""
     dates, fxxs = resolve_dates_and_fxx(args)
     for d in dates:
         for f in fxxs:
@@ -130,6 +113,7 @@ def cmd_download(args):
 
 
 def cmd_plot(args):
+    """Execute `plot` subcommand; plots requested data."""
     raise NotImplementedError(
         "The Herbie plotting CLI is not implemented. "
         "I would love your help building this if you have some ideas. "
@@ -152,6 +136,7 @@ def cmd_plot(args):
 
 
 def main():
+    """Herbie command line interface (CLI)."""
     parser = argparse.ArgumentParser(
         prog="herbie", description="Herbie CLI for accessing GRIB2 files."
     )
@@ -169,20 +154,22 @@ def main():
     subparsers = parser.add_subparsers(dest="command")
 
     # Subcommands
-    for name, func in [
-        ("data", cmd_data),
-        ("index", cmd_index),
-        ("inventory", cmd_inventory),
-        ("download", cmd_download),
-        ("plot", cmd_plot),
-    ]:
-        sub = common_arguments(subparsers.add_parser(name, help=f"{name} command"))
+    subcommands = [
+        ("data", cmd_data, "Show GRIB2 file URL for a given date and lead time."),
+        ("index", cmd_index, "Show GRIB2 index file URL for a given date."),
+        ("inventory", cmd_inventory, "Show inventory of GRIB2 fields or subset."),
+        ("download", cmd_download, "Download GRIB2 file or subset."),
+        ("plot", cmd_plot, "Quick plot of GRIB2 field (Not implemented)."),
+    ]
+
+    for name, func, help_text in subcommands:
+        subparser = subparsers.add_parser(name, help=help_text, description=help_text)
+        common_arguments(subparser)
         if name in ("download", "plot", "inventory"):
-            sub.add_argument(
-                "--subset",
-                help="Search string for subsetting GRIB fields.",
+            subparser.add_argument(
+                "--subset", help="Search string for subsetting GRIB fields."
             )
-        sub.set_defaults(func=func)
+        subparser.set_defaults(func=func)
 
     args = parser.parse_args()
 
