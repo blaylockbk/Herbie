@@ -164,3 +164,41 @@ class gefs_reforecast:
         }
         self.IDX_SUFFIX = [".grib2.idx"]
         self.LOCALFILE = f"{self.get_remoteFileName}"
+
+
+class gefs_wave_reforecast:
+    """Template for NOAA Wave Ensemble Reforecast.
+
+    Provide arguments for
+
+    - date (2000-2019)
+    - member {0,1,2,3,4}
+    """
+
+    def template(self):
+        self.DESCRIPTION = "NOAA Wave Ensemble Reforecast"
+        self.DETAILS = {
+            "aws": "https://registry.opendata.aws/noaa-wave-ensemble-reforecast/",
+        }
+        self.PRODUCTS = {
+            "GEFSv12/wave_reforecast": "wave reforecasts for 2000-2019",
+        }
+
+        # Adjust "member" argument
+        # - Member 0 is the control member
+        # - Members 1-4 are the perturbation members
+        if self.member == 0:
+            member = f"c{self.member:02d}"
+        elif self.member > 0 and self.member < 5:
+            member = f"p{self.member:02d}"
+        else:
+            raise ValueError("GEFS 'member' must be one of {0,1,2,3,4}.")
+
+        # https://noaa-nws-gefswaves-reforecast-pds.s3.amazonaws.com/GEFSv12/reforecast/2002/20020103/gridded/gefs.wave.20020103.c00.global.0p25.grib2
+        post_root = f"GEFSv12/reforecast/{self.date:%Y/%Y%m%d}/gridded/gefs.wave.{self.date:%Y%m%d}.{member}.global.0p25.grib2"
+
+        self.SOURCES = {
+            "aws": f"https://noaa-nws-gefswaves-reforecast-pds.s3.amazonaws.com/{post_root}",
+        }
+        self.IDX_SUFFIX = [".idx"]
+        self.LOCALFILE = f"{self.get_remoteFileName}"
