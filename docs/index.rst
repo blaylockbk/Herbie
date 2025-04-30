@@ -107,7 +107,10 @@ Specifically, Herbie can do the following:
 - Read the data with xarray.
 - Help you use the data with xarray accessors (see :ref:`🗃️ Xarray Accessors`)
 
-Using Herbie looks something like this...
+Herbie Python
+^^^^^^^^^^^^^
+
+Using Herbie's Python API looks something like this...
 
 .. code-block:: python
 
@@ -132,6 +135,9 @@ Using Herbie looks something like this...
 
    # Read a subset of the file with xarray, like 2-m temperature.
    H.xarray("TMP:2 m")
+
+Herbie CLI
+^^^^^^^^^^
 
 Herbie also has a command line interface (CLI) so you can use Herbie right in your terminal.
 
