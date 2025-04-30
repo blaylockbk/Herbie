@@ -1,4 +1,4 @@
-# Herbie CLI
+# ⌨️ Herbie CLI
 
 The Herbie Command Line Interface (CLI) provides easy access to archived Numerical Weather Prediction (NWP) model data through a simple command-line tool. It leverages the Herbie Python package to search for, inspect, and download GRIB2 files from various data sources.
 

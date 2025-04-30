@@ -9,6 +9,7 @@ User Guide
    install
    configure
    start-your-engines.ipynb
+   cli
 
 .. toctree::
    :caption: Background Knowledge
@@ -30,13 +31,6 @@ User Guide
    tutorial/fast.ipynb
    tutorial/latest.ipynb
    tutorial/extend
-
-.. toctree::
-   :caption: Herbie CLI
-   :maxdepth: 2
-
-   cli
-
 
 .. toctree::
    :caption: Extra Features
