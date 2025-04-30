@@ -63,7 +63,7 @@ You can add Herbie to your [uv](https://docs.astral.sh/uv/) project with:
 uv add herbie-data
 ```
 
-[_Coming soon!_](https://github.com/blaylockbk/Herbie/pull/410) Herbie CLI tools can be installed with
+Herbie CLI tools can be installed with
 
 ```bash
 uv install herbie-data

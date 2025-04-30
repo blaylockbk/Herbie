@@ -80,7 +80,7 @@ Installation
 
             uv add herbie-data
 
-        Or install Herbie as a tool (Herbie command line tools coming soon!)
+        Or install Herbie as a tool for its CLI
 
         .. code-block:: uv
 
