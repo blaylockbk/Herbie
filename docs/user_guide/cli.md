@@ -62,12 +62,10 @@ herbie inventory -m rap -d 2023031512 -f 0
 # Download multiple forecast hours for a date range
 herbie download -m hrrr -d 2023-03-15T00:00 2023-03-15T06:00 -f 1 3 6 --subset ":UGRD:10 m:"
 
-# Specify custom source priority (check AWS first, then NOMADS)
-herbie data -m hrrr -d 2023-03-15 -f 0 -p aws nomads
-
-# Advanced: Pass additional arguments to the Herbie class
-herbie download -m hrrr -d 2023-03-15 -f 0 --subset ":TMP:2 m:" --save_dir ./my_data
+# Specify custom source priority (check only Google)
+herbie data -m hrrr -d 2023-03-15 -f 0 -p google
 ```
+
 ## Common Arguments
 
 All commands support the following arguments:
