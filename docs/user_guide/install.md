@@ -7,6 +7,10 @@
 The easiest way to install Herbie and its dependencies is with [Conda](https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html) from conda-forge.
 
 ```bash
+mamba install -c conda-forge herbie-data
+```
+
+```bash
 conda install -c conda-forge herbie-data
 ```
 
@@ -16,9 +20,8 @@ conda install -c conda-forge herbie-data
 
 Herbie is published on PyPI and you can install it with pip, _but_ it requires some dependencies that you will have to install yourself:
 
-- Python 3.9+
+- Python 3.10+
 - [cURL](https://anaconda.org/conda-forge/curl)
-- [eccodes](https://anaconda.org/conda-forge/eccodes), which is required by [cfgrib](https://anaconda.org/conda-forge/cfgrib).
 - _Optional:_ [wgrib2](https://anaconda.org/conda-forge/wgrib2)
 
 When those are installed within your environment, _then_ you can install Herbie with pip.
@@ -50,4 +53,18 @@ or
 git clone https://github.com/blaylockbk/Herbie.git
 cd Herbie
 pip install -e .
+```
+
+## uv install
+
+You can add Herbie to your [uv](https://docs.astral.sh/uv/) project with:
+
+```bash
+uv add herbie-data
+```
+
+Herbie CLI tools can be installed with
+
+```bash
+uv install herbie-data
 ```

@@ -50,13 +50,44 @@ Some models Herbie can retrieve data from include:
 
 Installation
 ------------
-The easiest way to install Herbie and its dependencies is with Conda.
 
-.. code-block:: bash
+.. tab-set::
 
-   conda install -c conda-forge herbie-data
+    .. tab-item:: mamba
+
+        .. code-block:: bash
+
+            mamba install -c conda-forge herbie-data
+
+    .. tab-item:: conda
+
+        .. code-block:: bash
+
+            conda install -c conda-forge herbie-data
+
+
+    .. tab-item:: pip
+
+        .. code-block:: bash
+
+            pip install herbie-data
+
+    .. tab-item:: uv
+
+        Add Herbie to your uv project with the following command:
+
+        .. code-block:: bash
+
+            uv add herbie-data
+
+        Or install Herbie as a tool for its CLI
+
+        .. code-block:: uv
+
+            uv install herbie-data
 
 More details at :ref:`🐍 Installation`.
+
 
 Capabilities
 ------------
@@ -76,7 +107,10 @@ Specifically, Herbie can do the following:
 - Read the data with xarray.
 - Help you use the data with xarray accessors (see :ref:`🗃️ Xarray Accessors`)
 
-Using Herbie looks something like this...
+Herbie Python
+^^^^^^^^^^^^^
+
+Using Herbie's Python API looks something like this...
 
 .. code-block:: python
 
@@ -102,6 +136,27 @@ Using Herbie looks something like this...
    # Read a subset of the file with xarray, like 2-m temperature.
    H.xarray("TMP:2 m")
 
+Herbie CLI
+^^^^^^^^^^
+
+Herbie also has a command line interface (CLI) so you can use Herbie right in your terminal.
+
+.. code-block:: bash
+
+   # Get the URL for a HRRR surface file from today at 12Z
+   herbie data -m hrrr --product sfc -d "2023-03-15 12:00" -f 0
+
+   # Download GFS 0.25° forecast hour 24 temperature at 850mb
+   herbie download -m gfs --product 0p25 -d 2023-03-15T00:00 -f 24 --subset ":TMP:850 mb:"
+
+   # View all available variables in a RAP model run
+   herbie inventory -m rap -d 2023031512 -f 0
+
+   # Download multiple forecast hours for a date range
+   herbie download -m hrrr -d 2023-03-15T00:00 2023-03-15T06:00 -f 1 3 6 --subset ":UGRD:10 m:"
+
+   # Specify custom source priority (check only Google)
+   herbie data -m hrrr -d 2023-03-15 -f 0 -p google
 
 More details in the :ref:`User Guide`.
 

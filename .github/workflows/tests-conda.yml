@@ -5,8 +5,6 @@ on:
     branches: [main]
   pull_request:
     branches: [main]
-
-  # Allow job to be triggered manually.
   workflow_dispatch:
 
 # Cancel in-progress jobs when pushing to the same branch.
@@ -20,95 +18,39 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        os: ["windows-latest"]
-        python-version: ["3.12"]
+        include:
+        - os: windows-latest
+          python-version: "3.13"
 
-    env:
-      OS: ${{ matrix.os }}
-      PYTHON: ${{ matrix.python-version }}
+    name: Python ${{ matrix.python-version }} • ${{ matrix.os }}
 
-    defaults:
-      run:
-        shell: bash -el {0}
-
-    name: Python ${{ matrix.python-version }} on OS ${{ matrix.os }}
     steps:
-      - name: Acquire sources
+      - name: Checkout repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 2
 
-      #- name: CACHING - Anaconda packages
-      #  uses: actions/cache@v3
-      #  id: cache-pkg
-      #  with:
-      #    path: ~/conda_pkgs_dir
-      #    key:
-      #      conda-pkg-${{ runner.os }}-${{ runner.arch }}-py${{ matrix.python-version }}-${{
-      #      env.CACHE_NUMBER }}-${{ hashFiles('ci/environment.yml') }}
-      #  env:
-      #    # Increase this value if `environment.yml` has not changed,
-      #    # but you still want to reset the cache.
-      #    CACHE_NUMBER: 0
-
-      - name: INSTALL - Conda/Mamba setup (Miniforge)
+      - name: Set up Conda (Miniforge + Mamba)
         uses: conda-incubator/setup-miniconda@v3
         with:
-          auto-update-conda: true
           python-version: ${{ matrix.python-version }}
           miniforge-version: latest
-          mamba-version: "*"
           use-mamba: true
+          auto-update-conda: true
+          environment-file: ci/environment.yml
+          mamba-version: "*"
+          activate-environment: herbie-test
+          auto-activate-base: false
           channels: conda-forge
           conda-remove-defaults: "true"
           channel-priority: true
-          activate-environment: herbie-test
-          environment-file: ci/environment.yml
-          auto-activate-base: false
-          #use-only-tar-bz2: true # IMPORTANT: This needs to be set for caching to work properly!
 
-      #- name: CACHING - Anaconda environment
-      #  uses: actions/cache@v3
-      #  id: cache-env
-      #  with:
-      #    path: ${{ env.CONDA }}/envs
-      #    key:
-      #      conda-env-${{ runner.os }}-${{ runner.arch }}-py${{ matrix.python-version }}-${{
-      #      env.CACHE_NUMBER }}-${{ hashFiles('ci/environment.yml') }}
-      #  env:
-      #    # Increase this value if `ci/environment.yml` has not changed,
-      #    # but you still want to reset the cache.
-      #    CACHE_NUMBER: 0
-
-      - name: DEBUG - mamba info
-        run: |
-          mamba --version
-          mamba info
-
-      - name: DEBUG - mamba list
-        run: mamba list
-
-      - name: DEBUG - mamba configuration
-        run: mamba config --show
-
-      - name: DEBUG - Environment variables
-        run: printenv | sort
-
-      - name: DEBUG - Program paths
-        run: |
-          command -v conda
-          command -v mamba
-
-      - name: INSTALL - Update Mamba environment
-        run: mamba env update --name herbie-test --file ci/environment.yml
-        if: steps.cache-env.outputs.cache-hit != 'true'
-
-      - name: INSTALL - Project
-        run: |
-          pip install --editable=.
+      - name: Install package in editable mode
+        shell: bash -el {0}
+        run: pip install --editable=.
 
       - name: Run tests
+        shell: bash -el {0}
         env:
           TMPDIR: ${{ runner.temp }}
-        run: |
-          pytest
+        run: pytest

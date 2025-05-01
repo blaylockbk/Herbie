@@ -53,6 +53,8 @@ Much of this data is made available through the [NOAA Open Data Dissemination](h
 
 ## Installation
 
+### `conda` or `mamba`
+
 The easiest way to instal Herbie and its dependencies is with [Conda](https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html) from conda-forge.
 
 ```bash
@@ -74,14 +76,9 @@ conda env create -f environment.yml
 conda activate herbie
 ```
 
-Alternatively, Herbie is published on PyPI and you can install it with pip, _but_ it requires some dependencies that you will have to install yourself:
+### `pip`
 
-- Python 3.9+
-- [cURL](https://anaconda.org/conda-forge/curl)
-- [eccodes](https://anaconda.org/conda-forge/eccodes), a requirement for [cfgrib](https://github.com/ecmwf/cfgrib).
-- _Optional:_ [wgrib2](https://anaconda.org/conda-forge/wgrib2)
-
-When those are installed within your environment, _then_ you can install Herbie with pip.
+Alternatively, Herbie is published on PyPI and you can install it with pip.
 
 ```bash
 # Latest published version
@@ -95,6 +92,21 @@ pip install git+https://github.com/blaylockbk/Herbie.git
 # Dependecies for extra features
 pip install herbie-data[extra]
 ```
+
+ Keep in mind that Herbie does require the following dependencies that you will have to install yourself if you don't have them in your PATH:
+
+- Python 3.10+
+- [cURL](https://anaconda.org/conda-forge/curl)
+- [wgrib2](https://anaconda.org/conda-forge/wgrib2) (for some extra features)
+
+### `uv`
+
+You can add Herbie to your project with the uv command:
+
+```bash
+uv add herbie-data
+```
+
 
 ## Capabilities
 
@@ -128,6 +140,10 @@ pip install herbie-data[extra]
       style H fill:#d8c89d,stroke:#0c3576,stroke-width:4px,color:#000000
 ```
 
+### Herbie Python
+
+Herbie's Python API is used like this:
+
 ```python
 from herbie import Herbie
 
@@ -152,6 +168,26 @@ H.download(":500 mb")
 H.xarray("TMP:2 m")
 ```
 
+### Herbie CLI
+
+Herbie also has a command line interface (CLI) so you can use Herbie right in your terminal.
+
+```bash
+# Get the URL for a HRRR surface file from today at 12Z
+herbie data -m hrrr --product sfc -d "2023-03-15 12:00" -f 0
+
+# Download GFS 0.25° forecast hour 24 temperature at 850mb
+herbie download -m gfs --product 0p25 -d 2023-03-15T00:00 -f 24 --subset ":TMP:850 mb:"
+
+# View all available variables in a RAP model run
+herbie inventory -m rap -d 2023031512 -f 0
+
+# Download multiple forecast hours for a date range
+herbie download -m hrrr -d 2023-03-15T00:00 2023-03-15T06:00 -f 1 3 6 --subset ":UGRD:10 m:"
+
+# Specify custom source priority (check only Google)
+herbie data -m hrrr -d 2023-03-15 -f 0 -p google
+```
 ## Data Sources
 
 Herbie downloads model data from the following sources, but can be extended to include others:
