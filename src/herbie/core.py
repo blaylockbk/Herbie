@@ -914,7 +914,7 @@ class Herbie:
                     f"Found {ANSI.bold}{ANSI.green}{len(idx_df)}{ANSI.reset} grib messages."
                 )
             if len(idx_df) == 0:
-                msg = f"🦨 No subsets found with search string {search} in {self.model=} {self.date=} {self.fxx=}"
+                msg = f"🦨 No subsets found with {search=} in {self.model=} {self.date=} {self.fxx=}"
                 if errors == "warn":
                     log.warning(msg)
                     return # Nothing to download
