@@ -10,13 +10,15 @@ Where "hrrr" is the name of the template class located in models/hrrr.py.
 """
 
 import sys
+from importlib.metadata import entry_points
 
 from herbie import _config_path
 from herbie.misc import ANSI
 
 # ======================================================================
-#                     Import Public Model Templates
+#                     Import Herbie Model Templates
 # ======================================================================
+from .cfs import *
 from .ecmwf import *
 from .gdps import *
 from .gefs import *
@@ -33,17 +35,39 @@ from .rap import *
 from .rdps import *
 from .rrfs import *
 from .rtma import *
-from .usnavy import *
 from .urma import *
-from .cfs import *
+from .usnavy import *
+
+
+# ======================================================================
+#                   Import Custom Templates from Plugins
+# ======================================================================
+
+for ep in entry_points(group="herbie.plugins"):
+    cls = ep.load()
+    globals()[cls.__name__] = cls
+    print(
+        f"""Herbie: Added model {ANSI.green}"{cls.__name__}"{ANSI.reset} """
+        f"from {ANSI.blue}{ep.dist.name}{ANSI.reset}."
+    )
+
 
 # ======================================================================
 #                     Import Private Model Templates
 # ======================================================================
+
+# TODO: Remove this in future release in favor of Herbie plugins.
+
 _custom_template_file = _config_path / "custom_template.py"
 
 try:
     if _custom_template_file.exists():
+        warnings.warn(
+            "Herbie: Custom model templates in the config path is deprecated. Please use a Herbie plugin: "
+            "https://github.com/blaylockbk/herbie-plugin-tutorial",
+            DeprecationWarning,
+            stacklevel=2,
+        )
         sys.path.insert(1, str(_custom_template_file.parent))
         from custom_template import *
 except Exception:

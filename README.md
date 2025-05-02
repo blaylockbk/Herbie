@@ -119,6 +119,7 @@ uv add herbie-data
   - Extract data at a point
   - Get Cartopy coordinate references system
   - Plot data with Cartopy (very early development).
+- Support for custom model templates with [Herbie plugins](https://github.com/blaylockbk/herbie-plugin-tutorial).
 
 ```mermaid
   graph TD;

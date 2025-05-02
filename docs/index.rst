@@ -106,6 +106,8 @@ Specifically, Herbie can do the following:
 - Download *subsets*  of the data.
 - Read the data with xarray.
 - Help you use the data with xarray accessors (see :ref:`🗃️ Xarray Accessors`)
+- Support for custom model templates with `Herbie plugins <https://github.com/blaylockbk/herbie-plugin-tutorial>`_.
+
 
 Herbie Python
 ^^^^^^^^^^^^^
