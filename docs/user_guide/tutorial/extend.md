@@ -6,7 +6,7 @@ Herbie can be extended to download additional types of model data from the inter
 
 - The NWP model data must exist on an http server.
 - File names must be predictable (i.e., consistent naming with date, model name, forecast lead time, product, etc.)
-- Subetting of a GRIB2 file requires an ASCII index or inventory file (preferablly the wgrib2 style index file).
+- Subetting of a GRIB2 file requires an ASCII index or inventory file (preferably the wgrib2 style index file).
 
 Pull requests are welcome to update extinsting templates or create new templates.
 
@@ -21,7 +21,7 @@ You can also create your own plugin with custom model templates. You might need 
 
 ## Parts of a Herbie Template Class
 
-For an example of what a template class looks like, look at the heavily commented [HRRR template (herbie/models/hrrr.py)](https://github.com/blaylockbk/Herbie/blob/main/herbie/models/hrrr.py).
+For an example of what a template class looks like, look at the heavily commented [HRRR template (herbie/models/hrrr.py)](https://github.com/blaylockbk/Herbie/blob/main/src/herbie/models/hrrr.py).
 
 The model class template function must include the properties
 

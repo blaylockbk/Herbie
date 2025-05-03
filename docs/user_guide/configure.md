@@ -47,7 +47,7 @@ export HERBIE_CONFIG_PATH="/my/path/herbie-config/
 
 ### `model`
 
-Model name as defined in the [models](https://github.com/blaylockbk/Herbie/tree/main/herbie/models) template folder. CASE INSENSITIVE
+Model name as defined in the [models](https://github.com/blaylockbk/Herbie/tree/main/src/herbie/models) template folder. CASE INSENSITIVE
 
 Some examples:
 
@@ -115,7 +115,7 @@ List of data sources in the order of download priority. CASE INSENSITIVE. Availa
 - `'pando'` University of Utah Pando Archive (gateway 1)
 - `'pando2'` University of Utah Pando Archive (gateway 2)
 
-The default config file doesn't specify a priority. Instead, Herbie loops through the sources in the order they are listed in each [model template file](https://github.com/blaylockbk/Herbie/tree/main/herbie/models). Herbie tries to find the GRIB file at the first source, and then looks at subsequent sources in order until the requested file is found.
+The default config file doesn't specify a priority. Instead, Herbie loops through the sources in the order they are listed in each [model template file](https://github.com/blaylockbk/Herbie/tree/main/src/herbie/models). Herbie tries to find the GRIB file at the first source, and then looks at subsequent sources in order until the requested file is found.
 
 This configure option allows you to specify a different order to look for data or only look in certain locations. For example, if you only want to download the real-time data from NOMADS, then set
 
