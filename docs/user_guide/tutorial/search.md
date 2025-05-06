@@ -13,31 +13,34 @@ You can use regular expression to search for lines in the index file. If `H` is 
 
 > 🔥 **Tip:** If you need help with regular expression, search the web or look at this [cheatsheet](https://www.petefreitag.com/cheatsheets/regex/). Check regular expressions with [regexr](https://regexr.com/), [regex101](https://regex101.com/) or [cyrilex](https://extendsclass.com/regex-tester.html).
 
+> 📝 **Note:** For best results, use raw strings when working with regular expressions. Raw strings prevent Python from interpreting backslashes `\` as escape characters. For example, use `search=r":HGT:\d+ mb"` instead of `search=":HGT:\d+ mb"` (notice the suble `r` before the string).
+
+
 ## wgrib2-style index files
 
 Here are some examples you can use for the `search` argument for the **wgrib2**-style index files.
 
 | search=                                | GRIB messages that will be downloaded                     |
 | -------------------------------------- | --------------------------------------------------------- |
-| `":TMP:2 m"`                           | Temperature at 2 m.                                       |
-| `":TMP:"`                              | All temperature fields (all types of levels).             |
-| `":TMP:\d+ mb"`                        | Temperature fields at all pressure levels.                |
-| `":UGRD:\d+ mb"`                       | U Wind at all pressure levels.                            |
-| `":500 mb:"`                           | All variables on the 500 mb level.                        |
-| `":APCP:"`                             | All accumulated precipitation fields.                     |
-| `":APCP:surface:0-[1-9]*"`             | Accumulated precip since initialization time              |
-| `":APCP:.*:(?:0-1|[1-9]\d*-\d+) hour"` | Accumulated precip over last hour                         |
-| `":UGRD:10 m"`                         | U wind component at 10 meters.                            |
-| `":[UV]GRD:[1,8]0 m"`                  | U and V wind component at 10 and 80 m.                    |
-| `":[UV]GRD:"`                          | U and V wind component at all levels.                     |
-| `":.GRD:"`                             | (Same as above)                                           |
-| `":[UV]GRD:\d+ hybrid"`                | U and V wind components at all hybrid levels              |
-| `":[UV]GRD:\d+ mb"`                    | U and V wind components at all pressure levels            |
-| `":(?:TMP|DPT):"`                      | Temperature and Dew Point for all levels .                |
-| `":(?:TMP|DPT\|RH):"`                  | TMP, DPT, and Relative Humidity for all levels.           |
-| `":REFC:"`                             | Composite Reflectivity                                    |
-| `":surface:"`                          | All variables at the surface.                             |
-| `"^TMP:2 m.*fcst$"`                    | Beginning of string (^), end of string ($) wildcard (.\*) |
+| `r":TMP:2 m"`                           | Temperature at 2 m.                                       |
+| `r":TMP:"`                              | All temperature fields (all types of levels).             |
+| `r":TMP:\d+ mb"`                        | Temperature fields at all pressure levels.                |
+| `r":UGRD:\d+ mb"`                       | U Wind at all pressure levels.                            |
+| `r":500 mb:"`                           | All variables on the 500 mb level.                        |
+| `r":APCP:"`                             | All accumulated precipitation fields.                     |
+| `r":APCP:surface:0-[1-9]*"`             | Accumulated precip since initialization time              |
+| `r":APCP:.*:(?:0-1|[1-9]\d*-\d+) hour"` | Accumulated precip over last hour                         |
+| `r":UGRD:10 m"`                         | U wind component at 10 meters.                            |
+| `r":[UV]GRD:[1,8]0 m"`                  | U and V wind component at 10 and 80 m.                    |
+| `r":[UV]GRD:"`                          | U and V wind component at all levels.                     |
+| `r":.GRD:"`                             | (Same as above)                                           |
+| `r":[UV]GRD:\d+ hybrid"`                | U and V wind components at all hybrid levels              |
+| `r":[UV]GRD:\d+ mb"`                    | U and V wind components at all pressure levels            |
+| `r":(?:TMP|DPT):"`                      | Temperature and Dew Point for all levels .                |
+| `r":(?:TMP|DPT\|RH):"`                  | TMP, DPT, and Relative Humidity for all levels.           |
+| `r":REFC:"`                             | Composite Reflectivity                                    |
+| `r":surface:"`                          | All variables at the surface.                             |
+| `r"^TMP:2 m.*fcst$"`                    | Beginning of string (^), end of string ($) wildcard (.\*) |
 
 > 🔥 **Hint:** The NCEP [Parameters & Units Table 2](https://www.nco.ncep.noaa.gov/pmb/docs/on388/table2.html) and [GRIB2 Code Table 4.2](https://www.nco.ncep.noaa.gov/pmb/docs/grib2/grib2_doc/grib2_table4-2.shtml) are useful resources to help you identify wgrib2-style GRIB variable abbreviations and their meanings.
 
