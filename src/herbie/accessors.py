@@ -263,7 +263,7 @@ class HerbieAccessor:
             if {"u10", "v10"}.issubset(ds):
                 ds["wdir10"] = (
                     (270 - np.rad2deg(np.arctan2(ds.v10, ds.u10))) % 360
-                ).where((ds.u10 != 0) & (ds.v10 != 0))
+                ).where((ds.u10 != 0) | (ds.v10 != 0))
                 ds["wdir10"].attrs["GRIB_paramId"] = 260260
                 ds["wdir10"].attrs["long_name"] = "10 metre wind direction"
                 ds["wdir10"].attrs["units"] = "degree"
@@ -274,7 +274,7 @@ class HerbieAccessor:
             if {"u100", "v100"}.issubset(ds):
                 ds["wdir100"] = (
                     (270 - np.rad2deg(np.arctan2(ds.v100, ds.u100))) % 360
-                ).where((ds.u100 != 0) & (ds.v100 != 0))
+                ).where((ds.u100 != 0) | (ds.v100 != 0))
                 ds["wdir100"].attrs["long_name"] = "100 metre wind direction"
                 ds["wdir100"].attrs["units"] = "degree"
                 ds["wdir100"].attrs["standard_name"] = "wind_from_direction"
@@ -284,7 +284,7 @@ class HerbieAccessor:
             if {"u80", "v80"}.issubset(ds):
                 ds["wdir80"] = (
                     (270 - np.rad2deg(np.arctan2(ds.v80, ds.u80))) % 360
-                ).where((ds.u80 != 0) & (ds.v80 != 0))
+                ).where((ds.u80 != 0) | (ds.v80 != 0))
                 ds["wdir80"].attrs["long_name"] = "80 metre wind direction"
                 ds["wdir80"].attrs["units"] = "degree"
                 ds["wdir80"].attrs["standard_name"] = "wind_from_direction"
@@ -293,7 +293,7 @@ class HerbieAccessor:
 
             if {"u", "v"}.issubset(ds):
                 ds["wdir"] = ((270 - np.rad2deg(np.arctan2(ds.v, ds.u))) % 360).where(
-                    (ds.u != 0) & (ds.v != 0)
+                    (ds.u != 0) | (ds.v != 0)
                 )
                 ds["wdir"].attrs["GRIB_paramId"] = 3031
                 ds["wdir"].attrs["long_name"] = "wind direction"
