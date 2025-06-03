@@ -360,6 +360,9 @@ Directory structure will be <model-name>/<YYYYMMDD>/<file-name>""",
             f"\n{unknown_args_dict}"
             "\nRefer to the Herbie documentation for valid parameters.\n"
         )
+
+    if args.product:
+        unknown_args_dict['product'] = args.product
     # \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
     if args.version:
