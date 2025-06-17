@@ -62,7 +62,6 @@ class gfs:
 
             self.SOURCES = {
                 "aws": f"https://noaa-gfs-bdp-pds.s3.amazonaws.com/{post_root}",
-                "ftpprd": f"https://ftpprd.ncep.noaa.gov/data/nccf/com/gfs/prod/{post_root}",
                 "nomads": f"https://nomads.ncep.noaa.gov/pub/data/nccf/com/gfs/prod/{post_root}",
                 "google": f"https://storage.googleapis.com/global-forecast-system/{post_root}",
                 "azure": f"https://noaagfs.blob.core.windows.net/gfs/{post_root}",
@@ -119,7 +118,6 @@ class gfs_wave:
 
         self.SOURCES = {
             "aws": f"https://noaa-gfs-bdp-pds.s3.amazonaws.com/{post_root}",
-            "ftpprd": f"https://ftpprd.ncep.noaa.gov/data/nccf/com/gfs/prod/{post_root}",
             "nomads": f"https://nomads.ncep.noaa.gov/pub/data/nccf/com/gfs/prod/{post_root}",
             "google": f"https://storage.googleapis.com/global-forecast-system/{post_root}",
             "azure": f"https://noaahrrr.blob.core.windows.net/gfs/{post_root}",
@@ -157,7 +155,6 @@ class gdas:
         self.SOURCES = {
             "aws": f"https://noaa-gfs-bdp-pds.s3.amazonaws.com/{post_root}",
             "aws-old": f"https://noaa-gfs-bdp-pds.s3.amazonaws.com/{post_root}",
-            "ftpprd": f"https://ftpprd.ncep.noaa.gov/data/nccf/com/gfs/prod/{post_root}",
             "nomads": f"https://nomads.ncep.noaa.gov/pub/data/nccf/com/gfs/prod/{post_root}",
             "google": f"https://storage.googleapis.com/global-forecast-system/{post_root}",
             "azure": f"https://noaagfs.blob.core.windows.net/gfs/{post_root}",
@@ -186,7 +183,6 @@ class gdas_wave:
 
         self.SOURCES = {
             "aws": f"https://noaa-gfs-bdp-pds.s3.amazonaws.com/{post_root}",
-            "ftpprd": f"https://ftpprd.ncep.noaa.gov/data/nccf/com/gfs/prod/{post_root}",
             "nomads": f"https://nomads.ncep.noaa.gov/pub/data/nccf/com/gfs/prod/{post_root}",
             "google": f"https://storage.googleapis.com/global-forecast-system/{post_root}",
             "azure": f"https://noaahrrr.blob.core.windows.net/gfs/{post_root}",
