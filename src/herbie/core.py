@@ -1151,6 +1151,7 @@ class Herbie:
         Hxr = cfgrib.open_datasets(
             local_file,
             backend_kwargs=backend_kwargs,
+            decode_timedelta=True,
         )
 
         for ds in Hxr:
