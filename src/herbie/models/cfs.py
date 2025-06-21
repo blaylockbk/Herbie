@@ -170,7 +170,7 @@ class cfs:
                     "'variable' is not defined. Expected `variable='name'` where 'name' is one of the time series variables."
                 )
 
-            if self.variable != time_series_variables.keys():
+            if self.variable not in time_series_variables.keys():
                 warnings.warn(
                     f"Variable {self.variable} is not in the list of available time series variables. Expected one of {time_series_variables}"
                 )
