@@ -85,8 +85,9 @@ class gfs:
                 "ncei_analysis": f"https://www.ncei.noaa.gov/data/global-forecast-system/access/grid-{grid_num:03d}-{self.product}/analysis/{self.date:%Y%m/%Y%m%d}/gfs_{grid_num}_{self.date:%Y%m%d_%H%M}_{self.fxx:03d}.grb2",
                 "ncei_forecast": f"https://www.ncei.noaa.gov/data/global-forecast-system/access/grid-{grid_num:03d}-{self.product}/forecast/{self.date:%Y%m/%Y%m%d}/gfs_{grid_num}_{self.date:%Y%m%d_%H%M}_{self.fxx:03d}.grb2",
                 "ncar_rda": f"https://data.rda.ucar.edu/d084001/{self.date:%Y/%Y%m%d}/gfs.0p25.{self.date:%Y%m%d%H}.f{self.fxx:03d}.grib2",
+                "ncei_historical_analysis": f"https://www.ncei.noaa.gov/data/global-forecast-system/access/historical/analysis/{self.date:%Y%m/%Y%m%d}/gfsanl_{grid_num}_{self.date:%Y%m%d_%H%M}_{self.fxx:03d}.grb2",
             }
-            self.IDX_SUFFIX = [".grb2.inv", ".idx"]
+            self.IDX_SUFFIX = [".grb2.inv", ".idx", ".inv"]
         self.LOCALFILE = f"{self.get_remoteFileName}"
 
 

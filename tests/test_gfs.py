@@ -54,3 +54,26 @@ def test_graphcast():
     f.unlink()
 
     H.xarray(filter)
+
+def test_gfs_ncei_historical_anl():
+    print(save_dir)
+
+    H = Herbie(
+        datetime(2007, 4, 5),
+        priority="ncei_historical_analysis",
+        product="0.5-degree",
+        model="gfs",
+        fxx=0,
+        save_dir=save_dir,
+        overwrite=True,
+    )
+
+    assert H.grib, "GFS NCEI Historical Analysis grib2 file not found"
+    assert H.idx, "GFS NCEI Historical Analysis index file not found"
+
+    filter = "TMP:900 mb"
+    f = H.download(filter)
+    assert H.get_localFilePath(filter).exists(), "File doesn't exist!"
+    f.unlink()
+
+    H.xarray(filter)
