@@ -56,10 +56,8 @@ def test_graphcast():
     H.xarray(filter)
 
 def test_gfs_ncei_historical_anl():
-    print(save_dir)
-
     H = Herbie(
-        datetime(2007, 4, 5),
+        datetime(2015, 1, 15),
         priority="ncei_historical_analysis",
         product="0.5-degree",
         model="gfs",
