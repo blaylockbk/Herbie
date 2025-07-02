@@ -92,19 +92,23 @@ class aifs:
         # example file
         # https://data.ecmwf.int/forecasts/20240229/00z/aifs/0p25/oper/20240229000000-0h-oper-fc.grib2
 
-        # product suffix - let the user pass this if they want to get the control forecast -- necessary for AIFS ens (product_suffix = 'cf')
-        if not hasattr(self, "product_suffix"):
+        # Assign correct product suffix
+        if not hasattr(self, "get_control"):
+            self.get_control = False
+        if self.get_control is True:
+            product_suffix = "cf"
+        else:
             if self.product == "enfo":
                 product_suffix = "pf"
             else:
                 product_suffix = "fc"
-            self.product_suffix = product_suffix
+            
 
         # AIFS ensembles
         if self.product == "enfo":
             post_root = (
                     f"{self.date:%Y%m%d/%Hz}/aifs-ens/0p25/{self.product}"
-                    f"/{self.date:%Y%m%d%H%M%S}-{self.fxx}h-{self.product}-{self.product_suffix}.grib2"
+                    f"/{self.date:%Y%m%d%H%M%S}-{self.fxx}h-{self.product}-{product_suffix}.grib2"
                 )
         
         # Operational and experimental runs
@@ -114,18 +118,18 @@ class aifs:
                 # https://www.ecmwf.int/en/about/media-centre/news/2025/ecmwfs-ai-forecasts-become-operational
                 post_root = (
                     f"{self.date:%Y%m%d/%Hz}/aifs-single/0p25/{self.product}"
-                    f"/{self.date:%Y%m%d%H%M%S}-{self.fxx}h-{self.product}-{self.product_suffix}.grib2"
+                    f"/{self.date:%Y%m%d%H%M%S}-{self.fxx}h-{self.product}-{product_suffix}.grib2"
                 )
             elif self.date >= datetime(2025, 2, 9, 12):
                 # Preparing for the operational phase of the AI forecast
                 post_root = (
                     f"{self.date:%Y%m%d/%Hz}/aifs-single/0p25/experimental/{self.product}"
-                    f"/{self.date:%Y%m%d%H%M%S}-{self.fxx}h-{self.product}-{self.product_suffix}.grib2"
+                    f"/{self.date:%Y%m%d%H%M%S}-{self.fxx}h-{self.product}-{product_suffix}.grib2"
                 )
             else:
                 post_root = (
                     f"{self.date:%Y%m%d/%Hz}/aifs/0p25/{self.product}"
-                    f"/{self.date:%Y%m%d%H%M%S}-{self.fxx}h-{self.product}-{self.product_suffix}.grib2"
+                    f"/{self.date:%Y%m%d%H%M%S}-{self.fxx}h-{self.product}-{product_suffix}.grib2"
                 )
             
 
