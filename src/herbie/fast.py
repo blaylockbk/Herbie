@@ -10,7 +10,7 @@ Herbie Tools
 import logging
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime
-from typing import Union, Optional
+from typing import Callable, Union, Optional
 from pathlib import Path
 
 import pandas as pd
@@ -248,6 +248,7 @@ class FastHerbie:
         search: Optional[str],
         *,
         max_threads: Optional[int] = None,
+        preprocess: Optional[Callable[[xr.Dataset], xr.Dataset]] = None,
         **xarray_kwargs,
     ) -> xr.Dataset:
         """Read many Herbie objects into an xarray Dataset.
@@ -263,6 +264,9 @@ class FastHerbie:
         max_threads : int
             Control the maximum number of threads to use.
             If you use too many threads, you may run into memory limits.
+        preprocess : Callable[[xr.Dataset], xr.Dataset], optional
+            A function applied to each Herbie Dataset after loading with cfgrib.
+            Useful for trimming (e.g., `.sel()`) to reduce memory use before combining.
 
         Benchmark
         ---------
@@ -274,6 +278,9 @@ class FastHerbie:
             - 50 threads took 37 s
         """
         xarray_kwargs = dict(search=search, **xarray_kwargs)
+        # Decided to add it as its own kwarg instead of hiding it in xarray_kwargs to enhance usability
+        if preprocess is not None:
+            xarray_kwargs["preprocess"] = preprocess
 
         # NOTE: Multiprocessing does not seem to work because it looks
         # NOTE: like xarray objects are not pickleable.

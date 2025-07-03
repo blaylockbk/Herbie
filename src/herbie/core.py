@@ -18,7 +18,7 @@ import warnings
 from datetime import datetime, timedelta
 from io import StringIO
 from shutil import which
-from typing import Literal, Optional, Union
+from typing import Callable, Literal, Optional, Union
 
 import cfgrib
 import pandas as pd
@@ -1065,6 +1065,7 @@ class Herbie:
         backend_kwargs: dict = {},
         remove_grib: bool = True,
         _use_pygrib_for_crs: bool = False,
+        preprocess: Optional[Callable[[xr.Dataset], xr.Dataset]] = None,
         **download_kwargs,
     ) -> xr.Dataset:
         """
@@ -1081,6 +1082,9 @@ class Herbie:
             If you have pygrib, you can use it to extract the CRS
             information instead of using values extracted from cfgrib
             by Herbie.
+        preprocess : Callable[[xr.Dataset], xr.Dataset], optional
+            A function to apply to each xarray dataset after opening with cfgrib.
+            Useful for trimming the dataset (e.g., selecting a lat/lon slice) to save memory.
         """
         # TODO: Remove this eventually
         if searchString is not None:
@@ -1205,6 +1209,10 @@ class Herbie:
             for var in list(ds):
                 ds[var].attrs["grid_mapping"] = "gribfile_projection"
 
+        # Apply preprocess function to datasets if provided - do this before they are loaded into memory
+        if preprocess is not None:
+            Hxr = [preprocess(ds) for ds in Hxr]
+            
         if remove_grib:
             # Load the datasets into memory before removing the file
             Hxr = [ds.load() for ds in Hxr]
