@@ -85,32 +85,54 @@ class aifs:
         }
         self.PRODUCTS = {
             "oper": "operational high-resolution forecast, atmospheric fields",
+            "enfo": "ensemble forecast, atmospheric fields",
             "experimental": "experimental high-resolution forecast, atmospheric fields",
         }
 
         # example file
         # https://data.ecmwf.int/forecasts/20240229/00z/aifs/0p25/oper/20240229000000-0h-oper-fc.grib2
 
-        product_suffix = "fc"
-
-        if self.date >= datetime(2025, 2, 25, 6):
-            # ECMWF’s AI forecasts become operational
-            # https://www.ecmwf.int/en/about/media-centre/news/2025/ecmwfs-ai-forecasts-become-operational
-            post_root = (
-                f"{self.date:%Y%m%d/%Hz}/aifs-single/0p25/{self.product}"
-                f"/{self.date:%Y%m%d%H%M%S}-{self.fxx}h-{self.product}-{product_suffix}.grib2"
-            )
-        elif self.date >= datetime(2025, 2, 9, 12):
-            # Preparing for the operational phase of the AI forecast
-            post_root = (
-                f"{self.date:%Y%m%d/%Hz}/aifs-single/0p25/experimental/{self.product}"
-                f"/{self.date:%Y%m%d%H%M%S}-{self.fxx}h-{self.product}-{product_suffix}.grib2"
-            )
+        # Assign correct product suffix
+        if not hasattr(self, "get_control"):
+            self.get_control = False
+        if self.get_control is True:
+            product_suffix = "cf"
         else:
+            if self.product == "enfo":
+                product_suffix = "pf"
+            else:
+                product_suffix = "fc"
+            
+
+        # AIFS ensembles
+        if self.product == "enfo":
             post_root = (
-                f"{self.date:%Y%m%d/%Hz}/aifs/0p25/{self.product}"
-                f"/{self.date:%Y%m%d%H%M%S}-{self.fxx}h-{self.product}-{product_suffix}.grib2"
-            )
+                    f"{self.date:%Y%m%d/%Hz}/aifs-ens/0p25/{self.product}"
+                    f"/{self.date:%Y%m%d%H%M%S}-{self.fxx}h-{self.product}-{product_suffix}.grib2"
+                )
+        
+        # Operational and experimental runs
+        else:
+            if self.date >= datetime(2025, 2, 25, 6):
+                # ECMWF’s AI forecasts become operational
+                # https://www.ecmwf.int/en/about/media-centre/news/2025/ecmwfs-ai-forecasts-become-operational
+                post_root = (
+                    f"{self.date:%Y%m%d/%Hz}/aifs-single/0p25/{self.product}"
+                    f"/{self.date:%Y%m%d%H%M%S}-{self.fxx}h-{self.product}-{product_suffix}.grib2"
+                )
+            elif self.date >= datetime(2025, 2, 9, 12):
+                # Preparing for the operational phase of the AI forecast
+                post_root = (
+                    f"{self.date:%Y%m%d/%Hz}/aifs-single/0p25/experimental/{self.product}"
+                    f"/{self.date:%Y%m%d%H%M%S}-{self.fxx}h-{self.product}-{product_suffix}.grib2"
+                )
+            else:
+                post_root = (
+                    f"{self.date:%Y%m%d/%Hz}/aifs/0p25/{self.product}"
+                    f"/{self.date:%Y%m%d%H%M%S}-{self.fxx}h-{self.product}-{product_suffix}.grib2"
+                )
+            
+
 
         self.SOURCES = {
             "aws": f"https://ecmwf-forecasts.s3.eu-central-1.amazonaws.com/{post_root}",
