@@ -223,6 +223,9 @@ class Herbie:
         # (see https://stackoverflow.com/a/7936588/2383070 for what I'm doing here)
         getattr(model_templates, self.model).template(self)
 
+        # Check the user input
+        self._validate()
+
         if product is None:
             # The user didn't specify a product, so let's use the first
             # product in the model template.
@@ -245,9 +248,6 @@ class Herbie:
         self.IDX_STYLE = getattr(self, "IDX_STYLE", "wgrib2")
 
         self.search_help = _search_help(self.IDX_STYLE)
-
-        # Check the user input
-        self._validate()
 
         # Ok, now we are ready to look for the GRIB2 file at each of the remote sources.
         # self.grib is the first existing GRIB2 file discovered.
