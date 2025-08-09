@@ -223,16 +223,6 @@ class Herbie:
         # (see https://stackoverflow.com/a/7936588/2383070 for what I'm doing here)
         getattr(model_templates, self.model).template(self)
 
-        if product is None:
-            # The user didn't specify a product, so let's use the first
-            # product in the model template.
-            self.product = list(self.PRODUCTS)[0]
-            log.info(f'`product` not specified. Will use "{self.product}".')
-            # We need to rerun this so the sources have the new product value.
-            getattr(model_templates, self.model).template(self)
-
-        self.product_description = self.PRODUCTS[self.product]
-
         # Specify the suffix for the inventory index files.
         # Default value is `.grib2.idx`, but some have weird suffix,
         # like archived RAP on NCEI are `.grb2.inv`.
@@ -246,8 +236,18 @@ class Herbie:
 
         self.search_help = _search_help(self.IDX_STYLE)
 
+        if product is None:
+            # The user didn't specify a product, so let's use the first
+            # product in the model template.
+            self.product = list(self.PRODUCTS)[0]
+            log.info(f'`product` not specified. Will use "{self.product}".')
+            # We need to rerun this so the sources have the new product value.
+            getattr(model_templates, self.model).template(self)
+
         # Check the user input
         self._validate()
+
+        self.product_description = self.PRODUCTS[self.product]
 
         # Ok, now we are ready to look for the GRIB2 file at each of the remote sources.
         # self.grib is the first existing GRIB2 file discovered.
