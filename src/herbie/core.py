@@ -1004,7 +1004,7 @@ class Herbie:
 
         if self.overwrite and self.grib_source.startswith("local"):
             # Search for the grib files on the remote archives again
-            self.grib, self.grib_source = self.find_grib(overwrite=True)
+            self.grib, self.grib_source = self.find_grib()
             self.idx, self.idx_source = self.find_idx()
             print(f"Overwrite local file with file from [{self.grib_source}]")
 
