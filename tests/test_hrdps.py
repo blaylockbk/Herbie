@@ -1,7 +1,14 @@
 ## Nikhil Shankar
 ## August 10, 2025
 
-"""Tests for downloading HRDPS model."""
+"""
+Tests for downloading HRDPS model.
+
+DRAGONS:
+
+At ~00Z the HRDPS servers are cleared of the previous day's forecasts.
+The next forecast arrives at ~06Z. During the interim period these tests will fail.
+"""
 
 from datetime import datetime
 
