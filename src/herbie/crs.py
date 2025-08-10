@@ -6,9 +6,8 @@ to test how Herbie and pygrib are extracting the CRS information.
 
 from typing import Any
 
-from pyproj import CRS
-
 import xarray as xr
+from pyproj import CRS
 
 
 def get_cf_crs(
@@ -81,6 +80,15 @@ def get_cf_crs(
         projparams = {"proj": "longlat"}
         projparams["a"] = a
         projparams["b"] = b
+
+    elif da.GRIB_gridType == "rotated_ll":
+        projparams = {"proj": "ob_tran"}
+        projparams["o_proj"] = "longlat"
+        projparams["a"] = a
+        projparams["b"] = b
+        projparams["lon_0"] = da.GRIB_longitudeOfSouthernPoleInDegrees
+        projparams["o_lon_p"] = 0.0
+        projparams["o_lat_p"] = -da.GRIB_latitudeOfSouthernPoleInDegrees
 
     elif da.GRIB_gridType == "regular_gg":
         projparams = {"proj": "longlat"}
