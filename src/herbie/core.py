@@ -479,9 +479,29 @@ class Herbie:
         if not overwrite:
             local_grib = self.get_localFilePath()
             for suffix in self.IDX_SUFFIX:
-                local_idx = local_grib.with_suffix(suffix)
+                # There is no easy way to know if the index suffix needs to be appended or overwrite the grib suffix.
+                # Hence there is a need to do various checks to verify if the index file exists locally or not.
+
+                # This is the case of GFS, where the grib file ends with ".grb2" and the index file is ".grb2.inv"
+                # The index suffix needs to overwrite the grib file suffix, now ending in ".grb2.inv"
+                if suffix.startswith(local_grib.suffix):
+                    local_idx = local_grib.with_suffix(suffix)
+                
+                # This is the case of GFS, where the grib file ends with ".f000" and the index file is ".idx"
+                # The index suffix needs to be appended to the grib file suffix, now ending in ".f000.idx"
+                else:
+                    local_idx = local_grib.with_suffix(local_grib.suffix + suffix)
+
                 if local_idx.exists() and not self.overwrite:
                     return (local_idx, "local")
+                
+                # If the index file does not exists locally, we will need to try another variation of the index file name.
+                # This is the case of IFS, where the grib file ends with ".grib2" and the index file is ".index"
+                # The index suffix needs to overwrite the grib file suffix, now ending in ".index"
+                else:
+                    local_idx = local_grib.with_suffix(suffix)
+                    if local_idx.exists() and not self.overwrite:
+                        return (local_idx, "local")    
 
         # If priority list is set, we want to search SOURCES in that
         # priority order. If priority is None, then search all SOURCES
@@ -740,9 +760,34 @@ class Herbie:
             # eccodes keywords explained here:
             # https://confluence.ecmwf.int/display/UDOC/Identification+keywords
 
-            r = requests.get(self.idx)
-            idxs = [json.loads(x) for x in r.text.split("\n") if x]
-            r.close()
+            if self.idx_source in ["local"]:
+                with open(self.idx, "r") as file:
+                    read_this_idx = StringIO(file.read())
+            else:
+                print(f"Downloading inventory file from {self.idx=}")
+                response = requests.get(self.idx)
+                if response.status_code != 200:
+                    response.raise_for_status()
+                    response.close()
+                    raise ValueError(
+                        f"\nCant open index file {self.idx}\n"
+                        f"Download the full file first (with `H.download()`).\n"
+                        f"You will need to remake the Herbie object (H = `Herbie()`)\n"
+                        f"or delete this cached property: `del H.index_as_dataframe()`"
+                    )
+                
+                read_this_idx = StringIO(response.text)
+                response.close()
+
+                index_filepath = self.get_localIndexFilePath()
+                os.makedirs(os.path.dirname(index_filepath), exist_ok=True)
+
+                with open(index_filepath, "w") as file:
+                    file.write(read_this_idx.read())
+                    # reset the cursor to the beggining of the StringIO
+                    read_this_idx.seek(0)
+
+            idxs = [json.loads(x) for x in read_this_idx.getvalue().split("\n") if x]
             df = pd.DataFrame(idxs)
 
             # Format the DataFrame
