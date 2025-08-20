@@ -32,7 +32,6 @@ keywords = [
 dependencies = [
     "cfgrib>=0.9.15",
     "eccodes>=2.37.0",
-    "jupyter>=1.1.1",
     "numpy>=1.24",
     "pandas>=2.1",
     "pyproj>=3.7.0",
@@ -56,6 +55,7 @@ build-backend = "hatchling.build"
 [dependency-groups]
 dev = [
     "ipykernel>=6.29.5",
+    "jupyter>=1.1.1",
     "pytest>=8.3.5",
     "pytest-cov>=6.1.1",
     "ruff>=0.11.6",
