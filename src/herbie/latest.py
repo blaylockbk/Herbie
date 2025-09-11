@@ -29,6 +29,8 @@ def HerbieLatest(
         but I also know AWS gets the data pretty quick. So, check AWS
         first, then check NOMADS (because if you make too many downloads
         from NOMADS your IP address will get blocked.)
+    periods : int
+        The number of periods (initialization datetimes) to search through.
     **kwargs
         Any other input you want passed to the Herbie class.
     """
