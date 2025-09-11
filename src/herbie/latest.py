@@ -40,7 +40,7 @@ def HerbieLatest(
     # Create a list of recent dates to try
     dates = pd.date_range(
         pd.Timestamp.utcnow().floor(freq).tz_localize(None),
-        periods=4,
+        periods=periods,
         freq=f"-{freq}",
     )
 
