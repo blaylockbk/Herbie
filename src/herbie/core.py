@@ -398,8 +398,8 @@ class Herbie:
 
         if verbose:
             print(f"🐜 {self.IDX_SUFFIX=}")
-        
-         # Initialize variable to avoid UnboundLocalError
+
+        # Initialize variable to avoid UnboundLocalError
         idx_exists = False
 
         # Loop through IDX_SUFFIX options until we find one that exists
@@ -413,7 +413,9 @@ class Herbie:
                 idx_exists = requests.head(idx_url).ok
             except Exception as e:
                 if verbose:
-                    print(f"Unable to get index file from {idx_url} due to error {str(e)}")
+                    print(
+                        f"Unable to get index file from {idx_url} due to error {str(e)}"
+                    )
 
             if verbose:
                 print(f"🐜 {idx_url=}")
@@ -472,7 +474,9 @@ class Herbie:
 
         return (None, None)
 
-    def find_idx(self, overwrite: bool = False) -> tuple[Optional[Union[Path, str]], Optional[str]]:
+    def find_idx(
+        self, overwrite: bool = False
+    ) -> tuple[Optional[Union[Path, str]], Optional[str]]:
         """Find an index file for the GRIB file."""
 
         # But first, if overwrite is False, then check if the GRIB2 inventory file exists locally.
@@ -486,7 +490,7 @@ class Herbie:
                 # The index suffix needs to overwrite the grib file suffix, now ending in ".grb2.inv"
                 if suffix.startswith(local_grib.suffix):
                     local_idx = local_grib.with_suffix(suffix)
-                
+
                 # This is the case of GFS, where the grib file ends with ".f000" and the index file is ".idx"
                 # The index suffix needs to be appended to the grib file suffix, now ending in ".f000.idx"
                 else:
@@ -494,14 +498,14 @@ class Herbie:
 
                 if local_idx.exists() and not self.overwrite:
                     return (local_idx, "local")
-                
+
                 # If the index file does not exists locally, we will need to try another variation of the index file name.
                 # This is the case of IFS, where the grib file ends with ".grib2" and the index file is ".index"
                 # The index suffix needs to overwrite the grib file suffix, now ending in ".index"
                 else:
                     local_idx = local_grib.with_suffix(suffix)
                     if local_idx.exists() and not self.overwrite:
-                        return (local_idx, "local")    
+                        return (local_idx, "local")
 
         # If priority list is set, we want to search SOURCES in that
         # priority order. If priority is None, then search all SOURCES
@@ -635,7 +639,7 @@ class Herbie:
 
         # Get the directory in the local file path
         dir_path = os.path.dirname(local_file_path)
-        
+
         # Get the filename from the index URL path
         index_filename = os.path.basename(urlparse(self.idx).path)
 
@@ -678,7 +682,8 @@ class Herbie:
                 read_this_idx = self.idx
             else:
                 read_this_idx = None
-                print(f"Downloading inventory file from {self.idx=}")
+                if self.verbose:
+                    print(f"Downloading inventory file from {self.idx=}")
                 response = requests.get(self.idx)
                 if response.status_code != 200:
                     response.raise_for_status()
@@ -689,7 +694,7 @@ class Herbie:
                         f"You will need to remake the Herbie object (H = `Herbie()`)\n"
                         f"or delete this cached property: `del H.index_as_dataframe()`"
                     )
-                
+
                 read_this_idx = StringIO(response.text)
                 response.close()
 
@@ -764,7 +769,8 @@ class Herbie:
                 with open(self.idx, "r") as file:
                     read_this_idx = StringIO(file.read())
             else:
-                print(f"Downloading inventory file from {self.idx=}")
+                if self.verbose:
+                    print(f"Downloading inventory file from {self.idx=}")
                 response = requests.get(self.idx)
                 if response.status_code != 200:
                     response.raise_for_status()
@@ -775,7 +781,7 @@ class Herbie:
                         f"You will need to remake the Herbie object (H = `Herbie()`)\n"
                         f"or delete this cached property: `del H.index_as_dataframe()`"
                     )
-                
+
                 read_this_idx = StringIO(response.text)
                 response.close()
 
@@ -1005,7 +1011,7 @@ class Herbie:
                 msg = f"🦨 No subsets found with {search=} in {self.model=} {self.date=} {self.fxx=}"
                 if errors == "warn":
                     log.warning(msg)
-                    return # Nothing to download
+                    return  # Nothing to download
                 elif errors == "raise":
                     raise ValueError(msg)
 
