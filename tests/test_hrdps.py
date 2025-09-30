@@ -13,11 +13,38 @@ The next forecast arrives at ~06Z. During the interim period these tests will fa
 from datetime import datetime
 
 import pandas as pd
+import requests
+from bs4 import BeautifulSoup
 
 from herbie import Herbie, config
 
-now = datetime.now()
-latest = pd.Timestamp("now").floor("6h") - pd.Timedelta("6h")
+
+def get_test_date():
+    """Get a valid test date for the latest HRDPS model."""
+    url = "https://dd.weather.gc.ca/model_hrdps/continental/2.5km/00/000/"
+
+    resp = requests.get(url)
+    resp.raise_for_status()
+
+    soup = BeautifulSoup(resp.text, "html.parser")
+
+    # Extract all <a href="..."> links
+    links = [a["href"] for a in soup.find_all("a", href=True)]
+
+    # Skip the first "../" link
+    files = [link for link in links if link.startswith("20")]
+    testDate = datetime.strptime(files[0].split("_")[0], "%Y%m%dT%HZ")
+
+    return testDate
+
+
+# now = datetime.now()
+# latest = pd.Timestamp("now").floor("6h") - pd.Timedelta("6h")
+
+try:
+    latest = get_test_date()
+except Exception:
+    raise ValueError("Could not get a valid date to use for the HRDPS tests.")
 
 save_dir = config["default"]["save_dir"] / "Herbie-Tests-Data/"
 

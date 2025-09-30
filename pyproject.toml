@@ -59,6 +59,7 @@ dev = [
     "pytest>=8.3.5",
     "pytest-cov>=6.1.1",
     "ruff>=0.11.6",
+    "scipy>=1.15.2", # only needed for test writing netcdf file
 ]
 docs = [
     "autodocsumm>=0.2.14",
