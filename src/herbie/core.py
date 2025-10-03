@@ -73,6 +73,10 @@ def _sanitize_attr_value(value):
         return [_sanitize_attr_value(v) for v in value]
     if isinstance(value, tuple):
         return tuple(_sanitize_attr_value(v) for v in value)
+    if isinstance(value, (np.datetime64, np.timedelta64)):
+        if np.isnat(value):
+            return None
+        return value.item() if hasattr(value, "item") else value
     return value
 
 
@@ -80,6 +84,24 @@ def _sanitize_attrs(obj):
     """Ensure attributes are serialisable by NetCDF writers."""
 
     obj.attrs = {k: _sanitize_attr_value(v) for k, v in obj.attrs.items()}
+
+
+def _sanitize_variable(obj):
+    """Sanitize both attributes and encoding for an xarray Variable."""
+
+    _sanitize_attrs(obj)
+
+    if not hasattr(obj, "dtype"):
+        return
+
+    dtype = obj.dtype
+    if dtype is None:
+        return
+
+    if np.issubdtype(dtype, np.datetime64) or np.issubdtype(dtype, np.timedelta64):
+        obj.attrs.pop("_FillValue", None)
+        if hasattr(obj, "encoding"):
+            obj.encoding["_FillValue"] = None
 
 
 def wgrib2_idx(grib2filepath: Union[Path, str]) -> str:
@@ -1332,9 +1354,9 @@ class Herbie:
             # Sanitize attributes so they are safe for writing to NetCDF
             _sanitize_attrs(ds)
             for coord in ds.coords:
-                _sanitize_attrs(ds.coords[coord])
+                _sanitize_variable(ds.coords[coord])
             for var in ds.data_vars:
-                _sanitize_attrs(ds[var])
+                _sanitize_variable(ds[var])
 
         if remove_grib:
             # Load the datasets into memory before removing the file
