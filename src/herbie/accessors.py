@@ -388,11 +388,37 @@ class HerbieAccessor:
                 "`pip install 'herbie-data[extras]'` for the full functionality."
             )
 
+        def _grid_latlon(ds):
+            # find latitude / longitude as data vars or coords
+            def get_var(name_opts):
+                for n in name_opts:
+                    if n in ds.data_vars: return ds[n]
+                    if n in ds.coords:    return ds.coords[n]
+                return None
+
+            lat = get_var(("latitude", "lat", "nav_lat", "y"))
+            lon = get_var(("longitude", "lon", "nav_lon", "x"))
+            if lat is None or lon is None:
+                raise ValueError("Dataset missing latitude/longitude variables or coords.")
+
+            latv, lonv = lat.values, lon.values
+            if lat.ndim == 1 and lon.ndim == 1:
+                lon2d, lat2d = np.meshgrid(lonv, latv)
+            else:
+                # assume already 2D, broadcasted
+                lat2d, lon2d = np.asarray(latv), np.asarray(lonv)
+
+            grid = np.column_stack([lat2d.ravel(), lon2d.ravel()])
+            if grid.size == 0 or grid.shape[1] != 2:
+                raise ValueError("Empty/malformed lat/lon grid for BallTree.")
+            return grid
+
         def plant_tree(save_pickle: Optional[Union[Path, str]] = None):
             """Grow a new BallTree object from seedling."""
             timer = pd.Timestamp("now")
             print("INFO: 🌱 Growing new BallTree...", end="")
-            tree = BallTree(np.deg2rad(df_grid), metric="haversine")
+            grid_deg = _grid_latlon(ds)                 # N×2, [lat, lon] in degrees
+            tree = BallTree(np.deg2rad(grid_deg), metric="haversine")
             print(
                 f"🌳 BallTree grew in {(pd.Timestamp('now') - timer).total_seconds():.2} seconds."
             )
