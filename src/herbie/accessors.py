@@ -410,6 +410,9 @@ class HerbieAccessor:
 
         # ---------------------
         # Validate points input
+        if points.empty:
+            raise ValueError("Input DataFrame 'points' is empty")
+        
         if ("latitude" not in points) and ("longitude" not in points):
             raise ValueError(
                 "`points` DataFrame must have columns 'latitude' and 'longitude'"
