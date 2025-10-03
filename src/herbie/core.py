@@ -22,6 +22,7 @@ from typing import Literal, Optional, Union
 from urllib.parse import urlparse
 
 import cfgrib
+import numpy as np
 import pandas as pd
 import requests
 import xarray as xr
@@ -50,6 +51,35 @@ if curl is None:
     warnings.warn(
         "Curl is not in system Path. Herbie won't be able to download GRIB files."
     )
+
+
+_INT32_MIN = np.iinfo(np.int32).min
+_INT32_MAX = np.iinfo(np.int32).max
+
+
+def _sanitize_attr_value(value):
+    """Convert attribute values so they are compatible with NetCDF3 writers."""
+
+    if isinstance(value, np.integer):
+        value = int(value)
+        if value < _INT32_MIN or value > _INT32_MAX:
+            return float(value)
+        return value
+    if isinstance(value, np.floating):
+        return float(value)
+    if isinstance(value, np.ndarray):
+        return [_sanitize_attr_value(v) for v in value.tolist()]
+    if isinstance(value, list):
+        return [_sanitize_attr_value(v) for v in value]
+    if isinstance(value, tuple):
+        return tuple(_sanitize_attr_value(v) for v in value)
+    return value
+
+
+def _sanitize_attrs(obj):
+    """Ensure attributes are serialisable by NetCDF writers."""
+
+    obj.attrs = {k: _sanitize_attr_value(v) for k, v in obj.attrs.items()}
 
 
 def wgrib2_idx(grib2filepath: Union[Path, str]) -> str:
@@ -1298,6 +1328,13 @@ class Herbie:
             # Assign this grid_mapping for all variables
             for var in list(ds):
                 ds[var].attrs["grid_mapping"] = "gribfile_projection"
+
+            # Sanitize attributes so they are safe for writing to NetCDF
+            _sanitize_attrs(ds)
+            for coord in ds.coords:
+                _sanitize_attrs(ds.coords[coord])
+            for var in ds.data_vars:
+                _sanitize_attrs(ds[var])
 
         if remove_grib:
             # Load the datasets into memory before removing the file
