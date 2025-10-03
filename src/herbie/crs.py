@@ -46,7 +46,7 @@ def get_cf_crs(
     elif shapeOfTheEarth == 1 and ds.attrs["model"] in {
         "urma",
         "rtma",
-        "rtma_ru"
+        "rtma_ru",
         "nbm",
         "nbmqmd",
     }:
