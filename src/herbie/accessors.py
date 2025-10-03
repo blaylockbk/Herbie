@@ -592,9 +592,30 @@ class HerbieAccessor:
             # variable from the four nearest points.
             b = xr.concat(k_points, dim="k")
 
+            distance_coord = b.coords.get("point_grid_distance")
+
+            if distance_coord is None:
+                raise ValueError("point_grid_distance coordinate missing from selections")
+
+            # Starting with Python 3.13 / xarray 2024.09 the concat logic may
+            # drop the newly introduced ``k`` dimension from a coordinate when
+            # every selection is empty (for example after filtering by
+            # ``max_distance``). Reconstruct the stacked coordinate so the
+            # weighted reduction always sees a ``(k, point)`` layout.
+            if "k" not in distance_coord.dims:
+                stacked_distance = xr.concat(
+                    [
+                        kp.coords["point_grid_distance"].expand_dims(k=[idx])
+                        for idx, kp in enumerate(k_points)
+                    ],
+                    dim="k",
+                )
+                b = b.assign_coords(point_grid_distance=stacked_distance)
+                distance_coord = b.coords["point_grid_distance"]
+
             # Note: clipping accounts for the "divide by zero" case when
             # the requested point is exactly the nearest grid point.
-            weights = (1 / b.point_grid_distance).clip(max=1e6)
+            weights = (1 / distance_coord).clip(max=1e6)
 
             # Compute weighted mean of variables
             sum_of_weights = weights.sum(dim="k")
@@ -606,7 +627,7 @@ class HerbieAccessor:
             # the line `weights.sum(dim='k')`.
             c.coords["latitude"] = b.coords["latitude"]
             c.coords["longitude"] = b.coords["longitude"]
-            c.coords["point_grid_distance"] = b.coords["point_grid_distance"]
+            c.coords["point_grid_distance"] = distance_coord
 
             return c
         else:
