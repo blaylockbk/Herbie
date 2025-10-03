@@ -412,7 +412,6 @@ class HerbieAccessor:
         # Validate points input
         if points.empty:
             raise ValueError("Input DataFrame 'points' is empty")
-            
         if ("latitude" not in points) and ("longitude" not in points):
             raise ValueError(
                 "`points` DataFrame must have columns 'latitude' and 'longitude'"
@@ -450,25 +449,35 @@ class HerbieAccessor:
         ds = ds[[i for i in ds if ds[i].dims != ()]]
 
         if "latitude" in ds.dims and "longitude" in ds.dims:
-            # Rename dims to x and y (regular lat/lon grids like GFS/IFS).
             ds = ds.rename_dims({"latitude": "y", "longitude": "x"})
 
-        # Get Dataset's lat/lon grid and coordinate indices as a DataFrame.
-        # If latitude/longitude are coords (not data vars), select them from coords.
+        # If lat/lon exist as data vars, use them; otherwise pull from coords.
         _latlon_in_datavars = {"latitude", "longitude"}.issubset(ds.data_vars)
-
         latlon_ds = (
             ds[["latitude", "longitude"]]
             if _latlon_in_datavars
-            else ds.coords.to_dataset()[["latitude", "longitude"]]
+            else ds.coords.to_dataset()
         )
 
         df_grid = (
             latlon_ds
             .drop_vars([i for i, j in ds.coords.items() if not j.ndim])
             .to_dataframe()
-            .reset_index()[["latitude", "longitude"]]  # ensure they are columns
+            .reset_index()
         )
+
+        # 🔧 NEW: normalize to latitude/longitude column names
+        if {"latitude", "longitude"}.issubset(df_grid.columns):
+            pass
+        elif {"y", "x"}.issubset(df_grid.columns):
+            df_grid = df_grid.rename(columns={"y": "latitude", "x": "longitude"})
+        elif {"lat", "lon"}.issubset(df_grid.columns):
+            df_grid = df_grid.rename(columns={"lat": "latitude", "lon": "longitude"})
+        else:
+            raise KeyError(f"Could not find lat/lon columns in {list(df_grid.columns)}")
+
+        df_grid = df_grid[["latitude", "longitude"]]  # now safe
+
 
         # ---------------
         # BallTree object
