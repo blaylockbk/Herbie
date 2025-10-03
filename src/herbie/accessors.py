@@ -388,37 +388,11 @@ class HerbieAccessor:
                 "`pip install 'herbie-data[extras]'` for the full functionality."
             )
 
-        def _grid_latlon(ds):
-            # find latitude / longitude as data vars or coords
-            def get_var(name_opts):
-                for n in name_opts:
-                    if n in ds.data_vars: return ds[n]
-                    if n in ds.coords:    return ds.coords[n]
-                return None
-
-            lat = get_var(("latitude", "lat", "nav_lat", "y"))
-            lon = get_var(("longitude", "lon", "nav_lon", "x"))
-            if lat is None or lon is None:
-                raise ValueError("Dataset missing latitude/longitude variables or coords.")
-
-            latv, lonv = lat.values, lon.values
-            if lat.ndim == 1 and lon.ndim == 1:
-                lon2d, lat2d = np.meshgrid(lonv, latv)
-            else:
-                # assume already 2D, broadcasted
-                lat2d, lon2d = np.asarray(latv), np.asarray(lonv)
-
-            grid = np.column_stack([lat2d.ravel(), lon2d.ravel()])
-            if grid.size == 0 or grid.shape[1] != 2:
-                raise ValueError("Empty/malformed lat/lon grid for BallTree.")
-            return grid
-
         def plant_tree(save_pickle: Optional[Union[Path, str]] = None):
             """Grow a new BallTree object from seedling."""
             timer = pd.Timestamp("now")
             print("INFO: 🌱 Growing new BallTree...", end="")
-            grid_deg = _grid_latlon(ds)                 # N×2, [lat, lon] in degrees
-            tree = BallTree(np.deg2rad(grid_deg), metric="haversine")
+            tree = BallTree(np.deg2rad(df_grid), metric="haversine")
             print(
                 f"🌳 BallTree grew in {(pd.Timestamp('now') - timer).total_seconds():.2} seconds."
             )
@@ -438,7 +412,7 @@ class HerbieAccessor:
         # Validate points input
         if points.empty:
             raise ValueError("Input DataFrame 'points' is empty")
-        
+            
         if ("latitude" not in points) and ("longitude" not in points):
             raise ValueError(
                 "`points` DataFrame must have columns 'latitude' and 'longitude'"
@@ -476,16 +450,24 @@ class HerbieAccessor:
         ds = ds[[i for i in ds if ds[i].dims != ()]]
 
         if "latitude" in ds.dims and "longitude" in ds.dims:
-            # Rename dims to x and y
-            # This is needed for regular latitude-longitude grids like
-            # GFS and IFS model data.
+            # Rename dims to x and y (regular lat/lon grids like GFS/IFS).
             ds = ds.rename_dims({"latitude": "y", "longitude": "x"})
 
         # Get Dataset's lat/lon grid and coordinate indices as a DataFrame.
-        df_grid = (
+        # If latitude/longitude are coords (not data vars), select them from coords.
+        _latlon_in_datavars = {"latitude", "longitude"}.issubset(ds.data_vars)
+
+        latlon_ds = (
             ds[["latitude", "longitude"]]
+            if _latlon_in_datavars
+            else ds.coords.to_dataset()[["latitude", "longitude"]]
+        )
+
+        df_grid = (
+            latlon_ds
             .drop_vars([i for i, j in ds.coords.items() if not j.ndim])
             .to_dataframe()
+            .reset_index()[["latitude", "longitude"]]  # ensure they are columns
         )
 
         # ---------------
