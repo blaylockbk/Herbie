@@ -34,6 +34,8 @@ def HerbieLatest(
     """
     if model.lower() in ["hrrr", "rap", "rrfs"]:
         freq = "1h"
+    elif model.lower() in ["rtma_ru"]:
+        freq = "15min"
     else:
         freq = "6h"
 

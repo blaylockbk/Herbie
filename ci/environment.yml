@@ -15,6 +15,7 @@ dependencies:
   # Python requirements
   - cartopy
   - cfgrib
+  - beautifulsoup4
   - matplotlib
   - metpy
   - numpy

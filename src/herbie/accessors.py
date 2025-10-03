@@ -453,11 +453,35 @@ class HerbieAccessor:
             ds = ds.rename_dims({"latitude": "y", "longitude": "x"})
 
         # Get Dataset's lat/lon grid and coordinate indices as a DataFrame.
-        df_grid = (
-            ds[["latitude", "longitude"]]
-            .drop_vars([i for i, j in ds.coords.items() if not j.ndim])
-            .to_dataframe()
-        )
+        # The latitude/longitude values may be stored as coordinates rather
+        # than data variables (e.g. simple regular latitude-longitude grids).
+        # In that case, selecting them as data variables produces an empty
+        # Dataset, which in turn caused the BallTree construction to fail.
+        # Broadcast the latitude/longitude coordinates explicitly so we always
+        # end up with a full 2D table of grid points regardless of how they are
+        # stored in the Dataset.
+        def _get_coord(ds_obj, names):
+            for name in names:
+                if name in ds_obj.variables:
+                    return ds_obj[name]
+            raise KeyError(
+                "Dataset must contain a latitude/longitude coordinate."
+            )
+
+        lat_da = _get_coord(ds, ["latitude", "lat"])
+        lon_da = _get_coord(ds, ["longitude", "lon"])
+
+        # Ensure both coordinates share the same dimensionality
+        lat_da, lon_da = xr.broadcast(lat_da, lon_da)
+        if lat_da.name != "latitude":
+            lat_da = lat_da.rename("latitude")
+        if lon_da.name != "longitude":
+            lon_da = lon_da.rename("longitude")
+
+        grid_ds = xr.Dataset({"latitude": lat_da, "longitude": lon_da})
+        df_grid = grid_ds.drop_vars(
+            [i for i, j in grid_ds.coords.items() if not j.ndim]
+        ).to_dataframe()
 
         # ---------------
         # BallTree object
@@ -490,6 +514,13 @@ class HerbieAccessor:
             # Load BallTree from pickle.
             with open(pkl_BallTree_file, "rb") as f:
                 tree = pickle.load(f)
+
+            # Ensure the cached tree matches the current grid size. Older
+            # cached trees (from before the latitude/longitude broadcast fix)
+            # may have been built from a different grid layout, which leads to
+            # out-of-bounds indices when they are re-used.
+            if getattr(tree, "data", None) is not None and len(tree.data) != len(df_grid):
+                tree = plant_tree(save_pickle=pkl_BallTree_file)
 
         # -------------------------------------
         # Query points to find nearest neighbor
@@ -561,9 +592,30 @@ class HerbieAccessor:
             # variable from the four nearest points.
             b = xr.concat(k_points, dim="k")
 
+            distance_coord = b.coords.get("point_grid_distance")
+
+            if distance_coord is None:
+                raise ValueError("point_grid_distance coordinate missing from selections")
+
+            # Starting with Python 3.13 / xarray 2024.09 the concat logic may
+            # drop the newly introduced ``k`` dimension from a coordinate when
+            # every selection is empty (for example after filtering by
+            # ``max_distance``). Reconstruct the stacked coordinate so the
+            # weighted reduction always sees a ``(k, point)`` layout.
+            if "k" not in distance_coord.dims:
+                stacked_distance = xr.concat(
+                    [
+                        kp.coords["point_grid_distance"].expand_dims(k=[idx])
+                        for idx, kp in enumerate(k_points)
+                    ],
+                    dim="k",
+                )
+                b = b.assign_coords(point_grid_distance=stacked_distance)
+                distance_coord = b.coords["point_grid_distance"]
+
             # Note: clipping accounts for the "divide by zero" case when
             # the requested point is exactly the nearest grid point.
-            weights = (1 / b.point_grid_distance).clip(max=1e6)
+            weights = (1 / distance_coord).clip(max=1e6)
 
             # Compute weighted mean of variables
             sum_of_weights = weights.sum(dim="k")
@@ -575,7 +627,7 @@ class HerbieAccessor:
             # the line `weights.sum(dim='k')`.
             c.coords["latitude"] = b.coords["latitude"]
             c.coords["longitude"] = b.coords["longitude"]
-            c.coords["point_grid_distance"] = b.coords["point_grid_distance"]
+            c.coords["point_grid_distance"] = distance_coord
 
             return c
         else:
