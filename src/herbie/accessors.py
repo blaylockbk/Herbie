@@ -453,11 +453,35 @@ class HerbieAccessor:
             ds = ds.rename_dims({"latitude": "y", "longitude": "x"})
 
         # Get Dataset's lat/lon grid and coordinate indices as a DataFrame.
-        df_grid = (
-            ds[["latitude", "longitude"]]
-            .drop_vars([i for i, j in ds.coords.items() if not j.ndim])
-            .to_dataframe()
-        )
+        # The latitude/longitude values may be stored as coordinates rather
+        # than data variables (e.g. simple regular latitude-longitude grids).
+        # In that case, selecting them as data variables produces an empty
+        # Dataset, which in turn caused the BallTree construction to fail.
+        # Broadcast the latitude/longitude coordinates explicitly so we always
+        # end up with a full 2D table of grid points regardless of how they are
+        # stored in the Dataset.
+        def _get_coord(ds_obj, names):
+            for name in names:
+                if name in ds_obj.variables:
+                    return ds_obj[name]
+            raise KeyError(
+                "Dataset must contain a latitude/longitude coordinate."
+            )
+
+        lat_da = _get_coord(ds, ["latitude", "lat"])
+        lon_da = _get_coord(ds, ["longitude", "lon"])
+
+        # Ensure both coordinates share the same dimensionality
+        lat_da, lon_da = xr.broadcast(lat_da, lon_da)
+        if lat_da.name != "latitude":
+            lat_da = lat_da.rename("latitude")
+        if lon_da.name != "longitude":
+            lon_da = lon_da.rename("longitude")
+
+        grid_ds = xr.Dataset({"latitude": lat_da, "longitude": lon_da})
+        df_grid = grid_ds.drop_vars(
+            [i for i, j in grid_ds.coords.items() if not j.ndim]
+        ).to_dataframe()
 
         # ---------------
         # BallTree object
@@ -490,6 +514,13 @@ class HerbieAccessor:
             # Load BallTree from pickle.
             with open(pkl_BallTree_file, "rb") as f:
                 tree = pickle.load(f)
+
+            # Ensure the cached tree matches the current grid size. Older
+            # cached trees (from before the latitude/longitude broadcast fix)
+            # may have been built from a different grid layout, which leads to
+            # out-of-bounds indices when they are re-used.
+            if getattr(tree, "data", None) is not None and len(tree.data) != len(df_grid):
+                tree = plant_tree(save_pickle=pkl_BallTree_file)
 
         # -------------------------------------
         # Query points to find nearest neighbor
