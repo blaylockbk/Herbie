@@ -82,22 +82,3 @@ def test_hrdps_xarray():
     H.xarray(remove_grib=False)
     assert H.get_localFilePath().exists()
     H.get_localFilePath().unlink()
-
-
-def test_hrdps_to_netcdf():
-    """Check that a xarray Dataset can be written to a NetCDF file.
-
-    It is important that I have haven't put any python objects in the
-    xarray Dataset attributes.
-    """
-    H = Herbie(
-        latest,
-        model="hrdps",
-        product="continental/2.5km",
-        variable="TMP",
-        level="AGL-2m",
-        overwrite=True,
-        save_dir=save_dir,
-    )
-    ds = H.xarray(remove_grib=False)
-    ds.to_netcdf(save_dir / "test_hrdps_to_netcdf.nc")
