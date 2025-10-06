@@ -1297,14 +1297,7 @@ class Herbie:
             # Assign this grid_mapping for all variables
             for var in list(ds):
                 ds[var].attrs["grid_mapping"] = "gribfile_projection"
-
-            # Sanitize attributes so they are safe for writing to NetCDF
-            _sanitize_attrs(ds)
-            for coord in ds.coords:
-                _sanitize_variable(ds.coords[coord])
-            for var in ds.data_vars:
-                _sanitize_variable(ds[var])
-
+                
         if remove_grib:
             # Load the datasets into memory before removing the file
             Hxr = [ds.load() for ds in Hxr]
