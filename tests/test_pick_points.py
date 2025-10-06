@@ -31,8 +31,15 @@ def test_pick_points(ds):
     )
 
     x1 = ds.herbie.pick_points(points, method="nearest")
+    var = list(x1)[0]
+    assert x1.size == len(points)
+
     xw = ds.herbie.pick_points(points, method="weighted")
+    var = list(xw)[0]
+    assert xw.size == len(points)
+
     x4 = ds.herbie.pick_points(points, method="nearest", k=4)
+
     x8 = ds.herbie.pick_points(points, method="weighted", k=8)
 
 
