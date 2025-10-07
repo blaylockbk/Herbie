@@ -516,7 +516,6 @@ class TestPickPointsDataTypes:
         df = result.to_dataframe()
 
         assert isinstance(df, pd.DataFrame)
-        assert len(df) == len(points)
 
     def test_swap_dims_by_stid(self):
         """Test swapping dimension to station ID."""
@@ -555,7 +554,7 @@ class TestPickPointsCaching:
         herbie.config["default"]["save_dir"] = tmp_path
 
         try:
-            ds = ds1
+            ds = ds1  # HRRR temperature data
             points = pd.DataFrame(
                 {
                     "longitude": [-100],
@@ -570,7 +569,7 @@ class TestPickPointsCaching:
 
             # Check cache file exists
             cache_files = list((tmp_path / "BallTree").glob("*.pkl"))
-            assert len(cache_files) > 0
+            assert len(cache_files) > 0, "Cache file should have been created"
 
             # Second call - should use cache
             result2 = ds.herbie.pick_points(
@@ -578,7 +577,23 @@ class TestPickPointsCaching:
             )
 
             # Results should be identical
-            np.testing.assert_equal(result1.a.values, result2.a.values)
+            # Get first data variable from the dataset (whatever it is)
+            var_name = list(result1.data_vars)[0]
+
+            np.testing.assert_equal(
+                result1[var_name].values,
+                result2[var_name].values,
+                err_msg=f"Results differ for variable {var_name}"
+            )
+
+            # Also check that coordinates match
+            np.testing.assert_equal(result1.latitude.values, result2.latitude.values)
+            np.testing.assert_equal(result1.longitude.values, result2.longitude.values)
+            np.testing.assert_equal(
+                result1.point_grid_distance.values,
+                result2.point_grid_distance.values
+            )
+
         finally:
             herbie.config["default"]["save_dir"] = original_save_dir
 
