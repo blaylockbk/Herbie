@@ -388,8 +388,15 @@ def compute_weighted_mean(k_points: list[xr.Dataset]) -> xr.Dataset:
     result = weighted_sum / sum_of_weights
 
     # Restore dropped coordinates
-    result.coords["latitude"] = combined.coords["latitude"]
-    result.coords["longitude"] = combined.coords["longitude"]
-    result.coords["point_grid_distance"] = distance_coord
+    result.coords["latitude"] = combined.coords["latitude"].mean(
+        dim="k"
+    )  # Reduced to point only
+    result.coords["longitude"] = combined.coords["longitude"].mean(
+        dim="k"
+    )  # Reduced to point only
+    result.coords["point_grid_distance"] = distance_coord.mean(dim="k")  # Mean distance
+
+    result.attrs["pick_point_method"] = "weighted"
+    result.attrs["pick_point_k"] = len(k_points)
 
     return result
