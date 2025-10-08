@@ -14,6 +14,7 @@ import sys
 from datetime import datetime
 
 import pandas as pd
+import pytest
 import requests
 from bs4 import BeautifulSoup
 
