@@ -1,8 +1,5 @@
-## Nikhil Shankar
-## August 10, 2025
-
 """
-Tests for downloading HRDPS model.
+Tests for downloading Canadian models HRDPS and RDPS model.
 
 DRAGONS:
 
@@ -33,52 +30,70 @@ for i in (save_dir / "hrdps").rglob("*"):
         i.unlink()
 
 
-def test_hrdps_download():
-    H = Herbie(
-        yesterday_12z,
-        model="hrdps",
-        product="continental",
-        variable="TMP",
-        level="AGL-2m",
-        overwrite=True,
-        save_dir=save_dir,
-    )
-    assert H
-    f = H.download()
-    assert H.get_localFilePath().exists()
-    f.unlink()
+class TestHRDPS():
+    def test_hrdps_download():
+        H = Herbie(
+            yesterday_12z,
+            model="hrdps",
+            product="continental",
+            variable="TMP",
+            level="AGL-2m",
+            overwrite=True,
+            save_dir=save_dir,
+        )
+        assert H
+        f = H.download()
+        assert H.get_localFilePath().exists()
+        f.unlink()
 
 
-def test_hrdps_north_download():
-    H = Herbie(
-        yesterday_12z,
-        model="hrdps",
-        product="north",
-        variable="RH",
-        level="ISBL_0550",
-        overwrite=True,
-        save_dir=save_dir,
-    )
-    assert H
-    f = H.download()
-    assert H.get_localFilePath().exists()
-    f.unlink()
+    def test_hrdps_north_download():
+        H = Herbie(
+            yesterday_12z,
+            model="hrdps",
+            product="north",
+            variable="RH",
+            level="ISBL_0550",
+            overwrite=True,
+            save_dir=save_dir,
+        )
+        assert H
+        f = H.download()
+        assert H.get_localFilePath().exists()
+        f.unlink()
+
+    def test_hrdps_xarray():
+        H = Herbie(
+            yesterday,
+            model="hrdps",
+            product="continental",
+            variable="TMP",
+            level="AGL-2m",
+            overwrite=True,
+            save_dir=save_dir,
+        )
+        assert H
+        H.xarray(remove_grib=False)
+        assert H.get_localFilePath().exists()
+        H.get_localFilePath().unlink()
 
 
-def test_hrdps_xarray():
-    H = Herbie(
-        yesterday,
-        model="hrdps",
-        product="continental",
-        variable="TMP",
-        level="AGL-2m",
-        overwrite=True,
-        save_dir=save_dir,
-    )
-    assert H
-    H.xarray(remove_grib=False)
-    assert H.get_localFilePath().exists()
-    H.get_localFilePath().unlink()
+class TestRDPS:
+    def test_rdps_download():
+        H = Herbie(
+            yesterday_12z,
+            model="rdps",
+            variable="AirTemp",
+            level="IsbL-0550",
+            overwrite=True,
+            save_dir=save_dir,
+        )
+        assert H
+        f = H.download()
+        assert H.get_localFilePath().exists()
+        f.unlink()
+
+
 
 
 def test_hrdps_to_netcdf():
