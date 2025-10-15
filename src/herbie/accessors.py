@@ -481,7 +481,7 @@ class HerbieAccessor:
         grid_ds = xr.Dataset({"latitude": lat_da, "longitude": lon_da})
         df_grid = grid_ds.drop_vars(
             [i for i, j in grid_ds.coords.items() if not j.ndim]
-        ).to_dataframe()
+        ).to_dataframe()[["latitude", "longitude"]]
 
         # ---------------
         # BallTree object
