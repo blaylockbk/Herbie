@@ -150,14 +150,14 @@ class hrdps:
                 f"HRDPS requires an argument for 'variable'. Here are some ideas:\n{_variable}."
             )
             print(
-                "For full list of files, see https://dd.weather.gc.ca/model_hrdps/continental/"
+                "For full list of files, see https://dd.weather.gc.ca/<YYYYMMDD>/WXO-DD/model_hrdps/continental/"
             )
         if not hasattr(self, "level"):
             print(
                 f"HRDPS requires an argument for 'level'. Here are some ideas:\n{_level}"
             )
             print(
-                "For full list of files, see https://dd.weather.gc.ca/model_hrdps/continental/"
+                "For full list of files, see https://dd.weather.gc.ca/<YYYYMMDD>/WXO-DD/model_hrdps/continental/"
             )
 
         self.DESCRIPTION = (
@@ -170,9 +170,10 @@ class hrdps:
             "continental/2.5km": "continental domain",
         }
         PATH = f"{self.date:%H}/{self.fxx:03d}/{self.date:%Y%m%dT%HZ}_MSC_HRDPS_{self.variable}_{self.level}_RLatLon0.0225_PT{self.fxx:03d}H.grib2"
+
         self.SOURCES = {
-            "msc": f"https://dd.weather.gc.ca/model_hrdps/{self.product}/{PATH}",
-            "msc2": f"https://dd.weather.gc.ca/model_hrdps/{self.product}/{PATH.replace('_HRDPS_', '_HRDPS-WEonG_')}",
+            "msc": f"https://dd.weather.gc.ca/{self.data:%Y%m%d}/WXO-DD/model_hrdps/{self.product}/{PATH}",
+            "msc2": f"https://dd.weather.gc.ca/{self.data:%Y%m%d}/WXO-DD/model_hrdps/{self.product}/{PATH.replace('_HRDPS_', '_HRDPS-WEonG_')}",
         }
 
         self.IDX_SUFFIX = [".grb2.idx", ".idx", ".grib.idx"]
@@ -199,11 +200,11 @@ class hrdps_north:
             "Datamart product description": "https://eccc-msc.github.io/open-data/msc-data/nwp_hrdps/readme_hrdps-datamart_en",
         }
         self.PRODUCTS = {
-            "north/grib2": "North domain (experimental)",
-        }
-        PATH = f"{self.date:%H}/{self.fxx:03d}/CMC_hrdps_north_{self.variable}_{self.level}_ps2.5km_{self.date:%Y%m%d%H}_P{self.fxx:03d}-00.grib2"
+            "north/3km": "North domain (3km)",
+        }                                      
+        PATH = f"{self.date:%H}/{self.fxx:03d}/{self.date:%Y%m%dT%HZ}_MSC_HRDPS-North_{self.variable}_{self.level}_RLatLon0.03_PT{self.fxx:03d}H.grib2"
         self.SOURCES = {
-            "msc": f"https://dd.weather.gc.ca/model_hrdps/{self.product}/{PATH}"
+            "msc": f"https://dd.weather.gc.ca/{self.data:%Y%m%d}/WXO-DD/model_hrdps/{self.product}/{PATH}"
         }
 
         self.IDX_SUFFIX = [".grb2.idx", ".idx", ".grib.idx"]
