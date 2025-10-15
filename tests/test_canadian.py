@@ -31,7 +31,7 @@ for i in (save_dir / "hrdps").rglob("*"):
 
 
 class TestHRDPS:
-    def test_hrdps_download():
+    def test_hrdps_download(self):
         H = Herbie(
             yesterday_12z,
             model="hrdps",
@@ -46,7 +46,7 @@ class TestHRDPS:
         assert H.get_localFilePath().exists()
         f.unlink()
 
-    def test_hrdps_north_download():
+    def test_hrdps_north_download(self):
         H = Herbie(
             yesterday_12z,
             model="hrdps",
@@ -61,7 +61,7 @@ class TestHRDPS:
         assert H.get_localFilePath().exists()
         f.unlink()
 
-    def test_hrdps_xarray():
+    def test_hrdps_xarray(self):
         H = Herbie(
             yesterday,
             model="hrdps",
@@ -78,7 +78,7 @@ class TestHRDPS:
 
 
 class TestRDPS:
-    def test_rdps_download():
+    def test_rdps_download(self):
         H = Herbie(
             yesterday_12z,
             model="rdps",
