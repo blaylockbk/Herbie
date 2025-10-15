@@ -10,7 +10,7 @@ At ~00Z the HRDPS servers are cleared of the previous day's forecasts.
 The next forecast arrives at ~06Z. During the interim period these tests will fail.
 """
 
-from datetime import datetime
+from datetime import datetime, timedelta
 
 import pandas as pd
 import requests
@@ -18,33 +18,12 @@ from bs4 import BeautifulSoup
 
 from herbie import Herbie, config
 
-
-def get_test_date():
-    """Get a valid test date for the latest HRDPS model."""
-    url = "https://dd.weather.gc.ca/model_hrdps/continental/2.5km/00/000/"
-
-    resp = requests.get(url)
-    resp.raise_for_status()
-
-    soup = BeautifulSoup(resp.text, "html.parser")
-
-    # Extract all <a href="..."> links
-    links = [a["href"] for a in soup.find_all("a", href=True)]
-
-    # Skip the first "../" link
-    files = [link for link in links if link.startswith("20")]
-    testDate = datetime.strptime(files[0].split("_")[0], "%Y%m%dT%HZ")
-
-    return testDate
-
-
-# now = datetime.now()
-# latest = pd.Timestamp("now").floor("6h") - pd.Timedelta("6h")
-
-try:
-    latest = get_test_date()
-except Exception:
-    raise ValueError("Could not get a valid date to use for the HRDPS tests.")
+now = datetime.now()
+today = datetime(now.year, now.month, now.day, now.hour) - timedelta(hours=6)
+yesterday = today - timedelta(days=1)
+yesterday_12z = yesterday.replace(hour=12, minute=0)
+today_str = today.strftime("%Y-%m-%d %H:%M")
+yesterday_12z_str = yesterday_12z.strftime("%Y-%m-%d %H:%M")
 
 save_dir = config["default"]["save_dir"] / "Herbie-Tests-Data/"
 
@@ -56,14 +35,31 @@ for i in (save_dir / "hrdps").rglob("*"):
 
 def test_hrdps_download():
     H = Herbie(
-        latest,
+        yesterday_12z,
         model="hrdps",
-        product="continental/2.5km",
+        product="continental",
         variable="TMP",
         level="AGL-2m",
         overwrite=True,
         save_dir=save_dir,
     )
+    assert H
+    f = H.download()
+    assert H.get_localFilePath().exists()
+    f.unlink()
+
+
+def test_hrdps_north_download():
+    H = Herbie(
+        yesterday_12z,
+        model="hrdps",
+        product="north",
+        variable="RH",
+        level="ISBL_0550",
+        overwrite=True,
+        save_dir=save_dir,
+    )
+    assert H
     f = H.download()
     assert H.get_localFilePath().exists()
     f.unlink()
@@ -71,14 +67,15 @@ def test_hrdps_download():
 
 def test_hrdps_xarray():
     H = Herbie(
-        latest,
+        yesterday,
         model="hrdps",
-        product="continental/2.5km",
+        product="continental",
         variable="TMP",
         level="AGL-2m",
         overwrite=True,
         save_dir=save_dir,
     )
+    assert H
     H.xarray(remove_grib=False)
     assert H.get_localFilePath().exists()
     H.get_localFilePath().unlink()
