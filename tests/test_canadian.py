@@ -63,10 +63,10 @@ class TestHRDPS:
 
     def test_hrdps_xarray(self):
         H = Herbie(
-            yesterday,
+            yesterday_12z,
             model="hrdps",
             product="continental",
-            variable="TMP",
+            variable="Tmp",
             level="AGL-2m",
             overwrite=True,
             save_dir=save_dir,
@@ -100,7 +100,7 @@ def test_hrdps_to_netcdf():
     xarray Dataset attributes.
     """
     H = Herbie(
-        yesterday,
+        yesterday_12z,
         model="hrdps",
         product="continental",
         variable="TMP",
@@ -108,5 +108,6 @@ def test_hrdps_to_netcdf():
         overwrite=True,
         save_dir=save_dir,
     )
+    assert H
     ds = H.xarray(remove_grib=False)
     ds.to_netcdf(save_dir / "test_hrdps_to_netcdf.nc")
