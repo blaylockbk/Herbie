@@ -92,7 +92,7 @@ class TestRDPS:
         f.unlink()
 
 
-@pytest.mark.skipif(sys.version_info <= (3, 10), reason="Requires Python > 3.10")
+@pytest.mark.skipif(sys.version_info < (3, 11), reason="Requires Python > 3.10")
 def test_hrdps_to_netcdf():
     """Check that a xarray Dataset can be written to a NetCDF file.
 
