@@ -66,7 +66,7 @@ class TestHRDPS:
             yesterday_12z,
             model="hrdps",
             product="continental",
-            variable="Tmp",
+            variable="TMP",
             level="AGL-2m",
             overwrite=True,
             save_dir=save_dir,
