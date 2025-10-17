@@ -4,16 +4,17 @@
 """
 Tests for downloading HRRR model
 """
+
+import os
+import sys
 from datetime import datetime, timedelta
 from shutil import which
 
+import pandas as pd
 import pytest
+import requests
 
 from herbie import Herbie, Path, config
-import os
-import requests
-import pandas as pd
-
 
 now = datetime.now()
 today = datetime(now.year, now.month, now.day, now.hour) - timedelta(hours=6)
@@ -58,6 +59,7 @@ def test_hrrr_xarray():
     H.get_localFilePath("TMP:2 m").unlink()
 
 
+@pytest.mark.skipif(sys.version_info < (3, 11), reason="Requires Python > 3.10")
 def test_hrrr_to_netcdf():
     """Check that a xarray Dataset can be written to a NetCDF file.
 
