@@ -7,11 +7,10 @@ At ~00Z the HRDPS servers are cleared of the previous day's forecasts.
 The next forecast arrives at ~06Z. During the interim period these tests will fail.
 """
 
+import sys
 from datetime import datetime, timedelta
 
-import pandas as pd
-import requests
-from bs4 import BeautifulSoup
+import pytest
 
 from herbie import Herbie, config
 
@@ -93,6 +92,7 @@ class TestRDPS:
         f.unlink()
 
 
+@pytest.mark.skipif(sys.version_info <= (3, 10), reason="Requires Python > 3.10")
 def test_hrdps_to_netcdf():
     """Check that a xarray Dataset can be written to a NetCDF file.
 
