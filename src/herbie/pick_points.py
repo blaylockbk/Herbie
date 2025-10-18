@@ -383,7 +383,7 @@ def aggregate_results(
     if method == "weighted":
         return compute_weighted_mean(k_points)
 
-    raise ValueError(f"Unexpected method: {method}")
+    raise ValueError(f"Invalid method '{method}'. Must be 'nearest' or 'weighted'.")
 
 
 def compute_weighted_mean(k_points: list[xr.Dataset]) -> xr.Dataset:
