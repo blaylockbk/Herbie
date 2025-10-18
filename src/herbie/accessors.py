@@ -104,10 +104,8 @@ class HerbieAccessor:
     def center(self) -> tuple[float, float]:
         """Return the geographic center point of this dataset."""
         if self._center is None:
-            # we can use a cache on our accessor objects, because accessors
-            # themselves are cached on instances that access them.
-            lon = self._obj.latitude
-            lat = self._obj.longitude
+            lat = self._obj.latitude
+            lon = self._obj.longitude
             self._center = (float(lon.mean()), float(lat.mean()))
         return self._center
 
@@ -390,7 +388,6 @@ class HerbieAccessor:
             use_cached_tree=use_cached_tree,
         )
 
-
     def plot(self, ax=None, common_features_kw={}, vars=None, **kwargs):
         """Plot data on a map.
 
@@ -400,4 +397,6 @@ class HerbieAccessor:
             List of variables to plot. Default None will plot all
             variables in the DataSet.
         """
-        raise NotImplementedError("Plotting functionality is not working right now. If you have ideas, please open a PR.")
+        raise NotImplementedError(
+            "Plotting functionality is not working right now. If you have ideas, please open a PR."
+        )
