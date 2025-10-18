@@ -388,6 +388,17 @@ class HerbieAccessor:
             use_cached_tree=use_cached_tree,
         )
 
+    def nearest_points(self, points, names=None, verbose=True):
+        """Legacy point extractor."""
+        from herbie.nearest_points import nearest_points
+
+        return nearest_points(
+            ds=self._obj,
+            points=points,
+            names=names,
+            verbose=verbose,
+        )
+
     def plot(self, ax=None, common_features_kw={}, vars=None, **kwargs):
         """Plot data on a map.
 
