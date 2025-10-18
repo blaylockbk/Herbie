@@ -51,7 +51,6 @@ if curl is None:
         "Curl is not in system Path. Herbie won't be able to download GRIB files."
     )
 
-
 def wgrib2_idx(grib2filepath: Union[Path, str]) -> str:
     """
     Produce the GRIB2 inventory index with wgrib2.
@@ -1298,7 +1297,7 @@ class Herbie:
             # Assign this grid_mapping for all variables
             for var in list(ds):
                 ds[var].attrs["grid_mapping"] = "gribfile_projection"
-
+                
         if remove_grib:
             # Load the datasets into memory before removing the file
             Hxr = [ds.load() for ds in Hxr]

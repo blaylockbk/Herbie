@@ -96,40 +96,40 @@ _level = {
     "DBLL_100",
     "DBLY_10",
     "EATM_0",
-    "ISBL_1",
-    "ISBL_10",
-    "ISBL_100",
-    "ISBL_1000",
-    "ISBL_1015",
-    "ISBL_150",
-    "ISBL_175",
-    "ISBL_20",
-    "ISBL_200",
-    "ISBL_225",
-    "ISBL_250",
-    "ISBL_275",
-    "ISBL_30",
-    "ISBL_300",
-    "ISBL_350",
-    "ISBL_400",
-    "ISBL_450",
-    "ISBL_5",
-    "ISBL_50",
-    "ISBL_500",
-    "ISBL_550",
-    "ISBL_600",
-    "ISBL_650",
-    "ISBL_700",
-    "ISBL_750",
-    "ISBL_800",
-    "ISBL_850",
-    "ISBL_875",
-    "ISBL_900",
-    "ISBL_925",
-    "ISBL_950",
-    "ISBL_970",
-    "ISBL_985",
-    "ISBY_1000-500",
+    "IsbL_0001",
+    "IsbL_0010",
+    "IsbL_0100",
+    "IsbL_1000",
+    "IsbL_1015",
+    "IsbL_0150",
+    "IsbL_0175",
+    "IsbL_0020",
+    "IsbL_0200",
+    "IsbL_0225",
+    "IsbL_0250",
+    "IsbL_0275",
+    "IsbL_030",
+    "IsbL_0300",
+    "IsbL_0350",
+    "IsbL_0400",
+    "IsbL_0450",
+    "IsbL_0005",
+    "IsbL_0050",
+    "IsbL_0500",
+    "IsbL_0550",
+    "IsbL_0600",
+    "IsbL_0650",
+    "IsbL_0700",
+    "IsbL_0750",
+    "IsbL_0800",
+    "IsbL_0850",
+    "IsbL_0875",
+    "IsbL_0900",
+    "IsbL_0925",
+    "IsbL_0950",
+    "IsbL_0970",
+    "IsbL_0985",
+    "IsbY_1000-500",
     "MSL_0",
     "NTAT_0",
     "PVU_1",
@@ -166,12 +166,19 @@ class rdps:
             "Datamart product description": "https://eccc-msc.github.io/open-data/msc-data/nwp_rdps/readme_rdps-datamart_en/#data-location",
         }
         self.PRODUCTS = {
-            "10km/grib2/": "regional domain",
+            "hrdps": "regional domain",
         }
-        PATH = f"{self.date:%H}/{self.fxx:03d}/CMC_reg_{self.variable}_{self.level}_ps10km_{self.date:%Y%m%d%H}_P{self.fxx:03d}.grib2"
+
+        PATH = f"{self.date:%H}/{self.fxx:03d}/{self.date:%Y%m%dT%HZ}_MSC_RDPS_{self.variable}_{self.level}_RLatLon0.09_PT{self.fxx:03d}H.grib2"
         self.SOURCES = {
-            "msc": f"https://dd.weather.gc.ca/model_gem_regional/{self.product}/{PATH}"
+            "msc": f"https://dd.weather.gc.ca/{self.date:%Y%m%d}/WXO-DD/model_rdps/10km/{PATH}"
         }
 
         self.IDX_SUFFIX = [".grb2.idx", ".idx", ".grib.idx"]
         self.LOCALFILE = f"{self.get_remoteFileName}"
+
+
+# https://dd.weather.gc.ca/2025101500/WXO-DD/model_rdps/10km/00/000/20251015T00Z_MSC_RDPS_AirTemp_ISBL_0550_RLatLon0.09_PT000H.grib2
+
+# https://dd.weather.gc.ca/20251005/WXO-DD/model_rdps/10km/00/000/20251005T00Z_MSC_RDPS_AirTemp_IsbL_0550_RLatLon0.09_PT000H.grib2
+# https://dd.weather.gc.ca/20251005/WXO-DD/model_rdps/10km/00/000/20251005T00Z_MSC_RDPS_AirTemp_IsbL-0550_RLatLon0.09_PT000H.grib2
