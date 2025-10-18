@@ -110,9 +110,15 @@ class GridPointPicker:
         # Only keep variables with dimensions
         self.ds = self.ds[[v for v in self.ds if self.ds[v].dims != ()]]
 
-        # Standardize lat/lon dimension names
-        if "latitude" in self.ds.dims and "longitude" in self.ds.dims:
-            self.ds = self.ds.rename_dims({"latitude": "y", "longitude": "x"})
+        # Standardize lat/lon dimension names if they exist
+        rename_map = {}
+        if "latitude" in self.ds.dims:
+            rename_map["latitude"] = "y"
+        if "longitude" in self.ds.dims:
+            rename_map["longitude"] = "x"
+
+        if rename_map:
+            self.ds = self.ds.rename_dims(rename_map)
 
     def _create_grid_dataframe(self) -> pd.DataFrame:
         """Create DataFrame of grid lat/lon coordinates."""
@@ -193,6 +199,10 @@ class GridPointPicker:
                 points, df_grid_reset, dist[:, i], ind[:, i], max_distance
             )
 
+            # Skip if all points were filtered out
+            if len(point_data) == 0:
+                continue
+
             # Select grid points
             ds_points = self.ds.sel(
                 x=point_data.x_grid.to_xarray().dropna("point").astype("int"),
@@ -218,7 +228,13 @@ def validate_points(points: pd.DataFrame) -> None:
         )
 
     if not points.latitude.between(-90, 90, inclusive="both").all():
-        raise ValueError("All latitude values must be in range [-90, 90]")
+        invalid_lats = points.latitude[
+            ~points.latitude.between(-90, 90, inclusive="both")
+        ]
+        raise ValueError(
+            f"All latitude values must be in range [-90, 90]. "
+            f"Found invalid values: {invalid_lats.tolist()}"
+        )
 
     lon_valid = (
         points.longitude.between(0, 360, inclusive="both").all()
@@ -226,7 +242,8 @@ def validate_points(points: pd.DataFrame) -> None:
     )
     if not lon_valid:
         raise ValueError(
-            "All longitude values must be in range [-180, 180] or [0, 360]"
+            "All longitude values must be in range [-180, 180] or [0, 360]. "
+            "Mixed ranges or out-of-range values detected."
         )
 
 
@@ -245,7 +262,10 @@ def get_coordinate(ds: xr.Dataset, names: list[str]) -> xr.DataArray:
     for name in names:
         if name in ds.variables:
             return ds[name]
-    raise KeyError(f"Dataset must contain one of: {names}")
+    raise KeyError(
+        f"Dataset must contain one of {names}. "
+        f"Available variables: {list(ds.variables)}"
+    )
 
 
 def create_ball_tree(
@@ -275,8 +295,11 @@ def create_ball_tree(
 
 def load_ball_tree(path: Path) -> BallTree:
     """Load BallTree from pickle file."""
-    with open(path, "rb") as f:
-        return pickle.load(f)
+    try:
+        with open(path, "rb") as f:
+            return pickle.load(f)
+    except (FileNotFoundError, pickle.UnpicklingError) as e:
+        raise RuntimeError(f"Failed to load BallTree from {path}: {e}")
 
 
 def prepare_point_data(
@@ -348,6 +371,12 @@ def aggregate_results(
     k: int,
 ) -> xr.Dataset:
     """Aggregate k-nearest neighbor results based on method."""
+    if not k_points:
+        raise ValueError(
+            "No valid points found after filtering. "
+            "All points may exceed max_distance threshold."
+        )
+
     if method == "nearest":
         return k_points[0] if k == 1 else xr.concat(k_points, dim="k")
 
