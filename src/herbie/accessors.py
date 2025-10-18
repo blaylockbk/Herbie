@@ -22,6 +22,7 @@ import xarray as xr
 from pyproj import CRS
 
 import herbie
+from .pick_points import GridPointPicker
 
 _level_units = dict(
     adiabaticCondensation="adiabatic condensation",
@@ -103,10 +104,8 @@ class HerbieAccessor:
     def center(self) -> tuple[float, float]:
         """Return the geographic center point of this dataset."""
         if self._center is None:
-            # we can use a cache on our accessor objects, because accessors
-            # themselves are cached on instances that access them.
-            lon = self._obj.latitude
-            lat = self._obj.longitude
+            lat = self._obj.latitude
+            lon = self._obj.longitude
             self._center = (float(lon.mean()), float(lat.mean()))
         return self._center
 
@@ -318,453 +317,90 @@ class HerbieAccessor:
         tree_name: Optional[str] = None,
         verbose: bool = False,
     ) -> xr.Dataset:
-        """Pick nearest neighbor grid values at selected  points.
+        """Pick nearest neighbor grid values at selected points.
 
         Parameters
         ----------
-        points : Pandas DataFrame
-            A DataFrame with columns 'latitude' and 'longitude'
-            representing the points to match to the model grid.
+        points : pd.DataFrame
+            DataFrame with 'latitude' and 'longitude' columns
         method : {'nearest', 'weighted'}
-            Method used to pick points.
-            - `nearest` : Gets grid value nearest the requested point.
-            - `weighted`: Gets four grid value nearest the requested
-                point and compute the inverse-distance-weighted mean.
-        k : None or int
-            If None and method is nearest, `k=1`.
-            If None and method is weighted, `k=4`.
-            Else, specify the number of neighbors to find.
-        max_distance : int or float
-            Maximum distance in kilometers allowed for nearest neighbor
-            search. Default is 500 km, which is very generous for any
-            model grid. This can help the case when a requested point
-            is off the grid.
-        use_cached_tree : {True, False, "replant"}
-            Controls if the BallTree object is caches for later use.
-            By "plant", I mean, "create a new BallTree object."
-            - `True` : Plant+save BallTree if it doesn't exist; load
-                saved BallTree if one exists.
-            - `False`: Plant the BallTree, even if one exists.
-            - `"replant"` : Plant a new BallTree and save a new pickle.
-        tree_name : str
-            If None, use the ds.model and domain size as the tree's name.
-            If ds.model does not exists, then the BallTree will not be
-            cached, unless you provide the tree_name.
+            Method for point picking:
+            - 'nearest': Get value at nearest grid point
+            - 'weighted': Inverse-distance weighted mean of k nearest points
+        k : int, optional
+            Number of nearest neighbors. Defaults to 1 for 'nearest',
+            4 for 'weighted'
+        max_distance : float
+            Maximum distance in km for valid neighbors (default: 500)
+        use_cached_tree : bool or 'replant'
+            Whether to cache the BallTree spatial index:
+            - True: Use cached tree if exists, create and cache if not
+            - False: Always create new tree, don't cache
+            - 'replant': Force create new tree and cache it
+        tree_name : str, optional
+            Custom name for BallTree cache file. If None, uses ds.model
+        verbose : bool
+            Print verbose output (currently unused)
+
+        Returns
+        -------
+        xr.Dataset
+            Dataset with values at requested points. Includes coordinates:
+            - point_latitude, point_longitude: requested coordinates
+            - point_grid_distance: distance to nearest grid point (km)
+            - Any other columns from points DataFrame
 
         Examples
         --------
         >>> H = Herbie("2024-03-28 00:00", model="hrrr")
-        >>> ds = H.xarray("TMP:[5,6,7,8,9][0,5]0 mb", remove_grib=False)
-        >>> points = pd.DataFrame(
-        ...     {
-        ...         "longitude": [-100, -105, -98.4],
-        ...         "latitude": [40, 29, 42.3],
-        ...         "stid": ["aa", "bb", "cc"],
-        ...     }
-        ... )
+        >>> ds = H.xarray("TMP:[5,6,7,8,9][0,5]0 mb")
+        >>> points = pd.DataFrame({
+        ...     "longitude": [-100, -105, -98.4],
+        ...     "latitude": [40, 29, 42.3],
+        ...     "stid": ["aa", "bb", "cc"],
+        ... })
 
-        Pick value at the nearest neighbor point
+        Get nearest neighbor values:
         >>> dsp = ds.herbie.pick_points(points, method="nearest")
 
-        Get the weighted mean of the four nearest neighbor points
+        Get distance-weighted mean of 4 nearest points:
         >>> dsp = ds.herbie.pick_points(points, method="weighted")
 
-        A Dataset is returned of the original grid reduced to the
-        requested points, with the values from the `points` dataset
-        added as new coordinates.
+        Convert to DataFrame:
+        >>> df = dsp.to_dataframe()
 
-        A user can easily convert the result to a Pandas DataFrame
-        >>> dsp.to_dataframe()
-
-        If you want to select points by a station name, swap the
-        dimension.
+        Index by station ID:
         >>> dsp = dsp.swap_dims({"point": "point_stid"})
         """
-        try:
-            from sklearn.neighbors import BallTree
-        except ModuleNotFoundError:
-            raise ModuleNotFoundError(
-                "scikit-learn is an 'extra' requirement, please use "
-                "`pip install 'herbie-data[extras]'` for the full functionality."
-            )
+        cache_dir = herbie.config["default"]["save_dir"]
 
-        def plant_tree(save_pickle: Optional[Union[Path, str]] = None):
-            """Grow a new BallTree object from seedling."""
-            timer = pd.Timestamp("now")
-            print("INFO: 🌱 Growing new BallTree...", end="")
-            tree = BallTree(np.deg2rad(df_grid), metric="haversine")
-            print(
-                f"🌳 BallTree grew in {(pd.Timestamp('now') - timer).total_seconds():.2} seconds."
-            )
-            if save_pickle:
-                try:
-                    Path(save_pickle).parent.mkdir(parents=True, exist_ok=True)
-                    with open(save_pickle, "wb") as f:
-                        pickle.dump(tree, f)
-                    print(f"INFO: Saved BallTree to {save_pickle}")
-                except OSError:
-                    print(f"ERROR: Could not save BallTree to {save_pickle}.")
-            return tree
-
-        ds = self._obj
-
-        # ---------------------
-        # Validate points input
-        if ("latitude" not in points) and ("longitude" not in points):
-            raise ValueError(
-                "`points` DataFrame must have columns 'latitude' and 'longitude'"
-            )
-
-        if not all(points.latitude.between(-90, 90, inclusive="both")):
-            raise ValueError("All latitude points must be [-90,90]")
-
-        if not all(points.longitude.between(0, 360, inclusive="both")):
-            if not all(points.longitude.between(-180, 180, inclusive="both")):
-                raise ValueError("All longitude points must be [-180,180] or [0,360]")
-
-        # ---------------------
-        # Validate method input
-        _method = set(["nearest", "weighted"])
-
-        if method == "nearest" and k is None:
-            # Get the value at the nearest grid point using BallTree
-            k = 1
-        elif method == "weighted" and k is None:
-            # Compute the value of each variable from the inverse-
-            # weighted distance of the values of the four nearest
-            # neighbors.
-            k = 4
-        elif method in _method and isinstance(k, int):
-            # Get the k nearest neighbors and return the values (nearest)
-            # or compute the distance-weighted mean (weighted).
-            pass
-        else:
-            raise ValueError(
-                f"`method` must be one of {_method} and `k` must be an int or None."
-            )
-
-        # Only consider variables that have dimensions.
-        ds = ds[[i for i in ds if ds[i].dims != ()]]
-
-        if "latitude" in ds.dims and "longitude" in ds.dims:
-            # Rename dims to x and y
-            # This is needed for regular latitude-longitude grids like
-            # GFS and IFS model data.
-            ds = ds.rename_dims({"latitude": "y", "longitude": "x"})
-
-        # Get Dataset's lat/lon grid and coordinate indices as a DataFrame.
-        # The latitude/longitude values may be stored as coordinates rather
-        # than data variables (e.g. simple regular latitude-longitude grids).
-        # In that case, selecting them as data variables produces an empty
-        # Dataset, which in turn caused the BallTree construction to fail.
-        # Broadcast the latitude/longitude coordinates explicitly so we always
-        # end up with a full 2D table of grid points regardless of how they are
-        # stored in the Dataset.
-        def _get_coord(ds_obj, names):
-            for name in names:
-                if name in ds_obj.variables:
-                    return ds_obj[name]
-            raise KeyError(
-                "Dataset must contain a latitude/longitude coordinate."
-            )
-
-        lat_da = _get_coord(ds, ["latitude", "lat"])
-        lon_da = _get_coord(ds, ["longitude", "lon"])
-
-        # Ensure both coordinates share the same dimensionality
-        lat_da, lon_da = xr.broadcast(lat_da, lon_da)
-        if lat_da.name != "latitude":
-            lat_da = lat_da.rename("latitude")
-        if lon_da.name != "longitude":
-            lon_da = lon_da.rename("longitude")
-
-        grid_ds = xr.Dataset({"latitude": lat_da, "longitude": lon_da})
-        df_grid = grid_ds.drop_vars(
-            [i for i, j in grid_ds.coords.items() if not j.ndim]
-        ).to_dataframe()[["latitude", "longitude"]]
-
-        # ---------------
-        # BallTree object
-        # Plant, plant+Save, or load
-
-        if tree_name is None:
-            tree_name = getattr(ds, "model", "UNKNOWN")
-
-        if use_cached_tree and tree_name == "UNKNOWN":
-            use_cached_tree = False
-            print(
-                "WARNING: Herbie won't cache the BallTree because it\n"
-                "         doesn't know what to name it. Please specify\n"
-                "         `tree_name` to cache the tree for use later."
-            )
-
-        pkl_BallTree_file = (
-            herbie.config["default"]["save_dir"]
-            / "BallTree"
-            / f"{tree_name}_{ds.x.size}-{ds.y.size}.pkl"
+        picker = GridPointPicker(
+            ds=self._obj,
+            cache_dir=cache_dir,
+            tree_name=tree_name,
         )
 
-        if not use_cached_tree:
-            # Create a new BallTree. Do not save pickle.
-            tree = plant_tree(save_pickle=False)
-        elif use_cached_tree == "replant" or not pkl_BallTree_file.exists():
-            # Create a new BallTree and save pickle.
-            tree = plant_tree(save_pickle=pkl_BallTree_file)
-        elif use_cached_tree:
-            # Load BallTree from pickle.
-            with open(pkl_BallTree_file, "rb") as f:
-                tree = pickle.load(f)
-
-            # Ensure the cached tree matches the current grid size. Older
-            # cached trees (from before the latitude/longitude broadcast fix)
-            # may have been built from a different grid layout, which leads to
-            # out-of-bounds indices when they are re-used.
-            if getattr(tree, "data", None) is not None and len(tree.data) != len(df_grid):
-                tree = plant_tree(save_pickle=pkl_BallTree_file)
-
-        # -------------------------------------
-        # Query points to find nearest neighbor
-        # Note: Order matters, and lat/long must be in radians.
-        # TODO: Maybe add option to use MultiProcessing here, to split
-        # TODO:   the Dataset into chunks; or maybe not needed because
-        # TODO:   the method is fast enough without the added complexity.
-        dist, ind = tree.query(np.deg2rad(points[["latitude", "longitude"]]), k=k)
-
-        # Convert distance to km by multiplying by the radius of the Earth
-        dist *= 6371
-
-        # Pick grid values for each value of k
-        k_points = []
-        df_grid = df_grid.reset_index()
-        for i in range(k):
-            a = points.copy()
-            a["point_grid_distance"] = dist[:, i]
-            a["grid_index"] = ind[:, i]
-
-            a = pd.concat(
-                [
-                    a.reset_index(drop=True),
-                    df_grid.iloc[a.grid_index]
-                    .add_suffix("_grid")
-                    .reset_index(drop=True),
-                ],
-                axis=1,
-            )
-            a.index.name = "point"
-
-            if max_distance:
-                flagged = a.loc[a.point_grid_distance > max_distance]
-                a = a.loc[a.point_grid_distance <= max_distance]
-                if len(flagged):
-                    print(
-                        f"WARNING: {len(flagged)} points removed for exceeding {max_distance=} km threshold."
-                    )
-                    print(f"{flagged}")
-                    print("")
-
-            # Get corresponding values from xarray
-            # https://docs.xarray.dev/en/stable/user-guide/indexing.html#more-advanced-indexing
-            ds_points = ds.sel(
-                x=a.x_grid.to_xarray().dropna("point").astype("int"),
-                y=a.y_grid.to_xarray().dropna("point").astype("int"),
-            )
-            ds_points.coords["point_grid_distance"] = a.point_grid_distance.to_xarray()
-            ds_points["point_grid_distance"].attrs["long_name"] = (
-                "Distance between requested point and nearest grid point."
-            )
-            ds_points["point_grid_distance"].attrs["units"] = "km"
-
-            for i in points.columns:
-                ds_points.coords[f"point_{i}"] = a[i].to_xarray()
-                ds_points[f"point_{i}"].attrs["long_name"] = f"Requested grid point {i}"
-
-            k_points.append(ds_points.drop_vars("point"))
-
-        if method == "nearest" and k == 1:
-            return k_points[0]
-
-        elif method == "nearest" and k > 1:
-            # New dimension k is the index of the n-th nearest neighbor
-            return xr.concat(k_points, dim="k")
-
-        elif method == "weighted":
-            # Compute the inverse-distance weighted mean for each
-            # variable from the four nearest points.
-            b = xr.concat(k_points, dim="k")
-
-            distance_coord = b.coords.get("point_grid_distance")
-
-            if distance_coord is None:
-                raise ValueError("point_grid_distance coordinate missing from selections")
-
-            # Starting with Python 3.13 / xarray 2024.09 the concat logic may
-            # drop the newly introduced ``k`` dimension from a coordinate when
-            # every selection is empty (for example after filtering by
-            # ``max_distance``). Reconstruct the stacked coordinate so the
-            # weighted reduction always sees a ``(k, point)`` layout.
-            if "k" not in distance_coord.dims:
-                stacked_distance = xr.concat(
-                    [
-                        kp.coords["point_grid_distance"].expand_dims(k=[idx])
-                        for idx, kp in enumerate(k_points)
-                    ],
-                    dim="k",
-                )
-                b = b.assign_coords(point_grid_distance=stacked_distance)
-                distance_coord = b.coords["point_grid_distance"]
-
-            # Note: clipping accounts for the "divide by zero" case when
-            # the requested point is exactly the nearest grid point.
-            weights = (1 / distance_coord).clip(max=1e6)
-
-            # Compute weighted mean of variables
-            sum_of_weights = weights.sum(dim="k")
-            weighted_sum = (b * weights).sum(dim="k")
-
-            c = weighted_sum / sum_of_weights
-
-            # Include some coordinates that were dropped as a result of
-            # the line `weights.sum(dim='k')`.
-            c.coords["latitude"] = b.coords["latitude"]
-            c.coords["longitude"] = b.coords["longitude"]
-            c.coords["point_grid_distance"] = distance_coord
-
-            return c
-        else:
-            raise ValueError("I didn't expect to be here.")
+        return picker.pick_points(
+            points=points,
+            method=method,
+            k=k,
+            max_distance=max_distance,
+            use_cached_tree=use_cached_tree,
+        )
 
     def nearest_points(self, points, names=None, verbose=True):
-        """
-        Get the nearest latitude/longitude points from a xarray Dataset.
+        """Legacy point extractor."""
+        from herbie.nearest_points import nearest_points
 
-        - Stack Overflow: https://stackoverflow.com/questions/58758480/xarray-select-nearest-lat-lon-with-multi-dimension-coordinates
-        - MetPy Details: https://unidata.github.io/MetPy/latest/tutorials/xarray_tutorial.html?highlight=assign_y_x
-
-        Parameters
-        ----------
-        ds : xr.Dataset
-            A Herbie-friendly xarray Dataset
-
-        points : tuple, list of tuples, pd.DataFrame
-            Points to be plucked from the gridded Dataset.
-            There are multiple objects accepted.
-
-            1. Tuple of longitude and latitude (lon, lat) coordinate pair.
-            1. List of multiple (lon, lat) coordinate pair tuples.
-            1. Pandas DataFrame with ``longitude`` and ``latitude`` columns. Index will be used as point names, unless ``names`` is specified.
-            1. Shapeley Point or Points
-
-        names : list
-            A list of names for each point location (i.e., station name).
-            None will not append any names. names should be the same
-            length as points.
-
-        Notes
-        -----
-            This is **much** faster than my old "pluck_points" method.
-            For matching 1,948 points:
-            - `nearest_points` completed in 7.5 seconds.
-            - `pluck_points` completed in 2 minutes.
-
-            TODO: Explore alternatives
-            - Could Shapely nearest_points be used
-            https://shapely.readthedocs.io/en/latest/manual.html#nearest-points
-            - Or possibly scipy BallTree method.
-
-        """
-        try:
-            import cartopy.crs as ccrs
-            import shapely
-            from shapely.geometry import MultiPoint, Point
-        except ModuleNotFoundError:
-            raise ModuleNotFoundError(
-                "cartopy is an 'extra' requirements, please use "
-                "`pip install 'herbie-data[extras]'` for the full functionality."
-            )
-
-        warnings.warn(
-            "The accessor `ds.herbie.nearest_points` is deprecated in "
-            "favor of the `ds.herbie.pick_points` which uses the "
-            "BallTree algorithm instead.",
-            DeprecationWarning,
-            stacklevel=2,
+        return nearest_points(
+            ds=self._obj,
+            points=points,
+            names=names,
+            verbose=verbose,
         )
-
-        ds = self._obj
-
-        # Longitude and Latitude point DataFrame
-        if isinstance(points, pd.DataFrame):
-            point_df = points[["longitude", "latitude"]]
-            if names is not None:
-                point_df.index = names
-        elif np.shape(points) == (2,):
-            # points is a tuple (lon, lat) or list [lon, lat]
-            # and name is given as None or str
-            point_df = pd.DataFrame(
-                [points],
-                columns=["longitude", "latitude"],
-                index=[names],
-            )
-        elif isinstance(points, list):
-            # points given as a list of coordinate-pair tuples
-            # and name is given as a list of str
-            point_df = pd.DataFrame(
-                points,
-                columns=["longitude", "latitude"],
-                index=names,
-            )
-        elif isinstance(points, (MultiPoint, Point)):
-            # points is given as a Shapely object
-            point_df = pd.DataFrame(
-                shapely.get_coordinates(points),
-                columns=["longitude", "latitude"],
-                index=names,
-            )
-        else:
-            raise ValueError("The points supplied was not understood.")
-
-        # Check if MetPy has already parsed the CF metadata grid projection.
-        # Do that if it hasn't been done yet.
-        if "metpy_crs" not in ds:
-            ds = ds.metpy.parse_cf()
-
-        # Apply the MetPy method `assign_y_x` to the dataset
-        # https://unidata.github.io/MetPy/latest/api/generated/metpy.xarray.html?highlight=assign_y_x#metpy.xarray.MetPyDataArrayAccessor.assign_y_x
-        ds = ds.metpy.assign_y_x()
-
-        # Convert the requested [(lon,lat), (lon,lat)] points to map projection.
-        # Accept a list of point tuples, or Shapely Points object.
-        # We want to index the dataset at a single point.
-        # We can do this by transforming a lat/lon point to the grid location
-        crs = ds.metpy_crs.item().to_cartopy()
-
-        transformed_data = crs.transform_points(
-            ccrs.PlateCarree(), point_df.longitude, point_df.latitude
-        )
-
-        a = pd.DataFrame({"x": transformed_data[:, 0], "y": transformed_data[:, 1]})
-        a.index.name = "point"
-
-        # Select the nearest points from the projection coordinates.
-        # Get corresponding values from xarray
-        # https://docs.xarray.dev/en/stable/user-guide/indexing.html#more-advanced-indexing
-        #
-        new_ds = ds.sel(
-            x=a["x"].to_xarray(),
-            y=a["y"].to_xarray(),
-            method="nearest",
-        )
-
-        new_ds.coords["point"] = ("point", point_df.index.to_list())
-        new_ds.coords["point_latitude"] = ("point", point_df.latitude)
-        new_ds.coords["point_longitude"] = ("point", point_df.longitude)
-
-        return new_ds
 
     def plot(self, ax=None, common_features_kw={}, vars=None, **kwargs):
         """Plot data on a map.
-
-        TODO: Work in progress!
 
         Parameters
         ----------
@@ -772,181 +408,6 @@ class HerbieAccessor:
             List of variables to plot. Default None will plot all
             variables in the DataSet.
         """
-        raise NotImplementedError("Plotting functionality is not working right now.")
-
-        try:
-            import matplotlib.pyplot as plt
-
-            from herbie import paint
-            from herbie.toolbox import EasyMap, pc
-        except ModuleNotFoundError:
-            raise ModuleNotFoundError(
-                "cartopy is an 'extra' requirement. Please use "
-                "`pip install 'herbie-data[extras]'` for the full functionality."
-            )
-
-        ds = self._obj
-
-        if isinstance(vars, str):
-            vars = [vars]
-
-        if vars is None:
-            vars = ds.data_vars
-
-        for i, var in enumerate(vars):
-            if "longitude" not in ds[var].coords:
-                # This is the case for the gribfile_projection variable
-                continue
-
-            print("cfgrib variable:", var)
-            print("GRIB_cfName", ds[var].attrs.get("GRIB_cfName"))
-            print("GRIB_cfVarName", ds[var].attrs.get("GRIB_cfVarName"))
-            print("GRIB_name", ds[var].attrs.get("GRIB_name"))
-            print("GRIB_units", ds[var].attrs.get("GRIB_units"))
-            print("GRIB_typeOfLevel", ds[var].attrs.get("GRIB_typeOfLevel"))
-            print()
-
-            ds[var].attrs["units"] = (
-                ds[var]
-                .attrs["units"]
-                .replace("**-1", "$^{-1}$")
-                .replace("**-2", "$^{-2}$")
-            )
-
-            defaults = dict(
-                scale="50m",
-                dpi=150,
-                figsize=(10, 5),
-                crs=ds.herbie.crs,
-                ax=ax,
-            )
-
-            common_features_kw = {**defaults, **common_features_kw}
-
-            ax = EasyMap(fignum=i, **common_features_kw).STATES().ax
-
-            title = ""
-            kwargs.setdefault("shading", "auto")
-            cbar_kwargs = dict(pad=0.01)
-
-            if ds[var].GRIB_cfVarName in ["d2m", "dpt"]:
-                ds[var].attrs["GRIB_cfName"] = "dew_point_temperature"
-
-            ## Wind
-            wind_pair = {"u10": "v10", "u80": "v80", "u": "v"}
-
-            if ds[var].GRIB_cfName == "air_temperature":
-                kwargs = {**paint.NWSTemperature.kwargs2, **kwargs}
-                cbar_kwargs = {**paint.NWSTemperature.cbar_kwargs2, **cbar_kwargs}
-                if ds[var].GRIB_units == "K":
-                    ds[var] -= 273.15
-                    ds[var].attrs["GRIB_units"] = "C"
-                    ds[var].attrs["units"] = "C"
-
-            elif ds[var].GRIB_cfName == "dew_point_temperature":
-                kwargs = {**paint.NWSDewPointTemperature.kwargs2, **kwargs}
-                cbar_kwargs = {
-                    **paint.NWSDewPointTemperature.cbar_kwargs2,
-                    **cbar_kwargs,
-                }
-                if ds[var].GRIB_units == "K":
-                    ds[var] -= 273.15
-                    ds[var].attrs["GRIB_units"] = "C"
-                    ds[var].attrs["units"] = "C"
-
-            elif ds[var].GRIB_name == "Total Precipitation":
-                title = "-".join(
-                    [f"F{int(i):02d}" for i in ds[var].GRIB_stepRange.split("-")]
-                )
-                ds[var] = ds[var].where(ds[var] != 0)
-                kwargs = {**paint.NWSPrecipitation.kwargs2, **kwargs}
-                cbar_kwargs = {**paint.NWSPrecipitation.cbar_kwargs2, **cbar_kwargs}
-
-            elif ds[var].GRIB_name == "Maximum/Composite radar reflectivity":
-                ds[var] = ds[var].where(ds[var] >= 0)
-                kwargs = {**paint.RadarReflectivity.kwargs2, **kwargs}
-                cbar_kwargs = {**paint.RadarReflectivity.cbar_kwargs2, **cbar_kwargs}
-
-            elif ds[var].GRIB_cfName == "relative_humidity":
-                kwargs = {**paint.NWSRelativeHumidity.kwargs2, **kwargs}
-                cbar_kwargs = {**paint.NWSRelativeHumidity.cbar_kwargs2, **cbar_kwargs}
-
-            elif ds[var].GRIB_name == "Orography":
-                if "lsm" in ds:
-                    ds["orog"] = ds.orog.where(ds.lsm == 1, -100)
-
-                kwargs = {**paint.LandGreen.kwargs, **kwargs}
-                # cbar_kwargs = {**cm_terrain().cbar_kwargs, **cbar_kwargs}
-
-            elif "wind" in ds[var].GRIB_cfName or "wind" in ds[var].GRIB_name:
-                cbar_kwargs = {**cm_wind().cbar_kwargs, **cbar_kwargs}
-                kwargs = {**cm_wind().cmap_kwargs, **kwargs}
-                if ds[var].GRIB_cfName == "eastward_wind":
-                    cbar_kwargs["label"] = "U " + cbar_kwargs["label"]
-                elif ds[var].GRIB_cfName == "northward_wind":
-                    cbar_kwargs["label"] = "V " + cbar_kwargs["label"]
-            else:
-                cbar_kwargs = {
-                    **dict(
-                        label=f"{ds[var].GRIB_parameterName.strip().title()} ({ds[var].units})"
-                    ),
-                    **cbar_kwargs,
-                }
-
-            p = ax.pcolormesh(
-                ds.longitude, ds.latitude, ds[var], transform=pc, **kwargs
-            )
-            plt.colorbar(p, ax=ax, **cbar_kwargs)
-
-            VALID = pd.to_datetime(ds.valid_time.data).strftime("%H:%M UTC %d %b %Y")
-            RUN = pd.to_datetime(ds.time.data).strftime("%H:%M UTC %d %b %Y")
-            FXX = f"F{pd.to_timedelta(ds.step.data).total_seconds() / 3600:02.0f}"
-
-            level_type = ds[var].GRIB_typeOfLevel
-            if level_type in _level_units:
-                level_units = _level_units[level_type]
-            else:
-                level_units = "unknown"
-
-            if level_units.lower() in ["surface", "atmosphere"]:
-                level = f"{title} {level_units}"
-            else:
-                level = f"{ds[var][level_type].data:g} {level_units}"
-
-            ax.set_title(
-                f"Run: {RUN} {FXX}",
-                loc="left",
-                fontfamily="monospace",
-                fontsize="x-small",
-            )
-            ax.set_title(
-                f"{ds.model.upper()} {level}\n", loc="center", fontweight="semibold"
-            )
-            ax.set_title(
-                f"Valid: {VALID}",
-                loc="right",
-                fontfamily="monospace",
-                fontsize="x-small",
-            )
-
-            # Set extent so no whitespace shows around pcolormesh area
-            # TODO: Any better way to do this? With metpy.assign_y_x
-            # !!!!: The `metpy.assign_y_x` method could be used for pluck_point :)
-            try:
-                if "x" in ds.dims:
-                    ds = ds.metpy.parse_cf()
-                    ds = ds.metpy.assign_y_x()
-
-                    ax.set_extent(
-                        [
-                            ds.x.min().item(),
-                            ds.x.max().item(),
-                            ds.y.min().item(),
-                            ds.y.max().item(),
-                        ],
-                        crs=ds.herbie.crs,
-                    )
-            except Exception:
-                pass
-
-        return ax
+        raise NotImplementedError(
+            "Plotting functionality is not working right now. If you have ideas, please open a PR."
+        )
