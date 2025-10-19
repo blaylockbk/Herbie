@@ -387,7 +387,15 @@ def aggregate_results(
 
 
 def compute_weighted_mean(k_points: list[xr.Dataset]) -> xr.Dataset:
-    """Compute inverse-distance weighted mean from k nearest points."""
+    """Compute inverse-distance weighted mean from k nearest points.
+
+    Returns weighted mean values for data variables, but preserves the k dimension
+    for latitude, longitude, and point_grid_distance coordinates to show which
+    grid points were used in the interpolation.
+
+    Special handling for zero-distance cases: if a point is exactly on a grid point,
+    use that grid point's value without weighted averaging.
+    """
     combined = xr.concat(k_points, dim="k")
 
     # Get or reconstruct distance coordinate
@@ -408,18 +416,57 @@ def compute_weighted_mean(k_points: list[xr.Dataset]) -> xr.Dataset:
         combined = combined.assign_coords(point_grid_distance=distance_coord)
         distance_coord = combined.coords["point_grid_distance"]
 
-    # Compute inverse-distance weights (clip handles zero-distance case)
-    weights = (1 / distance_coord).clip(max=1e6)
+    # Handle zero-distance case: use exact grid point value
+    min_distance = distance_coord.min(dim="k")
+    is_exact_match = min_distance < 1e-10  # threshold for "zero" distance
 
-    # Weighted average
-    weighted_sum = (combined * weights).sum(dim="k")
+    # Compute inverse-distance weights
+    # For zero distances, we'll handle them separately, so clip to avoid inf
+    weights = xr.where(
+        distance_coord < 1e-10,
+        1.0,  # Temporary placeholder
+        1.0 / distance_coord,
+    )
+
+    # For exact matches, set weight to 1 for closest point, 0 for others
+    if is_exact_match.any():
+        # Find which k index has minimum distance
+        k_min = distance_coord.argmin(dim="k")
+        # Create mask: True only for the minimum distance point
+        exact_mask = (
+            xr.DataArray(np.arange(len(k_points)), dims=["k"], coords={"k": combined.k})
+            == k_min
+        )
+        # Override weights for exact match cases
+        weights = xr.where(is_exact_match, exact_mask.astype(float), weights)
+
+    # Compute weighted average for DATA VARIABLES (reduces k dimension)
     sum_of_weights = weights.sum(dim="k")
-    result = weighted_sum / sum_of_weights
 
-    # Restore dropped coordinates
-    result.coords["latitude"] = combined.coords["latitude"]
-    result.coords["longitude"] = combined.coords["longitude"]
-    result.coords["point_grid_distance"] = distance_coord
+    # Build result dataset with only data variables reduced
+    result_data_vars = {}
+    for var_name in combined.data_vars:
+        weighted_sum = (combined[var_name] * weights).sum(dim="k")
+        result_data_vars[var_name] = weighted_sum / sum_of_weights
+
+    result = xr.Dataset(result_data_vars)
+
+    # Copy coordinates that don't have 'k' dimension
+    for coord_name, coord_val in combined.coords.items():
+        if coord_name in result.coords:
+            continue  # Already exists
+        if "k" not in coord_val.dims:
+            result.coords[coord_name] = coord_val
+
+    # Keep lat/lon/distance WITH the k dimension to show which points were used
+    if "latitude" in combined.coords:
+        result.coords["latitude"] = combined.coords["latitude"]
+
+    if "longitude" in combined.coords:
+        result.coords["longitude"] = combined.coords["longitude"]
+
+    if "point_grid_distance" in combined.coords:
+        result.coords["point_grid_distance"] = combined.coords["point_grid_distance"]
 
     result.attrs["pick_point_method"] = "weighted"
     result.attrs["pick_point_k"] = len(k_points)

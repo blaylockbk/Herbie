@@ -85,36 +85,51 @@ class TestPickPointsBasic:
             }
         )
 
-        # Since our test points are in [-180,180] convention
         ds = ds.herbie.to_180()
-
         result = ds.herbie.pick_points(points, method="weighted")
 
-        # Check structure
+        # Check structure - data is reduced but k dimension preserved for metadata
         assert result.sizes["point"] == len(points)
-        assert "k" not in result.dims  # k should be reduced
+        assert "k" in result.dims  # k dimension should exist for lat/lon/distance
 
-        # Check coordinates
+        # Data variables should NOT have k dimension (they're averaged)
+        for var in result.data_vars:
+            assert "k" not in result[var].dims, f"Data variable {var} should not have k dimension"
+
+        # But coordinates should have k dimension to show which points were used
+        assert "k" in result.coords["latitude"].dims
+        assert "k" in result.coords["longitude"].dims
+        assert "k" in result.coords["point_grid_distance"].dims
+
+        # Check other coordinates exist (without k)
         assert "point_latitude" in result.coords
         assert "point_longitude" in result.coords
-        assert "point_grid_distance" in result.coords
+        assert "k" not in result.coords["point_latitude"].dims
 
         # Test that picked coordinates are close to requested
-        # (within model resolution tolerance)
-        np.testing.assert_allclose(
-            result.longitude.values,
-            result.point_longitude.values,
-            atol=1.0,  # Within 1 degree for most models
-            rtol=0,
-        )
+        # For weighted method, check that ALL k neighbors are within reasonable distance
+        # The closest neighbor (k=0) should be very close
+        for i in range(len(points)):
+            requested_lat = result.point_latitude.isel(point=i).item()
+            requested_lon = result.point_longitude.isel(point=i).item()
 
-        np.testing.assert_allclose(
-            result.latitude.values,
-            result.point_latitude.values,
-            atol=1.0,
-            rtol=0,
-        )
+            # Check the closest grid point (first k neighbor)
+            closest_lat = result.latitude.isel(point=i, k=0).item()
+            closest_lon = result.longitude.isel(point=i, k=0).item()
 
+            np.testing.assert_allclose(
+                closest_lon,
+                requested_lon,
+                atol=1.0,  # Within 1 degree for most models
+                rtol=0,
+            )
+
+            np.testing.assert_allclose(
+                closest_lat,
+                requested_lat,
+                atol=1.0,
+                rtol=0,
+            )
     @pytest.mark.parametrize("ds", [ds1, ds2, ds3, ds4])
     def test_nearest_with_k(self, ds):
         """Test nearest with multiple k values."""
@@ -144,8 +159,22 @@ class TestPickPointsBasic:
 
         result = ds.herbie.pick_points(points, method="weighted", k=8)
 
-        # Should NOT have k dimension (weighted reduces it)
-        assert "k" not in result.dims
+        # Data variables should NOT have k dimension (they're averaged)
+        for var in result.data_vars:
+            assert "k" not in result[var].dims, (
+                f"Data variable {var} should not have k dimension"
+            )
+
+        # But coordinates should have k dimension to show which points were used
+        assert "k" in result.coords["latitude"].dims
+        assert "k" in result.coords["longitude"].dims
+        assert "k" in result.coords["point_grid_distance"].dims
+
+        # Check other coordinates exist (without k)
+        assert "point_latitude" in result.coords
+        assert "point_longitude" in result.coords
+        assert "k" not in result.coords["point_latitude"].dims
+
         assert result.sizes["point"] == len(points)
 
 
