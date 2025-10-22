@@ -21,7 +21,6 @@ conda install -c conda-forge herbie-data
 Herbie is published on PyPI and you can install it with pip, _but_ it requires some dependencies that you will have to install yourself:
 
 - Python 3.10+
-- [cURL](https://anaconda.org/conda-forge/curl)
 - _Optional:_ [wgrib2](https://anaconda.org/conda-forge/wgrib2)
 
 When those are installed within your environment, _then_ you can install Herbie with pip.

@@ -6,7 +6,6 @@ channels:
   - conda-forge
 dependencies:
   # Binaries
-  - curl
   - eccodes
   - geos
   - proj

@@ -27,7 +27,6 @@ dependencies:
   #====================
   # Other Dependencies
   #====================
-  - curl
   - eccodes # required by cfgrib
   - geos # required by cartopy
   - proj # required by cartopy

@@ -96,7 +96,6 @@ pip install herbie-data[extra]
  Keep in mind that Herbie does require the following dependencies that you will have to install yourself if you don't have them in your PATH:
 
 - Python 3.10+
-- [cURL](https://anaconda.org/conda-forge/curl)
 - [wgrib2](https://anaconda.org/conda-forge/wgrib2) (for some extra features)
 
 ### `uv`

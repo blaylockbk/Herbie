@@ -45,13 +45,6 @@ log = logging.getLogger(__name__)
 # Location of wgrib2 command, if it exists. Required to make missing idx files.
 wgrib2 = which("wgrib2")
 
-# Location of curl command. Required to download data.
-curl = which("curl")
-if curl is None:
-    warnings.warn(
-        "Curl is not in system Path. Herbie won't be able to download GRIB files."
-    )
-
 
 def wgrib2_idx(grib2filepath: Path | str) -> str:
     """
@@ -1015,13 +1008,13 @@ class Herbie:
             idx_df["download_groups"] = idx_df.grib_message.diff().ne(1).cumsum()
 
             # Process subsets of each group
-            for i, curl_group in idx_df.groupby("download_groups"):
+            for i, subset_group in idx_df.groupby("download_groups"):
                 if verbose:
                     action = "Extract" if is_local else "Download"
-                    print(f"{action} subset group {i} ({len(curl_group)} variables)")
+                    print(f"{action} subset group {i} ({len(subset_group)} variables)")
 
-                start_byte = int(curl_group.start_byte.min())
-                end_byte = int(curl_group.end_byte.max())
+                start_byte = int(subset_group.start_byte.min())
+                end_byte = int(subset_group.end_byte.max())
 
                 if end_byte - start_byte < 0:
                     if verbose:
