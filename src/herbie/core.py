@@ -17,6 +17,7 @@ import urllib.request
 import warnings
 from datetime import datetime, timedelta
 from io import StringIO
+from pathlib import Path
 from shutil import which
 from typing import Literal, Optional, Union
 from urllib.parse import urlparse
@@ -491,13 +492,11 @@ class Herbie:
 
         return (None, None)
 
-    def find_idx(
-        self, overwrite: bool = False
-    ) -> tuple[Optional[Union[Path, str]], Optional[str]]:
+    def find_idx(self) -> tuple[Optional[Union[Path, str]], Optional[str]]:
         """Find an index file for the GRIB file."""
 
         # But first, if overwrite is False, then check if the GRIB2 inventory file exists locally.
-        if not overwrite:
+        if not self.overwrite:
             local_grib = self.get_localFilePath()
             for suffix in self.IDX_SUFFIX:
                 # There is no easy way to know if the index suffix needs to be appended or overwrite the grib suffix.
@@ -995,17 +994,18 @@ class Herbie:
                 )
 
         def subset(search, outFile, verbose=True):
-            """Download a subset specified by the regex search."""
-            import requests
-
+            """Download/extract a subset specified by the regex search."""
             grib_source = self.grib
-            if hasattr(grib_source, "as_posix") and grib_source.exists():
-                # For local files, we'd need different handling
-                # This example focuses on remote files
-                grib_source = str(self.grib)
+
+            # Check if the source is a local file
+            is_local = isinstance(grib_source, Path) or (
+                isinstance(grib_source, str)
+                and not grib_source.startswith(("http://", "https://"))
+            )
 
             if verbose:
-                print(f"📇 Download subset: {self.__repr__()}\n from {grib_source}")
+                source_desc = f"local file {grib_source}" if is_local else grib_source
+                print(f"📇 Download subset: {self.__repr__()}\n from {source_desc}")
 
             idx_df = self.inventory(search).copy()
 
@@ -1014,10 +1014,11 @@ class Herbie:
 
             idx_df["download_groups"] = idx_df.grib_message.diff().ne(1).cumsum()
 
-            # Download subsets of each group
+            # Process subsets of each group
             for i, curl_group in idx_df.groupby("download_groups"):
                 if verbose:
-                    print(f"Download subset group {i}")
+                    action = "Extract" if is_local else "Download"
+                    print(f"{action} subset group {i} ({len(curl_group)} variables)")
 
                 start_byte = int(curl_group.start_byte.min())
                 end_byte = int(curl_group.end_byte.max())
@@ -1027,35 +1028,36 @@ class Herbie:
                         print("  ERROR: Invalid byte range; Skip message.")
                     continue
 
-                headers = {"Range": f"bytes={start_byte}-{end_byte}"}
-
                 try:
-                    response = requests.get(
-                        grib_source,
-                        headers=headers,
-                        stream=True,
-                        timeout=30,
-                    )
-                    response.raise_for_status()
+                    # Get the data (either from local file or remote URL)
+                    if is_local:
+                        # Read from local file
+                        with open(grib_source, "rb") as src:
+                            src.seek(start_byte)
+                            data = src.read(end_byte - start_byte + 1)
+                    else:
+                        # Download from remote URL
+                        headers = {"Range": f"bytes={start_byte}-{end_byte}"}
+                        response = requests.get(
+                            grib_source,
+                            headers=headers,
+                            timeout=30,
+                        )
+                        response.raise_for_status()
+                        data = response.content
 
-                    # Write or append to file
+                    # Write or append to output file
                     mode = "wb" if i == 1 else "ab"
                     with open(outFile, mode) as f:
-                        for chunk in response.iter_content(chunk_size=8192):
-                            if chunk:
-                                f.write(chunk)
+                        f.write(data)
 
                     if verbose:
-                        print(f"  ✓ Downloaded bytes {start_byte}-{end_byte}")
+                        print(f"  ✓ Processed bytes {start_byte}-{end_byte}")
 
-                except requests.RequestException as e:
+                except (IOError, requests.RequestException) as e:
                     if verbose:
-                        print(f"  ✗ Failed to download: {e}")
-                    raise RuntimeError(f"Download failed: {e}") from e
-                except IOError as e:
-                    if verbose:
-                        print(f"  ✗ Failed to write to {outFile}: {e}")
-                    raise
+                        print(f"  ✗ Failed to process: {e}")
+                    raise RuntimeError(f"Processing failed: {e}") from e
 
             if verbose:
                 print(f"💾 Saved the subset to {outFile}")
@@ -1102,10 +1104,16 @@ class Herbie:
                 print(f"🌉 Already have local copy --> {outFile}")
             return outFile
 
-        if self.overwrite and self.grib_source.startswith("local"):
+        if (
+            self.overwrite
+            and self.grib_source
+            and self.grib_source.startswith("local")
+            and search in [None, ":"]
+        ):
             # Search for the grib files on the remote archives again
-            self.grib, self.grib_source = self.find_grib(overwrite=True)
-            self.idx, self.idx_source = self.find_idx(overwrite=True)
+            # Only do this for full file downloads, not subsets
+            self.grib, self.grib_source = self.find_grib()
+            self.idx, self.idx_source = self.find_idx()
             print(f"Overwrite local file with file from [{self.grib_source}]")
 
         # Check that data exists
