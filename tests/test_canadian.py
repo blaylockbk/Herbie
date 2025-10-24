@@ -1,6 +1,9 @@
 """
 Tests for downloading Canadian models HRDPS and RDPS model.
 
+Herbie support for Canadian models is a minimal at best. If you would
+like to help support this, please let me know in a new issue/PR/or discussion.
+
 DRAGONS:
 
 At ~00Z the HRDPS servers are cleared of the previous day's forecasts.
@@ -11,6 +14,7 @@ import sys
 from datetime import datetime, timedelta
 
 import pytest
+import requests
 
 from herbie import Herbie, config
 
@@ -21,6 +25,14 @@ yesterday_12z = yesterday.replace(hour=12, minute=0)
 today_str = today.strftime("%Y-%m-%d %H:%M")
 yesterday_12z_str = yesterday_12z.strftime("%Y-%m-%d %H:%M")
 
+hrdps_continental_url = (
+    f"https://dd.weather.gc.ca/{yesterday_12z:%Y%m%d}/WXO-DD/model_hrdps/continental"
+)
+hrdps_north_url = (
+    f"https://dd.weather.gc.ca/{yesterday_12z:%Y%m%d}/WXO-DD/model_hrdps/north"
+)
+rdps_url = f"https://dd.weather.gc.ca/{yesterday_12z:%Y%m%d}/WXO-DD/model_rdps"
+
 save_dir = config["default"]["save_dir"] / "Herbie-Tests-Data/"
 
 # Remove all previous test data
@@ -30,6 +42,13 @@ for i in (save_dir / "hrdps").rglob("*"):
 
 
 class TestHRDPS:
+    @pytest.mark.skipif(
+        not requests.head(
+            hrdps_continental_url,
+            timeout=5,
+        ).ok,
+        reason=f"{hrdps_continental_url} not reachable",
+    )
     def test_hrdps_download(self):
         H = Herbie(
             yesterday_12z,
@@ -45,6 +64,13 @@ class TestHRDPS:
         assert H.get_localFilePath().exists()
         f.unlink()
 
+    @pytest.mark.skipif(
+        not requests.head(
+            hrdps_north_url,
+            timeout=5,
+        ).ok,
+        reason=f"{hrdps_north_url} not reachable",
+    )
     def test_hrdps_north_download(self):
         H = Herbie(
             yesterday_12z,
@@ -60,6 +86,13 @@ class TestHRDPS:
         assert H.get_localFilePath().exists()
         f.unlink()
 
+    @pytest.mark.skipif(
+        not requests.head(
+            hrdps_continental_url,
+            timeout=5,
+        ).ok,
+        reason=f"{hrdps_continental_url} not reachable",
+    )
     def test_hrdps_xarray(self):
         H = Herbie(
             yesterday_12z,
@@ -77,6 +110,13 @@ class TestHRDPS:
 
 
 class TestRDPS:
+    @pytest.mark.skipif(
+        not requests.head(
+            rdps_url,
+            timeout=5,
+        ).ok,
+        reason=f"{rdps_url} not reachable",
+    )
     def test_rdps_download(self):
         H = Herbie(
             yesterday_12z,
@@ -93,6 +133,13 @@ class TestRDPS:
 
 
 @pytest.mark.skipif(sys.version_info < (3, 11), reason="Requires Python > 3.10")
+@pytest.mark.skipif(
+    not requests.head(
+        hrdps_continental_url,
+        timeout=5,
+    ).ok,
+    reason=f"{hrdps_continental_url} not reachable",
+)
 def test_hrdps_to_netcdf():
     """Check that a xarray Dataset can be written to a NetCDF file.
 
