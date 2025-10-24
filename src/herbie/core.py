@@ -17,6 +17,7 @@ import urllib.request
 import warnings
 from datetime import datetime, timedelta
 from io import StringIO
+from pathlib import Path
 from shutil import which
 from typing import Literal, Optional, Union
 from urllib.parse import urlparse
@@ -44,33 +45,44 @@ log = logging.getLogger(__name__)
 # Location of wgrib2 command, if it exists. Required to make missing idx files.
 wgrib2 = which("wgrib2")
 
-# Location of curl command. Required to download data.
-curl = which("curl")
-if curl is None:
-    warnings.warn(
-        "Curl is not in system Path. Herbie won't be able to download GRIB files."
-    )
 
-def wgrib2_idx(grib2filepath: Union[Path, str]) -> str:
+def wgrib2_idx(grib2filepath: Path | str) -> str:
     """
     Produce the GRIB2 inventory index with wgrib2.
 
     Parameters
     ----------
-    grib2filepath : Path
+    grib2filepath : Path or str
         Path to a grib2 file.
+
+    Returns
+    -------
+    str
+        The inventory output from wgrib2.
+
+    Raises
+    ------
+    RuntimeError
+        If wgrib2 command is not found.
+    subprocess.CalledProcessError
+        If wgrib2 command fails.
     """
-    if wgrib2:
+    if not wgrib2:
+        raise RuntimeError("wgrib2 command was not found.")
+
+    try:
         p = subprocess.run(
-            f"{wgrib2} -s {grib2filepath}",
-            shell=True,
+            [wgrib2, "-s", str(grib2filepath)],
             capture_output=True,
             encoding="utf-8",
             check=True,
+            text=True,
         )
         return p.stdout
-    else:
-        raise RuntimeError("wgrib2 command was not found.")
+    except subprocess.CalledProcessError as e:
+        raise RuntimeError(
+            f"wgrib2 failed with return code {e.returncode}: {e.stderr}"
+        ) from e
 
 
 def create_index_files(path: Union[Path, str], overwrite: bool = False) -> None:
@@ -473,13 +485,11 @@ class Herbie:
 
         return (None, None)
 
-    def find_idx(
-        self, overwrite: bool = False
-    ) -> tuple[Optional[Union[Path, str]], Optional[str]]:
+    def find_idx(self) -> tuple[Optional[Union[Path, str]], Optional[str]]:
         """Find an index file for the GRIB file."""
 
         # But first, if overwrite is False, then check if the GRIB2 inventory file exists locally.
-        if not overwrite:
+        if not self.overwrite:
             local_grib = self.get_localFilePath()
             for suffix in self.IDX_SUFFIX:
                 # There is no easy way to know if the index suffix needs to be appended or overwrite the grib suffix.
@@ -976,79 +986,77 @@ class Herbie:
                     end="",
                 )
 
-        def subset(search, outFile):
-            """Download a subset specified by the regex search."""
-            # TODO: Maybe optimize downloading multiple subsets with MultiThreading
-
-            # TODO An alternative to downloadling subset with curl is
-            # TODO  to use the request module directly.
-            # TODO  >> headers = dict(Range=f"bytes={start_bytes}-{end_bytes}")
-            # TODO  >> r = requests.get(grib_url, headers=headers)
-
+        def subset(search, outFile, verbose=True):
+            """Download/extract a subset specified by the regex search."""
             grib_source = self.grib
-            if hasattr(grib_source, "as_posix") and grib_source.exists():
-                # The GRIB source is local. Curl the local file
-                # See https://stackoverflow.com/a/21023161/2383070
-                grib_source = f"file://{str(self.grib)}"
+
+            # Check if the source is a local file
+            is_local = isinstance(grib_source, Path) or (
+                isinstance(grib_source, str)
+                and not grib_source.startswith(("http://", "https://"))
+            )
+
             if verbose:
-                print(
-                    f"📇 Download subset: {self.__repr__()}{' ':60s}\n cURL from {grib_source}"
-                )
+                source_desc = f"local file {grib_source}" if is_local else grib_source
+                print(f"📇 Download subset: {self.__repr__()}\n from {source_desc}")
 
-            # -----------------------------------------------------
-            # Download subsets of the file by byte range with cURL.
-            #  Instead of using a single curl command for each row,
-            #  group adjacent messages in the same curl command.
-
-            # Find index groupings
             idx_df = self.inventory(search).copy()
-            if verbose:
-                print(
-                    f"Found {ANSI.bold}{ANSI.green}{len(idx_df)}{ANSI.reset} grib messages."
-                )
+
             if len(idx_df) == 0:
-                msg = f"🦨 No subsets found with {search=} in {self.model=} {self.date=} {self.fxx=}"
-                if errors == "warn":
-                    log.warning(msg)
-                    return  # Nothing to download
-                elif errors == "raise":
-                    raise ValueError(msg)
+                return
 
             idx_df["download_groups"] = idx_df.grib_message.diff().ne(1).cumsum()
 
-            # cURL subsets of each group
-            for i, curl_group in idx_df.groupby("download_groups"):
+            # Process subsets of each group
+            for i, subset_group in idx_df.groupby("download_groups"):
                 if verbose:
-                    print(f"Download subset group {i}")
+                    action = "Extract" if is_local else "Download"
+                    print(f"{action} subset group {i} ({len(subset_group)} variables)")
 
                 if verbose:
-                    for _, row in curl_group.iterrows():
+                    for _, row in subset_group.iterrows():
                         print(
                             f"  {row.grib_message:<3g} {ANSI.orange}{row.search_this}{ANSI.reset}"
                         )
 
-                range = f"{curl_group.start_byte.min():.0f}-{curl_group.end_byte.max():.0f}".replace(
-                    "nan", ""
-                )
+                start_byte = int(subset_group.start_byte.min())
+                end_byte = int(subset_group.end_byte.max())
 
-                if curl_group.end_byte.max() - curl_group.start_byte.min() < 0:
-                    # The byte range for GRIB submessages (like in the
-                    # RAP model's UGRD/VGRD) need to be handled differently.
-                    # See https://github.com/blaylockbk/Herbie/issues/259
+                if end_byte - start_byte < 0:
                     if verbose:
-                        print(f"  ERROR: Invalid cURL range {range}; Skip message.")
+                        print("  ERROR: Invalid byte range; Skip message.")
                     continue
 
-                if i == 1:
-                    # If we are working on the first item, overwrite the existing file...
-                    curl = f'''curl -s --range {range} "{grib_source}" > "{outFile}"'''
-                else:
-                    # ...all other messages are appended to the subset file.
-                    curl = f'''curl -s --range {range} "{grib_source}" >> "{outFile}"'''
+                try:
+                    # Get the data (either from local file or remote URL)
+                    if is_local:
+                        # Read from local file
+                        with open(grib_source, "rb") as src:
+                            src.seek(start_byte)
+                            data = src.read(end_byte - start_byte + 1)
+                    else:
+                        # Download from remote URL
+                        headers = {"Range": f"bytes={start_byte}-{end_byte}"}
+                        response = requests.get(
+                            grib_source,
+                            headers=headers,
+                            timeout=30,
+                        )
+                        response.raise_for_status()
+                        data = response.content
 
-                if verbose:
-                    print(curl)
-                os.system(curl)
+                    # Write or append to output file
+                    mode = "wb" if i == 1 else "ab"
+                    with open(outFile, mode) as f:
+                        f.write(data)
+
+                    if verbose:
+                        print(f"  ✓ Processed bytes {start_byte}-{end_byte}")
+
+                except (IOError, requests.RequestException) as e:
+                    if verbose:
+                        print(f"  ✗ Failed to process: {e}")
+                    raise RuntimeError(f"Processing failed: {e}") from e
 
             if verbose:
                 print(f"💾 Saved the subset to {outFile}")
@@ -1095,10 +1103,16 @@ class Herbie:
                 print(f"🌉 Already have local copy --> {outFile}")
             return outFile
 
-        if self.overwrite and self.grib_source.startswith("local"):
+        if (
+            self.overwrite
+            and self.grib_source
+            and self.grib_source.startswith("local")
+            and search in [None, ":"]
+        ):
             # Search for the grib files on the remote archives again
-            self.grib, self.grib_source = self.find_grib(overwrite=True)
-            self.idx, self.idx_source = self.find_idx(overwrite=True)
+            # Only do this for full file downloads, not subsets
+            self.grib, self.grib_source = self.find_grib()
+            self.idx, self.idx_source = self.find_idx()
             print(f"Overwrite local file with file from [{self.grib_source}]")
 
         # Check that data exists
@@ -1146,7 +1160,7 @@ class Herbie:
 
         else:
             # Download a subset of the file
-            subset(search, outFile)
+            subset(search, outFile, verbose=verbose)
 
         return outFile
 
@@ -1297,7 +1311,7 @@ class Herbie:
             # Assign this grid_mapping for all variables
             for var in list(ds):
                 ds[var].attrs["grid_mapping"] = "gribfile_projection"
-                
+
         if remove_grib:
             # Load the datasets into memory before removing the file
             Hxr = [ds.load() for ds in Hxr]
