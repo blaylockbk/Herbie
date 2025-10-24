@@ -1013,6 +1013,12 @@ class Herbie:
                     action = "Extract" if is_local else "Download"
                     print(f"{action} subset group {i} ({len(subset_group)} variables)")
 
+                if verbose:
+                    for _, row in subset_group.iterrows():
+                        print(
+                            f"  {row.grib_message:<3g} {ANSI.orange}{row.search_this}{ANSI.reset}"
+                        )
+
                 start_byte = int(subset_group.start_byte.min())
                 end_byte = int(subset_group.end_byte.max())
 
@@ -1154,7 +1160,7 @@ class Herbie:
 
         else:
             # Download a subset of the file
-            subset(search, outFile)
+            subset(search, outFile, verbose=verbose)
 
         return outFile
 
