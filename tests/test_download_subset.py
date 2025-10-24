@@ -357,7 +357,7 @@ def test_subset_concatenated_properly():
     H = Herbie(today, model="hrrr", product="sfc", save_dir=save_dir, overwrite=True)
 
     # Download multiple non-adjacent messages
-    var = ":(TMP|DPT|RH):2 m"  # Temperature, dewpoint, and RH
+    var = ":(?:TMP|DPT|RH):2 m above"
     H.download(var)
 
     subset_path = H.get_localFilePath(var)
