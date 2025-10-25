@@ -28,6 +28,15 @@ Herbie: Download Weather Forecast Model Data in Python
 - 🔄 **Multiple data sources** - Automatically search multiple archive sources (AWS, Google Cloud, NOMADS, Azure)
 - 🛠️ **CLI and Python API** - Use from command line or in your Python scripts
 
+.. toctree::
+   :maxdepth: 1
+   :hidden:
+
+   /user_guide/index
+   /gallery/index
+   /grib_reference/index
+   /api_reference/index
+
 .. grid:: 2
     :gutter: 3
 
@@ -223,11 +232,3 @@ More details in the :ref:`User Guide`.
    - `GOES-2-go <https://github.com/blaylockbk/goes2go>`_ - Download GOES satellite data
    - `SynopticPy <https://github.com/blaylockbk/SynopticPy>`_ - Access mesonet observations
    - `Carpenter Workshop <https://github.com/blaylockbk/Carpenter_Workshop>`_ - Meteorological analysis tools
-
-
-.. toctree::
-   :maxdepth: 1
-   /user_guide/index
-   /gallery/index
-   /grib_reference/index
-   /api_reference/index
