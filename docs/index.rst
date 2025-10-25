@@ -28,29 +28,6 @@ Herbie: Download Weather Forecast Model Data in Python
 - 🔄 **Multiple data sources** - Automatically search multiple archive sources (AWS, Google Cloud, NOMADS, Azure)
 - 🛠️ **CLI and Python API** - Use from command line or in your Python scripts
 
-.. note::
-   **Keywords:** weather data download, GRIB2 python, numerical weather prediction, HRRR download, GFS data, meteorological data, weather forecast API, xarray weather, atmospheric data
-
-.. .. toctree::
-..    :maxdepth: 1
-..
-..    /user_guide/index
-..    /gallery/index
-..    /grib_reference/index
-..    /api_reference/index
-
-.. TODO: I'd like to have the cards here instead of the toctree, but the toctree is needed to show the links in the top banner.
-.. .. card:: User Guide
-..     :link: https://herbie.readthedocs.io/user_guide/index.html
-
-..     Information you need to know to use Herbie.
-
-.. .. card:: Reference Guide
-..     :link: https://herbie.readthedocs.io/reference_guide/index.html
-
-..     API reference for Herbie's classes and functions.
-
-
 .. grid:: 2
     :gutter: 3
 
@@ -246,3 +223,11 @@ More details in the :ref:`User Guide`.
    - `GOES-2-go <https://github.com/blaylockbk/goes2go>`_ - Download GOES satellite data
    - `SynopticPy <https://github.com/blaylockbk/SynopticPy>`_ - Access mesonet observations
    - `Carpenter Workshop <https://github.com/blaylockbk/Carpenter_Workshop>`_ - Meteorological analysis tools
+
+
+.. toctree::
+   :maxdepth: 1
+   /user_guide/index
+   /gallery/index
+   /grib_reference/index
+   /api_reference/index
