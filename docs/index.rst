@@ -10,22 +10,56 @@
 
 
 
-===============================
-Herbie: Retrieve NWP Model Data
-===============================
+===============================================================
+Herbie: Download Weather Forecast Model Data in Python
+===============================================================
 
-**Herbie** is a python package that downloads recent and archived numerical weather prediction (NWP) model output from different cloud archive sources. NWP data is distributed in GRIB2 format and can be read with xarray+cfgrib.
+**Access HRRR, GFS, RAP, GEFS, ECMWF and 15+ Weather Models**
 
-Some models Herbie can retrieve data from include:
 
-- High-Resolution Rapid Refresh (HRRR)
-- Rapid Refresh (RAP)
-- Global Forecast System (GFS)
-- ECMWF open data forecast products (ECMWF (IFS and AIFS))
-- National Blend of Models (NBM)
-- Rapid Refresh Forecast System - Prototype (RRFS)
-- Real-Time/Un-Restricted Mesoscale Analysis (RTMA and URMA)
-- and many others (see :ref:`Gallery`)
+**Herbie** is a Python package that makes downloading and working with numerical weather prediction (NWP) model data simple and fast. Whether you're a researcher, meteorologist, data scientist, or weather enthusiast, Herbie provides easy access to forecast data from NOAA, ECMWF, and other sources.
+
+**Key Features:**
+
+- 🌐 **Access 15+ weather models** including HRRR, GFS, RAP, GEFS, ECMWF, and more
+- ⚡ **Smart downloads** - Get full GRIB2 files or subset by variable to save time and bandwidth
+- 📊 **Built-in data reading** - Load data directly into xarray for analysis
+- 🗺️ **Visualization aids** - Includes Cartopy integration for mapping
+- 🔄 **Multiple data sources** - Automatically search multiple archive sources (AWS, Google Cloud, NOMADS, Azure)
+- 🛠️ **CLI and Python API** - Use from command line or in your Python scripts
+
+.. note::
+   **Keywords:** weather data download, GRIB2 python, numerical weather prediction, HRRR download, GFS data, meteorological data, weather forecast API, xarray weather, atmospheric data
+
+----
+
+Supported Weather Models
+------------------------
+
+Herbie provides access to a wide range of numerical weather prediction models:
+
+**US Models (NOAA):**
+
+- **High-Resolution Rapid Refresh (HRRR)** - 3km resolution short-range forecasts
+- **Rapid Refresh (RAP)** - 13km resolution regional forecasts
+- **Global Forecast System (GFS)** - Global medium-range forecasts
+- **Global Ensemble Forecast System (GEFS)** - Global ensemble predictions
+- **National Blend of Models (NBM)** - Statistically blended forecasts
+- **Rapid Refresh Forecast System (RRFS)** - Next-generation RAP/HRRR *(prototype)*
+- **Real-Time/Un-Restricted Mesoscale Analysis (RTMA/URMA)** - Gridded observations
+- **Hurricane Analysis and Forecast System (HAFS)** - Tropical cyclone forecasts
+- **Climate Forecast System (CFS)** - Seasonal predictions
+
+**Other Models:**
+
+- **ECMWF Open Data** - IFS and AIFS global forecast models
+- **NAVGEM** - US Navy global environmental model
+- **HRDPS** - Canadian high-resolution forecasts
+
+**And many more!** See the :ref:`Gallery` for complete model coverage.
+
+.. tip::
+   Much of this data is made available through the `NOAA Open Data Dissemination <https://www.noaa.gov/information-technology/open-data-dissemination>`_ (NODD) program, making weather data more accessible than ever before.
 
 .. toctree::
    :maxdepth: 1
@@ -86,33 +120,42 @@ Installation
 
             uv install herbie-data
 
-More details at :ref:`🐍 Installation`.
+**Requirements:**
+
+- Python 3.10 or higher
+- xarray and cfgrib for reading GRIB2 data
+- wgrib2 (optional, for advanced subsetting)
+
+For detailed installation instructions, see :ref:`🐍 Installation`.
 
 
-Capabilities
-------------
+What Can Herbie Do?
+-------------------
 
-Herbie helps you discover and use data from many different numerical weather models and sources.
+Herbie streamlines the entire workflow of accessing weather model data:
 
 .. figure:: _static/diagrams/mermaid-capabilities.png
    :class: img-fluid
-   :width: 66%
+   :width: 75%
+   :align: center
 
-Specifically, Herbie can do the following:
+**Features:**
+- 🔍 Search model output from different data sources
+- ⬇️ Download full or subset GRIB2 files
+- 📖 Read data with xarray and index files with Panda (see :ref:`🗃️ Xarray Accessors`)
+- 🗺️ Built-in Cartopy aids for mapping
+- 🎯 Extract data at specific points
+- 🔌 Extensible with [custom model templates](https://github.com/blaylockbk/herbie-plugin-tutorial)
 
-- Locate GRIB2 files in the cloud.
-- Show the content of those files.
-- Download data to your computer.
-- Download *subsets*  of the data.
-- Read the data with xarray.
-- Help you use the data with xarray accessors (see :ref:`🗃️ Xarray Accessors`)
-- Support for custom model templates with `Herbie plugins <https://github.com/blaylockbk/herbie-plugin-tutorial>`_.
+----
 
+Using Herbie
+------------
 
-Herbie Python
-^^^^^^^^^^^^^
+Herbie Python API
+^^^^^^^^^^^^^^^^^
 
-Using Herbie's Python API looks something like this...
+The Python API provides full programmatic access to all features:
 
 .. code-block:: python
 
@@ -138,10 +181,13 @@ Using Herbie's Python API looks something like this...
    # Read a subset of the file with xarray, like 2-m temperature.
    H.xarray("TMP:2 m")
 
-Herbie CLI
-^^^^^^^^^^
+**Learn more:** :ref:`User Guide`
 
-Herbie also has a command line interface (CLI) so you can use Herbie right in your terminal.
+Herbie Command Line Interface
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Use Herbie directly from your terminal:
+
 
 .. code-block:: bash
 
@@ -162,3 +208,43 @@ Herbie also has a command line interface (CLI) so you can use Herbie right in yo
 
 More details in the :ref:`User Guide`.
 
+
+Getting Help
+------------
+
+.. grid:: 2
+    :gutter: 3
+
+    .. grid-item-card:: 📘 User Guide
+        :link: user_guide/index
+        :link-type: doc
+
+        Learn how to use Herbie with tutorials and examples
+
+    .. grid-item-card:: 🖼️ Model Gallery
+        :link: gallery/index
+        :link-type: doc
+
+        Browse examples for each supported weather model
+
+    .. grid-item-card:: 🔧 API Reference
+        :link: api_reference/index
+        :link-type: doc
+
+        Complete reference for all classes and functions
+
+    .. grid-item-card:: 💬 Community Support
+        :link: https://github.com/blaylockbk/Herbie/discussions
+
+        Ask questions and share ideas on GitHub Discussions
+
+----
+
+.. note::
+   **Project maintained by Brian Blaylock**
+
+   Check out Brian's other Python packages for atmospheric science:
+
+   - `GOES-2-go <https://github.com/blaylockbk/goes2go>`_ - Download GOES satellite data
+   - `SynopticPy <https://github.com/blaylockbk/SynopticPy>`_ - Access mesonet observations
+   - `Carpenter Workshop <https://github.com/blaylockbk/Carpenter_Workshop>`_ - Meteorological analysis tools
