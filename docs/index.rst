@@ -31,6 +31,52 @@ Herbie: Download Weather Forecast Model Data in Python
 .. note::
    **Keywords:** weather data download, GRIB2 python, numerical weather prediction, HRRR download, GFS data, meteorological data, weather forecast API, xarray weather, atmospheric data
 
+.. .. toctree::
+..    :maxdepth: 1
+..
+..    /user_guide/index
+..    /gallery/index
+..    /grib_reference/index
+..    /api_reference/index
+
+.. TODO: I'd like to have the cards here instead of the toctree, but the toctree is needed to show the links in the top banner.
+.. .. card:: User Guide
+..     :link: https://herbie.readthedocs.io/user_guide/index.html
+
+..     Information you need to know to use Herbie.
+
+.. .. card:: Reference Guide
+..     :link: https://herbie.readthedocs.io/reference_guide/index.html
+
+..     API reference for Herbie's classes and functions.
+
+
+.. grid:: 2
+    :gutter: 3
+
+    .. grid-item-card:: 📘 User Guide
+        :link: user_guide/index
+        :link-type: doc
+
+        Learn how to use Herbie with tutorials and examples
+
+    .. grid-item-card:: 🖼️ Model Gallery
+        :link: gallery/index
+        :link-type: doc
+
+        Browse examples for each supported weather model
+
+    .. grid-item-card:: 🔧 API Reference
+        :link: api_reference/index
+        :link-type: doc
+
+        Complete reference for all classes and functions
+
+    .. grid-item-card:: 💬 Community Support
+        :link: https://github.com/blaylockbk/Herbie/discussions
+
+        Ask questions and share ideas on GitHub Discussions
+
 ----
 
 Supported Weather Models
@@ -60,25 +106,6 @@ Herbie provides access to a wide range of numerical weather prediction models:
 
 .. tip::
    Much of this data is made available through the `NOAA Open Data Dissemination <https://www.noaa.gov/information-technology/open-data-dissemination>`_ (NODD) program, making weather data more accessible than ever before.
-
-.. toctree::
-   :maxdepth: 1
-
-   /user_guide/index
-   /gallery/index
-   /grib_reference/index
-   /api_reference/index
-
-.. TODO: I'd like to have the cards here instead of the toctree, but the toctree is needed to show the links in the top banner.
-.. .. card:: User Guide
-..     :link: https://herbie.readthedocs.io/user_guide/index.html
-
-..     Information you need to know to use Herbie.
-
-.. .. card:: Reference Guide
-..     :link: https://herbie.readthedocs.io/reference_guide/index.html
-
-..     API reference for Herbie's classes and functions.
 
 
 
@@ -140,6 +167,7 @@ Herbie streamlines the entire workflow of accessing weather model data:
    :align: center
 
 **Features:**
+
 - 🔍 Search model output from different data sources
 - ⬇️ Download full or subset GRIB2 files
 - 📖 Read data with xarray and index files with Panda (see :ref:`🗃️ Xarray Accessors`)
@@ -207,36 +235,6 @@ Use Herbie directly from your terminal:
    herbie data -m hrrr -d 2023-03-15 -f 0 -p google
 
 More details in the :ref:`User Guide`.
-
-
-Getting Help
-------------
-
-.. grid:: 2
-    :gutter: 3
-
-    .. grid-item-card:: 📘 User Guide
-        :link: user_guide/index
-        :link-type: doc
-
-        Learn how to use Herbie with tutorials and examples
-
-    .. grid-item-card:: 🖼️ Model Gallery
-        :link: gallery/index
-        :link-type: doc
-
-        Browse examples for each supported weather model
-
-    .. grid-item-card:: 🔧 API Reference
-        :link: api_reference/index
-        :link-type: doc
-
-        Complete reference for all classes and functions
-
-    .. grid-item-card:: 💬 Community Support
-        :link: https://github.com/blaylockbk/Herbie/discussions
-
-        Ask questions and share ideas on GitHub Discussions
 
 ----
 
