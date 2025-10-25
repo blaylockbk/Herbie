@@ -19,14 +19,7 @@ Herbie: Download Weather Forecast Model Data in Python
 
 **Herbie** is a Python package that makes downloading and working with numerical weather prediction (NWP) model data simple and fast. Whether you're a researcher, meteorologist, data scientist, or weather enthusiast, Herbie provides easy access to forecast data from NOAA, ECMWF, and other sources.
 
-**Key Features:**
 
-- 🌐 **Access 15+ weather models** including HRRR, GFS, RAP, GEFS, ECMWF, and more
-- ⚡ **Smart downloads** - Get full GRIB2 files or subset by variable to save time and bandwidth
-- 📊 **Built-in data reading** - Load data directly into xarray for analysis
-- 🗺️ **Visualization aids** - Includes Cartopy integration for mapping
-- 🔄 **Multiple data sources** - Automatically search multiple archive sources (AWS, Google Cloud, NOMADS, Azure)
-- 🛠️ **CLI and Python API** - Use from command line or in your Python scripts
 
 .. toctree::
    :maxdepth: 1
@@ -62,6 +55,15 @@ Herbie: Download Weather Forecast Model Data in Python
         :link: https://github.com/blaylockbk/Herbie/discussions
 
         Ask questions and share ideas on GitHub Discussions
+
+**Key Features:**
+
+- 🌐 **Access 15+ weather models** including HRRR, GFS, RAP, GEFS, ECMWF, and more
+- ⚡ **Smart downloads** - Get full GRIB2 files or subset by variable to save time and bandwidth
+- 📊 **Built-in data reading** - Load data directly into xarray for analysis
+- 🗺️ **Visualization aids** - Includes Cartopy integration for mapping
+- 🔄 **Multiple data sources** - Automatically search multiple archive sources (AWS, Google Cloud, NOMADS, Azure)
+- 🛠️ **CLI and Python API** - Use from command line or in your Python scripts
 
 ----
 
