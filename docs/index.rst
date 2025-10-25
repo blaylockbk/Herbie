@@ -19,6 +19,13 @@ Herbie: Download Weather Forecast Model Data in Python
 
 **Herbie** is a Python package that makes downloading and working with numerical weather prediction (NWP) model data simple and fast. Whether you're a researcher, meteorologist, data scientist, or weather enthusiast, Herbie provides easy access to forecast data from NOAA, ECMWF, and other sources.
 
+.. code-block:: python
+
+   from herbie import Herbie
+
+   # Download HRRR 2-meter temperature
+   H = Herbie('2021-01-01 12:00', model='hrrr')
+   ds = H.xarray("TMP:2 m")
 
 
 .. toctree::
