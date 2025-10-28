@@ -25,9 +25,8 @@ inside and will get you to the finish line. Happy racing! 🏁
 """
 
 import os
+import tomllib
 from pathlib import Path
-
-import toml
 
 from herbie.misc import ANSI
 
@@ -148,7 +147,8 @@ class model1_name:
 # Load config file (create one if needed)
 try:
     # Load the Herbie config file
-    config = toml.load(_config_file)
+    with open(_config_file, "rb") as f:
+        config = tomllib.load(f)
 except Exception:
     try:
         # Create the Herbie config file
@@ -175,7 +175,8 @@ except Exception:
         )
 
         # Load the new Herbie config file
-        config = toml.load(_config_file)
+        with open(_config_file, "rb") as f:
+            config = tomllib.load(f)
     except (FileNotFoundError, PermissionError, IOError):
         print(
             f" ╭─{ANSI.herbie}─────────────────────────────────────────────╮\n"
@@ -185,7 +186,7 @@ except Exception:
             f" │ Consider setting env variable HERBIE_CONFIG_PATH.    │\n"
             f" ╰──────────────────────────────────────────────────────╯\n"
         )
-        config = toml.loads(default_toml)
+        config = tomllib.loads(default_toml.encode())
 
 
 # Expand the full path for `save_dir`
@@ -201,9 +202,9 @@ if os.getenv("HERBIE_SAVE_DIR"):
         f" ╰──────────────────────────────────────────────────────╯\n"
     )
 
+from herbie.accessors import HerbieAccessor
 from herbie.core import Herbie
-from herbie.show_versions import show_versions
 from herbie.fast import FastHerbie
 from herbie.latest import HerbieLatest, HerbieWait
+from herbie.show_versions import show_versions
 from herbie.wgrib2 import wgrib2
-from herbie.accessors import HerbieAccessor
