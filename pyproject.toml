@@ -36,7 +36,6 @@ dependencies = [
     "pandas>=2.1",
     "pyproj>=3.7.0",
     "requests>=2.23.3",
-    "toml>=0.10.2",     # TODO: Drop in favor of tomllib when Python >=3.11 is required.
     "xarray>=2025.1.1",
 ]
 dynamic = ["version"]
