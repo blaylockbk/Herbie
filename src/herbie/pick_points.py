@@ -4,6 +4,8 @@ This module provides functionality to extract values at specific lat/lon points
 from gridded datasets using nearest neighbor or distance-weighted interpolation.
 """
 
+from __future__ import annotations
+
 import pickle
 from pathlib import Path
 from typing import Literal
