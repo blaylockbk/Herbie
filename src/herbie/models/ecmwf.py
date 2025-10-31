@@ -69,6 +69,7 @@ class ifs:
             "azure-waef": f"https://ai4edataeuwest.blob.core.windows.net/ecmwf/{post_root.replace('wave', 'waef')}",
             "aws": f"https://ecmwf-forecasts.s3.eu-central-1.amazonaws.com/{post_root}",
             "ecmwf": f"https://data.ecmwf.int/forecasts/{post_root}",
+            "google": f"https://storage.googleapis.com/ecmwf-open-data/{post_root}",
         }
         self.IDX_SUFFIX = [".index"]
         self.IDX_STYLE = "eccodes"  # 'wgrib2' or 'eccodes'
@@ -138,6 +139,7 @@ class aifs:
             "aws": f"https://ecmwf-forecasts.s3.eu-central-1.amazonaws.com/{post_root}",
             "ecmwf": f"https://data.ecmwf.int/forecasts/{post_root}",
             "azure": f"https://ai4edataeuwest.blob.core.windows.net/ecmwf/{post_root}",
+            "google": f"https://storage.googleapis.com/ecmwf-open-data/{post_root}",
         }
         self.IDX_SUFFIX = [".index"]
         self.IDX_STYLE = "eccodes"  # 'wgrib2' or 'eccodes'
