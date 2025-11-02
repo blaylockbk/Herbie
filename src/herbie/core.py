@@ -474,8 +474,12 @@ class Herbie:
             # Get the file URL for the source and determine if the
             # GRIB2 file and the index file exist. If found, store the
             # URL for the GRIB2 file and the .idx file.
-            grib_url = self.SOURCES[source]
-
+            if "azure" in source:
+                download_url = "https://planetarycomputer.microsoft.com/api/sas/v1/sign?href=" + self.SOURCES[source]
+                response = requests.get(download_url)
+                grib_url = response.json()["href"]
+            else:
+                grib_url = self.SOURCES[source]
             if source.startswith("local"):
                 grib_path = Path(grib_url)
                 if grib_path.exists():
@@ -536,7 +540,12 @@ class Herbie:
             # Get the file URL for the source and determine if the
             # GRIB2 file and the index file exist. If found, store the
             # URL for the GRIB2 file and the .idx file.
-            grib_url = self.SOURCES[source]
+            if "azure" in source:
+                download_url = "https://planetarycomputer.microsoft.com/api/sas/v1/sign?href=" + self.SOURCES[source]
+                response = requests.get(download_url)
+                grib_url = response.json()["href"]
+            else:
+                grib_url = self.SOURCES[source]
 
             if source.startswith("local"):
                 local_grib = Path(grib_url)
