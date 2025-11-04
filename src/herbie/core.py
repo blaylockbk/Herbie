@@ -32,6 +32,15 @@ import herbie.models as model_templates
 from herbie import Path, config
 from herbie.crs import get_cf_crs
 from herbie.help import _search_help
+from herbie.inventory_utils import (
+    add_inventory_attributes,
+    create_inventory_from_wgrib2,
+    filter_inventory,
+    parse_eccodes_index,
+    parse_wgrib2_index,
+    read_index_file,
+    save_index_file,
+)
 from herbie.misc import ANSI
 
 Datetime = Union[datetime, pd.Timestamp, str]
@@ -172,9 +181,9 @@ class Herbie:
 
     def __init__(
         self,
-        date: Optional[Datetime] = None,
+        date: Datetime | None = None,
         *,
-        valid_date: Optional[Datetime] = None,
+        valid_date: Datetime | None = None,
         model: str = config["default"].get("model"),
         fxx: int = config["default"].get("fxx"),
         product: str = config["default"].get("product"),
@@ -402,7 +411,7 @@ class Herbie:
         else:
             return False
 
-    def _check_idx(self, url: str, verbose: bool = False) -> tuple[bool, Optional[str]]:
+    def _check_idx(self, url: str, verbose: bool = False) -> tuple[bool, str | None]:
         """Check if an index file exist for the GRIB2 URL."""
         # To check inventory files with slightly different URL structure
         # we will loop through the IDX_SUFFIX.
@@ -441,7 +450,7 @@ class Herbie:
             )
         return False, None
 
-    def find_grib(self) -> tuple[Optional[Union[Path, str]], Optional[str]]:
+    def find_grib(self) -> tuple[Optional[Union[Path, str]], str | None]:
         """Find a GRIB file from the archive sources.
 
         Returns
@@ -552,7 +561,7 @@ class Herbie:
         return (None, None)
 
     @property
-    def get_remoteFileName(self, source: Optional[str] = None) -> str:
+    def get_remoteFileName(self, source: str | None = None) -> str:
         """Predict remote file name."""
         if source is None:
             if hasattr(self, "grib_source") and self.grib_source != "local":
@@ -569,19 +578,8 @@ class Herbie:
         """Predict the local file name."""
         return self.LOCALFILE
 
-    def get_localFilePath(
-        self, search: Optional[str] = None, *, searchString=None
-    ) -> Path:
+    def get_localFilePath(self, search: Optional[str] = None) -> Path:
         """Get full path to the local file."""
-        # TODO: Remove this check for searString eventually
-        if searchString is not None:
-            warnings.warn(
-                "The argument `searchString` was renamed `search`. Please update your scripts.",
-                DeprecationWarning,
-                stacklevel=2,
-            )
-            search = searchString
-
         # Predict the localFileName from the first model template SOURCE.
         localFilePath = (
             self.save_dir / self.model / f"{self.date:%Y%m%d}" / self.get_localFileName
@@ -660,6 +658,7 @@ class Herbie:
     @functools.cached_property
     def index_as_dataframe(self) -> pd.DataFrame:
         """Read and cache the full index file."""
+        # Handle missing index file - generate it if possible
         if self.idx_source is None and self.grib_source == "local" and wgrib2:
             # Generate IDX inventory with wgrib2
             self.idx = StringIO(wgrib2_idx(self.get_localFilePath()))
@@ -678,201 +677,52 @@ class Herbie:
                     f"You will need to remake the Herbie object (H = `Herbie()`)\n"
                     f"or delete this cached property: `del H.index_as_dataframe()`"
                 )
+
         if self.idx is None:
             raise ValueError(f"No index file found for {self.grib}.")
 
+        # Read the index file content using utility function
+        content = read_index_file(
+            self.idx,
+            self.idx_source,
+            self.IDX_STYLE,
+            verbose=self.verbose,
+        )
+
+        # Save the index file locally if it came from remote
+        if self.idx_source not in ["local", "generated"]:
+            index_filepath = self.get_localIndexFilePath()
+            save_index_file(content, index_filepath)
+
+        # Parse based on style using utility functions
         if self.IDX_STYLE == "wgrib2":
-            # Sometimes idx lines end in ':', other times it doesn't (in some Pando files).
-            # https://pando-rgw01.chpc.utah.edu/hrrr/sfc/20180101/hrrr.t00z.wrfsfcf00.grib2.idx
-            # https://noaa-hrrr-bdp-pds.s3.amazonaws.com/hrrr.20210101/conus/hrrr.t00z.wrfsfcf00.grib2.idx
-            # Sometimes idx has more than the standard messages
-            # https://noaa-nbm-grib2-pds.s3.amazonaws.com/blend.20210711/13/core/blend.t13z.core.f001.co.grib2.idx
-            if self.idx_source in ["local", "generated"]:
-                read_this_idx = self.idx
-            else:
-                read_this_idx = None
-                if self.verbose:
-                    print(f"Downloading inventory file from {self.idx=}")
-                response = requests.get(self.idx)
-                if response.status_code != 200:
-                    response.raise_for_status()
-                    response.close()
-                    raise ValueError(
-                        f"\nCant open index file {self.idx}\n"
-                        f"Download the full file first (with `H.download()`).\n"
-                        f"You will need to remake the Herbie object (H = `Herbie()`)\n"
-                        f"or delete this cached property: `del H.index_as_dataframe()`"
-                    )
+            df = parse_wgrib2_index(content, self.fxx)
+        elif self.IDX_STYLE == "eccodes":
+            df = parse_eccodes_index(content)
+        else:
+            raise ValueError(f"Unknown IDX_STYLE: {self.IDX_STYLE}")
 
-                read_this_idx = StringIO(response.text)
-                response.close()
-
-                index_filepath = self.get_localIndexFilePath()
-                os.makedirs(os.path.dirname(index_filepath), exist_ok=True)
-
-                with open(index_filepath, "w") as file:
-                    file.write(read_this_idx.read())
-                    # reset the cursor to the beggining of the StringIO
-                    read_this_idx.seek(0)
-
-            df = pd.read_csv(
-                read_this_idx,
-                sep=":",
-                names=[
-                    "grib_message",
-                    "start_byte",
-                    "reference_time",
-                    "variable",
-                    "level",
-                    "forecast_time",
-                    "?",
-                    "??",
-                    "???",
-                ],
-            )
-
-            # Format the DataFrame
-            df["reference_time"] = pd.to_datetime(
-                df.reference_time, format="d=%Y%m%d%H"
-            )
-            df["valid_time"] = df["reference_time"] + pd.to_timedelta(f"{self.fxx}h")
-            df["start_byte"] = df["start_byte"].astype(int)
-            df["end_byte"] = df["start_byte"].shift(-1) - 1
-            df["range"] = df.apply(
-                lambda x: f"{x.start_byte:.0f}-{x.end_byte:.0f}".replace("nan", ""),
-                axis=1,
-            )
-            df = df.reindex(
-                columns=[
-                    "grib_message",
-                    "start_byte",
-                    "end_byte",
-                    "range",
-                    "reference_time",
-                    "valid_time",
-                    "variable",
-                    "level",
-                    "forecast_time",
-                    "?",
-                    "??",
-                    "???",
-                ]
-            )
-
-            df = df.dropna(how="all", axis=1)
-
-            df["search_this"] = (
-                df.loc[:, "variable":]
-                .astype(str)
-                .apply(
-                    lambda x: ":" + ":".join(x).rstrip(":").replace(":nan:", ":"),
-                    axis=1,
-                )
-            )
-
-        if self.IDX_STYLE == "eccodes":
-            # eccodes keywords explained here:
-            # https://confluence.ecmwf.int/display/UDOC/Identification+keywords
-
-            if self.idx_source in ["local"]:
-                with open(self.idx, "r") as file:
-                    read_this_idx = StringIO(file.read())
-            else:
-                if self.verbose:
-                    print(f"Downloading inventory file from {self.idx=}")
-                response = requests.get(self.idx)
-                if response.status_code != 200:
-                    response.raise_for_status()
-                    response.close()
-                    raise ValueError(
-                        f"\nCant open index file {self.idx}\n"
-                        f"Download the full file first (with `H.download()`).\n"
-                        f"You will need to remake the Herbie object (H = `Herbie()`)\n"
-                        f"or delete this cached property: `del H.index_as_dataframe()`"
-                    )
-
-                read_this_idx = StringIO(response.text)
-                response.close()
-
-                index_filepath = self.get_localIndexFilePath()
-                os.makedirs(os.path.dirname(index_filepath), exist_ok=True)
-
-                with open(index_filepath, "w") as file:
-                    file.write(read_this_idx.read())
-                    # reset the cursor to the beggining of the StringIO
-                    read_this_idx.seek(0)
-
-            idxs = [json.loads(x) for x in read_this_idx.getvalue().split("\n") if x]
-            df = pd.DataFrame(idxs)
-
-            # Format the DataFrame
-            df.index = df.index.rename("grib_message")
-            df.index += 1
-            df = df.reset_index()
-            df["start_byte"] = df["_offset"]
-            df["end_byte"] = df["_offset"] + df["_length"]
-            df["range"] = df.start_byte.astype(str) + "-" + df.end_byte.astype(str)
-            df["reference_time"] = pd.to_datetime(
-                df.date + df.time, format="%Y%m%d%H%M"
-            )
-            df["step"] = pd.to_timedelta(df.step.astype(int), unit="h")
-            df["valid_time"] = df.reference_time + df.step
-
-            df = df.reindex(
-                columns=[
-                    "grib_message",
-                    "start_byte",
-                    "end_byte",
-                    "range",
-                    "reference_time",
-                    "valid_time",
-                    "step",
-                    # ---- Used for search ------------------------------
-                    "param",  # parameter field (variable)
-                    "levelist",  # level
-                    "levtype",  # sfc=surface, pl=pressure level, pt=potential vorticity
-                    "number",  # model number (used in ensemble products)
-                    "domain",  # g=global
-                    "expver",  # experiment version
-                    "class",  # classification (od=routing operations, rd=research, )
-                    "type",  # fc=forecast, an=analysis,
-                    "stream",  # oper=operationa, wave=wave, ef/enfo=ensemble,
-                ]
-            )
-
-            df["search_this"] = (
-                df.loc[:, "param":]
-                .astype(str)
-                .apply(
-                    lambda x: ":" + ":".join(x).rstrip(":").replace(":nan:", ":"),
-                    axis=1,
-                )
-            )
-
-        # Attach some attributes
-        df.attrs = dict(
-            url=self.idx,
-            source=self.idx_source,
-            description="Inventory index file for the GRIB2 file.",
+        # Add metadata attributes using utility function
+        df = add_inventory_attributes(
+            df,
+            idx=self.idx,
+            idx_source=self.idx_source,
             model=self.model,
             product=self.product,
-            lead_time=self.fxx,
-            datetime=self.date,
+            fxx=self.fxx,
+            date=self.date,
         )
 
         return df
 
     def inventory(
         self,
-        search: Optional[str] = None,
+        search: str | None = None,
         *,
-        searchString=None,
-        verbose: Optional[bool] = None,
+        verbose: bool | None = None,
     ) -> pd.DataFrame:
         """
         Inspect the GRIB2 file contents by reading the index file.
-
-        This reads index files created with the wgrib2 utility.
 
         Parameters
         ----------
@@ -893,39 +743,25 @@ class Herbie:
         Returns
         -------
         A Pandas DataFrame of the index file.
-
         """
-        df = self.index_as_dataframe
-
-        # TODO: Remove this eventually
-        if searchString is not None:
-            warnings.warn(
-                "The argument `searchString` was renamed `search`. Please update your scripts.",
-                DeprecationWarning,
-                stacklevel=2,
-            )
-            search = searchString
-
-        # This overrides the verbose specified in __init__
         if verbose is not None:
             self.verbose = verbose
 
-        # Filter DataFrame by regex search
-        if search not in [None, ":"]:
-            logic = df.search_this.str.contains(search)
-            if (logic.sum() == 0) and verbose:
-                print(
-                    f"No GRIB messages found. There might be something wrong with {search=}"
-                )
-                print(_search_help(kind=self.IDX_STYLE))
-            df = df.loc[logic]
+        df = self.index_as_dataframe
+
+        df = filter_inventory(
+            df,
+            search=search,
+            verbose=self.verbose,
+            idx_style=self.IDX_STYLE,
+        )
+
         return df
 
     def download(
         self,
         search: Optional[str] = None,
         *,
-        searchString=None,
         source: Optional[str] = None,
         save_dir: Optional[Union[str, Path]] = None,
         overwrite: Optional[bool] = None,
@@ -1061,15 +897,6 @@ class Herbie:
             if verbose:
                 print(f"💾 Saved the subset to {outFile}")
 
-        # TODO: Remove this eventually
-        if searchString is not None:
-            warnings.warn(
-                "The argument `searchString` was renamed `search`. Please update your scripts.",
-                DeprecationWarning,
-                stacklevel=2,
-            )
-            search = searchString
-
         # This overrides the save_dir specified in __init__
         if save_dir is not None:
             self.save_dir = Path(save_dir).expand()
@@ -1168,7 +995,6 @@ class Herbie:
         self,
         search: Optional[str] = None,
         *,
-        searchString=None,
         backend_kwargs: dict = {},
         remove_grib: bool = True,
         _use_pygrib_for_crs: bool = False,
@@ -1189,15 +1015,6 @@ class Herbie:
             information instead of using values extracted from cfgrib
             by Herbie.
         """
-        # TODO: Remove this eventually
-        if searchString is not None:
-            warnings.warn(
-                "The argument `searchString` was renamed `search`. Please update your scripts.",
-                DeprecationWarning,
-                stacklevel=2,
-            )
-            search = searchString
-
         download_kwargs = {**dict(overwrite=False), **download_kwargs}
 
         local_file = self.get_localFilePath(search)

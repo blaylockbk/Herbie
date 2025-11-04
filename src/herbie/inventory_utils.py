@@ -9,7 +9,7 @@ import json
 import warnings
 from io import StringIO
 from pathlib import Path
-from typing import Literal, Optional, Union
+from typing import Literal
 
 import pandas as pd
 import requests
@@ -44,24 +44,24 @@ def read_index_file(
         if isinstance(idx, StringIO):
             return idx.read()
         else:
-            with open(idx, "r") as file:
-                return file.read()
+            return Path(idx).read_text()
     else:
         if verbose:
             print(f"Downloading inventory file from {idx=}")
-        response = requests.get(idx)
-        if response.status_code != 200:
+        try:
+            response = requests.get(idx)
             response.raise_for_status()
-            response.close()
+        except Exception as e:
             raise ValueError(
                 f"\nCant open index file {idx}\n"
                 f"Download the full file first (with `H.download()`).\n"
                 f"You will need to remake the Herbie object (H = `Herbie()`)\n"
                 f"or delete this cached property: `del H.index_as_dataframe()`"
-            )
-        content = response.text
-        response.close()
-        return content
+            ) from e
+        else:
+            content = response.text
+            response.close()
+            return content
 
 
 def save_index_file(
@@ -78,11 +78,9 @@ def save_index_file(
     index_filepath : Path
         The path where the index file should be saved
     """
-    import os
-
-    os.makedirs(os.path.dirname(index_filepath), exist_ok=True)
-    with open(index_filepath, "w") as file:
-        file.write(content)
+    index_filepath = Path(index_filepath)
+    index_filepath.parent.mkdir(parents=True, exist_ok=True)
+    index_filepath.write_text(content)
 
 
 def parse_wgrib2_index(
@@ -226,7 +224,7 @@ def parse_eccodes_index(
 
 def filter_inventory(
     df: pd.DataFrame,
-    search: Optional[str] = None,
+    search: str | None = None,
     verbose: bool = False,
     idx_style: Literal["wgrib2", "eccodes"] = "wgrib2",
 ) -> pd.DataFrame:
@@ -266,7 +264,7 @@ def filter_inventory(
 
 def add_inventory_attributes(
     df: pd.DataFrame,
-    idx: Union[str, Path],
+    idx: str | Path,
     idx_source: str,
     model: str,
     product: str,
