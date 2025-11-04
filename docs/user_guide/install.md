@@ -65,5 +65,5 @@ uv add herbie-data
 Herbie CLI tools can be installed with
 
 ```bash
-uv install herbie-data
+uv tool install herbie-data
 ```
