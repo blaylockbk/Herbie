@@ -1,9 +1,4 @@
-"""
-Tests for inventory_utils module.
-
-Run with:
-    pytest tests/test_inventory_utils.py -v
-"""
+"""Tests for inventory_utils module."""
 
 import json
 from io import StringIO
