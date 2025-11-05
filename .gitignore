@@ -8,6 +8,7 @@ wheels/
 
 # Virtual environments
 .venv
+venv
 
 .ipynb_checkpoints
 *$py.class

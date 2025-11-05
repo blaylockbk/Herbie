@@ -144,7 +144,7 @@ Installation
 
 **Requirements:**
 
-- Python 3.10 or higher
+- Python 3.11 or higher
 - xarray and cfgrib for reading GRIB2 data
 - wgrib2 (optional, for advanced subsetting)
 

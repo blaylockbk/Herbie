@@ -1,6 +1,5 @@
 import os
-
-import toml
+import tomllib
 
 from herbie import Path, default_toml
 
@@ -23,7 +22,7 @@ def test_Path_expand():
 
 def test_default_toml():
     # Confirm that default_toml is valid
-    a = toml.loads(default_toml)
+    a = tomllib.loads(default_toml.encode())
 
     a["default"]["model"] == "hrrr"
     a["default"]["fxx"] == 0
