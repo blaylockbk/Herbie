@@ -421,6 +421,10 @@ class Herbie:
                 idx_url = url + i
 
             try:
+                if "blob.core.windows.net" in idx_url:
+                    dl_url = "https://planetarycomputer.microsoft.com/api/sas/v1/sign?href=" + idx_url
+                    response = requests.get(dl_url)
+                    idx_url = response.json()["href"]
                 idx_exists = requests.head(idx_url).ok
             except Exception as e:
                 if verbose:
@@ -553,7 +557,7 @@ class Herbie:
                 if local_idx.exists():
                     return (local_idx, "local")
             else:
-                idx_exists, idx_url = self._check_idx(grib_url)
+                idx_exists, idx_url = self._check_idx(self.SOURCES[source])
 
                 if idx_exists:
                     return (idx_url, source)
