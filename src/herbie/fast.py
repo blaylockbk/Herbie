@@ -10,8 +10,9 @@ Herbie Tools
 import logging
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime
-from typing import Union, Optional
+from typing import Any, Union, Optional
 from pathlib import Path
+import traceback
 
 import pandas as pd
 import xarray as xr
@@ -149,6 +150,11 @@ class FastHerbie:
                     self.objects.append(future.result())
                 else:
                     log.error(f"Exception has occured : {future.exception()}")
+                    try:
+                        future.result()
+                    except Exception as e:
+                        log.error(f"Exception details : {e}")
+                        log.error(traceback.format_exc())
 
         log.info(f"Number of Herbie objects: {len(self.objects)}")
 
@@ -249,7 +255,7 @@ class FastHerbie:
         *,
         max_threads: Optional[int] = None,
         **xarray_kwargs,
-    ) -> xr.Dataset:
+    ) -> Union[xr.Dataset, list[xr.Dataset]]:
         """Read many Herbie objects into an xarray Dataset.
 
         # TODO: Sometimes the Jupyter Cell always crashes when I run this.
@@ -298,31 +304,39 @@ class FastHerbie:
         hypercubes = {}
         for ds in ds_list:
             if isinstance(ds, list):
-                log.debug(f"Multiple hypercubes found")
+                log.debug("Multiple hypercubes found")
                 for ds_hypercube in ds:
                     # any data var in the list can be used to determine the type of level
                     # b/c xarray returns individual hypercubes as datasets with data_vars attached
                     # to one and only one type of level.
                     data_var = list(ds_hypercube.data_vars)[0]
-                    hypercube = ds_hypercube[data_var].attrs.get('GRIB_typeOfLevel')
+                    hypercube = ds_hypercube[data_var].attrs.get("GRIB_typeOfLevel")
                     hypercube_level_value = ds_hypercube[hypercube].values.tolist()
                     if hypercube + "_" + str(hypercube_level_value) not in hypercubes:
                         hypercubes[hypercube + "_" + str(hypercube_level_value)] = []
-                    hypercubes[hypercube + "_" + str(hypercube_level_value)].append(ds_hypercube)
+                    hypercubes[hypercube + "_" + str(hypercube_level_value)].append(
+                        ds_hypercube
+                    )
             elif isinstance(ds, xr.Dataset):
-                log.debug(f"Single hypercube found")
+                log.debug("Single hypercube found")
                 data_var = list(ds.data_vars)[0]
-                hypercube = ds[data_var].attrs.get('GRIB_typeOfLevel')
+                hypercube = ds[data_var].attrs.get("GRIB_typeOfLevel")
                 hypercube_level_value = ds[hypercube].values.tolist()
                 if hypercube + "_" + str(hypercube_level_value) not in hypercubes:
                     hypercubes[hypercube + "_" + str(hypercube_level_value)] = []
                 hypercubes[hypercube + "_" + str(hypercube_level_value)].append(ds)
             else:
-                raise NotImplementedError(f"Unknown object type encountered while reading GRIB files with xarray: {ds}")
+                raise NotImplementedError(
+                    f"Unknown object type encountered while reading GRIB files with xarray: {ds}"
+                )
         for type_of_level, hypercube_ds_list in hypercubes.items():
             # Sort the DataSets, first by lead time (step), then by run time (time)
-            hypercube_ds_list.sort(key=lambda x: x.step.data.max() if hasattr(x.step, 'data') else 0)
-            hypercube_ds_list.sort(key=lambda x: x.time.data.max() if hasattr(x.time, 'data') else 0)
+            hypercube_ds_list.sort(
+                key=lambda x: x.step.data.max() if hasattr(x.step, "data") else 0
+            )
+            hypercube_ds_list.sort(
+                key=lambda x: x.time.data.max() if hasattr(x.time, "data") else 0
+            )
             # Reshape list with dimensions (len(DATES), len(fxx))
             hypercube_ds_list = [
                 hypercube_ds_list[x : x + len(self.fxx)]
@@ -330,7 +344,11 @@ class FastHerbie:
             ]
             # Concat DataSets
             try:
-                ds = xr.combine_nested(hypercube_ds_list,concat_dim=["time", "step"],combine_attrs="drop_conflicts",)
+                ds = xr.combine_nested(
+                    hypercube_ds_list,
+                    concat_dim=["time", "step"],
+                    combine_attrs="drop_conflicts",
+                )
             except Exception:
                 # TODO: I'm not sure why some cases doesn't like the combine_attrs argument
                 ds = xr.combine_nested(
@@ -339,4 +357,8 @@ class FastHerbie:
                 )
             ds = ds.squeeze()
             hypercubes[type_of_level] = ds
-        return list(hypercubes.values())
+        return (
+            list(hypercubes.values())
+            if len(hypercubes) > 1
+            else list(hypercubes.values())[0]
+        )
