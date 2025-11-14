@@ -9,6 +9,7 @@ User Guide
    install
    configure
    start-your-engines.ipynb
+   cli
 
 .. toctree::
    :caption: Background Knowledge

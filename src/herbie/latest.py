@@ -29,26 +29,63 @@ def HerbieLatest(
         but I also know AWS gets the data pretty quick. So, check AWS
         first, then check NOMADS (because if you make too many downloads
         from NOMADS your IP address will get blocked.)
+    periods : int
+        The number of periods (initialization datetimes) to search through.
     **kwargs
         Any other input you want passed to the Herbie class.
     """
     if model.lower() in ["hrrr", "rap", "rrfs"]:
         freq = "1h"
+    elif model.lower() in ["rtma_ru"]:
+        freq = "15min"
     else:
         freq = "6h"
 
-    # Create a list of recent dates to try
-    dates = pd.date_range(
-        pd.Timestamp.utcnow().floor(freq).tz_localize(None),
-        periods=4,
-        freq=f"-{freq}",
-    )
+    if 'valid_date' in kwargs:
+        valid_date = pd.to_datetime(kwargs.get('valid_date'))
 
-    # Find first existing Herbie object
-    for date in dates:
-        H = Herbie(date=date, model=model, priority=priority, **kwargs)
-        if H.grib:
-            return H
+        # Create a list of recent dates to try
+        dates = pd.date_range(
+                pd.Timestamp.utcnow().floor(freq).tz_localize(None),
+                periods=periods,
+                freq=f"-{freq}",
+            )
+
+        # Create a corresponding list of fxx values that give the correct
+        # valid_date
+        fxxs = [int((valid_date - date).total_seconds() / 3600.0)
+                for date in dates]
+
+        # series of dates/fxxs
+        dates_fxxs = pd.Series(data=fxxs, index=dates)
+
+        # Find first existing Herbie object with correct date/fxx combination
+        for date, fxx in dates_fxxs.items():
+            H = Herbie(date=date,
+                       model=model,
+                       priority=priority,
+                       fxx=fxx,
+                       **kwargs)
+            if H.grib:
+                return H
+
+    else:
+        # Create a list of recent dates to try
+        dates = pd.date_range(
+            pd.Timestamp.utcnow().floor(freq).tz_localize(None),
+            periods=periods,
+            freq=f"-{freq}",
+        )
+        print(dates)
+
+        # Find first existing Herbie object
+        for date in dates:
+            H = Herbie(date=date,
+                       model=model,
+                       priority=priority,
+                       **kwargs)
+            if H.grib:
+                return H
 
     raise TimeoutError(f"Herbie did not find data for the latest time: {H}")
 

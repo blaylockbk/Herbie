@@ -1,14 +1,27 @@
 # 👷🏻‍♂️ Extending Herbie
 
-Herbie can be extended to download additional types of model data from the internet. **_Pull requests are welcome._** The requirements are:
+A _model template_ in Herbie is a Python class that defines where Herbie looks for weather model datasets. Herbie comes with many [model templates](https://github.com/blaylockbk/Herbie/tree/main/src/herbie/models). When you import Herbie, it loads its model templates, and then Herbie looks for any templates from installed plugins.
+
+Herbie can be extended to download additional types of model data from the internet. The requirements are:
 
 - The NWP model data must exist on an http server.
 - File names must be predictable (i.e., consistent naming with date, model name, forecast lead time, product, etc.)
-- Subetting of a GRIB2 file requires an ASCII index or inventory file (preferablly the wgrib2 style index file).
+- Subetting of a GRIB2 file requires an ASCII index or inventory file (preferably the wgrib2 style index file).
+
+Pull requests are welcome to update extinsting templates or create new templates.
+
+You can also create your own plugin with custom model templates. You might need your own model template when:
+
+- You have local GRIB2 files (e.g., WRF/MPAS output) you'd like to access with Herbie.
+- You have access to GRIB2 data on a private network.
+- You want to override behavior of an existing model temple.
+- You want to iterate on a new model template before contributing upstream.
+
+**If creating a plugin is right for you, please follow the [Herbie Plugin Tutorial](https://github.com/blaylockbk/herbie-plugin-tutorial).**
 
 ## Parts of a Herbie Template Class
 
-For an example of what a template class looks like, look at the heavily commented [HRRR template (herbie/models/hrrr.py)](https://github.com/blaylockbk/Herbie/blob/main/herbie/models/hrrr.py).
+For an example of what a template class looks like, look at the heavily commented [HRRR template (herbie/models/hrrr.py)](https://github.com/blaylockbk/Herbie/blob/main/src/herbie/models/hrrr.py).
 
 The model class template function must include the properties
 
@@ -25,12 +38,11 @@ The following are optional
 
 After creating/editing a model template class, remember to include it in the `herbie/models/__init__.py` file.
 
+
 ## Types of Herbie Template Class
 
-There are two ways to add a custom template to Herbie:
+There are two types of custom template to Herbie:
 
 1. **Public Template**: Add a template to the Herbie source code and make a pull request to extend the functionality to Herbie. A model template class must be created and added to `herbie/models` and imported in the `herbie/models/__init__`. Then make a pull request to make your new template available to others 🙂.
 
-2. **Private Template**: To include a template private to yourself, you can add a custom template to the Herbie config directory. You would want to make a private class for locally stored model data or some special handling of public URLs. First, create/edit the file `~/.config/herbie/custom_template.py` and write a template Class. Second, create the empty file `~/.config/herbie/__init__.py`. Herbie will attempt to load these model templates.
-
-> **Special Case for local model data:** If you have model data stored locally, such as from a WRF simulation, and you have an index file accompanying each GRIB2 file, you can use Herbie to subset the data and open it with xarray. Follow the [local.py](https://github.com/blaylockbk/Herbie/blob/main/herbie/models/local.py) template to create a custom class using the Private template method described.
+1. **Plugin Templates**: These are Python packages that, when installed, Herbie loads its templates. Please follow [Herbie Plugin Tutorial](https://github.com/blaylockbk/herbie-plugin-tutorial) for an example.

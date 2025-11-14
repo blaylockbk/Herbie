@@ -5,8 +5,8 @@
         "streetsidesoftware.code-spell-checker",
         "ms-python.vscode-pylance",
         "ms-toolsai.jupyter",
-        "bungcip.better-toml",
         "bierner.markdown-mermaid",
-        "charliermarsh.ruff"
+        "charliermarsh.ruff",
+        "tamasfe.even-better-toml"
     ]
 }

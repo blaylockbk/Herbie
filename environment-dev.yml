@@ -4,7 +4,6 @@ name: herbie-dev
 channels:
   - conda-forge
 dependencies:
-  - curl
   - eccodes>=2.31
   - git
   - pip

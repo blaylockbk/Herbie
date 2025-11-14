@@ -17,8 +17,10 @@ import urllib.request
 import warnings
 from datetime import datetime, timedelta
 from io import StringIO
+from pathlib import Path
 from shutil import which
 from typing import Literal, Optional, Union
+from urllib.parse import urlparse
 
 import cfgrib
 import pandas as pd
@@ -43,34 +45,44 @@ log = logging.getLogger(__name__)
 # Location of wgrib2 command, if it exists. Required to make missing idx files.
 wgrib2 = which("wgrib2")
 
-# Location of curl command. Required to download data.
-curl = which("curl")
-if curl is None:
-    warnings.warn(
-        "Curl is not in system Path. Herbie won't be able to download GRIB files."
-    )
 
-
-def wgrib2_idx(grib2filepath: Union[Path, str]) -> str:
+def wgrib2_idx(grib2filepath: Path | str) -> str:
     """
     Produce the GRIB2 inventory index with wgrib2.
 
     Parameters
     ----------
-    grib2filepath : Path
+    grib2filepath : Path or str
         Path to a grib2 file.
+
+    Returns
+    -------
+    str
+        The inventory output from wgrib2.
+
+    Raises
+    ------
+    RuntimeError
+        If wgrib2 command is not found.
+    subprocess.CalledProcessError
+        If wgrib2 command fails.
     """
-    if wgrib2:
+    if not wgrib2:
+        raise RuntimeError("wgrib2 command was not found.")
+
+    try:
         p = subprocess.run(
-            f"{wgrib2} -s {grib2filepath}",
-            shell=True,
+            [wgrib2, "-s", str(grib2filepath)],
             capture_output=True,
             encoding="utf-8",
             check=True,
+            text=True,
         )
         return p.stdout
-    else:
-        raise RuntimeError("wgrib2 command was not found.")
+    except subprocess.CalledProcessError as e:
+        raise RuntimeError(
+            f"wgrib2 failed with return code {e.returncode}: {e.stderr}"
+        ) from e
 
 
 def create_index_files(path: Union[Path, str], overwrite: bool = False) -> None:
@@ -223,16 +235,6 @@ class Herbie:
         # (see https://stackoverflow.com/a/7936588/2383070 for what I'm doing here)
         getattr(model_templates, self.model).template(self)
 
-        if product is None:
-            # The user didn't specify a product, so let's use the first
-            # product in the model template.
-            self.product = list(self.PRODUCTS)[0]
-            log.info(f'`product` not specified. Will use "{self.product}".')
-            # We need to rerun this so the sources have the new product value.
-            getattr(model_templates, self.model).template(self)
-
-        self.product_description = self.PRODUCTS[self.product]
-
         # Specify the suffix for the inventory index files.
         # Default value is `.grib2.idx`, but some have weird suffix,
         # like archived RAP on NCEI are `.grb2.inv`.
@@ -246,8 +248,18 @@ class Herbie:
 
         self.search_help = _search_help(self.IDX_STYLE)
 
+        if product is None:
+            # The user didn't specify a product, so let's use the first
+            # product in the model template.
+            self.product = list(self.PRODUCTS)[0]
+            log.info(f'`product` not specified. Will use "{self.product}".')
+            # We need to rerun this so the sources have the new product value.
+            getattr(model_templates, self.model).template(self)
+
         # Check the user input
         self._validate()
+
+        self.product_description = self.PRODUCTS[self.product]
 
         # Ok, now we are ready to look for the GRIB2 file at each of the remote sources.
         # self.grib is the first existing GRIB2 file discovered.
@@ -398,6 +410,9 @@ class Herbie:
         if verbose:
             print(f"🐜 {self.IDX_SUFFIX=}")
 
+        # Initialize variable to avoid UnboundLocalError
+        idx_exists = False
+
         # Loop through IDX_SUFFIX options until we find one that exists
         for i in self.IDX_SUFFIX:
             if Path(url).suffix in {".grb", ".grib", ".grb2", ".grib2"}:
@@ -405,7 +420,18 @@ class Herbie:
             else:
                 idx_url = url + i
 
-            idx_exists = requests.head(idx_url).ok
+            try:
+                if "blob.core.windows.net" in idx_url:
+                    dl_url = "https://planetarycomputer.microsoft.com/api/sas/v1/sign?href=" + idx_url
+                    response = requests.get(dl_url)
+                    idx_url = response.json()["href"]
+                idx_exists = requests.head(idx_url).ok
+            except Exception as e:
+                if verbose:
+                    print(
+                        f"Unable to get index file from {idx_url} due to error {str(e)}"
+                    )
+
             if verbose:
                 print(f"🐜 {idx_url=}")
                 print(f"🐜 {idx_exists=}")
@@ -431,8 +457,6 @@ class Herbie:
         local_grib = self.get_localFilePath()
         if local_grib.exists() and not self.overwrite:
             return local_grib, "local"
-            # NOTE: We will still get the idx files from a remote
-            #       because they aren't stored locally, or are they?   # TODO: If the idx file is local, then use that
 
         # If priority list is set, we want to search SOURCES in that
         # priority order. If priority is None, then search all SOURCES
@@ -454,8 +478,12 @@ class Herbie:
             # Get the file URL for the source and determine if the
             # GRIB2 file and the index file exist. If found, store the
             # URL for the GRIB2 file and the .idx file.
-            grib_url = self.SOURCES[source]
-
+            if "azure" in source:
+                download_url = "https://planetarycomputer.microsoft.com/api/sas/v1/sign?href=" + self.SOURCES[source]
+                response = requests.get(download_url)
+                grib_url = response.json()["href"]
+            else:
+                grib_url = self.SOURCES[source]
             if source.startswith("local"):
                 grib_path = Path(grib_url)
                 if grib_path.exists():
@@ -467,6 +495,35 @@ class Herbie:
 
     def find_idx(self) -> tuple[Optional[Union[Path, str]], Optional[str]]:
         """Find an index file for the GRIB file."""
+
+        # But first, if overwrite is False, then check if the GRIB2 inventory file exists locally.
+        if not self.overwrite:
+            local_grib = self.get_localFilePath()
+            for suffix in self.IDX_SUFFIX:
+                # There is no easy way to know if the index suffix needs to be appended or overwrite the grib suffix.
+                # Hence there is a need to do various checks to verify if the index file exists locally or not.
+
+                # This is the case of GFS, where the grib file ends with ".grb2" and the index file is ".grb2.inv"
+                # The index suffix needs to overwrite the grib file suffix, now ending in ".grb2.inv"
+                if suffix.startswith(local_grib.suffix):
+                    local_idx = local_grib.with_suffix(suffix)
+
+                # This is the case of GFS, where the grib file ends with ".f000" and the index file is ".idx"
+                # The index suffix needs to be appended to the grib file suffix, now ending in ".f000.idx"
+                else:
+                    local_idx = local_grib.with_suffix(local_grib.suffix + suffix)
+
+                if local_idx.exists() and not self.overwrite:
+                    return (local_idx, "local")
+
+                # If the index file does not exists locally, we will need to try another variation of the index file name.
+                # This is the case of IFS, where the grib file ends with ".grib2" and the index file is ".index"
+                # The index suffix needs to overwrite the grib file suffix, now ending in ".index"
+                else:
+                    local_idx = local_grib.with_suffix(suffix)
+                    if local_idx.exists() and not self.overwrite:
+                        return (local_idx, "local")
+
         # If priority list is set, we want to search SOURCES in that
         # priority order. If priority is None, then search all SOURCES
         # in the order given by the model template file.
@@ -487,7 +544,12 @@ class Herbie:
             # Get the file URL for the source and determine if the
             # GRIB2 file and the index file exist. If found, store the
             # URL for the GRIB2 file and the .idx file.
-            grib_url = self.SOURCES[source]
+            if "azure" in source:
+                download_url = "https://planetarycomputer.microsoft.com/api/sas/v1/sign?href=" + self.SOURCES[source]
+                response = requests.get(download_url)
+                grib_url = response.json()["href"]
+            else:
+                grib_url = self.SOURCES[source]
 
             if source.startswith("local"):
                 local_grib = Path(grib_url)
@@ -495,7 +557,7 @@ class Herbie:
                 if local_idx.exists():
                     return (local_idx, "local")
             else:
-                idx_exists, idx_url = self._check_idx(grib_url)
+                idx_exists, idx_url = self._check_idx(self.SOURCES[source])
 
                 if idx_exists:
                     return (idx_url, source)
@@ -591,10 +653,27 @@ class Herbie:
 
         return localFilePath
 
+    def get_localIndexFilePath(self) -> Path:
+        """Get full path to the local index file."""
+
+        # Get the local file path, which creates the directory structure
+        local_file_path = self.get_localFilePath()
+
+        # Get the directory in the local file path
+        dir_path = os.path.dirname(local_file_path)
+
+        # Get the filename from the index URL path
+        index_filename = os.path.basename(urlparse(self.idx).path)
+
+        # Create new path with the index file name
+        index_file_path = os.path.join(dir_path, index_filename)
+
+        return index_file_path
+
     @functools.cached_property
     def index_as_dataframe(self) -> pd.DataFrame:
         """Read and cache the full index file."""
-        if self.grib_source == "local" and wgrib2:
+        if self.idx_source is None and self.grib_source == "local" and wgrib2:
             # Generate IDX inventory with wgrib2
             self.idx = StringIO(wgrib2_idx(self.get_localFilePath()))
             self.idx_source = "generated"
@@ -625,6 +704,8 @@ class Herbie:
                 read_this_idx = self.idx
             else:
                 read_this_idx = None
+                if self.verbose:
+                    print(f"Downloading inventory file from {self.idx=}")
                 response = requests.get(self.idx)
                 if response.status_code != 200:
                     response.raise_for_status()
@@ -635,8 +716,17 @@ class Herbie:
                         f"You will need to remake the Herbie object (H = `Herbie()`)\n"
                         f"or delete this cached property: `del H.index_as_dataframe()`"
                     )
+
                 read_this_idx = StringIO(response.text)
                 response.close()
+
+                index_filepath = self.get_localIndexFilePath()
+                os.makedirs(os.path.dirname(index_filepath), exist_ok=True)
+
+                with open(index_filepath, "w") as file:
+                    file.write(read_this_idx.read())
+                    # reset the cursor to the beggining of the StringIO
+                    read_this_idx.seek(0)
 
             df = pd.read_csv(
                 read_this_idx,
@@ -697,9 +787,35 @@ class Herbie:
             # eccodes keywords explained here:
             # https://confluence.ecmwf.int/display/UDOC/Identification+keywords
 
-            r = requests.get(self.idx)
-            idxs = [json.loads(x) for x in r.text.split("\n") if x]
-            r.close()
+            if self.idx_source in ["local"]:
+                with open(self.idx, "r") as file:
+                    read_this_idx = StringIO(file.read())
+            else:
+                if self.verbose:
+                    print(f"Downloading inventory file from {self.idx=}")
+                response = requests.get(self.idx)
+                if response.status_code != 200:
+                    response.raise_for_status()
+                    response.close()
+                    raise ValueError(
+                        f"\nCant open index file {self.idx}\n"
+                        f"Download the full file first (with `H.download()`).\n"
+                        f"You will need to remake the Herbie object (H = `Herbie()`)\n"
+                        f"or delete this cached property: `del H.index_as_dataframe()`"
+                    )
+
+                read_this_idx = StringIO(response.text)
+                response.close()
+
+                index_filepath = self.get_localIndexFilePath()
+                os.makedirs(os.path.dirname(index_filepath), exist_ok=True)
+
+                with open(index_filepath, "w") as file:
+                    file.write(read_this_idx.read())
+                    # reset the cursor to the beggining of the StringIO
+                    read_this_idx.seek(0)
+
+            idxs = [json.loads(x) for x in read_this_idx.getvalue().split("\n") if x]
             df = pd.DataFrame(idxs)
 
             # Format the DataFrame
@@ -883,71 +999,77 @@ class Herbie:
                     end="",
                 )
 
-        def subset(search, outFile):
-            """Download a subset specified by the regex search."""
-            # TODO: Maybe optimize downloading multiple subsets with MultiThreading
-
-            # TODO An alternative to downloadling subset with curl is
-            # TODO  to use the request module directly.
-            # TODO  >> headers = dict(Range=f"bytes={start_bytes}-{end_bytes}")
-            # TODO  >> r = requests.get(grib_url, headers=headers)
-
+        def subset(search, outFile, verbose=True):
+            """Download/extract a subset specified by the regex search."""
             grib_source = self.grib
-            if hasattr(grib_source, "as_posix") and grib_source.exists():
-                # The GRIB source is local. Curl the local file
-                # See https://stackoverflow.com/a/21023161/2383070
-                grib_source = f"file://{str(self.grib)}"
+
+            # Check if the source is a local file
+            is_local = isinstance(grib_source, Path) or (
+                isinstance(grib_source, str)
+                and not grib_source.startswith(("http://", "https://"))
+            )
+
             if verbose:
-                print(
-                    f"📇 Download subset: {self.__repr__()}{' ':60s}\n cURL from {grib_source}"
-                )
+                source_desc = f"local file {grib_source}" if is_local else grib_source
+                print(f"📇 Download subset: {self.__repr__()}\n from {source_desc}")
 
-            # -----------------------------------------------------
-            # Download subsets of the file by byte range with cURL.
-            #  Instead of using a single curl command for each row,
-            #  group adjacent messages in the same curl command.
-
-            # Find index groupings
             idx_df = self.inventory(search).copy()
-            if verbose:
-                print(
-                    f"Found {ANSI.bold}{ANSI.green}{len(idx_df)}{ANSI.reset} grib messages."
-                )
+
+            if len(idx_df) == 0:
+                return
+
             idx_df["download_groups"] = idx_df.grib_message.diff().ne(1).cumsum()
 
-            # cURL subsets of each group
-            for i, curl_group in idx_df.groupby("download_groups"):
+            # Process subsets of each group
+            for i, subset_group in idx_df.groupby("download_groups"):
                 if verbose:
-                    print(f"Download subset group {i}")
+                    action = "Extract" if is_local else "Download"
+                    print(f"{action} subset group {i} ({len(subset_group)} variables)")
 
                 if verbose:
-                    for _, row in curl_group.iterrows():
+                    for _, row in subset_group.iterrows():
                         print(
                             f"  {row.grib_message:<3g} {ANSI.orange}{row.search_this}{ANSI.reset}"
                         )
 
-                range = f"{curl_group.start_byte.min():.0f}-{curl_group.end_byte.max():.0f}".replace(
-                    "nan", ""
-                )
+                start_byte = int(subset_group.start_byte.min())
+                end_byte = int(subset_group.end_byte.max())
 
-                if curl_group.end_byte.max() - curl_group.start_byte.min() < 0:
-                    # The byte range for GRIB submessages (like in the
-                    # RAP model's UGRD/VGRD) need to be handled differently.
-                    # See https://github.com/blaylockbk/Herbie/issues/259
+                if end_byte - start_byte < 0:
                     if verbose:
-                        print(f"  ERROR: Invalid cURL range {range}; Skip message.")
+                        print("  ERROR: Invalid byte range; Skip message.")
                     continue
 
-                if i == 1:
-                    # If we are working on the first item, overwrite the existing file...
-                    curl = f'''curl -s --range {range} "{grib_source}" > "{outFile}"'''
-                else:
-                    # ...all other messages are appended to the subset file.
-                    curl = f'''curl -s --range {range} "{grib_source}" >> "{outFile}"'''
+                try:
+                    # Get the data (either from local file or remote URL)
+                    if is_local:
+                        # Read from local file
+                        with open(grib_source, "rb") as src:
+                            src.seek(start_byte)
+                            data = src.read(end_byte - start_byte + 1)
+                    else:
+                        # Download from remote URL
+                        headers = {"Range": f"bytes={start_byte}-{end_byte}"}
+                        response = requests.get(
+                            grib_source,
+                            headers=headers,
+                            timeout=30,
+                        )
+                        response.raise_for_status()
+                        data = response.content
 
-                if verbose:
-                    print(curl)
-                os.system(curl)
+                    # Write or append to output file
+                    mode = "wb" if i == 1 else "ab"
+                    with open(outFile, mode) as f:
+                        f.write(data)
+
+                    if verbose:
+                        print(f"  ✓ Processed bytes {start_byte}-{end_byte}")
+
+                except (IOError, requests.RequestException) as e:
+                    if verbose:
+                        print(f"  ✗ Failed to process: {e}")
+                    raise RuntimeError(f"Processing failed: {e}") from e
 
             if verbose:
                 print(f"💾 Saved the subset to {outFile}")
@@ -994,9 +1116,15 @@ class Herbie:
                 print(f"🌉 Already have local copy --> {outFile}")
             return outFile
 
-        if self.overwrite and self.grib_source.startswith("local"):
+        if (
+            self.overwrite
+            and self.grib_source
+            and self.grib_source.startswith("local")
+            and search in [None, ":"]
+        ):
             # Search for the grib files on the remote archives again
-            self.grib, self.grib_source = self.find_grib(overwrite=True)
+            # Only do this for full file downloads, not subsets
+            self.grib, self.grib_source = self.find_grib()
             self.idx, self.idx_source = self.find_idx()
             print(f"Overwrite local file with file from [{self.grib_source}]")
 
@@ -1045,7 +1173,7 @@ class Herbie:
 
         else:
             # Download a subset of the file
-            subset(search, outFile)
+            subset(search, outFile, verbose=verbose)
 
         return outFile
 
@@ -1143,6 +1271,7 @@ class Herbie:
         Hxr = cfgrib.open_datasets(
             local_file,
             backend_kwargs=backend_kwargs,
+            decode_timedelta=True,
         )
 
         for ds in Hxr:

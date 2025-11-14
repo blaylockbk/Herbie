@@ -40,6 +40,13 @@ def test_ifs_download_partial(date):
     assert H.get_localFilePath(":2t:").exists()
     f.unlink()
 
+@pytest.mark.parametrize("date", DATES)
+def test_ifs_azure_download_partial(date):
+    H = Herbie(date, model="ifs", product="oper", priority="azure", save_dir=save_dir, overwrite=True)
+    f = H.download(":2t:")
+    assert H.get_localFilePath(":2t:").exists()
+    f.unlink()
+
 
 @pytest.mark.parametrize("date, filter", [(d, f) for d in DATES for f in FILTERS])
 def test_ifs_xarray(date, filter):
@@ -49,6 +56,41 @@ def test_ifs_xarray(date, filter):
     H.get_localFilePath(filter).unlink()
 
 
-def test_aifs_yesterday():
-    H = Herbie(yesterday, model="aifs", save_dir=save_dir, overwrite=True)
-    H.xarray(":10(?:u|v):")
+class TestAIFS:
+    """Tests for ECMWF's AIFS model."""
+
+    def test_aifs_yesterday(self):
+        """Test downloading AIFS data from yesterday."""
+        H = Herbie(
+            yesterday,
+            model="aifs",
+            save_dir=save_dir,
+            overwrite=True,
+        )
+
+        assert H.grib, "AIFS GRIB file not found"
+        assert H.idx, "AIFS index file not found"
+
+        ds = H.xarray(":10(?:u|v):")
+        assert len(ds)
+
+    @pytest.mark.parametrize(
+        "date",
+        (
+            datetime(2025, 1, 1),
+            datetime(2025, 2, 9, 6),
+            datetime(2025, 2, 9, 12),
+            datetime(2025, 2, 25, 0),
+            datetime(2025, 2, 25, 6),
+        ),
+    )
+    def test_aifs_path_changes(self, date):
+        """Test files are valid on dates the paths changed."""
+        H = Herbie(
+            date,
+            model="aifs",
+            save_dir=save_dir,
+            overwrite=True,
+        )
+        assert H.grib
+        assert H.idx

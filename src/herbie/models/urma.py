@@ -38,7 +38,7 @@ class urma:
             }
         else:
             raise NotImplementedError(
-                "The URMA model template needs some work. Please edit open a pull request. https://github.com/blaylockbk/Herbie/blob/main/herbie/models/urma.py"
+                "The URMA model template needs some work. Please edit open a pull request. https://github.com/blaylockbk/Herbie/blob/main/src/herbie/models/urma.py"
             )
 
         self.IDX_SUFFIX = [".grb2.idx", ".idx", ".grib.idx"]

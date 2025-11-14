@@ -110,31 +110,31 @@ _level = {
     "ISBL_100",
     "ISBL_1000",
     "ISBL_1015",
-    "ISBL_150",
-    "ISBL_175",
-    "ISBL_200",
-    "ISBL_225",
-    "ISBL_250",
-    "ISBL_275",
-    "ISBL_300",
-    "ISBL_350",
-    "ISBL_400",
-    "ISBL_450",
-    "ISBL_50",
-    "ISBL_500",
-    "ISBL_550",
-    "ISBL_600",
-    "ISBL_650",
-    "ISBL_700",
-    "ISBL_750",
-    "ISBL_800",
-    "ISBL_850",
-    "ISBL_875",
-    "ISBL_900",
-    "ISBL_925",
-    "ISBL_950",
-    "ISBL_970",
-    "ISBL_985",
+    "ISBL_0150",
+    "ISBL_0175",
+    "ISBL_0200",
+    "ISBL_0225",
+    "ISBL_0250",
+    "ISBL_0275",
+    "ISBL_0300",
+    "ISBL_0350",
+    "ISBL_0400",
+    "ISBL_0450",
+    "ISBL_0050",
+    "ISBL_0500",
+    "ISBL_0550",
+    "ISBL_0600",
+    "ISBL_0650",
+    "ISBL_0700",
+    "ISBL_0750",
+    "ISBL_0800",
+    "ISBL_0850",
+    "ISBL_0875",
+    "ISBL_0900",
+    "ISBL_0925",
+    "ISBL_0950",
+    "ISBL_0970",
+    "ISBL_0985",
     "ISBY-1000-500",
     "MSL",
     "NTAT",
@@ -150,14 +150,14 @@ class hrdps:
                 f"HRDPS requires an argument for 'variable'. Here are some ideas:\n{_variable}."
             )
             print(
-                "For full list of files, see https://dd.weather.gc.ca/model_hrdps/continental/"
+                "For full list of files, see https://dd.weather.gc.ca/<YYYYMMDD>/WXO-DD/model_hrdps/"
             )
         if not hasattr(self, "level"):
             print(
                 f"HRDPS requires an argument for 'level'. Here are some ideas:\n{_level}"
             )
             print(
-                "For full list of files, see https://dd.weather.gc.ca/model_hrdps/continental/"
+                "For full list of files, see https://dd.weather.gc.ca/<YYYYMMDD>/WXO-DD/model_hrdps/"
             )
 
         self.DESCRIPTION = (
@@ -167,43 +167,31 @@ class hrdps:
             "Datamart product description": "https://eccc-msc.github.io/open-data/msc-data/nwp_hrdps/readme_hrdps-datamart_en/#data-location",
         }
         self.PRODUCTS = {
-            "continental/2.5km": "continental domain",
+            "continental": "Continental domain (2.5 km)",
+            "north": "North domain (3 km)",
         }
-        PATH = f"{self.date:%H}/{self.fxx:03d}/{self.date:%Y%m%dT%HZ}_MSC_HRDPS_{self.variable}_{self.level}_RLatLon0.0225_PT{self.fxx:03d}H.grib2"
+
+        if self.product == "continental":
+            resolution = "2.5km"
+            resolution2 = "RLatLon0.0225"
+            alt_path1 = "HRDPS"
+            alt_path2 = "HRDPS-WEonG"
+        elif self.product == "north":
+            resolution = "3km"
+            resolution2 = "RLatLon0.03"
+            alt_path1 = "HRDPS-North"
+            alt_path2 = "HRDPS-North-WEonG"
+        else:
+            resolution = "2.5km"
+            resolution2 = "RLatLon0.0225"
+            alt_path1 = "HRDPS"
+            alt_path2 = "HRDPS-WEonG"
+
+        PATH = f"{self.date:%H}/{self.fxx:03d}/{self.date:%Y%m%dT%HZ}_MSC_{alt_path1}_{self.variable}_{self.level}_{resolution2}_PT{self.fxx:03d}H.grib2"
+
         self.SOURCES = {
-            "msc": f"https://dd.weather.gc.ca/model_hrdps/{self.product}/{PATH}",
-            "msc2": f"https://dd.weather.gc.ca/model_hrdps/{self.product}/{PATH.replace('_HRDPS_', '_HRDPS-WEonG_')}",
-        }
-
-        self.IDX_SUFFIX = [".grb2.idx", ".idx", ".grib.idx"]
-        self.LOCALFILE = f"{self.get_remoteFileName}"
-
-
-class hrdps_north:
-    def template(self):
-        if not hasattr(self, "variable"):
-            print(
-                f"HRDPS requires an argument for 'variable'. Here are some ideas:\n{_variable}."
-            )
-            print(
-                "For full list of files, see https://dd.weather.gc.ca/model_hrdps/north"
-            )
-        if not hasattr(self, "level"):
-            print(
-                f"HRDPS requires an argument for 'level'. Here are some ideas:\n{_level}"
-            )
-            print("For full list of files, see https://dd.weather.gc.ca/model_hrdps")
-
-        self.DESCRIPTION = "Canada's High Resolution Deterministic Prediction System (HRDPS) North domain (experimental)"
-        self.DETAILS = {
-            "Datamart product description": "https://eccc-msc.github.io/open-data/msc-data/nwp_hrdps/readme_hrdps-datamart_en",
-        }
-        self.PRODUCTS = {
-            "north/grib2": "North domain (experimental)",
-        }
-        PATH = f"{self.date:%H}/{self.fxx:03d}/CMC_hrdps_north_{self.variable}_{self.level}_ps2.5km_{self.date:%Y%m%d%H}_P{self.fxx:03d}-00.grib2"
-        self.SOURCES = {
-            "msc": f"https://dd.weather.gc.ca/model_hrdps/{self.product}/{PATH}"
+            "msc": f"https://dd.weather.gc.ca/{self.date:%Y%m%d}/WXO-DD/model_hrdps/{self.product}/{resolution}/{PATH}",
+            "msc-WEonG": f"https://dd.weather.gc.ca/{self.date:%Y%m%d}/WXO-DD/model_hrdps/{self.product}/{resolution}/{PATH.replace(f'_{alt_path1}_', f'_{alt_path2}_')}",
         }
 
         self.IDX_SUFFIX = [".grb2.idx", ".idx", ".grib.idx"]

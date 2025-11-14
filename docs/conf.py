@@ -4,7 +4,8 @@
 # list see the documentation:
 # https://www.sphinx-doc.org/en/master/usage/configuration.html
 
-# ---- Path setup --------------------------------------------------------------
+# ======================================================================
+# ---- Path setup ------------------------------------------------------
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
@@ -26,16 +27,16 @@ release = herbie.__version__
 # The version, excluding alpha/beat/rc/tags
 version = ".".join([str(i) for i in herbie.__version_tuple__])
 
-
-# ---- Project information -----------------------------------------------------
+# ======================================================================
+# ---- Project information ---------------------------------------------
 utc_now = datetime.datetime.now(datetime.UTC).strftime("%H:%M UTC %d %b %Y")
 
 project = "Herbie"
 author = "Brian K. Blaylock"
 copyright = f"{datetime.datetime.now(datetime.UTC).strftime('%Y')}, {author}.    ♻ Updated: {utc_now}"
 
-
-# ---- General configuration ---------------------------------------------------
+# ======================================================================
+# ---- General configuration -------------------------------------------
 
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
@@ -93,8 +94,8 @@ exclude_patterns = [
     ".vscode",
 ]
 
-
-# ---- Options for HTML output -------------------------------------------------
+# ======================================================================
+# ---- Options for HTML output -----------------------------------------
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
@@ -134,13 +135,9 @@ html_theme_options = {
     "show_toc_level": 1,
     "navbar_align": "left",
     "show_version_warning_banner": True,
-    "navbar_center": ["version-switcher", "navbar-nav"],
+    "navbar_center": ["navbar-nav"],
     "footer_start": ["copyright"],
     "footer_center": ["sphinx-version"],
-    "switcher": {
-        "json_url": "https://herbie.readthedocs.io/en/latest/_static/switcher.json",
-        "version_match": os.environ.get("READTHEDOCS_VERSION"),
-    },
 }
 
 html_sidebars = {}
@@ -161,7 +158,8 @@ html_css_files = ["css/brian_style.css"]
 html_js_files = []
 todo_include_todos = True
 
-# ---- Options for autosummary/autodoc output ---------------------------------
+# ======================================================================
+# ---- Options for autosummary/autodoc output --------------------------
 
 # Set autodoc defaults
 autodoc_default_options = {

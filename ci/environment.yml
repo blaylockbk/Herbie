@@ -6,7 +6,6 @@ channels:
   - conda-forge
 dependencies:
   # Binaries
-  - curl
   - eccodes
   - geos
   - proj
@@ -15,6 +14,7 @@ dependencies:
   # Python requirements
   - cartopy
   - cfgrib
+  - beautifulsoup4
   - matplotlib
   - metpy
   - numpy
