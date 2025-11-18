@@ -1033,7 +1033,40 @@ class Herbie:
                         )
 
                 start_byte = int(subset_group.start_byte.min())
-                end_byte = int(subset_group.end_byte.max())
+
+                # If the selected grid is the last message in the file,
+                # the wgrib2-style index will have an NaN end_byte
+                # (because end_byte is derived from the next message's
+                # start byte). In that case, determine the file size and
+                # set the end_byte to the last byte of the file.
+                raw_end = subset_group.end_byte.max()
+                if pd.isna(raw_end):
+                    if is_local:
+                        try:
+                            file_size = os.path.getsize(grib_source)
+                        except OSError as e:
+                            raise RuntimeError(
+                                f"Unable to determine local file size for {grib_source}: {e}"
+                            ) from e
+                    else:
+                        try:
+                            head = requests.head(grib_source, timeout=30)
+                            head.raise_for_status()
+                            cl = head.headers.get("Content-Length")
+                            if cl is None:
+                                raise RuntimeError(
+                                    "Remote server did not provide Content-Length header;"
+                                    " cannot determine end byte for last message."
+                                )
+                            file_size = int(cl)
+                        except requests.RequestException as e:
+                            raise RuntimeError(
+                                f"Unable to determine remote file size for {grib_source}: {e}"
+                            ) from e
+
+                    end_byte = int(file_size - 1)
+                else:
+                    end_byte = int(raw_end)
 
                 if end_byte - start_byte < 0:
                     if verbose:
