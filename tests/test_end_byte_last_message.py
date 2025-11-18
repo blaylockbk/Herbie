@@ -6,10 +6,14 @@ from herbie import Herbie
 
 
 def test_end_byte_for_last_message(tmp_path):
-    """If the requested grid is the last message, the subset should
-    be written using the file's final byte as the end of the range.
-    """
+    """Test last grib message end byte range.
 
+    If the requested grid is the last message, the subset should
+    be written using the file's final byte as the end of the range.
+
+    In response to:
+    https://github.com/blaylockbk/Herbie/issues/496
+    """
     # Create a small dummy GRIB-like file (300 bytes)
     grib_path = tmp_path / "test.grib2"
     grib_path.write_bytes(b"\x00" * 300)
@@ -27,7 +31,16 @@ def test_end_byte_for_last_message(tmp_path):
 
     # Construct a Herbie instance and point it at our local files. Use a
     # small save_dir under tmp_path so output is written there.
-    H = Herbie("2025-11-13 00:00", model="gefs", member="c00", product="atmos.5", fxx=24, save_dir=tmp_path, overwrite=True, verbose=False)
+    H = Herbie(
+        "2025-11-13 00:00",
+        model="gefs",
+        member="c00",
+        product="atmos.5",
+        fxx=24,
+        save_dir=tmp_path,
+        overwrite=True,
+        verbose=False,
+    )
 
     # Force Herbie to use our local files and treat them as local sources
     H.grib = str(grib_path)
@@ -46,3 +59,36 @@ def test_end_byte_for_last_message(tmp_path):
     result = H.download(":PRMSL:")
     assert Path(result).exists()
     assert Path(result).stat().st_size == 100
+
+
+def test_end_byte_for_last_message_real(tmp_path):
+    """Test subset last grib message.
+
+    In response to:
+    https://github.com/blaylockbk/Herbie/issues/496
+    """
+    # Construct a Herbie instance and point it at our local files. Use a
+    # small save_dir under tmp_path so output is written there.
+    H = Herbie(
+        "2025-11-13 00:00",
+        model="gefs",
+        member="c00",
+        product="atmos.5",
+        fxx=24,
+        save_dir=tmp_path,
+        overwrite=True,
+        verbose=False,
+    )
+
+    # Get last grib message
+    last_msg = H.inventory().iloc[-1]["search_this"]
+
+    assert len(H.inventory(last_msg)) == 1
+
+    # Download last grib message
+    f = H.download(last_msg, overwrite=True)
+    assert f.exists()
+
+    # Read with xarray
+    ds = H.xarray(last_msg, overwrite=True)
+    assert len(ds) == 1
