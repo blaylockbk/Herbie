@@ -1048,30 +1048,22 @@ class Herbie:
                             raise RuntimeError(
                                 f"Unable to determine local file size for {grib_source}: {e}"
                             ) from e
-                    else:
-                        try:
-                            head = requests.head(grib_source, timeout=30)
-                            head.raise_for_status()
-                            cl = head.headers.get("Content-Length")
-                            if cl is None:
-                                raise RuntimeError(
-                                    "Remote server did not provide Content-Length header;"
-                                    " cannot determine end byte for last message."
-                                )
-                            file_size = int(cl)
-                        except requests.RequestException as e:
-                            raise RuntimeError(
-                                f"Unable to determine remote file size for {grib_source}: {e}"
-                            ) from e
 
-                    end_byte = int(file_size - 1)
+                        end_byte = int(file_size - 1)
+                    else:
+                        # For remote files we can request an open-ended Range header
+                        # (e.g., "bytes=<start>-") which returns the remainder of
+                        # the file. Defer computing the actual end byte until after
+                        # the download so we don't need a Content-Length/HEAD.
+                        end_byte = None
                 else:
                     end_byte = int(raw_end)
 
-                if end_byte - start_byte < 0:
-                    if verbose:
-                        print("  ERROR: Invalid byte range; Skip message.")
-                    continue
+                if end_byte is not None:
+                    if end_byte - start_byte < 0:
+                        if verbose:
+                            print("  ERROR: Invalid byte range; Skip message.")
+                        continue
 
                 try:
                     # Get the data (either from local file or remote URL)
@@ -1081,15 +1073,30 @@ class Herbie:
                             src.seek(start_byte)
                             data = src.read(end_byte - start_byte + 1)
                     else:
-                        # Download from remote URL
-                        headers = {"Range": f"bytes={start_byte}-{end_byte}"}
-                        response = requests.get(
-                            grib_source,
-                            headers=headers,
-                            timeout=30,
-                        )
-                        response.raise_for_status()
-                        data = response.content
+                        # Download from remote URL. If end_byte is None it
+                        # indicates the requested message is the last in the
+                        # file; use an open-ended Range header to fetch the
+                        # remainder of the file.
+                        if end_byte is None:
+                            headers = {"Range": f"bytes={start_byte}-"}
+                            response = requests.get(
+                                grib_source,
+                                headers=headers,
+                                timeout=30,
+                            )
+                            response.raise_for_status()
+                            data = response.content
+                            actual_end = start_byte + len(data) - 1
+                        else:
+                            headers = {"Range": f"bytes={start_byte}-{end_byte}"}
+                            response = requests.get(
+                                grib_source,
+                                headers=headers,
+                                timeout=30,
+                            )
+                            response.raise_for_status()
+                            data = response.content
+                            actual_end = end_byte
 
                     # Write or append to output file
                     mode = "wb" if i == 1 else "ab"
@@ -1097,7 +1104,12 @@ class Herbie:
                         f.write(data)
 
                     if verbose:
-                        print(f"  ✓ Processed bytes {start_byte}-{end_byte}")
+                        # If we used an open-ended request, use the actual_end
+                        # calculated from the returned data for accurate logging.
+                        if end_byte is None:
+                            print(f"  ✓ Processed bytes {start_byte}-{actual_end}")
+                        else:
+                            print(f"  ✓ Processed bytes {start_byte}-{end_byte}")
 
                 except (IOError, requests.RequestException) as e:
                     if verbose:
