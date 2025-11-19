@@ -422,7 +422,10 @@ class Herbie:
 
             try:
                 if "blob.core.windows.net" in idx_url:
-                    dl_url = "https://planetarycomputer.microsoft.com/api/sas/v1/sign?href=" + idx_url
+                    dl_url = (
+                        "https://planetarycomputer.microsoft.com/api/sas/v1/sign?href="
+                        + idx_url
+                    )
                     response = requests.get(dl_url)
                     idx_url = response.json()["href"]
                 idx_exists = requests.head(idx_url).ok
@@ -479,7 +482,10 @@ class Herbie:
             # GRIB2 file and the index file exist. If found, store the
             # URL for the GRIB2 file and the .idx file.
             if "azure" in source:
-                download_url = "https://planetarycomputer.microsoft.com/api/sas/v1/sign?href=" + self.SOURCES[source]
+                download_url = (
+                    "https://planetarycomputer.microsoft.com/api/sas/v1/sign?href="
+                    + self.SOURCES[source]
+                )
                 response = requests.get(download_url)
                 grib_url = response.json()["href"]
             else:
@@ -545,7 +551,10 @@ class Herbie:
             # GRIB2 file and the index file exist. If found, store the
             # URL for the GRIB2 file and the .idx file.
             if "azure" in source:
-                download_url = "https://planetarycomputer.microsoft.com/api/sas/v1/sign?href=" + self.SOURCES[source]
+                download_url = (
+                    "https://planetarycomputer.microsoft.com/api/sas/v1/sign?href="
+                    + self.SOURCES[source]
+                )
                 response = requests.get(download_url)
                 grib_url = response.json()["href"]
             else:
@@ -1032,71 +1041,43 @@ class Herbie:
                             f"  {row.grib_message:<3g} {ANSI.orange}{row.search_this}{ANSI.reset}"
                         )
 
-                start_byte = int(subset_group.start_byte.min())
+                start_byte = subset_group.start_byte.min()
 
-                # If the selected grid is the last message in the file,
-                # the wgrib2-style index will have an NaN end_byte
-                # (because end_byte is derived from the next message's
-                # start byte). In that case, determine the file size and
-                # set the end_byte to the last byte of the file.
-                raw_end = subset_group.end_byte.max()
-                if pd.isna(raw_end):
-                    if is_local:
-                        try:
-                            file_size = os.path.getsize(grib_source)
-                        except OSError as e:
-                            raise RuntimeError(
-                                f"Unable to determine local file size for {grib_source}: {e}"
-                            ) from e
+                end_byte = subset_group.end_byte.max()
 
-                        end_byte = int(file_size - 1)
-                    else:
-                        # For remote files we can request an open-ended Range header
-                        # (e.g., "bytes=<start>-") which returns the remainder of
-                        # the file. Defer computing the actual end byte until after
-                        # the download so we don't need a Content-Length/HEAD.
-                        end_byte = None
-                else:
-                    end_byte = int(raw_end)
-
-                if end_byte is not None:
-                    if end_byte - start_byte < 0:
-                        if verbose:
-                            print("  ERROR: Invalid byte range; Skip message.")
-                        continue
+                if end_byte - start_byte < 0:
+                    if verbose:
+                        print("  ERROR: Invalid byte range; Skip message.")
+                    continue
 
                 try:
                     # Get the data (either from local file or remote URL)
                     if is_local:
                         # Read from local file
                         with open(grib_source, "rb") as src:
-                            src.seek(start_byte)
-                            data = src.read(end_byte - start_byte + 1)
+                            if verbose:
+                                print(
+                                    f"Read local file: bytes={int(start_byte)}-{int(end_byte) if not pd.isna(end_byte) else ''}"
+                                )
+                            src.seek(int(start_byte))
+                            if pd.isna(end_byte):
+                                data = src.read()
+                            else:
+                                data = src.read(int(end_byte) - int(start_byte) + 1)
                     else:
-                        # Download from remote URL. If end_byte is None it
-                        # indicates the requested message is the last in the
-                        # file; use an open-ended Range header to fetch the
-                        # remainder of the file.
-                        if end_byte is None:
-                            headers = {"Range": f"bytes={start_byte}-"}
-                            response = requests.get(
-                                grib_source,
-                                headers=headers,
-                                timeout=30,
-                            )
-                            response.raise_for_status()
-                            data = response.content
-                            actual_end = start_byte + len(data) - 1
-                        else:
-                            headers = {"Range": f"bytes={start_byte}-{end_byte}"}
-                            response = requests.get(
-                                grib_source,
-                                headers=headers,
-                                timeout=30,
-                            )
-                            response.raise_for_status()
-                            data = response.content
-                            actual_end = end_byte
+                        # Download from remote URL
+                        headers = {
+                            "Range": f"bytes={int(start_byte)}-{int(end_byte) if not pd.isna(end_byte) else ''}"
+                        }
+                        if verbose:
+                            print(f"Download subset: {headers=}")
+                        response = requests.get(
+                            grib_source,
+                            headers=headers,
+                            timeout=30,
+                        )
+                        response.raise_for_status()
+                        data = response.content
 
                     # Write or append to output file
                     mode = "wb" if i == 1 else "ab"
@@ -1104,12 +1085,9 @@ class Herbie:
                         f.write(data)
 
                     if verbose:
-                        # If we used an open-ended request, use the actual_end
-                        # calculated from the returned data for accurate logging.
-                        if end_byte is None:
-                            print(f"  ✓ Processed bytes {start_byte}-{actual_end}")
-                        else:
-                            print(f"  ✓ Processed bytes {start_byte}-{end_byte}")
+                        print(
+                            f"  ✓ Processed bytes {int(start_byte)}-{int(end_byte) if not pd.isna(end_byte) else ''}"
+                        )
 
                 except (IOError, requests.RequestException) as e:
                     if verbose:

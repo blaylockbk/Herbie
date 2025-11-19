@@ -5,7 +5,7 @@ from pathlib import Path
 from herbie import Herbie
 
 
-def test_end_byte_for_last_message(tmp_path):
+def test_end_byte_for_last_message_dummy(tmp_path):
     """Test last grib message end byte range.
 
     If the requested grid is the last message, the subset should
