@@ -422,7 +422,10 @@ class Herbie:
 
             try:
                 if "blob.core.windows.net" in idx_url:
-                    dl_url = "https://planetarycomputer.microsoft.com/api/sas/v1/sign?href=" + idx_url
+                    dl_url = (
+                        "https://planetarycomputer.microsoft.com/api/sas/v1/sign?href="
+                        + idx_url
+                    )
                     response = requests.get(dl_url)
                     idx_url = response.json()["href"]
                 idx_exists = requests.head(idx_url).ok
@@ -479,7 +482,10 @@ class Herbie:
             # GRIB2 file and the index file exist. If found, store the
             # URL for the GRIB2 file and the .idx file.
             if "azure" in source:
-                download_url = "https://planetarycomputer.microsoft.com/api/sas/v1/sign?href=" + self.SOURCES[source]
+                download_url = (
+                    "https://planetarycomputer.microsoft.com/api/sas/v1/sign?href="
+                    + self.SOURCES[source]
+                )
                 response = requests.get(download_url)
                 grib_url = response.json()["href"]
             else:
@@ -545,7 +551,10 @@ class Herbie:
             # GRIB2 file and the index file exist. If found, store the
             # URL for the GRIB2 file and the .idx file.
             if "azure" in source:
-                download_url = "https://planetarycomputer.microsoft.com/api/sas/v1/sign?href=" + self.SOURCES[source]
+                download_url = (
+                    "https://planetarycomputer.microsoft.com/api/sas/v1/sign?href="
+                    + self.SOURCES[source]
+                )
                 response = requests.get(download_url)
                 grib_url = response.json()["href"]
             else:
@@ -1032,8 +1041,9 @@ class Herbie:
                             f"  {row.grib_message:<3g} {ANSI.orange}{row.search_this}{ANSI.reset}"
                         )
 
-                start_byte = int(subset_group.start_byte.min())
-                end_byte = int(subset_group.end_byte.max())
+                start_byte = subset_group.start_byte.min()
+
+                end_byte = subset_group.end_byte.max()
 
                 if end_byte - start_byte < 0:
                     if verbose:
@@ -1045,11 +1055,22 @@ class Herbie:
                     if is_local:
                         # Read from local file
                         with open(grib_source, "rb") as src:
-                            src.seek(start_byte)
-                            data = src.read(end_byte - start_byte + 1)
+                            if verbose:
+                                print(
+                                    f"Read local file: bytes={int(start_byte)}-{int(end_byte) if not pd.isna(end_byte) else ''}"
+                                )
+                            src.seek(int(start_byte))
+                            if pd.isna(end_byte):
+                                data = src.read()
+                            else:
+                                data = src.read(int(end_byte) - int(start_byte) + 1)
                     else:
                         # Download from remote URL
-                        headers = {"Range": f"bytes={start_byte}-{end_byte}"}
+                        headers = {
+                            "Range": f"bytes={int(start_byte)}-{int(end_byte) if not pd.isna(end_byte) else ''}"
+                        }
+                        if verbose:
+                            print(f"Download subset: {headers=}")
                         response = requests.get(
                             grib_source,
                             headers=headers,
@@ -1064,7 +1085,9 @@ class Herbie:
                         f.write(data)
 
                     if verbose:
-                        print(f"  ✓ Processed bytes {start_byte}-{end_byte}")
+                        print(
+                            f"  ✓ Processed bytes {int(start_byte)}-{int(end_byte) if not pd.isna(end_byte) else ''}"
+                        )
 
                 except (IOError, requests.RequestException) as e:
                     if verbose:
