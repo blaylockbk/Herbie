@@ -252,7 +252,7 @@ class Herbie:
             # The user didn't specify a product, so let's use the first
             # product in the model template.
             self.product = list(self.PRODUCTS)[0]
-            log.info(f'`product` not specified. Will use "{self.product}".')
+            log.warning(f'`product` not specified. Will use "{self.product}".')
             # We need to rerun this so the sources have the new product value.
             getattr(model_templates, self.model).template(self)
 
