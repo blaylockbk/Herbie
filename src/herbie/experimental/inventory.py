@@ -20,7 +20,6 @@ Polars DataFrame representing a GRIB2 inventory with columns:
 - index: int
 - start_byte: int
 - end_byte: int
-- byte_range: str
 - reference_time: datetime
 - (other columns)
 """
@@ -32,14 +31,13 @@ download groups.
 """
 
 
-def _sort_columns(df):
+def _sort_columns(df: pl.DataFrame) -> pl.DataFrame:
     return df.select(
         [
             "source",
             "index",
             "start_byte",
             "end_byte",
-            "byte_range",
             "reference_time",
             *[
                 col
@@ -50,7 +48,6 @@ def _sort_columns(df):
                     "index",
                     "start_byte",
                     "end_byte",
-                    "byte_range",
                     "reference_time",
                 }
             ],
@@ -61,35 +58,24 @@ def _sort_columns(df):
 def _read_wgrib2_index(source) -> InventoryDataFrame:
     """Parse wgrib2-style index files as inventory DataFrames."""
     logger.info(f"Reading index file: {source}")
-    df = (
-        pl.read_csv(
-            source,
-            has_header=False,
-            separator=":",
-            new_columns=[
-                "index",
-                "start_byte",
-                "reference_time",
-                "variable",
-                "level",
-                "forecast_time",
-            ],
-        )
-        .with_columns(
-            pl.col("reference_time")
-            .str.pad_end(14, "0")
-            .str.to_datetime("d=%Y%m%d%H%M")
-        )
-        .insert_column(2, (pl.col("start_byte").shift(-1) - 1).alias("end_byte"))
-        .insert_column(
-            3,
-            pl.concat_str(
-                pl.col("start_byte"),
-                pl.lit("-"),
-                pl.col("end_byte").cast(pl.String).fill_null(""),
-            ).alias("byte_range"),
-        )
-        .insert_column(0, pl.lit(source).alias("source"))
+    df = pl.read_csv(
+        source,
+        has_header=False,
+        separator=":",
+        new_columns=[
+            "index",
+            "start_byte",
+            "reference_time",
+            "variable",
+            "level",
+            "forecast_time",
+        ],
+    ).with_columns(
+        source=pl.lit(source),
+        end_byte=(pl.col("start_byte").shift(-1) - 1),
+        reference_time=pl.col("reference_time")
+        .str.pad_end(14, "0")
+        .str.to_datetime("d=%Y%m%d%H%M"),
     )
 
     # Drop column with all nulls
@@ -113,11 +99,6 @@ def _read_eccodes_index(source) -> InventoryDataFrame:
             forecast_time=pl.duration(hours=pl.col("step").cast(int)),
             start_byte=pl.col("_offset"),
             end_byte=(pl.col("_offset") + pl.col("_length")),
-            byte_range=pl.concat_str(
-                pl.col("_offset"),
-                pl.lit("-"),
-                pl.col("_offset").add(pl.col("_length")).cast(pl.String).fill_null(""),
-            ),
         )
         .drop("date", "time", "step", "_offset", "_length")
         .with_row_index(name="index", offset=1)
@@ -174,14 +155,6 @@ def create_download_groups(df: InventoryDataFrame) -> DownloadGroupDataFrame:
             pl.col("index"),
             pl.col("variable"),
             pl.col("level"),
-        )
-        .insert_column(
-            3,
-            pl.concat_str(
-                pl.col("start_byte"),
-                pl.lit("-"),
-                pl.col("end_byte").cast(pl.String).fill_null(""),
-            ).alias("byte_range"),
         )
     )
 

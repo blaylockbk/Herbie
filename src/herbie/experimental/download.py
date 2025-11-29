@@ -35,14 +35,17 @@ def index_source_to_grib_source(source: str) -> str | None:
 
 def download_byte_range(
     source: str,
-    byte_range: str,
+    start_byte: int,
+    end_byte: int,
     download_group: int,
     temp_dir: Path,
     progress: Progress,
     progress_lock: Lock,
 ) -> tuple[int, Path]:
     """Download a specific byte range from a source and save to a temporary file."""
-    headers = {"Range": f"bytes={byte_range}"}
+    headers = {
+        "Range": f"bytes={start_byte}-{end_byte if end_byte is not None else ''}"
+    }
     temp_file = temp_dir / f"group_{download_group:04d}.grib2"
 
     # Create progress bar for this download
@@ -94,7 +97,7 @@ def download_grib2_from_dataframe(
 ) -> Path:
     """Download GRIB2 data from a polars DataFrame with byte ranges.
 
-    `df` should have columns: source, download_group, start_byte, end_byte, byte_range
+    `df` should have columns: source, download_group, start_byte, end_byte
     """
     timer = datetime.now()
     output_file = Path(output_file).resolve()
@@ -112,7 +115,8 @@ def download_grib2_from_dataframe(
             download_tasks.append(
                 {
                     "source": grib_source,
-                    "byte_range": row["byte_range"],
+                    "start_byte": row["start_byte"],
+                    "end_byte": row["end_byte"],
                     "download_group": row["download_group"],
                 }
             )
@@ -145,7 +149,8 @@ def download_grib2_from_dataframe(
                     future = executor.submit(
                         download_byte_range,
                         task["source"],
-                        task["byte_range"],
+                        task["start_byte"],
+                        task["end_byte"],
                         task["download_group"],
                         temp_path,
                         progress,
