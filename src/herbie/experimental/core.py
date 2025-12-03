@@ -75,6 +75,8 @@ class NewHerbie(Herbie):
         backend_kwargs: dict = {},
     ):
         """Load data into xarray."""
+        # TODO: Refactor this into its own file xarray.py
+        # TODO: Better names for nodes in DataTree
         import cfgrib
         import xarray as xr
 
