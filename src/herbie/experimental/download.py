@@ -20,18 +20,14 @@ from rich.progress import (
     TransferSpeedColumn,
 )
 
-from ._common import console, logger
-
-
-def index_source_to_grib_source(source: str) -> str | None:
-    """Return the GRIB2 file source from an index file source.
-
-    Handles common index suffixes.
-    """
-    for suffix in (".idx", ".inv", ".index"):
-        if source.endswith(suffix):
-            return source.removesuffix(suffix)
-    return None
+from ._common import (
+    console,
+    logger,
+    IndexStyle,
+    IndexStyle,
+    InventoryDataFrame,
+    DownloadGroupDataFrame,
+)
 
 
 def _read_local_byte_range(
@@ -99,7 +95,7 @@ def _download_remote_byte_range(
             yield len(chunk)
 
 
-def download_byte_range(
+def fetch_byte_range(
     source: str | Path,
     start_byte: int,
     end_byte: int,
@@ -108,7 +104,7 @@ def download_byte_range(
     progress: Progress,
     progress_lock: Lock,
 ) -> tuple[int, Path]:
-    """Download/extract a specific byte range from a source and save to a temporary file.
+    """Fetch byte range from a source GRIB file and save to a temporary file.
 
     Args:
         source: Either a URL (str starting with http:// or https://) or a local file path
@@ -123,10 +119,8 @@ def download_byte_range(
     -------
         Tuple of (download_group, temp_file_path)
     """
-    # Determine if source is local or remote
-    is_local = isinstance(source, Path) or (
-        isinstance(source, str) and not source.startswith(("http://", "https://"))
-    )
+    is_local = Path(source).exists()
+    # ^If not, then we assume it's a remote file with http:// or https://
 
     temp_file = temp_dir / f"group_{download_group:04d}.grib2"
 
@@ -177,11 +171,13 @@ def download_byte_range(
 
 
 def download_grib2_from_dataframe(
-    df: Any, output_file: str | Path, max_workers: int = 5
+    df: DownloadGroupDataFrame,
+    output_file: str | Path,
+    max_workers: int = 5,
 ) -> Path:
     """Download GRIB2 data from a polars DataFrame with byte ranges.
 
-    `df` should have columns: source, download_group, start_byte, end_byte
+    `df` should have columns: source, grib_source, download_group, start_byte, end_byte
     """
     timer = datetime.now()
     output_file = Path(output_file).resolve()
@@ -195,10 +191,9 @@ def download_grib2_from_dataframe(
         # Prepare download tasks
         download_tasks = []
         for row in df.iter_rows(named=True):
-            grib_source = index_source_to_grib_source(row["source"])
             download_tasks.append(
                 {
-                    "source": grib_source,
+                    "source": row["grib_source"],
                     "start_byte": row["start_byte"],
                     "end_byte": row["end_byte"],
                     "download_group": row["download_group"],
@@ -231,7 +226,7 @@ def download_grib2_from_dataframe(
 
                 for task in download_tasks:
                     future = executor.submit(
-                        download_byte_range,
+                        fetch_byte_range,
                         task["source"],
                         task["start_byte"],
                         task["end_byte"],

@@ -1,34 +1,8 @@
 """Process index files to create inventories."""
 
-from typing import Literal, TypeAlias
-
 import polars as pl
 
-from ._common import logger
-
-IndexStyle = Literal["wgrib2", "eccodes"]
-"""
-GRIB2 index files may be created either using `wgrib2` or `eccodes` software,
-each output different formats to express details of each GRIB2 message in
-a file.
-"""
-
-InventoryDataFrame: TypeAlias = pl.DataFrame
-"""
-Polars DataFrame representing a GRIB2 inventory with columns:
-- url: str
-- index: int
-- start_byte: int
-- end_byte: int
-- reference_time: datetime
-- (other columns)
-"""
-
-DownloadGroupDataFrame: TypeAlias = pl.DataFrame
-"""
-Polars DataFrame of an InventoryDataFrame that is grouped by
-download groups.
-"""
+from ._common import logger, IndexStyle, InventoryDataFrame, DownloadGroupDataFrame
 
 
 def _sort_columns(df: pl.DataFrame) -> pl.DataFrame:
@@ -114,7 +88,7 @@ def _read_eccodes_index(source) -> InventoryDataFrame:
     return df
 
 
-def read_index(source, style: IndexStyle | None = None) -> InventoryDataFrame:
+def read_index_file(source, style: IndexStyle | None = None) -> InventoryDataFrame:
     """
     Read a GRIB2 index file; either wgrib2 or eccodes style.
 
@@ -148,13 +122,14 @@ def create_download_groups(df: InventoryDataFrame) -> DownloadGroupDataFrame:
         df.with_columns(
             download_group=(pl.col("index").diff().fill_null(1) != 1).cum_sum(),
         )
-        .group_by("source", "download_group", maintain_order=True)
+        .group_by("source", "grib_source", "download_group", maintain_order=True)
         .agg(
             pl.col("start_byte").min(),
-            pl.col("end_byte").max(),
-            pl.col("index"),
-            pl.col("variable"),
-            pl.col("level"),
+            pl.when(pl.col("end_byte").is_null().any())
+            .then(pl.lit(None))
+            .otherwise(pl.col("end_byte").max())
+            .alias("end_byte"),
+            pl.col("*").exclude("start_byte", "end_byte"),
         )
     )
 
