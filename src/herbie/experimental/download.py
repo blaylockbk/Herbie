@@ -6,6 +6,7 @@ from datetime import datetime
 from pathlib import Path
 from threading import Lock
 from typing import Any
+from collections.abc import Generator
 
 import requests
 from rich.progress import (
@@ -33,8 +34,73 @@ def index_source_to_grib_source(source: str) -> str | None:
     return None
 
 
+def _read_local_byte_range(
+    source_path: Path,
+    start_byte: int,
+    end_byte: int,
+    temp_file: Path,
+    chunk_size: int = 8192,
+) -> Generator[int, None, None]:
+    """Read a byte range from a local file.
+
+    Yields
+    ------
+        Number of bytes read in each chunk for progress tracking
+    """
+    byte_count = end_byte - start_byte + 1
+
+    with open(source_path, "rb") as src:
+        src.seek(start_byte)
+
+        remaining = byte_count
+        with open(temp_file, "wb") as dst:
+            while remaining > 0:
+                read_size = min(chunk_size, remaining)
+                chunk = src.read(read_size)
+                if not chunk:
+                    break
+                dst.write(chunk)
+                remaining -= len(chunk)
+                yield len(chunk)
+
+
+def _download_remote_byte_range(
+    url: str,
+    start_byte: int,
+    end_byte: int,
+    temp_file: Path,
+    chunk_size: int = 8192,
+) -> Generator[int, None, None]:
+    """Download a byte range from a remote URL.
+
+    Yields
+    ------
+        Number of bytes downloaded in each chunk for progress tracking.
+
+    Raises
+    ------
+        Exception: If server doesn't support range requests
+    """
+    headers = {
+        "Range": f"bytes={start_byte}-{end_byte if end_byte is not None else ''}"
+    }
+
+    response = requests.get(url, headers=headers, stream=True)
+    response.raise_for_status()
+
+    if response.status_code != 206:
+        raise Exception(
+            f"Server doesn't support range requests (status: {response.status_code})"
+        )
+
+    with open(temp_file, "wb") as f:
+        for chunk in response.iter_content(chunk_size=chunk_size):
+            f.write(chunk)
+            yield len(chunk)
+
+
 def download_byte_range(
-    source: str,
+    source: str | Path,
     start_byte: int,
     end_byte: int,
     download_group: int,
@@ -42,44 +108,62 @@ def download_byte_range(
     progress: Progress,
     progress_lock: Lock,
 ) -> tuple[int, Path]:
-    """Download a specific byte range from a source and save to a temporary file."""
-    headers = {
-        "Range": f"bytes={start_byte}-{end_byte if end_byte is not None else ''}"
-    }
+    """Download/extract a specific byte range from a source and save to a temporary file.
+
+    Args:
+        source: Either a URL (str starting with http:// or https://) or a local file path
+        start_byte: Starting byte position
+        end_byte: Ending byte position
+        download_group: Group identifier for the download
+        temp_dir: Directory to store temporary files
+        progress: Progress bar instance
+        progress_lock: Lock for thread-safe progress updates
+
+    Returns
+    -------
+        Tuple of (download_group, temp_file_path)
+    """
+    # Determine if source is local or remote
+    is_local = isinstance(source, Path) or (
+        isinstance(source, str) and not source.startswith(("http://", "https://"))
+    )
+
     temp_file = temp_dir / f"group_{download_group:04d}.grib2"
 
-    # Create progress bar for this download
     with progress_lock:
         task_id = progress.add_task(f"[yellow]Group {download_group:04d}", total=None)
 
     try:
-        response = requests.get(source, headers=headers, stream=True)
-        response.raise_for_status()
-
-        # Check if server supports range requests
-        if response.status_code == 206:
-            total_size = int(response.headers.get("content-length", 0))
-
-            with progress_lock:
-                progress.update(task_id, total=total_size)
-
-            with open(temp_file, "wb") as f:
-                for chunk in response.iter_content(chunk_size=8192):
-                    f.write(chunk)
-                    with progress_lock:
-                        progress.update(task_id, advance=len(chunk))
-
-            # Remove the progress bar when complete
-            with progress_lock:
-                progress.remove_task(task_id)
-
-            return (download_group, temp_file)
-        else:
-            with progress_lock:
-                progress.remove_task(task_id)
-            raise Exception(
-                f"Server doesn't support range requests (status: {response.status_code})"
+        if is_local:
+            total_size = end_byte - start_byte + 1
+            reader = _read_local_byte_range(
+                Path(source),
+                start_byte,
+                end_byte,
+                temp_file,
             )
+        else:
+            # For remote, we'll get total from response headers
+            # Set total to None initially, will be updated on first chunk
+            total_size = end_byte - start_byte + 1 if end_byte is not None else None
+            reader = _download_remote_byte_range(
+                source,
+                start_byte,
+                end_byte,
+                temp_file,
+            )
+
+        with progress_lock:
+            progress.update(task_id, total=total_size)
+
+        for bytes_processed in reader:
+            with progress_lock:
+                progress.update(task_id, advance=bytes_processed)
+
+        with progress_lock:
+            progress.remove_task(task_id)
+
+        return (download_group, temp_file)
 
     except Exception as e:
         with progress_lock:
@@ -88,7 +172,7 @@ def download_byte_range(
                 progress.remove_task(task_id)
             except Exception:
                 pass
-        logger.error(f"Error downloading group {download_group}: {e}")
+        logger.error(f"Error processing group {download_group}: {e}")
         raise
 
 
