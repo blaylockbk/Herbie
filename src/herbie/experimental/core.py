@@ -7,14 +7,9 @@ import polars as pl
 
 from herbie import Herbie
 
-from ._common import logger
+from ._common import logger, DownloadGroupDataFrame, InventoryDataFrame
 from .download import download_grib2_from_dataframe
-from .inventory import (
-    DownloadGroupDataFrame,
-    InventoryDataFrame,
-    create_download_groups,
-    read_index_file,
-)
+from .inventory import create_download_groups, read_index_file
 
 
 class NewHerbie(Herbie):
@@ -31,17 +26,43 @@ class NewHerbie(Herbie):
         )
 
     def inventory(
-        self, filters: pl.Expr | list[pl.Expr] | None = None
+        self, filters: str | pl.Expr | list[pl.Expr] | None = None
     ) -> InventoryDataFrame:
-        """Return the inventory of the GRIB2 file."""
+        """Return the inventory of the GRIB2 file.
+
+        Parameters
+        ----------
+        filters
+            If string, filters messages that contain the regex string.
+            This is the classic filtering behavior.
+            - `'TMP:.*mb'` - Temperature fields at all pressure levels
+            - `'TMP` - All temperature fields
+            - `'[U|V]GRD:10 m above ground'` - u and v wind components at 10 m above ground
+
+            Else, provide a polars expression or list of expressions to
+            filter the DataFrame.
+            - `pl.col("variable").str.contains('TMP')`
+
+        """
         df = self.index_as_dataframe
         if filters is not None:
-            df = df.filter(filters)
+            if isinstance(filters, str):
+                search_this_columns = [
+                    pl.col(i).cast(pl.String) for i in df.columns[6:]
+                ]
+                df = df.with_columns(
+                    pl.concat_str(search_this_columns, separator=":").alias(
+                        "search_this"
+                    )
+                ).filter(pl.col("search_this").str.contains(filters))
+            else:
+                df = df.filter(filters)
+
             logger.debug(f"Filtered DataFrame to {len(df):,} fields.")
         return df
 
     def get_download_groups(
-        self, filters: pl.Expr | list[pl.Expr] | None = None
+        self, filters: str | pl.Expr | list[pl.Expr] | None = None
     ) -> DownloadGroupDataFrame:
         """Show the download groups."""
         return self.inventory(filters).pipe(create_download_groups)
@@ -70,7 +91,7 @@ class NewHerbie(Herbie):
 
     def xarray(
         self,
-        filters: pl.Expr | list[pl.Expr] | None = None,
+        filters: str | pl.Expr | list[pl.Expr] | None = None,
         *,
         backend_kwargs: dict = {},
     ):
