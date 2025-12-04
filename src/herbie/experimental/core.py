@@ -33,32 +33,43 @@ class NewHerbie(Herbie):
         Parameters
         ----------
         filters
-            If string, filters messages that contain the regex string.
-            This is the classic filtering behavior.
-            - `'TMP:.*mb'` - Temperature fields at all pressure levels
-            - `'TMP` - All temperature fields
-            - `'[U|V]GRD:10 m above ground'` - u and v wind components at 10 m above ground
+            Filter to apply to the inventory.
 
-            Else, provide a polars expression or list of expressions to
-            filter the DataFrame.
-            - `pl.col("variable").str.contains('TMP')`
+            If **string**, filters messages by searching a colon-separated
+            concatenation of all DataFrame columns (from column 6 onward).
+            The string is treated as a regex pattern. This is the classic
+            filtering behavior.
+
+            For example
+                - `'TMP:.*mb'` - Temperature fields at all pressure levels
+                - `'TMP'` - All temperature fields
+                - `'[U|V]GRD:10 m above ground'` - u and v wind components at 10 m above ground
+
+            If **polars expression** or **list of expressions**, applies the
+            expression(s) directly to filter the DataFrame.
+
+            For example
+                - `pl.col("variable").str.contains('TMP')`
+                - `pl.col("level") == "500 mb"`
+
+            If **None**, returns the full unfiltered inventory.
 
         """
         df = self.index_as_dataframe
-        if filters is not None:
-            if isinstance(filters, str):
-                search_this_columns = [
-                    pl.col(i).cast(pl.String) for i in df.columns[6:]
-                ]
-                df = df.with_columns(
-                    pl.concat_str(search_this_columns, separator=":").alias(
-                        "search_this"
-                    )
-                ).filter(pl.col("search_this").str.contains(filters))
-            else:
-                df = df.filter(filters)
 
-            logger.debug(f"Filtered DataFrame to {len(df):,} fields.")
+        if filters is None:
+            return df
+
+        if isinstance(filters, str):
+            # Concatenate relevant columns for string searching
+            search_cols = [pl.col(i).cast(pl.String) for i in df.columns[6:]]
+            df = df.filter(
+                pl.concat_str(search_cols, separator=":").str.contains(filters)
+            )
+        else:
+            df = df.filter(filters)
+
+        logger.debug(f"Filtered DataFrame to {len(df):,} fields.")
         return df
 
     def get_download_groups(
