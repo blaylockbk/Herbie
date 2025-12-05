@@ -46,10 +46,28 @@ log = logging.getLogger(__name__)
 wgrib2 = which("wgrib2")
 
 
-def download_with_requests(url, outFile, reporthook=None, chunk_size=8192):
+def _reporthook(a, b, c):
+    """
+    Print download progress in megabytes.
+
+    Parameters
+    ----------
+    a : Chunk number
+    b : Maximum chunk size
+    c : Total size of the download
+    """
+    chunk_progress = a * b / c * 100
+    total_size_MB = c / 1000000.0
     print(
-        "Hi, this is the new download behavior for full file using requests instead of urllib"
+        f"\r🚛💨  Download Progress: {chunk_progress:.2f}% of {total_size_MB:.1f} MB\r",
+        end="",
     )
+
+
+def download_with_requests(
+    url, outFile, reporthook=_reporthook, chunk_size=8192, *, verbose=False
+):
+    """Download a full file using the requests library."""
     response = requests.get(url, stream=True)
     response.raise_for_status()
 
@@ -65,7 +83,7 @@ def download_with_requests(url, outFile, reporthook=None, chunk_size=8192):
             downloaded += len(chunk)
 
             # mimic urllib reporthook(count, blocksize, totalsize)
-            if reporthook:
+            if reporthook and verbose:
                 reporthook(downloaded // chunk_size, chunk_size, total)
 
 
@@ -1013,24 +1031,6 @@ class Herbie:
 
         """
 
-        def _reporthook(a, b, c):
-            """
-            Print download progress in megabytes.
-
-            Parameters
-            ----------
-            a : Chunk number
-            b : Maximum chunk size
-            c : Total size of the download
-            """
-            chunk_progress = a * b / c * 100
-            total_size_MB = c / 1000000.0
-            if verbose:
-                print(
-                    f"\r🚛💨  Download Progress: {chunk_progress:.2f}% of {total_size_MB:.1f} MB\r",
-                    end="",
-                )
-
         def subset(search, outFile, verbose=True):
             """Download/extract a subset specified by the regex search."""
             grib_source = self.grib
@@ -1205,7 +1205,7 @@ class Herbie:
         # ===============
         if search in [None, ":"] or self.idx is None:
             # Download the full file from remote source
-            download_with_requests(self.grib, outFile, _reporthook)
+            download_with_requests(self.grib, outFile, _reporthook, verbose=verbose)
 
             original_source = self.grib
 
