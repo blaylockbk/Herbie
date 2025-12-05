@@ -337,7 +337,19 @@ Directory structure will be <model-name>/<YYYYMMDD>/<file-name>""",
         subparser.set_defaults(func=func)
 
     args, unknown_args = parser.parse_known_args()
-    print(args)
+    # print(args)
+
+    if args.version:
+        import importlib.metadata
+
+        print(importlib.metadata.version("herbie-data"))
+        sys.exit(0)
+
+    if args.show_versions:
+        from herbie.show_versions import show_versions
+
+        show_versions()
+        sys.exit(0)
 
     # \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
     # Handle Extra Arguments
@@ -362,20 +374,8 @@ Directory structure will be <model-name>/<YYYYMMDD>/<file-name>""",
         )
 
     if args.product:
-        unknown_args_dict['product'] = args.product
+        unknown_args_dict["product"] = args.product
     # \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
-
-    if args.version:
-        import importlib.metadata
-
-        print(importlib.metadata.version("herbie-data"))
-        sys.exit(0)
-
-    if args.show_versions:
-        from herbie.show_versions import show_versions
-
-        show_versions()
-        sys.exit(0)
 
     if args.command is None:
         parser.print_help()
