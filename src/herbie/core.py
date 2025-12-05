@@ -46,6 +46,29 @@ log = logging.getLogger(__name__)
 wgrib2 = which("wgrib2")
 
 
+def download_with_requests(url, outFile, reporthook=None, chunk_size=8192):
+    print(
+        "Hi, this is the new download behavior for full file using requests instead of urllib"
+    )
+    response = requests.get(url, stream=True)
+    response.raise_for_status()
+
+    total = int(response.headers.get("content-length", 0))
+    downloaded = 0
+
+    with open(outFile, "wb") as f:
+        for chunk in response.iter_content(chunk_size=chunk_size):
+            if not chunk:
+                continue
+
+            f.write(chunk)
+            downloaded += len(chunk)
+
+            # mimic urllib reporthook(count, blocksize, totalsize)
+            if reporthook:
+                reporthook(downloaded // chunk_size, chunk_size, total)
+
+
 def wgrib2_idx(grib2filepath: Path | str) -> str:
     """
     Produce the GRIB2 inventory index with wgrib2.
@@ -1182,7 +1205,7 @@ class Herbie:
         # ===============
         if search in [None, ":"] or self.idx is None:
             # Download the full file from remote source
-            urllib.request.urlretrieve(self.grib, outFile, _reporthook)
+            download_with_requests(self.grib, outFile, _reporthook)
 
             original_source = self.grib
 
