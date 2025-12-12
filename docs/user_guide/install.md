@@ -18,7 +18,7 @@ conda install -c conda-forge herbie-data
 
 ## Install with uv
 
-For [uv](https://docs.astral.sh/uv/) users, add herbie as project dependency:
+For [uv](https://docs.astral.sh/uv/) users, add herbie as a project dependency:
 
 ```bash
 uv add herbie-data
@@ -37,31 +37,22 @@ uv tool install herbie-data
 For pip users:
 
 ```bash
-# Install last published version
+# Install last release
 pip install herbie-data
 ```
 
-To install the full functionality in the library which includes
+To install the full functionality which includes
 [xarray accessors](https://github.com/blaylockbk/Herbie/blob/main/src/herbie/accessors.py) for plotting and data manipulation, please install the "extras" dependencies:
 
 ```bash
 pip install 'herbie-data[extras]'
 ```
 
-The latest updates code can be installed directly from GitHub:
+The latest updates can be installed directly from GitHub:
 
 ```bash
 # Install current main branch
 pip install git+https://github.com/blaylockbk/Herbie.git
-```
-
-If you are developing Herbie, you might want to do something like this:
-
-```bash
-# Clone and install editable source code
-git clone https://github.com/blaylockbk/Herbie.git
-cd Herbie
-pip install -e .
 ```
 
 ---
