@@ -10,10 +10,49 @@ from herbie import Herbie
 from ._common import logger, DownloadGroupDataFrame, InventoryDataFrame
 from .download import download_grib2_from_dataframe
 from .inventory import create_download_groups, read_index_file
+from .models import HRRRTemplate
+
+TEMPLATES = {
+    "hrrr": HRRRTemplate,
+    # "gfs": GFSTemplate,
+    # "nam": NAMTemplate,
+    # ... add more as you create them
+}
+
+
+from datetime import datetime
+from typing import Optional
+
+
+def str_to_datetime(value: str) -> datetime:
+    """Convert a date/time string to a datetime object."""
+    value = value.strip()
+    for fmt in (
+        "%Y-%m-%d",
+        "%Y-%m-%d %H:%M",
+        "%Y-%m-%d %H:%M:%S",
+        "%Y%m%d",
+        "%Y%m%d%H%M",
+    ):
+        try:
+            return datetime.strptime(value, fmt)
+        except ValueError:
+            pass
+
+    raise ValueError(f"Could not parse {value} to datetime.")
 
 
 class NewHerbie(Herbie):
     """New Herbie Class."""
+
+    def new_init(self, date: str | datetime, model="hrrr", **kwargs):
+        if isinstance(date, str):
+            date = str_to_datetime(date)
+        self.date = date
+
+        template_class = TEMPLATES[model.lower()]
+        self.template = template_class(date=date, **kwargs)
+        self.remote_urls = self.template.get_remote_urls()
 
     @functools.cached_property
     def index_as_dataframe(self) -> InventoryDataFrame:
@@ -107,7 +146,7 @@ class NewHerbie(Herbie):
         backend_kwargs: dict = {},
     ):
         """Load data into xarray."""
-        from .xarray import load_grib2_into_xarray
+        from .xarray_loader import load_grib2_into_xarray
 
         local_file = self.download(filters)
 
