@@ -24,6 +24,8 @@
 
 ## 📚 [Documentation](https://herbie.readthedocs.io/) | 💬 [Discussions](https://github.com/blaylockbk/Herbie/discussions) | ❔ [Get Help](https://github.com/blaylockbk/Herbie/discussions/categories/q-a)
 
+See also the [DeepWiki](https://deepwiki.com/blaylockbk/Herbie) generated docs.
+
 <!-- (Badges) -->
 
 </div>
@@ -43,6 +45,8 @@ Herbie is a Python package that makes downloading and working with numerical wea
 - 🗺️ **Visualization aids** - Includes Cartopy integration for mapping
 
 **Keywords:** weather data download, GRIB2, python, numerical weather prediction, meteorological data, weather forecast API, xarray, atmospheric data, research, academia, data science, machine learning,visualization
+
+
 
 ---
 
