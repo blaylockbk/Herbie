@@ -202,3 +202,129 @@ class gefs_wave_reforecast:
         }
         self.IDX_SUFFIX = [".idx"]
         self.LOCALFILE = f"{self.get_remoteFileName}"
+
+
+class aigefs:
+    """AI Global Ensemble Forecast System (AIGEFS).
+    """
+
+    def template(self):
+        self.DESCRIPTION = "AI Global Ensemble Forecast System (AIGEFS)"
+        self.DETAILS = {
+            "NOMADS": "https://www.nco.ncep.noaa.gov/pmb/products/aigefs/",
+        }
+
+        self.PRODUCTS = {
+            "pres": "pressure fields, 0.25 degree resolution",
+            "sfc": "surface fields, 0.25 degree resolution",
+        }
+
+        if self.product is None:
+            # Just select the first PRODUCT as default
+            self.product = list(self.PRODUCTS)[0]
+
+        if self.member == 0:
+            self.member = "mem000"
+        elif self.member == "control":
+            self.member = "mem000"
+        elif isinstance(self.member, int):
+            self.member = f"mem{self.member:02d}"
+
+        filedir = f"aigefs.{self.date:%Y%m%d/%H}"
+        if self.member in ["spr", "avg"]:
+            filepaths = {
+                "sfc": f"{filedir}/ensstat/products/atmos/grib2/aigefs.t{self.date:%H}z.sfc.{self.member}.f{self.fxx:03d}",
+                "pres": f"{filedir}/ensstat/products/atmos/grib2/aigefs.t{self.date:%H}z.pres.{self.member}.f{self.fxx:03d}",
+            }
+        else:
+            filepaths = {
+                "sfc": f"{filedir}/{self.member}/model/atmos/grib2/aigefs.t{self.date:%H}z.sfc.f{self.fxx:03d}",
+                "pres": f"{filedir}/{self.member}/model/atmos/grib2/aigefs.t{self.date:%H}z.pres.f{self.fxx:03d}",
+            }
+
+        valid_members = {
+            "pres": [f"mem{i:03d}" for i in range(0, 31)] + ["control", "spr", "avg"],
+            "sfc": [f"mem{i:03d}" for i in range(0, 31)] + ["control", "spr", "avg"],
+        }
+
+        filepath = filepaths.get(self.product)
+        if filepath is None:
+            raise ValueError(
+                f"product={self.product} not recognized. Must be one of {self.PRODUCTS.keys()}"
+            )
+
+        _member = valid_members.get(self.product)
+        if _member is not None and self.member not in _member:
+            raise ValueError(
+                f"For AIGEFS product {self.product}, member must be one of {_member}"
+            )
+
+        self.SOURCES = {
+            "nomads": f"https://nomads.ncep.noaa.gov/pub/data/nccf/com/aigefs/prod/{filepath}.grib2"
+        }
+
+        self.IDX_SUFFIX = [".grib2.idx"]
+        self.LOCALFILE = f"aigefs.t{self.date:%H}z.{self.product}.{self.member}.f{self.fxx:03d}"
+
+
+class hgefs:
+    """Hybrid Ensemble Forecast System (HGEFS).
+    """
+
+    def template(self):
+        self.DESCRIPTION = "Hybrid Global Ensemble Forecast System (HGEFS)"
+        self.DETAILS = {
+            "NOMADS": "https://www.nco.ncep.noaa.gov/pmb/products/hgefs/",
+        }
+
+        self.PRODUCTS = {
+            "pres": "pressure fields, 0.25 degree resolution",
+            "sfc": "surface fields, 0.25 degree resolution",
+        }
+
+        if self.product is None:
+            # Just select the first PRODUCT as default
+            self.product = list(self.PRODUCTS)[0]
+
+        if self.member == 0:
+            self.member = "mem000"
+        elif self.member == "control":
+            self.member = "mem000"
+        elif isinstance(self.member, int):
+            self.member = f"mem{self.member:02d}"
+
+        filedir = f"hgefs.{self.date:%Y%m%d/%H}"
+        if self.member in ["spr", "avg"]:
+            filepaths = {
+                "sfc": f"{filedir}/ensstat/products/atmos/grib2/hgefs.t{self.date:%H}z.sfc.{self.member}.f{self.fxx:03d}",
+                "pres": f"{filedir}/ensstat/products/atmos/grib2/hgefs.t{self.date:%H}z.pres.{self.member}.f{self.fxx:03d}",
+            }
+        else:
+            filepaths = {
+                "sfc": f"{filedir}/{self.member}/model/atmos/grib2/hgefs.t{self.date:%H}z.sfc.f{self.fxx:03d}",
+                "pres": f"{filedir}/{self.member}/model/atmos/grib2/hgefs.t{self.date:%H}z.pres.f{self.fxx:03d}",
+            }
+
+        valid_members = {
+            "pres": ["spr", "avg"],
+            "sfc": ["spr", "avg"],
+        }
+
+        filepath = filepaths.get(self.product)
+        if filepath is None:
+            raise ValueError(
+                f"product={self.product} not recognized. Must be one of {self.PRODUCTS.keys()}"
+            )
+
+        _member = valid_members.get(self.product)
+        if _member is not None and self.member not in _member:
+            raise ValueError(
+                f"For HGEFS product {self.product}, member must be one of {_member}"
+            )
+
+        self.SOURCES = {
+            "nomads": f"https://nomads.ncep.noaa.gov/pub/data/nccf/com/hgefs/prod/{filepath}.grib2"
+        }
+
+        self.IDX_SUFFIX = [".grib2.idx"]
+        self.LOCALFILE = f"hgefs.t{self.date:%H}z.{self.product}.{self.member}.f{self.fxx:03d}"
