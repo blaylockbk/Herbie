@@ -22,6 +22,8 @@ logging.basicConfig(
     format="%(message)s",
 )
 logger = logging.getLogger(__name__)
+
+# For now, lets just DEBUG
 logger.setLevel(logging.DEBUG)
 
 IndexStyle = Literal["wgrib2", "eccodes"]
