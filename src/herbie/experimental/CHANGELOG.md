@@ -11,6 +11,8 @@ The default save directory is now `~/herbie-data/`
 
 Big change to the model templates. These are subclassed from the base class ModelTemplate.
 
+There is one model template per file. For example, `models/hrrr.py` contains the `HRRRTemplate` file. The model is accessed by the name of the file, so `Herbie(date, model="hrrr")` because the template is in `hrrr.py`.
+
 ModelTemplate is now responsible for finding existing GRIB and Index files.
 
 ## Inventory
@@ -27,4 +29,4 @@ Download for subsets are now done with multiple threads, one thread for each sub
 
 Use rich progress bars for downloads.
 
-Remote file paths are preserved rather than specifying a custom data path. I wanted to make it possible to use rclone to quickly pre-fill your `herbie-data/` directory, then use Herbie to access those files locally. 
+Remote file paths are preserved rather than specifying a custom data path. I wanted to make it possible to use rclone to quickly pre-fill your `herbie-data/` directory, then use Herbie to access those files locally.
