@@ -1,1 +1,1 @@
-from .core import Herbie
+from .core import Herbie, get_template

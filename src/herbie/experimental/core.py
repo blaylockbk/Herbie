@@ -91,14 +91,16 @@ class Herbie:
 
     Parameters
     ----------
-    date : str, datetime
+    date : str, datetime, optional
         Model initialization date and time
     model : str
-        Model name
-    step : int
-        Model forecast step (lead time in hours).
-    valid_date : str, datetime
+        Model name (default: "hrrr")
+    valid_date : str, datetime, optional
         Model valid date time. Only allowed if 'date' is None.
+    save_dir : Path
+        Directory to save downloaded files
+    **kwargs
+        Additional model-specific parameters (e.g., step, product, etc.)
     """
 
     def __init__(
@@ -106,34 +108,21 @@ class Herbie:
         date: str | datetime | None = None,
         *,
         model="hrrr",
-        step: int = 0,
-        valid_date: str | datetime | None = None,
         save_dir: Path = Path("~/herbie-data/").expanduser(),
         **kwargs,
     ):
-        if date is None and valid_date is None:
-            raise ValueError("Must specify either `date` or `valid_date`")
-        if date is not None and valid_date is not None:
-            raise ValueError("Cannot specify both `date` and `valid_date`")
-
         if isinstance(date, str):
             date = str_to_datetime(date)
-        if isinstance(valid_date, str):
-            valid_date = str_to_datetime(valid_date)
 
-        if date:
-            self.date = date
-            self.valid_date = self.date + timedelta(hours=step)
-        elif valid_date:
-            self.valid_date = valid_date
-            self.date = self.valid_date - timedelta(hours=step)
-        else:
-            raise ValueError("Must specify either `date` or `valid_date`")
-
-        self.step = step
+        if date is None:
+            raise ValueError("`date` is required; valid_date support was removed")
 
         model_template = get_template(model)
-        self.template = model_template(date=date, **kwargs)
+        self.template = model_template(date=date, save_dir=save_dir, **kwargs)
+
+        self.date = self.template.date
+        self.valid_date = self.template.valid_date
+        self.step = self.template.params.get("step", 0)
         self.model_name = self.template.MODEL_NAME
         self.remote_urls = self.template.get_remote_urls()
         self.local_path = self.template.get_local_path()
