@@ -65,6 +65,7 @@ dev = [
     "polars>=1.35.2",
     "pyarrow>=22.0.0",
     "rich>=14.2.0",
+    "ty>=0.0.4",
 ]
 docs = [
     "autodocsumm>=0.2.14",
