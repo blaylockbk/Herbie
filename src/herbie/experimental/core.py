@@ -1,27 +1,71 @@
 """New Herbie Core."""
 
 import functools
+import importlib
+import inspect
+import pkgutil
+from datetime import datetime, timedelta
 from pathlib import Path
 
 import polars as pl
+from rich import box
+from rich.console import Console
+from rich.panel import Panel
+from rich.table import Table
+from rich.text import Text
 
-from herbie import Herbie
+import herbie.experimental.models as models
 
-from ._common import logger, DownloadGroupDataFrame, InventoryDataFrame
+from ._common import DownloadGroupDataFrame, InventoryDataFrame, logger
 from .download import download_grib2_from_dataframe
 from .inventory import create_download_groups, read_index_file
-from .models import HRRRTemplate
 
-TEMPLATES = {
-    "hrrr": HRRRTemplate,
-    # "gfs": GFSTemplate,
-    # "nam": NAMTemplate,
-    # ... add more as you create them
-}
+# Discover available model templates without importing them
+AVAILABLE_MODELS: dict[str, str] = {}
+_TEMPLATE_CACHE: dict[str, type] = {}
+
+# First, just discover what's available
+for _, module_name, _ in pkgutil.iter_modules(models.__path__):
+    if module_name.startswith("_"):
+        continue
+
+    # Store module path for lazy loading
+    AVAILABLE_MODELS[module_name] = f"herbie.experimental.models.{module_name}"
+
+logger.debug(
+    f"Found {len(AVAILABLE_MODELS)} model templates: {AVAILABLE_MODELS.keys()}"
+)
 
 
-from datetime import datetime
-from typing import Optional
+def get_template(model_name: str) -> type:
+    """Get a model template, loading it lazily if needed."""
+    model_name = model_name.lower()
+
+    # Check cache first
+    if model_name in _TEMPLATE_CACHE:
+        logger.debug(f"Using cached template for [blue]{model_name}[/blue]")
+        return _TEMPLATE_CACHE[model_name]
+
+    # Check if model exists
+    if model_name not in AVAILABLE_MODELS:
+        raise ValueError(
+            f"Model '{model_name}' not found. Available models: {AVAILABLE_MODELS.keys()}"
+        )
+
+    # Lazy load the template
+    logger.debug(f"Loading template for [blue]{model_name}[/blue]")
+    module = importlib.import_module(AVAILABLE_MODELS[model_name])
+
+    # Find the Template class
+    for name, obj in inspect.getmembers(module, inspect.isclass):
+        if name.endswith("Template") and obj.__module__ == module.__name__:
+            _TEMPLATE_CACHE[model_name] = obj
+            logger.debug(
+                f"Loaded template [green]{name}[/green] for [blue]{model_name}[/blue]"
+            )
+            return obj
+
+    raise RuntimeError(f"No Template class found in {module_name}")
 
 
 def str_to_datetime(value: str) -> datetime:
@@ -42,26 +86,123 @@ def str_to_datetime(value: str) -> datetime:
     raise ValueError(f"Could not parse {value} to datetime.")
 
 
-class NewHerbie(Herbie):
-    """New Herbie Class."""
+class Herbie:
+    """New Herbie Class.
 
-    def new_init(self, date: str | datetime, model="hrrr", **kwargs):
+    Parameters
+    ----------
+    date : str, datetime
+        Model initialization date and time
+    model : str
+        Model name
+    step : int
+        Model forecast step (lead time in hours).
+    valid_date : str, datetime
+        Model valid date time. Only allowed if 'date' is None.
+    """
+
+    def __init__(
+        self,
+        date: str | datetime | None = None,
+        *,
+        model="hrrr",
+        step: int = 0,
+        valid_date: str | datetime | None = None,
+        save_dir: Path = Path("~/herbie-data/").expanduser(),
+        **kwargs,
+    ):
+        if date is None and valid_date is None:
+            raise ValueError("Must specify either `date` or `valid_date`")
+        if date is not None and valid_date is not None:
+            raise ValueError("Cannot specify both `date` and `valid_date`")
+
         if isinstance(date, str):
             date = str_to_datetime(date)
-        self.date = date
+        if isinstance(valid_date, str):
+            valid_date = str_to_datetime(valid_date)
 
-        template_class = TEMPLATES[model.lower()]
-        self.template = template_class(date=date, **kwargs)
+        if date:
+            self.date = date
+            self.valid_date = self.date + timedelta(hours=step)
+        elif valid_date:
+            self.valid_date = valid_date
+            self.date = self.valid_date - timedelta(hours=step)
+        else:
+            raise ValueError("Must specify either `date` or `valid_date`")
+
+        self.step = step
+
+        model_template = get_template(model)
+        self.template = model_template(date=date, **kwargs)
+        self.model_name = self.template.MODEL_NAME
         self.remote_urls = self.template.get_remote_urls()
+        self.local_path = self.template.get_local_path()
+        self.index_source, self.index = self.template.find_first_existing_index()
+        self.data_source, self.data = self.template.find_first_existing_url()
+        self.save_dir = save_dir
+
+    def __repr__(self) -> str:
+        """Herbie simple string representation."""
+        return (
+            f"Herbie({self.model_name}, {self.date:%Y-%m-%d %H:%M UTC}, "
+            f"F{self.step:02d}, source={self.data_source})"
+        )
+
+    def __rich__(self) -> Panel:
+        """Rich representation with panel layout."""
+        # Create Herbie logo
+        logo = Text()
+        logo.append("▌", style="bold red on white")
+        logo.append("▌", style="bold blue on #f0ead2")
+        logo.append("Herbie", style="bold black on #f0ead2")
+        logo.append(f" {self.template.MODEL_DESCRIPTION}", style="dim italic")
+
+        # Create content table (no borders, just clean layout)
+        content = Table.grid(padding=(0, 2))
+        content.add_column(style="bold cyan", justify="right")
+        content.add_column(style="white")
+
+        # Row 1: Model and product info
+        row1 = Text()
+        row1.append(f"{self.model_name}", style="bold cyan")
+        row1.append(" • ", style="dim")
+        row1.append("initialized ", style="dim")
+        row1.append(f"{self.date:%Y-%b-%d %H:%M UTC}", style="green")
+        row1.append(f"  F{self.step:02d}", style="bright_green bold")
+
+        # Row 2: Date, forecast hour, and source
+        row2 = Text()
+        row2.append(f"{self.local_path.name}", style="italic yellow")
+        row2.append("  •  ", style="dim")
+        row2.append(f"data@{self.data_source}", style="italic #ff9900")
+        row2.append("  •  ", style="dim")
+        row2.append(f"index@{self.index_source}", style="dim italic #ff9900")
+
+        content.add_row("", row1)
+        content.add_row("", row2)
+
+        return Panel(
+            content,
+            title=logo,
+            title_align="left",
+            border_style="cyan",
+            box=box.ROUNDED,
+            padding=(0, 1),
+        )
+
+    def display(self):
+        """Print the rich representation to console."""
+        console = Console()
+        console.print(self)
 
     @functools.cached_property
     def index_as_dataframe(self) -> InventoryDataFrame:
         """Read and cache an index file."""
-        if self.idx is None:
-            raise ValueError(f"No index file found for {self.grib}.")
+        if self.index is None:
+            raise ValueError(f"No index file found for {self.data}.")
 
-        return read_index_file(str(self.idx)).insert_column(
-            1, pl.lit(str(self.grib)).alias("grib_source")
+        return read_index_file(str(self.index)).insert_column(
+            1, pl.lit(str(self.data)).alias("grib_source")
         )
 
     def inventory(
@@ -127,7 +268,7 @@ class NewHerbie(Herbie):
         df = self.get_download_groups(filters)
 
         if output_file is None:
-            output_file = self.get_localFilePath()
+            output_file = self.save_dir / self.local_path
 
         if not output_file.parent.is_dir():
             output_file.parent.mkdir(parents=True, exist_ok=True)

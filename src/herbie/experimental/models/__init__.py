@@ -1,11 +1,13 @@
 from abc import ABC, abstractmethod
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime
 from pathlib import Path
 from typing import ClassVar
+from urllib.parse import urlparse
+
+import requests
 from rich.console import Console
 from rich.table import Table
-import requests
-from concurrent.futures import ThreadPoolExecutor, as_completed
 
 
 class ModelTemplate(ABC):
@@ -34,9 +36,9 @@ class ModelTemplate(ABC):
 
     def __rich__(self):
         """Rich representation for pretty printing."""
-        from rich.panel import Panel
-        from rich.columns import Columns
         from rich import box
+        from rich.columns import Columns
+        from rich.panel import Panel
 
         # Header info
         header = f"[bold cyan]{self.MODEL_NAME}[/bold cyan] - {self.MODEL_DESCRIPTION}"
@@ -53,7 +55,7 @@ class ModelTemplate(ABC):
         # Valid products table
         if self.VALID_PRODUCTS:
             products_table = Table(title="Valid Products", box=box.ROUNDED)
-            products_table.add_column("Product", style="bold magenta")
+            products_table.add_column("Product", style="bold cyan")
             products_table.add_column("Description")
 
             for product, description in self.VALID_PRODUCTS.items():
@@ -109,7 +111,7 @@ class ModelTemplate(ABC):
                 title="Web Resources", box=box.ROUNDED, show_header=False
             )
             websites_table.add_column("Source", style="bold yellow")
-            websites_table.add_column("URL", style="underline")
+            websites_table.add_column("URL", style="dim", overflow="fold")
 
             for name, url in self.MODEL_WEBSITES.items():
                 websites_table.add_row(name.upper(), url)
@@ -139,7 +141,8 @@ class ModelTemplate(ABC):
             timeout: Request timeout in seconds
             max_workers: Maximum number of concurrent requests
 
-        Returns:
+        Returns
+        -------
             Dictionary mapping source names to info dict with 'exists' and 'size' keys
         """
         remote_urls = self.get_remote_urls()
@@ -196,7 +199,8 @@ class ModelTemplate(ABC):
             url: URL to check
             timeout: Request timeout in seconds
 
-        Returns:
+        Returns
+        -------
             True if URL exists (status 200), False otherwise
         """
         try:
@@ -212,7 +216,8 @@ class ModelTemplate(ABC):
             timeout: Request timeout in seconds
             max_workers: Maximum number of concurrent requests
 
-        Returns:
+        Returns
+        -------
             Dictionary mapping source names to existence status
         """
         remote_urls = self.get_remote_urls()
@@ -245,7 +250,8 @@ class ModelTemplate(ABC):
                      If None, uses dict order from get_remote_urls().
             timeout: Request timeout in seconds
 
-        Returns:
+        Returns
+        -------
             Tuple of (source_name, url) if found, None otherwise
         """
         remote_urls = self.get_remote_urls()
@@ -279,7 +285,8 @@ class ModelTemplate(ABC):
                      If None, uses dict order from get_remote_urls().
             timeout: Request timeout in seconds
 
-        Returns:
+        Returns
+        -------
             Tuple of (source_name, index_url) if found, None otherwise
         """
         remote_urls = self.get_remote_urls()
@@ -304,57 +311,24 @@ class ModelTemplate(ABC):
 
         return None
 
+    def get_local_path(self, source: str | None = None) -> Path:
+        """Get the local path for a GRIB2 file.
 
-class HRRRTemplate(ModelTemplate):
-    """HRRR Model Template."""
+        Parameters
+        ----------
+        source
+            Specific source to get filename from. If None, use first source.
+        """
+        remote_urls = self.get_remote_urls()
 
-    MODEL_NAME = "HRRR"
-    MODEL_DESCRIPTION = "High-Resolution Rapid Refresh - CONUS"
-    MODEL_WEBSITES = {
-        "gsl": "https://rapidrefresh.noaa.gov/hrrr/",
-        "nomads": "https://www.nco.ncep.noaa.gov/pmb/products/hrrr/",
-        "utah": "http://hrrr.chpc.utah.edu/",
-    }
-    VALID_PRODUCTS = {
-        "sfc": "2D surface level fields; 3-km resolution",
-        "prs": "3D pressure level fields; 3-km resolution",
-        "nat": "Native level fields; 3-km resolution",
-        "subh": "Subhourly grids; 3-km resolution",
-    }
-    DEFAULT_PRODUCT = "prs"
-    INDEX_SUFFIX = [".idx", ".grib2.idx"]  # Try .idx first, then .grib2.idx
+        if source is None:
+            source = next(iter(remote_urls.keys()))
 
-    def _validate_params(self) -> None:
-        """Validate parameters."""
-        product = self.params.get("product", self.DEFAULT_PRODUCT)
-        if product not in self.VALID_PRODUCTS.keys():
+        if source not in remote_urls:
+            available = ", ".join(remote_urls.keys())
             raise ValueError(
-                f"Invalid product '{product}'. Must be one of {self.VALID_PRODUCTS}"
+                f"Source '{source}' not found. Available sources: {available}"
             )
 
-        step = self.params.get("step", self.DEFAULT_STEP)
-        if not isinstance(step, int) or step < 0 or step > 48:
-            raise ValueError(f"Invalid forecast hour '{step}'. Must be 0-48")
-
-    def get_remote_urls(self) -> dict[str, str]:
-        """Return all the URLs.
-
-        Note: Dict order defines default priority order.
-        """
-        date = self.date
-        step = self.params.get("step", self.DEFAULT_STEP)
-        product = self.params.get("product", self.DEFAULT_PRODUCT)
-
-        path = (
-            f"hrrr.{date:%Y%m%d}/conus/hrrr.t{date:%H}z.wrf{product}f{step:02d}.grib2"
-        )
-        path2 = f"hrrr/{product}/{date:%Y%m%d}/hrrr.t{date:%H}z.wrf{product}f{step:02d}.grib2"
-
-        return {
-            "aws": f"https://noaa-hrrr-bdp-pds.s3.amazonaws.com/{path}",
-            "google": f"https://storage.googleapis.com/high-resolution-rapid-refresh/{path}",
-            "nomads": f"https://nomads.ncep.noaa.gov/pub/data/nccf/com/hrrr/prod/{path}",
-            "azure": f"https://noaahrrr.blob.core.windows.net/hrrr/{path}",
-            "pando": f"https://pando-rgw01.chpc.utah.edu/{path2}",
-            "pando2": f"https://pando-rgw02.chpc.utah.edu/{path2}",
-        }
+        url = remote_urls[source]
+        return Path(urlparse(url).path.lstrip("/"))
