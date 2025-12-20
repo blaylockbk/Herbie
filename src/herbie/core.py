@@ -172,14 +172,14 @@ class Herbie:
 
     def __init__(
         self,
-        date: Optional[Datetime] = None,
+        date: Datetime | None = None,
         *,
-        valid_date: Optional[Datetime] = None,
+        valid_date: Datetime | None = None,
         model: str = config["default"].get("model"),
         fxx: int = config["default"].get("fxx"),
         product: str = config["default"].get("product"),
-        priority: Union[str, list[str]] = config["default"].get("priority"),
-        save_dir: Union[Path, str] = config["default"].get("save_dir"),
+        priority: str | list[str] = config["default"].get("priority"),
+        save_dir: Path | str = config["default"].get("save_dir"),
         overwrite: bool = config["default"].get("overwrite", False),
         verbose: bool = config["default"].get("verbose", True),
         **kwargs,
