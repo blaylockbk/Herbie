@@ -6,6 +6,7 @@ import inspect
 import pkgutil
 from datetime import datetime, timedelta
 from pathlib import Path
+import hashlib
 
 import polars as pl
 from rich import box
@@ -247,22 +248,71 @@ class Herbie:
         """Show the download groups."""
         return self.inventory(filters).pipe(create_download_groups)
 
+    def get_download_hash(
+        self, filters: str | pl.Expr | list[pl.Expr] | None = None
+    ) -> str | None:
+        """Return a short hash representing the subset indices.
+
+        This hash is used to uniquely identify a downloaded subset file
+        following the pattern: <original_name>__subset-<hash>
+        """
+        index_list = self.inventory(filters)["index"].sort().to_list()
+
+        if not index_list:
+            return None
+
+        all_grib_msg = "-".join([f"{i:g}" for i in index_list])
+        hash_label = hashlib.blake2b(all_grib_msg.encode(), digest_size=4).hexdigest()
+
+        return hash_label
+
     def download(
         self,
         filters: pl.Expr | list[pl.Expr] | None = None,
         output_file: Path | None = None,
         max_workers: int = 5,
+        overwrite: bool = False,
     ):
-        """Download full or subset of GRIB2 files."""
-        df = self.get_download_groups(filters)
+        """Download full or subset of GRIB2 files.
 
+        Parameters
+        ----------
+        filters : pl.Expr | list[pl.Expr] | None
+            Filter to apply to the inventory for subsetting.
+        output_file : Path | None
+            Output file path. If None, uses default local path.
+        max_workers : int
+            Maximum number of parallel download workers.
+        overwrite : bool
+            If False (default), skip download if file already exists locally.
+            If True, always download and overwrite existing file.
+        """
         if output_file is None:
             output_file = self.save_dir / self.local_path
+
+        # If filters provided, append a short hash representing
+        # the GRIB message indices to the original filename so
+        # subset files are distinguishable but remain sortable.
+        if filters is not None:
+            hash_label = self.get_download_hash(filters)
+            if hash_label is not None:
+                new_name = f"{output_file.name}__subset-{hash_label}"
+                output_file = output_file.parent / new_name
+                logger.debug(
+                    f"Subset file will be downloaded with name: [green]{output_file.name}[/green]"
+                )
+
+        if output_file.exists() and not overwrite:
+            logger.debug(
+                f"[yellow]File already exists[/yellow]: {output_file}. Skipping download."
+            )
+            return output_file
 
         if not output_file.parent.is_dir():
             output_file.parent.mkdir(parents=True, exist_ok=True)
             logger.debug(f"Created directory: [green]{output_file.parent}[/green]")
 
+        df = self.get_download_groups(filters)
         return download_grib2_from_dataframe(
             df,
             output_file=output_file,
@@ -274,10 +324,22 @@ class Herbie:
         filters: str | pl.Expr | list[pl.Expr] | None = None,
         *,
         backend_kwargs: dict = {},
+        overwrite: bool = False,
     ):
-        """Load data into xarray."""
+        """Load data into xarray.
+
+        Parameters
+        ----------
+        filters : str | pl.Expr | list[pl.Expr] | None
+            Filter to apply to the inventory for subsetting.
+        backend_kwargs : dict
+            Backend keyword arguments for cfgrib.
+        overwrite : bool
+            If False (default), skip download if file already exists locally.
+            If True, always download and overwrite existing file.
+        """
         from .xarray_loader import load_grib2_into_xarray
 
-        local_file = self.download(filters)
+        local_file = self.download(filters, overwrite=overwrite)
 
         return load_grib2_into_xarray(local_file, backend_kwargs=backend_kwargs)
