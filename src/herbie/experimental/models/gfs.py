@@ -43,14 +43,7 @@ class GFSTemplate(ModelTemplate):
 
     INDEX_SUFFIX = [".idx", ".grb2.inv"]
 
-    def _resolution_to_string(self, resolution) -> str:
-        """Convert resolution float to grib2 format string."""
-        if isinstance(resolution, float):
-            res_str = f"{resolution:.2f}".replace(".", "p")
-            return res_str
-        else:
-            raise ValueError(f"Invalid resolution format: {resolution}")
-
+    
     def get_remote_urls(self) -> dict[str, str]:
         """Return all the URLs.
 

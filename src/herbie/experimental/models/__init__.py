@@ -396,6 +396,20 @@ class ModelTemplate(ABC):
 
         return results
 
+    def _resolution_to_string(self, resolution: int | float) -> str:
+        """Convert resolution float to grib2 format string.
+
+        For example:
+            0.25 → 0p25
+            0.5 → 0p5
+            1.0 → 1p0
+        """
+        if isinstance(resolution, float):
+            res_str = f"{resolution:.2f}".replace(".", "p")
+            return res_str
+        else:
+            raise ValueError(f"Invalid resolution format: {resolution}")
+
     def display(self):
         """Print the rich representation to console."""
         console = Console()
@@ -414,17 +428,29 @@ class ModelTemplate(ABC):
             # Check if parameter is valid (if it exists)
             if value is not None:
                 valid_list = param_config.get("valid")
+                aliases = param_config.get("aliases", {})
+                alias_list = list(aliases.keys())
                 if valid_list is not None:
                     if isinstance(valid_list, range):
-                        if not (value in valid_list):
-                            raise ValueError(
-                                f"Invalid {param_name} '{value}'. Must be in range({valid_list.start}, {valid_list.stop})"
-                            )
+                        if value not in valid_list:
+                            if alias_list:
+                                raise ValueError(
+                                    f"Invalid {param_name} '{value}'. Must be in range({valid_list.start}, {valid_list.stop}) or an alias {alias_list}"
+                                )
+                            else:
+                                raise ValueError(
+                                    f"Invalid {param_name} '{value}'. Must be in range({valid_list.start}, {valid_list.stop})"
+                                )
                     else:
                         if value not in valid_list:
-                            raise ValueError(
-                                f"Invalid {param_name} '{value}'. Must be one of {valid_list}"
-                            )
+                            if alias_list:
+                                raise ValueError(
+                                    f"Invalid {param_name} '{value}'. Must be one of {valid_list} or an alias {alias_list}"
+                                )
+                            else:
+                                raise ValueError(
+                                    f"Invalid {param_name} '{value}'. Must be one of {valid_list}"
+                                )
 
     def _check_url_exists(self, url: str, timeout: int = 5) -> bool:
         """Check if a URL exists using HEAD request.
