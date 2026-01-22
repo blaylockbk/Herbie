@@ -46,6 +46,47 @@ log = logging.getLogger(__name__)
 wgrib2 = which("wgrib2")
 
 
+def _reporthook(a, b, c):
+    """
+    Print download progress in megabytes.
+
+    Parameters
+    ----------
+    a : Chunk number
+    b : Maximum chunk size
+    c : Total size of the download
+    """
+    chunk_progress = a * b / c * 100
+    total_size_MB = c / 1000000.0
+    print(
+        f"\r🚛💨  Download Progress: {chunk_progress:.2f}% of {total_size_MB:.1f} MB\r",
+        end="",
+    )
+
+
+def download_with_requests(
+    url, outFile, reporthook=_reporthook, chunk_size=8192, *, verbose=False
+):
+    """Download a full file using the requests library."""
+    response = requests.get(url, stream=True)
+    response.raise_for_status()
+
+    total = int(response.headers.get("content-length", 0))
+    downloaded = 0
+
+    with open(outFile, "wb") as f:
+        for chunk in response.iter_content(chunk_size=chunk_size):
+            if not chunk:
+                continue
+
+            f.write(chunk)
+            downloaded += len(chunk)
+
+            # mimic urllib reporthook(count, blocksize, totalsize)
+            if reporthook and verbose:
+                reporthook(downloaded // chunk_size, chunk_size, total)
+
+
 def wgrib2_idx(grib2filepath: Path | str) -> str:
     """
     Produce the GRIB2 inventory index with wgrib2.
@@ -421,6 +462,13 @@ class Herbie:
                 idx_url = url + i
 
             try:
+                if "blob.core.windows.net" in idx_url:
+                    dl_url = (
+                        "https://planetarycomputer.microsoft.com/api/sas/v1/sign?href="
+                        + idx_url
+                    )
+                    response = requests.get(dl_url)
+                    idx_url = response.json()["href"]
                 idx_exists = requests.head(idx_url).ok
             except Exception as e:
                 if verbose:
@@ -474,8 +522,15 @@ class Herbie:
             # Get the file URL for the source and determine if the
             # GRIB2 file and the index file exist. If found, store the
             # URL for the GRIB2 file and the .idx file.
-            grib_url = self.SOURCES[source]
-
+            if "azure" in source:
+                download_url = (
+                    "https://planetarycomputer.microsoft.com/api/sas/v1/sign?href="
+                    + self.SOURCES[source]
+                )
+                response = requests.get(download_url)
+                grib_url = response.json()["href"]
+            else:
+                grib_url = self.SOURCES[source]
             if source.startswith("local"):
                 grib_path = Path(grib_url)
                 if grib_path.exists():
@@ -536,7 +591,15 @@ class Herbie:
             # Get the file URL for the source and determine if the
             # GRIB2 file and the index file exist. If found, store the
             # URL for the GRIB2 file and the .idx file.
-            grib_url = self.SOURCES[source]
+            if "azure" in source:
+                download_url = (
+                    "https://planetarycomputer.microsoft.com/api/sas/v1/sign?href="
+                    + self.SOURCES[source]
+                )
+                response = requests.get(download_url)
+                grib_url = response.json()["href"]
+            else:
+                grib_url = self.SOURCES[source]
 
             if source.startswith("local"):
                 local_grib = Path(grib_url)
@@ -544,7 +607,7 @@ class Herbie:
                 if local_idx.exists():
                     return (local_idx, "local")
             else:
-                idx_exists, idx_url = self._check_idx(grib_url)
+                idx_exists, idx_url = self._check_idx(self.SOURCES[source])
 
                 if idx_exists:
                     return (idx_url, source)
@@ -968,24 +1031,6 @@ class Herbie:
 
         """
 
-        def _reporthook(a, b, c):
-            """
-            Print download progress in megabytes.
-
-            Parameters
-            ----------
-            a : Chunk number
-            b : Maximum chunk size
-            c : Total size of the download
-            """
-            chunk_progress = a * b / c * 100
-            total_size_MB = c / 1000000.0
-            if verbose:
-                print(
-                    f"\r🚛💨  Download Progress: {chunk_progress:.2f}% of {total_size_MB:.1f} MB\r",
-                    end="",
-                )
-
         def subset(search, outFile, verbose=True):
             """Download/extract a subset specified by the regex search."""
             grib_source = self.grib
@@ -1019,8 +1064,9 @@ class Herbie:
                             f"  {row.grib_message:<3g} {ANSI.orange}{row.search_this}{ANSI.reset}"
                         )
 
-                start_byte = int(subset_group.start_byte.min())
-                end_byte = int(subset_group.end_byte.max())
+                start_byte = subset_group.start_byte.min()
+
+                end_byte = subset_group.end_byte.max()
 
                 if end_byte - start_byte < 0:
                     if verbose:
@@ -1032,11 +1078,22 @@ class Herbie:
                     if is_local:
                         # Read from local file
                         with open(grib_source, "rb") as src:
-                            src.seek(start_byte)
-                            data = src.read(end_byte - start_byte + 1)
+                            if verbose:
+                                print(
+                                    f"Read local file: bytes={int(start_byte)}-{int(end_byte) if not pd.isna(end_byte) else ''}"
+                                )
+                            src.seek(int(start_byte))
+                            if pd.isna(end_byte):
+                                data = src.read()
+                            else:
+                                data = src.read(int(end_byte) - int(start_byte) + 1)
                     else:
                         # Download from remote URL
-                        headers = {"Range": f"bytes={start_byte}-{end_byte}"}
+                        headers = {
+                            "Range": f"bytes={int(start_byte)}-{int(end_byte) if not pd.isna(end_byte) else ''}"
+                        }
+                        if verbose:
+                            print(f"Download subset: {headers=}")
                         response = requests.get(
                             grib_source,
                             headers=headers,
@@ -1051,7 +1108,9 @@ class Herbie:
                         f.write(data)
 
                     if verbose:
-                        print(f"  ✓ Processed bytes {start_byte}-{end_byte}")
+                        print(
+                            f"  ✓ Processed bytes {int(start_byte)}-{int(end_byte) if not pd.isna(end_byte) else ''}"
+                        )
 
                 except (IOError, requests.RequestException) as e:
                     if verbose:
@@ -1146,7 +1205,7 @@ class Herbie:
         # ===============
         if search in [None, ":"] or self.idx is None:
             # Download the full file from remote source
-            urllib.request.urlretrieve(self.grib, outFile, _reporthook)
+            download_with_requests(self.grib, outFile, _reporthook, verbose=verbose)
 
             original_source = self.grib
 

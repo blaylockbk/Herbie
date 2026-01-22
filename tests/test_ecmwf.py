@@ -40,6 +40,13 @@ def test_ifs_download_partial(date):
     assert H.get_localFilePath(":2t:").exists()
     f.unlink()
 
+@pytest.mark.parametrize("date", DATES)
+def test_ifs_azure_download_partial(date):
+    H = Herbie(date, model="ifs", product="oper", priority="azure", save_dir=save_dir, overwrite=True)
+    f = H.download(":2t:")
+    assert H.get_localFilePath(":2t:").exists()
+    f.unlink()
+
 
 @pytest.mark.parametrize("date, filter", [(d, f) for d in DATES for f in FILTERS])
 def test_ifs_xarray(date, filter):

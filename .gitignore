@@ -9,6 +9,7 @@ wheels/
 # Virtual environments
 .venv
 venv
+oryx-build-commands.txt
 
 .ipynb_checkpoints
 *$py.class

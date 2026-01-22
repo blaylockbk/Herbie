@@ -207,3 +207,22 @@ class graphcast:
         }
         self.IDX_SUFFIX = [".idx"]
         self.LOCALFILE = f"{self.get_remoteFileName}"
+
+class aigfs:
+    """NOAA AI Global Forecast System."""
+
+    def template(self):
+        self.DESCRIPTION = "NOAA AI Global Forecast System"
+        self.DETAILS = {
+            "nomads product description": "https://www.nco.ncep.noaa.gov/pmb/products/aigfs",
+        }
+        self.PRODUCTS = {
+            "sfc": "surface fields, 0.25 degree resolution",
+            "pres": "pressure fields, 0.25 degree resolution"
+        }
+        post_root = f"aigfs.{self.date:%Y%m%d/%H}/model/atmos/grib2/aigfs.t{self.date:%H}z.{self.product}.f{self.fxx:03d}"
+        self.SOURCES = {
+            "nomads": f"https://nomads.ncep.noaa.gov/pub/data/nccf/com/aigfs/prod/{post_root}.grib2"
+        }
+        self.LOCALFILE = f"{self.get_remoteFileName}"
+        self.IDX_SUFFIX = [".idx"]
