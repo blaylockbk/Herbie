@@ -31,7 +31,8 @@ keywords = [
 ]
 dependencies = [
     "cfgrib>=0.9.15",
-    "eccodes>=2.37.0",
+    "eccodes>=2.45.0",
+    "eccodeslib; sys_platform != 'win32'",
     "numpy>=1.24",
     "pandas>=2.1",
     "pyproj>=3.7.0",
