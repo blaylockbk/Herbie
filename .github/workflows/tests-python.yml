@@ -30,7 +30,6 @@ jobs:
           - os: ubuntu-latest
             python-version: "3.13"
             resolution: "lowest-direct"
-            no-lock: true
           - os: macos-latest
             python-version: "3.13"
             continue-on-error: true
@@ -53,7 +52,7 @@ jobs:
 
       - name: Install the project
         shell: bash -el {0}
-        run: uv sync --extra extras ${{ matrix.resolution && format('--resolution {0}', matrix.resolution) || '' }} ${{ matrix.no-lock && '--no-lock' || '' }}
+        run: uv sync --extra extras ${{ matrix.resolution && format('--resolution {0}', matrix.resolution) || '' }}
 
       - name: Run tests
         shell: bash -el {0}
