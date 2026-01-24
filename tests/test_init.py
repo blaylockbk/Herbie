@@ -22,7 +22,7 @@ def test_Path_expand():
 
 def test_default_toml():
     # Confirm that default_toml is valid
-    a = tomllib.loads(default_toml.encode())
+    a = tomllib.loads(default_toml)
 
     a["default"]["model"] == "hrrr"
     a["default"]["fxx"] == 0

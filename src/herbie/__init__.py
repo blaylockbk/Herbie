@@ -186,7 +186,7 @@ except Exception:
             f" │ Consider setting env variable HERBIE_CONFIG_PATH.    │\n"
             f" ╰──────────────────────────────────────────────────────╯\n"
         )
-        config = tomllib.loads(default_toml.encode())
+        config = tomllib.loads(default_toml)
 
 
 # Expand the full path for `save_dir`
