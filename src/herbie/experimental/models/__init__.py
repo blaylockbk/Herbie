@@ -502,7 +502,7 @@ class ModelTemplate(ABC):
 
     def find_first_existing_url(
         self, priority: list[str] | None = None, timeout: int = 5
-    ) -> tuple[str, str] | None:
+    ) -> tuple[str | None, str | None]:
         """Find the first existing URL from the priority list.
 
         Args:
@@ -530,11 +530,12 @@ class ModelTemplate(ABC):
             if self._check_url_exists(url, timeout):
                 return (source, url)
 
-        return None
+        # Return explicit (None, None) so callers can always unpack safely
+        return (None, None)
 
     def find_first_existing_index(
         self, priority: list[str] | None = None, timeout: int = 5
-    ) -> tuple[str, str] | None:
+    ) -> tuple[str | None, str | None]:
         """Find the first existing index file from the priority list.
 
         For each source, tries all possible index suffixes in order
@@ -565,11 +566,21 @@ class ModelTemplate(ABC):
 
             # Try each index suffix
             for suffix in self.INDEX_SUFFIX:
-                index_url = base_url + suffix
-                if self._check_url_exists(index_url, timeout):
-                    return (source, index_url)
+                # Common patterns: index file may be stored as <base> + suffix
+                # or it may replace the data extension (e.g., .grib2 -> .index).
+                index_url_candidates = [
+                    base_url + suffix,
+                    # If base_url has an extension like '.grib2', replace it with the suffix
+                    (base_url.rsplit('.', 1)[0] + suffix) if '.' in base_url else None,
+                ]
+                for index_url in index_url_candidates:
+                    if not index_url:
+                        continue
+                    if self._check_url_exists(index_url, timeout):
+                        return (source, index_url)
 
-        return None
+        # Return explicit (None, None) so callers can always unpack safely
+        return (None, None)
 
     def get_local_path(self, source: str | None = None) -> Path:
         """Get the local path for a GRIB2 file.

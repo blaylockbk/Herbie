@@ -86,16 +86,16 @@ class IFSTemplate(ModelTemplate):
             product_suffix = "fc"
 
         # Build path based on date (layout changed on 2024-02-28)
-        if date < datetime(2024, 2, 28, 6):
-            post_root = (
-                f"{date:%Y%m%d/%Hz}/{resolution}/{product}"
-                f"/{date:%Y%m%d%H%M%S}-{step:03d}h-{product}-{product_suffix}.grib2"
-            )
-        else:
-            post_root = (
-                f"{date:%Y%m%d/%Hz}/ifs/{resolution}/{product}"
-                f"/{date:%Y%m%d%H%M%S}-{step:03d}h-{product}-{product_suffix}.grib2"
-            )
+            if date < datetime(2024, 2, 28, 6):
+                post_root = (
+                    f"{date:%Y%m%d/%H}z/{resolution}/{product}"
+                    f"/{date:%Y%m%d%H%M%S}-{step}h-{product}-{product_suffix}.grib2"
+                )
+            else:
+                post_root = (
+                    f"{date:%Y%m%d/%H}z/ifs/{resolution}/{product}"
+                    f"/{date:%Y%m%d%H%M%S}-{step}h-{product}-{product_suffix}.grib2"
+                )
 
         return {
             "google": f"https://storage.googleapis.com/ecmwf-open-data/{post_root}",
