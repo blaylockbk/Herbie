@@ -34,7 +34,7 @@ dependencies = [
     "eccodes>=2.45.0",
     "eccodeslib>=2.44.1.8; sys_platform != 'win32'",
     "numpy>=1.26.4",
-    "pandas>=2.2,<3.0",
+    "pandas>=2.2.3",
     "pyproj>=3.7.0",
     "requests>=2.23.3",
     "xarray>=2025.1.1",
@@ -55,13 +55,12 @@ build-backend = "hatchling.build"
 [dependency-groups]
 dev = [
     "ipykernel>=6.29.5",
-    "jupyter>=1.1.1",
-    "pytest>=8.3.5",
-    "pytest-cov>=6.1.1",
-    "ruff>=0.11.6",
-    "scipy>=1.15.2",     # only needed for test writing netcdf file
+    "pytest>=9.0.2",
+    "pytest-cov>=7.0.0",
+    "ruff>=0.14.14",
+    "scipy>=1.17.0",     # only needed for test writing netcdf file
     "cartopy>=0.25.0",
-    "metpy>=1.3.0",
+    "metpy>=1.7.1",
 ]
 docs = [
     "autodocsumm>=0.2.14",
@@ -82,8 +81,8 @@ docs = [
 
 
 [project.optional-dependencies]
-plot = ["cartopy>=0.25.0", "matplotlib>=3.10.0", "metpy>=1.3.0"]
-metpy = ["metpy>=1.3.0"]
+plot = ["cartopy>=0.25.0", "matplotlib>=3.10.0", "metpy>=1.7.1"]
+metpy = ["metpy>=1.7.1"]
 scikit-learn = ["scikit-learn>=1.8.0"]
 
 pygrib = ["pygrib>=2.1.8"]
