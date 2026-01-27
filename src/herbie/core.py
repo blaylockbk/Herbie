@@ -825,12 +825,12 @@ class Herbie:
             df = df.dropna(how="all", axis=1)
 
             df["search_this"] = (
-                df.loc[:, "variable":]
+                ":"
+                + df.loc[:, "variable":]
                 .astype(str)
-                .apply(
-                    lambda x: ":" + ":".join(x).rstrip(":").replace(":nan:", ":"),
-                    axis=1,
-                )
+                .apply(lambda x: x.str.cat(sep=":"), axis=1)
+                .replace(":nan:", ":")
+                + ":"
             )
 
         if self.IDX_STYLE == "eccodes":
