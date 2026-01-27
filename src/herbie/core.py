@@ -904,12 +904,12 @@ class Herbie:
             )
 
             df["search_this"] = (
-                df.loc[:, "param":]
+                ":"
+                + df.loc[:, "param":]
                 .astype(str)
-                .apply(
-                    lambda x: ":" + ":".join(x).rstrip(":").replace(":nan:", ":"),
-                    axis=1,
-                )
+                .apply(lambda x: x.str.cat(sep=":"), axis=1)
+                .replace(":nan:", ":")
+                + ":"
             )
 
         # Attach some attributes
