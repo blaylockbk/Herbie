@@ -2,17 +2,17 @@
 name = "herbie-data"
 description = "Download numerical weather prediction GRIB2 model data."
 readme = "README.md"
-requires-python = ">=3.10"
+requires-python = ">=3.11"
 license = { file = "LICENSE" }
 authors = [{ name = "Brian K. Blaylock", email = "blaylockbk@gmail.com" }]
 maintainers = [{ name = "Brian K. Blaylock", email = "blaylockbk@gmail.com" }]
 classifiers = [
     "Development Status :: 4 - Beta",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
     "Operating System :: MacOS",
     "Operating System :: Microsoft :: Windows",
     "Operating System :: POSIX :: Linux",
@@ -31,12 +31,12 @@ keywords = [
 ]
 dependencies = [
     "cfgrib>=0.9.15",
-    "eccodes>=2.37.0",
-    "numpy>=1.24",
-    "pandas>=2.1",
+    "eccodes>=2.45.0",
+    "eccodeslib>=2.44.1.8; sys_platform != 'win32'",
+    "numpy>=1.26.4",
+    "pandas>=2.2.3",
     "pyproj>=3.7.0",
     "requests>=2.23.3",
-    "toml>=0.10.2",     # TODO: Drop in favor of tomllib when Python >=3.11 is required.
     "xarray>=2025.1.1",
 ]
 dynamic = ["version"]
@@ -55,13 +55,12 @@ build-backend = "hatchling.build"
 [dependency-groups]
 dev = [
     "ipykernel>=6.29.5",
-    "jupyter>=1.1.1",
-    "pytest>=8.3.5",
-    "pytest-cov>=6.1.1",
-    "ruff>=0.11.6",
-    "scipy>=1.15.2", # only needed for test writing netcdf file
-    "cartopy>=0.22",
-    "metpy>=1.3.0",
+    "pytest>=9.0.2",
+    "pytest-cov>=7.0.0",
+    "ruff>=0.14.14",
+    "scipy>=1.17.0",     # only needed for test writing netcdf file
+    "cartopy>=0.25.0",
+    "metpy>=1.7.1",
 ]
 docs = [
     "autodocsumm>=0.2.14",
@@ -82,11 +81,11 @@ docs = [
 
 
 [project.optional-dependencies]
-plot = ["cartopy", "matplotlib", "metpy"]
-metpy = ["metpy"]
-scikit-learn = ["scikit-learn"]
+plot = ["cartopy>=0.25.0", "matplotlib>=3.10.0", "metpy>=1.7.1"]
+metpy = ["metpy>=1.7.1"]
+scikit-learn = ["scikit-learn>=1.8.0"]
 
-pygrib = ["pygrib"]
+pygrib = ["pygrib>=2.1.8"]
 
 extras = [
     "herbie-data[plot,metpy,scikit-learn]", # Didn't include pygrib on purpose
