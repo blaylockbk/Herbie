@@ -114,22 +114,32 @@ herbie inventory -m rap -d 2023031512 -f 0
 Herbie provides access to a wide range of numerical weather prediction models:
 
 ### US Models (NOAA)
+
+#### Regional 
+
 - **[HRRR](https://herbie.readthedocs.io/en/latest/gallery/noaa_models/hrrr.html)** - High Resolution Rapid Refresh (3km resolution)
 - **[HRRR-Alaska](https://herbie.readthedocs.io/en/latest/gallery/noaa_models/hrrrak.html)** - Alaska version
-- **[GFS](https://herbie.readthedocs.io/en/latest/gallery/noaa_models/gfs.html)** - Global Forecast System
-- **[GEFS](https://herbie.readthedocs.io/en/latest/gallery/noaa_models/gefs.html)** - Global Ensemble Forecast System
 - **[RAP](https://herbie.readthedocs.io/en/latest/gallery/noaa_models/rap.html)** - Rapid Refresh
 - **[NAM](https://herbie.readthedocs.io/en/latest/gallery/noaa_models/nam.html)** - North American Mesoscale Model
 - **[NBM](https://herbie.readthedocs.io/en/latest/gallery/noaa_models/nbm.html)** - National Blend of Models
 - **[RTMA/URMA](https://herbie.readthedocs.io/en/latest/gallery/noaa_models/rtma-urma.html)** - Real-Time/Un-Restricted Mesoscale Analysis
 - **[RRFS](https://herbie.readthedocs.io/en/latest/gallery/noaa_models/rrfs.html)** - Rapid Refresh Forecast System *(prototype)*
 - **[HAFS](https://herbie.readthedocs.io/en/latest/gallery/noaa_models/hafs.html)** - Hurricane Analysis and Forecast System
+
+#### Global
+
+- **[GFS](https://herbie.readthedocs.io/en/latest/gallery/noaa_models/gfs.html)** - Global Forecast System
+- **[GEFS](https://herbie.readthedocs.io/en/latest/gallery/noaa_models/gefs.html)** - Global Ensemble Forecast System
+- **[AIGFS](https://herbie.readthedocs.io/en/latest/gallery/noaa_models/aigfs.html)** - AI Emulator of Global Forecast System
+- **[AIGEFS](https://herbie.readthedocs.io/en/latest/gallery/noaa_models/aigefs.html)** - AI Emulator of Global Ensemble Forecast System
+- **[HGEFS](https://herbie.readthedocs.io/en/latest/gallery/noaa_models/hgefs.html)** - Hybrid Global Ensemble Forecast System
 - **[CFS](https://herbie.readthedocs.io/en/latest/gallery/noaa_models/cfs.html)** - Climate Forecast System
 
 Much of this data is made available through the [NOAA Open Data Dissemination](https://www.noaa.gov/information-technology/open-data-dissemination) (NODD) program.
 
 ### Other Models
-- **[ECMWF](https://herbie.readthedocs.io/en/latest/gallery/ecmwf_models/ecmwf.html)** - ECMWF's IFS and AIFS Open Data Forecasts
+- **[ECMWF - IFS](https://herbie.readthedocs.io/en/latest/gallery/ecmwf_models/ecmwf.html)** - ECMWF's Integrated Forecast System
+- **[ECMWF - AIFS](https://herbie.readthedocs.io/en/latest/gallery/ecmwf_models/ecmwf.html)** - ECMWF's Artificial Intelligence Forecast System
 - **[HRDPS](https://herbie.readthedocs.io/en/latest/gallery/eccc_models/hrdps.html)** - Canada's High Resolution Deterministic Prediction System (Canada)
 - **[NAVGEM](https://herbie.readthedocs.io/en/latest/gallery/usnavy_models/navgem.html)** - U.S. Navy Global Environmental Model
 
