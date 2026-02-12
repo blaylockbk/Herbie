@@ -20,13 +20,19 @@ jobs:
       matrix:
         include:
           - os: ubuntu-latest
-            python-version: "3.10"
+            python-version: "3.11"
           - os: ubuntu-latest
             python-version: "3.11"
+            resolution: "lowest-direct"
           - os: ubuntu-latest
             python-version: "3.12"
           - os: ubuntu-latest
             python-version: "3.13"
+          - os: ubuntu-latest
+            python-version: "3.14"
+          - os: ubuntu-latest
+            python-version: "3.13"
+            resolution: "lowest-direct"
           - os: macos-latest
             python-version: "3.13"
             continue-on-error: true
@@ -34,7 +40,7 @@ jobs:
             python-version: "3.13"
             continue-on-error: true
 
-    name: Python ${{ matrix.python-version }} • ${{ matrix.os }}
+    name: Python ${{ matrix.python-version }} • ${{ matrix.os }}${{ matrix.resolution && format(' • {0}', matrix.resolution) || '' }}
 
     steps:
       - name: Checkout repository
@@ -49,7 +55,7 @@ jobs:
 
       - name: Install the project
         shell: bash -el {0}
-        run: uv sync --extra extras
+        run: uv sync --extra extras ${{ matrix.resolution && format('--resolution {0}', matrix.resolution) || '' }}
 
       - name: Run tests
         shell: bash -el {0}

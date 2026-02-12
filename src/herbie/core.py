@@ -46,6 +46,47 @@ log = logging.getLogger(__name__)
 wgrib2 = which("wgrib2")
 
 
+def _reporthook(a, b, c):
+    """
+    Print download progress in megabytes.
+
+    Parameters
+    ----------
+    a : Chunk number
+    b : Maximum chunk size
+    c : Total size of the download
+    """
+    chunk_progress = a * b / c * 100
+    total_size_MB = c / 1000000.0
+    print(
+        f"\r🚛💨  Download Progress: {chunk_progress:.2f}% of {total_size_MB:.1f} MB\r",
+        end="",
+    )
+
+
+def download_with_requests(
+    url, outFile, reporthook=_reporthook, chunk_size=8192, *, verbose=False
+):
+    """Download a full file using the requests library."""
+    response = requests.get(url, stream=True)
+    response.raise_for_status()
+
+    total = int(response.headers.get("content-length", 0))
+    downloaded = 0
+
+    with open(outFile, "wb") as f:
+        for chunk in response.iter_content(chunk_size=chunk_size):
+            if not chunk:
+                continue
+
+            f.write(chunk)
+            downloaded += len(chunk)
+
+            # mimic urllib reporthook(count, blocksize, totalsize)
+            if reporthook and verbose:
+                reporthook(downloaded // chunk_size, chunk_size, total)
+
+
 def wgrib2_idx(grib2filepath: Path | str) -> str:
     """
     Produce the GRIB2 inventory index with wgrib2.
@@ -784,12 +825,12 @@ class Herbie:
             df = df.dropna(how="all", axis=1)
 
             df["search_this"] = (
-                df.loc[:, "variable":]
+                ":"
+                + df.loc[:, "variable":]
                 .astype(str)
-                .apply(
-                    lambda x: ":" + ":".join(x).rstrip(":").replace(":nan:", ":"),
-                    axis=1,
-                )
+                .apply(lambda x: x.str.cat(sep=":"), axis=1)
+                .replace(":nan:", ":")
+                + ":"
             )
 
         if self.IDX_STYLE == "eccodes":
@@ -863,12 +904,12 @@ class Herbie:
             )
 
             df["search_this"] = (
-                df.loc[:, "param":]
+                ":"
+                + df.loc[:, "param":]
                 .astype(str)
-                .apply(
-                    lambda x: ":" + ":".join(x).rstrip(":").replace(":nan:", ":"),
-                    axis=1,
-                )
+                .apply(lambda x: x.str.cat(sep=":"), axis=1)
+                .replace(":nan:", ":")
+                + ":"
             )
 
         # Attach some attributes
@@ -989,24 +1030,6 @@ class Herbie:
             When an error occurs, send a warning or raise a value error.
 
         """
-
-        def _reporthook(a, b, c):
-            """
-            Print download progress in megabytes.
-
-            Parameters
-            ----------
-            a : Chunk number
-            b : Maximum chunk size
-            c : Total size of the download
-            """
-            chunk_progress = a * b / c * 100
-            total_size_MB = c / 1000000.0
-            if verbose:
-                print(
-                    f"\r🚛💨  Download Progress: {chunk_progress:.2f}% of {total_size_MB:.1f} MB\r",
-                    end="",
-                )
 
         def subset(search, outFile, verbose=True):
             """Download/extract a subset specified by the regex search."""
@@ -1182,7 +1205,7 @@ class Herbie:
         # ===============
         if search in [None, ":"] or self.idx is None:
             # Download the full file from remote source
-            urllib.request.urlretrieve(self.grib, outFile, _reporthook)
+            download_with_requests(self.grib, outFile, _reporthook, verbose=verbose)
 
             original_source = self.grib
 

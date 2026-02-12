@@ -77,7 +77,7 @@ Herbie: Download Weather Forecast Model Data in Python
 Supported Weather Models
 ------------------------
 
-Herbie provides access to a wide range of numerical weather prediction models:
+Herbie provides access to many numerical weather prediction models, including:
 
 **US Models (NOAA):**
 
@@ -85,6 +85,9 @@ Herbie provides access to a wide range of numerical weather prediction models:
 - **Rapid Refresh (RAP)** - 13km resolution regional forecasts
 - **Global Forecast System (GFS)** - Global medium-range forecasts
 - **Global Ensemble Forecast System (GEFS)** - Global ensemble predictions
+- **AI Global Forecast System (AIGFS)** - AI Global medium-range forecasts
+- **AI Global Ensemble Forecast System (AIGEFS)** - AI Global ensemble predictions
+- **Hybrid Global Ensemble Forecast System (HGEFS)** - Hybrid Global ensemble predictions
 - **National Blend of Models (NBM)** - Statistically blended forecasts
 - **Rapid Refresh Forecast System (RRFS)** - Next-generation RAP/HRRR *(prototype)*
 - **Real-Time/Un-Restricted Mesoscale Analysis (RTMA/URMA)** - Gridded observations
@@ -97,7 +100,7 @@ Herbie provides access to a wide range of numerical weather prediction models:
 - **NAVGEM** - US Navy global environmental model
 - **HRDPS** - Canadian high-resolution forecasts
 
-**And many more!** See the :ref:`Gallery` for complete model coverage.
+See the :ref:`Gallery` for complete model coverage.
 
 .. tip::
    Much of this data is made available through the `NOAA Open Data Dissemination <https://www.noaa.gov/information-technology/open-data-dissemination>`_ (NODD) program, making weather data more accessible than ever before.
@@ -144,7 +147,7 @@ Installation
 
 **Requirements:**
 
-- Python 3.10 or higher
+- Python 3.11 or higher
 - xarray and cfgrib for reading GRIB2 data
 - wgrib2 (optional, for advanced subsetting)
 
