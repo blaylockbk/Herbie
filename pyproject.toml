@@ -54,17 +54,17 @@ build-backend = "hatchling.build"
 
 [dependency-groups]
 dev = [
-    "ipykernel>=6.29.5",
+    "ipykernel>=7.1.0",
     "pytest>=9.0.2",
     "pytest-cov>=7.0.0",
     "ruff>=0.14.14",
     "scipy>=1.17.0",     # only needed for test writing netcdf file
     "cartopy>=0.25.0",
     "metpy>=1.7.1",
-    "polars>=1.35.2",
-    "pyarrow>=22.0.0",
-    "rich>=14.2.0",
-    "ty>=0.0.4",
+    "polars>=1.38.1",
+    "pyarrow>=23.0.0",
+    "rich>=14.3.2",
+    "ty>=0.0.16",
 ]
 docs = [
     "autodocsumm>=0.2.14",
@@ -95,9 +95,9 @@ extras = [
     "herbie-data[plot,metpy,scikit-learn]", # Didn't include pygrib on purpose
 ]
 experimental = [
-    "polars>=1.35.2",
-    "pyarrow>=22.0.0",
-    "rich[jupyter]>=14.2.0",
+    "polars>=1.38.1",
+    "pyarrow>=23.0.0",
+    "rich[jupyter]>=14.3.2",
 ]
 
 [tool.hatch]
