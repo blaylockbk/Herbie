@@ -6,8 +6,12 @@ def test_basic_gfs():
 
 
 def test_basic_hrrr():
-    H = Herbie("2025-12-10", model="hrrr", product="standard")
+    H = Herbie("2025-12-10", model="hrrr", product="surface")
 
 
 def test_basic_ifs():
     H = Herbie("2025-12-10", model="ifs")
+
+
+def test_basic_rtma():
+    H = Herbie("2025-12-10", model="rtma")

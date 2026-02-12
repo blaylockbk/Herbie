@@ -1,8 +1,4 @@
-"""RTMA (Real-Time Mesoscale Analysis) Model Templates.
-
-Refactored for the new ModelTemplate base class.
-Author: Brian Blaylock (original), Refactored: January 2025
-"""
+"""RTMA (Real-Time Mesoscale Analysis) Model Templates."""
 
 from herbie.experimental.models import ModelTemplate
 
