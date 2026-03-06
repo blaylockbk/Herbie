@@ -95,11 +95,11 @@ class Herbie:
     date : str, datetime, optional
         Model initialization date and time
     model : str
-        Model name (default: "hrrr")
+        Model name (default extracted from config, else 'hrrr')
     valid_date : str, datetime, optional
         Model valid date time. Only allowed if 'date' is None.
     save_dir : Path
-        Directory to save downloaded files
+        Directory to save downloaded files (default extracted from config, else '~/herbie-data')
     **kwargs
         Additional model-specific parameters (e.g., step, product, etc.)
     """
@@ -108,18 +108,67 @@ class Herbie:
         self,
         date: str | datetime | None = None,
         *,
-        model="hrrr",
-        save_dir: Path = Path("~/herbie-data/").expanduser(),
+        model: str | None = None,
+        save_dir: Path | str | None = None,
         **kwargs,
     ):
+        from .config import settings
+
+        # Cascading configs: specific_model_config -> default_config -> kwargs
+        # We need the model name first to know which specific config to load
+        model_name = model or settings.get("default", {}).get("model", "hrrr")
+        model_name = model_name.lower()
+
+        # Merge configuration starting with default
+        combined_kwargs = settings.get("default", {}).copy()
+        # Merge model-specific configuration
+        combined_kwargs.update(settings.get(model_name, {}))
+        # Override with explicit keyword arguments from user
+        combined_kwargs.update(kwargs)
+
+        # Extract mapped save_dir
+        if save_dir is not None:
+            resolved_save_dir = Path(save_dir).expanduser()
+        else:
+            resolved_save_dir = Path(combined_kwargs.get("save_dir", "~/herbie-data")).expanduser()
+
+        # Clean up combined_kwargs of non-template args
+        combined_kwargs.pop("model", None)
+        combined_kwargs.pop("save_dir", None)
+
         if isinstance(date, str):
             date = str_to_datetime(date)
 
         if date is None:
             raise ValueError("`date` is required; valid_date support was removed")
 
-        model_template = get_template(model)
-        self.template = model_template(date=date, save_dir=save_dir, **kwargs)
+        # Explicitly assign self.save_dir so the object has it mapped properly.
+        self.save_dir = resolved_save_dir
+
+        model_template = get_template(model_name)
+
+        # Only pass kwargs that this specific model template accepts via its PARAMS
+        # Or kwargs that were explicitly passed in by the user (which override validation)
+        template_kwargs = {}
+        for k, v in combined_kwargs.items():
+            if k in kwargs:
+                # User explicitly passed this, so let it through
+                template_kwargs[k] = v
+            elif k in model_template.PARAMS:
+                # It came from a config. Only keep it if the value is actually valid for THIS model.
+                valid_opts = model_template.PARAMS[k].get("valid")
+                aliases = model_template.PARAMS[k].get("aliases", {})
+                if valid_opts is not None:
+                    if isinstance(valid_opts, range):
+                        if v in valid_opts or v in aliases:
+                            template_kwargs[k] = v
+                    else:
+                        if v in valid_opts or v in aliases:
+                            template_kwargs[k] = v
+                else:
+                    template_kwargs[k] = v
+
+        self.template = model_template(date=date, save_dir=resolved_save_dir, **template_kwargs)
 
         self.date = self.template.date
         self.valid_date = self.template.valid_date
