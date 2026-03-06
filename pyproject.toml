@@ -54,7 +54,7 @@ build-backend = "hatchling.build"
 
 [dependency-groups]
 dev = [
-    "ipykernel>=7.1.0",
+    "ipykernel>=7.2.0",
     "pytest>=9.0.2",
     "pytest-cov>=7.0.0",
     "ruff>=0.14.14",
@@ -97,7 +97,7 @@ extras = [
 experimental = [
     "polars>=1.38.1",
     "pyarrow>=23.0.0",
-    "rich[jupyter]>=14.3.2",
+    "rich[jupyter]>=14.3.3",
 ]
 
 [tool.hatch]

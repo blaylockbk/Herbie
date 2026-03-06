@@ -178,7 +178,6 @@ class Herbie:
         self.local_path = self.template.get_local_path()
         self.index_source, self.index = self.template.find_first_existing_index()
         self.data_source, self.data = self.template.find_first_existing_url()
-        self.save_dir = save_dir
 
     def __repr__(self) -> str:
         """Herbie simple string representation."""
