@@ -133,10 +133,15 @@ class Herbie:
 
     def __repr__(self) -> str:
         """Herbie simple string representation."""
+        source = self.data_source if self.data_source else "(not found)"
         return (
             f"Herbie({self.model_name}, {self.date:%Y-%m-%d %H:%M UTC}, "
-            f"F{self.step:02d}, source={self.data_source})"
+            f"F{self.step:02d}, source={source})"
         )
+
+    def __bool__(self) -> bool:
+        """Return True if a remote GRIB file exists."""
+        return self.data is not None
 
     def __rich__(self) -> Panel:
         """Rich representation with panel layout."""
@@ -164,9 +169,15 @@ class Herbie:
         row2 = Text()
         row2.append(f"{self.local_path.name}", style="italic yellow")
         row2.append("  •  ", style="dim")
-        row2.append(f"data@{self.data_source}", style="italic #ff9900")
+        if self.data_source:
+            row2.append(f"data@{self.data_source}", style="italic #ff9900")
+        else:
+            row2.append("data (not found)", style="italic red")
         row2.append("  •  ", style="dim")
-        row2.append(f"index@{self.index_source}", style="dim italic #ff9900")
+        if self.index_source:
+            row2.append(f"index@{self.index_source}", style="dim italic #ff9900")
+        else:
+            row2.append("index (not found)", style="dim italic red")
 
         content.add_row("", row1)
         content.add_row("", row2)
@@ -232,7 +243,13 @@ class Herbie:
 
         if isinstance(filters, str):
             # Concatenate relevant columns for string searching
-            search_cols = [pl.col(i).cast(pl.String) for i in df.columns[6:]]
+            search_cols = []
+            for col_name, dtype in zip(df.columns[6:], df.dtypes[6:]):
+                if dtype in (pl.Duration, pl.Datetime, pl.Date, pl.Time):
+                    search_cols.append(pl.col(col_name).dt.to_string())
+                else:
+                    search_cols.append(pl.col(col_name).cast(pl.String))
+
             df = df.filter(
                 pl.concat_str(search_cols, separator=":").str.contains(filters)
             )

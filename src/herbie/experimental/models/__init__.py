@@ -138,17 +138,20 @@ class ModelTemplate(ABC):
                 if valid_list is not None:
                     if isinstance(valid_list, range):
                         valid_str = f"range({valid_list.start}, {valid_list.stop})"
-                        info_str = valid_str
+                        params_table.add_row(
+                            param_name,
+                            str(default),
+                            valid_str,
+                            "[dim]-[/dim]",
+                        )
                     else:
-                        # Build list with descriptions if available
                         current_value = self.params.get(param_name)
-                        value_lines = []
                         # Reverse alias mapping: value -> [aliases]
                         alias_map: dict = {}
                         for alias, mapped in aliases.items():
                             alias_map.setdefault(mapped, []).append(alias)
 
-                        for v in valid_list:
+                        for i, v in enumerate(valid_list):
                             # Mark the currently selected value
                             if v == current_value:
                                 value_marker = "*"
@@ -172,35 +175,17 @@ class ModelTemplate(ABC):
                                 alias_part = ""
 
                             # Build value line (description shown in separate column)
-                            line = f"{style}{v}{value_marker}{alias_part}{end_style}"
+                            val_line = f"{style}{v}{value_marker}{alias_part}{end_style}"
 
-                            value_lines.append(line)
+                            desc_line = descriptions[v] if (descriptions and v in descriptions) else "[dim]-[/dim]"
 
-                        valid_str = "\n".join(value_lines)
+                            p_name = param_name if i == 0 else ""
+                            p_def = str(default) if i == 0 else ""
 
-                        # Build parallel description lines for each valid value
-                        desc_lines = []
-                        for v in valid_list:
-                            if descriptions and v in descriptions:
-                                desc_lines.append(descriptions[v])
-                            else:
-                                desc_lines.append("[dim]-[/dim]")
-
-                        desc_str = "\n".join(desc_lines)
-                        info_str = valid_str
+                            params_table.add_row(p_name, p_def, val_line, desc_line)
                 else:
-                    info_str = "[dim]-[/dim]"
+                    params_table.add_row(param_name, str(default), "[dim]-[/dim]", "[dim]-[/dim]")
 
-                # If range, show description as dim placeholder
-                if isinstance(valid_list, range):
-                    desc_str = "[dim]-[/dim]"
-
-                params_table.add_row(
-                    param_name,
-                    str(default),
-                    valid_str if valid_list is not None else "[dim]-[/dim]",
-                    desc_str,
-                )
                 # Spacer row for readability
                 params_table.add_row("", "", "", "")
         else:

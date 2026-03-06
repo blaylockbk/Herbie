@@ -22,8 +22,8 @@ class GFSTemplate(ModelTemplate):
             "aliases": {"common": "pgrb2", "uncommon": "pgrb2b"},
             "valid": ["pgrb2", "pgrb2b"],
             "descriptions": {
-                "pgrb2": "Common fields",
-                "pgrb2b": "Uncommon fields",
+                "pgrb2": "Common fields on pressure levels",
+                "pgrb2b": "Uncommon fields on pressure levels",
             },
         },
         "resolution": {
@@ -43,7 +43,7 @@ class GFSTemplate(ModelTemplate):
 
     INDEX_SUFFIX = [".idx", ".grb2.inv"]
 
-    
+
     def get_remote_urls(self) -> dict[str, str]:
         """Return all the URLs.
 

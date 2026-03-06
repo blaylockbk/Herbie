@@ -1,17 +1,24 @@
+import pytest
 from herbie.experimental import Herbie
 
 
-def test_basic_gfs():
-    H = Herbie("2025-12-10", model="gfs", resolution=1.0, product="uncommon")
+model_arguments = [
+    ("gfs", dict(resolution=1.0, product="uncommon"), "TMP"),
+    ("hrrr", dict(product="surface"), "TMP"),
+    ("hrrr", dict(product="pressure"), "TMP"),
+    ("ifs", dict(), "t"),
+    ("rtma", dict(), "TMP"),
+]
 
 
-def test_basic_hrrr():
-    H = Herbie("2025-12-10", model="hrrr", product="surface")
+@pytest.mark.parametrize("model,kwargs,searchString", model_arguments)
+def test_the_basics(model, kwargs, searchString):
+    """Test basic Herbie functionality for various models."""
+    H = Herbie("2025-12-10", model=model, **kwargs)
+    assert H
 
+    inventory = H.inventory()
+    assert len(inventory) > 0
 
-def test_basic_ifs():
-    H = Herbie("2025-12-10", model="ifs")
-
-
-def test_basic_rtma():
-    H = Herbie("2025-12-10", model="rtma")
+    inventory = H.inventory(searchString)
+    assert len(inventory) > 0
