@@ -7,33 +7,28 @@ Herbie(date, model='rrfs', ...)
 
 fxx : int
 product : {"prs", "nat", "testbed", "ififip"}
-member : {"control", int}
-domain : {"conus", "alaska", "hawaii", "puerto rico", None}
+member : {None, int}
+    None for deterministic run, int (1-5) for ensemble members
+domain : {"conus", "alaska", "hawaii", "puerto rico", "na"}
 
-If product="natlev', then domain must be None
+If product="natlev", then domain should be "na"
 """
 
 
 class rrfs:
     def template(self):
-        self.DESCRIPTION = "Rapid Refresh Forecast System (RRFS) Ensemble"
+        self.DESCRIPTION = "Rapid Refresh Forecast System (RRFS)"
         self.DETAILS = {
             "aws product description": "https://registry.opendata.aws/noaa-rrfs/",
         }
         self.HELP = HELP
 
         self.PRODUCTS = {
-            # Below are ensemble products found in ensprod/
-            "prslev": "",
-            "natlev": "",
-            "testbed": "",
-            "ififip": "",
+            "prslev": "pressure level fields",
+            "natlev": "native level fields",
+            "testbed": "testbed fields",
+            "ififip": "icing/freezing fields",
         }
-
-        # Format the member argument
-        # member can be one of {'control', 'mem000#'}
-        if isinstance(self.member, int):
-            self.member = f"mem{self.member:04d}"
 
         # Format the product parameter
         if self.product == "prs":
@@ -41,44 +36,37 @@ class rrfs:
         elif self.product == "nat":
             self.product = "natlev"
 
-        # Format the domain parameter
-        if self.domain == "conus":
-            self.domain = "conus"  # We'll handle the "_3km" part in the URL generation
-        elif self.domain == "alaska":
-            self.domain = "ak"
-        elif self.domain == "hawaii":
-            self.domain = "hi"
-        elif self.domain == "puerto rico":
-            self.domain = "pr"
-        elif self.domain is None:
-            self.domain = ""
+        # Format the domain parameter (default to conus)
+        domain_map = {"alaska": "ak", "hawaii": "hi", "puerto rico": "pr"}
+        self.domain = getattr(self, "domain", None) or "conus"
+        self.domain = domain_map.get(self.domain, self.domain)
 
-        def generate_url(domain_suffix, member_prefix=""):
-            url = f"https://noaa-rrfs-pds.s3.amazonaws.com/rrfs_a/rrfs_a.{self.date:%Y%m%d/%H}/{self.member}/rrfs.t{self.date:%H}z{member_prefix}.{self.product}.f{self.fxx:03d}.{domain_suffix}.grib2"
-            return url.replace("..", ".")
+        # Resolution depends on the domain
+        resolution = "2p5km" if self.domain in ("hi", "pr") else "3km"
 
-        urls = []
+        # Ensemble member (int) vs deterministic (None/other)
+        self.member = getattr(self, "member", None)
 
-        # Handle different domain formats
-        domain_suffixes = [self.domain]
-        if self.domain == "conus":
-            domain_suffixes = ["conus", "conus_3km"]  # Prioritize newer format
+        if isinstance(self.member, int):
+            member_str = f"m{self.member:03d}"
+            # Ensemble members are only available for the "na" domain
+            self.SOURCES = {
+                "aws": (
+                    f"https://noaa-rrfs-pds.s3.amazonaws.com/"
+                    f"rrfs_a/rrfsens.{self.date:%Y%m%d/%H}/{member_str}/"
+                    f"rrfs.t{self.date:%H}z.{member_str}.nbmfld.{resolution}.f{self.fxx:03d}.na.grib2"
+                ),
+            }
+        else:
+            self.SOURCES = {
+                "aws": (
+                    f"https://noaa-rrfs-pds.s3.amazonaws.com/"
+                    f"rrfs_a/rrfs.{self.date:%Y%m%d/%H}/"
+                    f"rrfs.t{self.date:%H}z.{self.product}.{resolution}.f{self.fxx:03d}.{self.domain}.grib2"
+                ),
+            }
 
-        # Handle different member formats
-        member_prefixes = [""]
-        if self.member.startswith("mem"):
-            member_num = int(self.member[3:])
-            member_prefixes = [f".m{member_num:02d}", ""]  # Prioritize newer format
-
-        # Generate all possible URL combinations
-        for member_prefix in member_prefixes:
-            for domain_suffix in domain_suffixes:
-                urls.append(generate_url(domain_suffix, member_prefix))
-
-        # Create separate sources for each URL
-        self.SOURCES = {f"aws_{i}": url for i, url in enumerate(urls)}
-
-        self.LOCALFILE = f"{self.member}/{self.get_remoteFileName}"
+        self.LOCALFILE = f"{self.get_remoteFileName}"
 
 
 class rrfs_old:
