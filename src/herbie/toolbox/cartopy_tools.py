@@ -286,19 +286,19 @@ def check_cartopy_axes(
     # A cartopy axes should be of type `cartopy.mpl.geoaxes.GeoAxesSubplot`
     # One way to check that is to see if ax has the 'coastlines' attribute.
     if ax is None:
-        if hasattr(plt.gca(), "coastlines"):
+        current_axes = plt.gca()
+        if hasattr(current_axes, "coastlines"):
             if verbose:
                 print("🌎 Using the current cartopy axes.")
-            return plt.gca()
+            return current_axes
         else:
             if verbose:
                 print(
                     f"🌎 The current axes is not a cartopy axes. Will create a new cartopy axes with crs={crs.__class__}."
                 )
-            # Close the axes we just opened in our test
-            plt.close()
-            # Create a new cartopy axes
-            return plt.axes(projection=crs)
+            # Create a new cartopy axes on the active figure without destroying existing subplots
+            fig = plt.gcf()
+            return fig.add_subplot(1, 1, 1, projection=crs)
     else:
         if hasattr(ax, "coastlines"):
             if verbose:
@@ -736,7 +736,7 @@ class EasyMap:
         if self.theme_dict.get("facecolor") is not None:
             self.ax.set_facecolor(self.theme_dict["facecolor"])
 
-        self.kwargs = {**{"edgecolor": self.theme_dict["edgecolor"]}, **self.kwargs}
+        self.kwargs = {"edgecolor": self.theme_dict["edgecolor"]} | self.kwargs
 
         if facecolor:
             # Instead of applying both LAND and OCEAN,
@@ -757,13 +757,11 @@ class EasyMap:
 
         if figsize is not None:
             if hasattr(figsize, "__len__"):
-                plt.gcf().set_figwidth(self.figsize[0])
-                plt.gcf().set_figheight(self.figsize[1])
+                self.ax.figure.set_size_inches(self.figsize[0], self.figsize[1])
             else:
-                plt.gcf().set_figwidth(self.figsize)
-                plt.gcf().set_figheight(self.figsize)
+                self.ax.figure.set_size_inches(self.figsize, self.figsize)
         if dpi is not None:
-            plt.gcf().set_dpi(self.dpi)
+            self.ax.figure.set_dpi(self.dpi)
 
         # Attach my custom methods
         self.ax.__class__.adjust_extent = _adjust_extent
@@ -774,9 +772,7 @@ class EasyMap:
     # Commonly needed features
     def COASTLINES(self, **kwargs):
         """Add coastlines to map."""
-        kwargs.setdefault("zorder", 100)
-        kwargs.setdefault("facecolor", "none")
-        kwargs = {**self.kwargs, **kwargs}
+        kwargs = {"zorder": 100, "facecolor": "none"} | self.kwargs | kwargs
         self.ax.add_feature(feature.COASTLINE.with_scale(self.scale), **kwargs)
         if self.verbose == "debug":
             print("🐛 COASTLINES:", kwargs)
@@ -784,8 +780,7 @@ class EasyMap:
 
     def BORDERS(self, **kwargs):
         """Add country borders to map (ecludes coastlines)."""
-        kwargs.setdefault("linewidth", 0.5)
-        kwargs = {**self.kwargs, **kwargs}
+        kwargs = {"linewidth": 0.5} | self.kwargs | kwargs
         self.ax.add_feature(feature.BORDERS.with_scale(self.scale), **kwargs)
         if self.verbose == "debug":
             print("🐛 BORDERS:", kwargs)
@@ -798,9 +793,7 @@ class EasyMap:
               If scale="50m", then more country states/provinces are drawn.
               If scale="10m", then even *more* countries drawn.
         """
-        kwargs.setdefault("alpha", 0.15)
-
-        kwargs = {**self.kwargs, **kwargs}
+        kwargs = {"alpha": 0.15} | self.kwargs | kwargs
         self.ax.add_feature(feature.STATES.with_scale(self.scale), **kwargs)
         if self.verbose == "debug":
             print("🐛 STATES:", kwargs)
@@ -811,9 +804,7 @@ class EasyMap:
 
         Alternative source for data than provided by STATES.
         """
-        kwargs.setdefault("alpha", 0.15)
-
-        kwargs = {**self.kwargs, **kwargs}
+        kwargs = {"alpha": 0.15} | self.kwargs | kwargs
         states_provinces = feature.NaturalEarthFeature(
             category="cultural",
             name="admin_1_states_provinces_lines",
@@ -832,9 +823,7 @@ class EasyMap:
         assert (
             counties_scale in _counties_scale
         ), f"counties_scale must be {_counties_scale}"
-        kwargs.setdefault("linewidth", 0.33)
-        kwargs.setdefault("alpha", 0.15)
-        kwargs = {**self.kwargs, **kwargs}
+        kwargs = {"linewidth": 0.33, "alpha": 0.15} | self.kwargs | kwargs
         self.ax.add_feature(USCOUNTIES.with_scale(counties_scale), **kwargs)
         if self.verbose == "debug":
             print("🐛 COUNTIES:", kwargs)
@@ -842,11 +831,7 @@ class EasyMap:
 
     def OCEAN(self, **kwargs):
         """Add color-filled ocean area to map."""
-        kwargs.setdefault("edgecolor", "none")
-        kwargs = {**self.kwargs, **kwargs}
-
-        if self.theme != "default":
-            kwargs = {**{"facecolor": self.water}, **kwargs}
+        kwargs = {"edgecolor": "none", "facecolor": self.water} | self.kwargs | kwargs
 
         self.ax.add_feature(feature.OCEAN.with_scale(self.scale), **kwargs)
         if self.verbose == "debug":
@@ -855,12 +840,7 @@ class EasyMap:
 
     def LAND(self, **kwargs):
         """Add color-filled land area to map."""
-        kwargs.setdefault("edgecolor", "none")
-        kwargs.setdefault("linewidth", 0)
-        kwargs = {**self.kwargs, **kwargs}
-
-        if self.theme != "default":
-            kwargs = {**{"facecolor": self.land}, **kwargs}
+        kwargs = {"edgecolor": "none", "linewidth": 0, "facecolor": self.land} | self.kwargs | kwargs
 
         self.ax.add_feature(feature.LAND.with_scale(self.scale), **kwargs)
         if self.verbose == "debug":
@@ -869,9 +849,7 @@ class EasyMap:
 
     def RIVERS(self, **kwargs):
         """Add rivers to map."""
-        kwargs.setdefault("linewidth", 0.3)
-        kwargs = {**self.kwargs, **kwargs}
-        kwargs = {**{"color": self.water}, **kwargs}
+        kwargs = {"linewidth": 0.3, "color": self.water} | self.kwargs | kwargs
 
         self.ax.add_feature(feature.RIVERS.with_scale(self.scale), **kwargs)
         if self.verbose == "debug":
@@ -880,11 +858,7 @@ class EasyMap:
 
     def LAKES(self, **kwargs):
         """Add color-filled lake area to map."""
-        kwargs.setdefault("linewidth", 0)
-        kwargs = {**self.kwargs, **kwargs}
-
-        kwargs = {**{"facecolor": self.theme_dict["lake"]}, **kwargs}
-        kwargs = {**{"edgecolor": self.theme_dict["lake"]}, **kwargs}
+        kwargs = {"linewidth": 0, "facecolor": self.theme_dict["lake"], "edgecolor": self.theme_dict["lake"]} | self.kwargs | kwargs
 
         self.ax.add_feature(feature.LAKES.with_scale(self.scale), **kwargs)
         if self.verbose == "debug":
@@ -1057,11 +1031,7 @@ class EasyMap:
 
     def PLAYAS(self, **kwargs):
         """Add color-filled playa area to map."""
-        kwargs.setdefault("linewidth", 0)
-        kwargs = {**self.kwargs, **kwargs}
-
-        kwargs = {**{"facecolor": self.theme_dict["playa"]}, **kwargs}
-        kwargs = {**{"edgecolor": "none"}, **kwargs}
+        kwargs = {"linewidth": 0, "facecolor": self.theme_dict["playa"], "edgecolor": "none"} | self.kwargs | kwargs
 
         playa = feature.NaturalEarthFeature("physical", "playas", "10m")
         self.ax.add_feature(playa, **kwargs)
@@ -1071,10 +1041,7 @@ class EasyMap:
 
     def TIMEZONE(self, **kwargs):
         """Add timezone boundaries to map."""
-        kwargs.setdefault("linewidth", 0.2)
-        kwargs.setdefault("facecolor", "none")
-        kwargs.setdefault("linestyle", ":")
-        kwargs = {**self.kwargs, **kwargs}
+        kwargs = {"linewidth": 0.2, "facecolor": "none", "linestyle": ":"} | self.kwargs | kwargs
         tz = feature.NaturalEarthFeature("cultural", "time_zones", "10m")
         self.ax.add_feature(tz, **kwargs)
         if self.verbose == "debug":
@@ -1097,11 +1064,7 @@ class EasyMap:
         "length_km", etc. Filters for each of these could be added if I
         need them later.
         """
-        kwargs.setdefault("edgecolor", "#b30000")
-        kwargs.setdefault("facecolor", "none")
-        kwargs.setdefault("linewidth", 0.2)
-
-        kwargs = {**self.kwargs, **kwargs}
+        kwargs = {"edgecolor": "#b30000", "facecolor": "none", "linewidth": 0.2} | self.kwargs | kwargs
 
         if road_types is None:
             # Plot all roadways
