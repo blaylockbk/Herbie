@@ -397,7 +397,7 @@ def inset_global_map(
     x: float = 0.95,
     y: float = 0.95,
     size: float = 0.3,
-    theme: Optional[Literal["dark", "grey"]] = None,
+    theme: Optional[Literal["dark", "grey", "mario", "star_wars", "monochrome", "colorblind_friendly", "muted"]] = None,
     facecolor: str = "#f88d0083",
     kind: Literal["point", "area"] = "area",
 ):
@@ -534,6 +534,91 @@ def state_polygon(
     return poly
 
 
+EASYMAP_THEMES = {
+    "default": {
+        "land": "#efefdb",
+        "land1": "#dbdbdb",
+        "water": "#97b6e1",
+        "edgecolor": ".15",
+        "playa": "#FDA65473",
+        "lake": feature.COLORS.get("water", "#97b6e1"),
+        "alpha_mask": "w",
+        "facecolor": None,
+    },
+    "dark": {
+        "land": "#060613",
+        "land1": "#3f3f3f",
+        "water": "#0f2b38",
+        "edgecolor": ".5",
+        "playa": "#4D311A73",
+        "lake": "#0f2b38",
+        "alpha_mask": "k",
+        "facecolor": "#060613",
+    },
+    "grey": {
+        "land": "#bdbdbd",
+        "land1": "#bdbdbd",
+        "water": "#ffffff",
+        "edgecolor": ".5",
+        "playa": "#42424273",
+        "lake": "#ffffff",
+        "alpha_mask": "w",
+        "facecolor": "#bdbdbd",
+    },
+    "mario": {
+        "land": "#f8e0b0",
+        "land1": "#4aa932",
+        "water": "#5c94fc",
+        "edgecolor": "#000000",
+        "playa": "#c84c0c",
+        "lake": "#5c94fc",
+        "alpha_mask": "w",
+        "facecolor": "#f8e0b0",
+    },
+    "star_wars": {
+        "land": "#333333",
+        "land1": "#111111",
+        "water": "#000000",
+        "edgecolor": "#2b67ff",
+        "playa": "#c2b280",
+        "lake": "#000000",
+        "alpha_mask": "k",
+        "facecolor": "#333333",
+    },
+    "monochrome": {
+        "land": "#e0e0e0",
+        "land1": "#f0f0f0",
+        "water": "#ffffff",
+        "edgecolor": "#000000",
+        "playa": "#cccccc",
+        "lake": "#ffffff",
+        "alpha_mask": "w",
+        "facecolor": "#e0e0e0",
+    },
+    "colorblind_friendly": {
+        "land": "#f0e442",
+        "land1": "#e69f00",
+        "water": "#56b4e9",
+        "edgecolor": "#000000",
+        "playa": "#d55e00",
+        "lake": "#56b4e9",
+        "alpha_mask": "w",
+        "facecolor": "#f0e442",
+    },
+    "muted": {
+        "land": "#f1f0e8",
+        "land1": "#e3e1d5",
+        "water": "#e4ecf1",
+        "edgecolor": "#636e72",
+        "playa": "#e2e6e9",
+        "lake": "#e4ecf1",
+        "alpha_mask": "w",
+        "facecolor": "#f1f0e8",
+    },
+}
+EASYMAP_THEMES["gray"] = EASYMAP_THEMES["grey"]
+
+
 class EasyMap:
     """
     Build a Cartopy axes with commonly used map elements.
@@ -552,7 +637,7 @@ class EasyMap:
         figsize=None,
         fignum: int = None,
         dpi: int = None,
-        theme: Optional[Literal["dark", "grey"]] = None,
+        theme: Optional[Literal["dark", "grey", "mario", "star_wars", "monochrome", "colorblind_friendly", "muted"]] = None,
         add_coastlines: bool = True,
         facecolor: Optional[str] = None,
         coastlines_kw={},
@@ -582,7 +667,7 @@ class EasyMap:
         crs : cartopy.crs
             Coordinate reference system (aka "projection") to create new map
             if no cartopy axes is given. Default is ccrs.PlateCarree.
-        theme : {None, 'dark', 'grey', 'gray'}
+        theme : {None, 'dark', 'grey', 'gray', 'mario', 'star_wars', 'monochrome', 'colorblind_friendly', 'muted'}
             Use alternative color themes for land and water.
 
             .. figure:: _static/BB_maps/common_features-1.png
@@ -625,7 +710,9 @@ class EasyMap:
         self.figsize = figsize
         self.fignum = fignum
         self.dpi = dpi
-        self.theme = None if theme is None else theme.lower()
+        self.theme = "default" if theme is None else theme.lower()
+        if self.theme not in EASYMAP_THEMES:
+            self.theme = "default"
         self.verbose = verbose
         self.kwargs = kwargs
 
@@ -640,25 +727,16 @@ class EasyMap:
 
         self.kwargs.setdefault("linewidth", 0.75)
 
-        # NOTE: I don't use the 'setdefault' method here because it doesn't
-        # work as expect when switching between themes.
-        if self.theme == "dark":
-            self.land = "#060613"  # dark (default)
-            self.land1 = "#3f3f3f"  # lighter (alternative)
-            self.water = "#0f2b38"
-            self.ax.set_facecolor(self.land)
-            self.kwargs = {**{"edgecolor": ".5"}, **self.kwargs}
-        elif self.theme in {"grey", "gray"}:
-            self.land = "#bdbdbd"  # dark (default)
-            self.land1 = "#bdbdbd"  # lighter (alternative)
-            self.water = "#ffffff"
-            self.ax.set_facecolor(self.land)
-            self.kwargs = {**{"edgecolor": ".5"}, **self.kwargs}
-        else:
-            self.land = "#efefdb"  # tan (default)
-            self.land1 = "#dbdbdb"  # grey (alternative)
-            self.water = "#97b6e1"
-            self.kwargs = {**{"edgecolor": ".15"}, **self.kwargs}
+        self.theme_dict = EASYMAP_THEMES[self.theme]
+
+        self.land = self.theme_dict["land"]
+        self.land1 = self.theme_dict["land1"]
+        self.water = self.theme_dict["water"]
+
+        if self.theme_dict.get("facecolor") is not None:
+            self.ax.set_facecolor(self.theme_dict["facecolor"])
+
+        self.kwargs = {**{"edgecolor": self.theme_dict["edgecolor"]}, **self.kwargs}
 
         if facecolor:
             # Instead of applying both LAND and OCEAN,
@@ -767,7 +845,7 @@ class EasyMap:
         kwargs.setdefault("edgecolor", "none")
         kwargs = {**self.kwargs, **kwargs}
 
-        if self.theme is not None:
+        if self.theme != "default":
             kwargs = {**{"facecolor": self.water}, **kwargs}
 
         self.ax.add_feature(feature.OCEAN.with_scale(self.scale), **kwargs)
@@ -781,7 +859,7 @@ class EasyMap:
         kwargs.setdefault("linewidth", 0)
         kwargs = {**self.kwargs, **kwargs}
 
-        if self.theme is not None:
+        if self.theme != "default":
             kwargs = {**{"facecolor": self.land}, **kwargs}
 
         self.ax.add_feature(feature.LAND.with_scale(self.scale), **kwargs)
@@ -805,12 +883,8 @@ class EasyMap:
         kwargs.setdefault("linewidth", 0)
         kwargs = {**self.kwargs, **kwargs}
 
-        if self.theme is not None:
-            kwargs = {**{"facecolor": self.water}, **kwargs}
-            kwargs = {**{"edgecolor": self.water}, **kwargs}
-        else:
-            kwargs = {**{"facecolor": feature.COLORS["water"]}, **kwargs}
-            kwargs = {**{"edgecolor": feature.COLORS["water"]}, **kwargs}
+        kwargs = {**{"facecolor": self.theme_dict["lake"]}, **kwargs}
+        kwargs = {**{"edgecolor": self.theme_dict["lake"]}, **kwargs}
 
         self.ax.add_feature(feature.LAKES.with_scale(self.scale), **kwargs)
         if self.verbose == "debug":
@@ -986,15 +1060,8 @@ class EasyMap:
         kwargs.setdefault("linewidth", 0)
         kwargs = {**self.kwargs, **kwargs}
 
-        if self.theme == "dark":
-            kwargs = {**{"facecolor": "#4D311A73"}, **kwargs}
-            kwargs = {**{"edgecolor": "none"}, **kwargs}
-        elif self.theme in {"grey", "gray"}:
-            kwargs = {**{"facecolor": "#42424273"}, **kwargs}
-            kwargs = {**{"edgecolor": "none"}, **kwargs}
-        else:
-            kwargs = {**{"facecolor": "#FDA65473"}, **kwargs}
-            kwargs = {**{"edgecolor": "none"}, **kwargs}
+        kwargs = {**{"facecolor": self.theme_dict["playa"]}, **kwargs}
+        kwargs = {**{"edgecolor": "none"}, **kwargs}
 
         playa = feature.NaturalEarthFeature("physical", "playas", "10m")
         self.ax.add_feature(playa, **kwargs)
@@ -1146,11 +1213,8 @@ class EasyMap:
         self.ax.add_image(stamen_terrain, zoom)
 
         if alpha < 1:
-            # Need to manually put a white layer over the STAMEN terrain
-            if self.theme == "dark":
-                alpha_color = "k"
-            else:
-                alpha_color = "w"
+            # Need to manually put a mask layer over the STAMEN terrain
+            alpha_color = self.theme_dict["alpha_mask"]
             poly = self.ax.projection.domain
             self.ax.add_feature(
                 feature.ShapelyFeature([poly], self.ax.projection),
@@ -1182,11 +1246,8 @@ class EasyMap:
         image = cimgt.OSM()
         self.ax.add_image(image, zoom)
         if alpha < 1:
-            # Need to manually put a white layer over the STAMEN terrain
-            if self.theme == "dark":
-                alpha_color = "k"
-            else:
-                alpha_color = "w"
+            # Need to manually put a mask layer over the OSM terrain
+            alpha_color = self.theme_dict["alpha_mask"]
             poly = self.ax.projection.domain
             self.ax.add_feature(
                 feature.ShapelyFeature([poly], self.ax.projection),
