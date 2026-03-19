@@ -841,27 +841,27 @@ class Water:
 class MODIS21:
     name = "modis21"
     landuse = {
-        1: {"color": "#006600", "label": "Evergreen Needleleaf Forest"},
-        2: {"color": "#02522a", "label": "Evergreen Broadleaf Forest"},
-        3: {"color": "#33cc33", "label": "Deciduous Needleleaf Forest"},
-        4: {"color": "#33cc66", "label": "Deciduous Broadleaf Forest"},
-        5: {"color": "#339933", "label": "Mixed Forests"},
-        6: {"color": "#4cb200", "label": "Closed Shrublands"},
-        7: {"color": "#d1691f", "label": "Open Shrublands"},
-        8: {"color": "#bdb569", "label": "Woody Savannas"},
-        9: {"color": "#ffd600", "label": "Savannas"},
-        10: {"color": "#00ff00", "label": "Grasslands"},
-        11: {"color": "#00ffff", "label": "Permanent Wetlands"},
-        12: {"color": "#ffff00", "label": "Croplands"},
-        13: {"color": "#ff0000", "label": "Urban and Built-Up"},
-        14: {"color": "#b2e64c", "label": "Cropland/Natural Vegetation Mosaic"},
-        15: {"color": "#ffffff", "label": "Snow and Ice"},
-        16: {"color": "#e9e9b2", "label": "Barren or Sparsely Vegetated"},
-        17: {"color": "#80b2ff", "label": "Water"},
-        18: {"color": "#ff00bd", "label": "Wooded Tundra"},
-        19: {"color": "#f7804f", "label": "Mixed Tundra"},
-        20: {"color": "#e8967a", "label": "Barren Tundra"},
-        21: {"color": "#0000e0", "label": "Lake"},
+        1: {"color": "#1a5e1a", "label": "Evergreen Needleleaf Forest"},
+        2: {"color": "#2d7a3a", "label": "Evergreen Broadleaf Forest"},
+        3: {"color": "#6aaa4e", "label": "Deciduous Needleleaf Forest"},
+        4: {"color": "#8db85a", "label": "Deciduous Broadleaf Forest"},
+        5: {"color": "#4e8c3a", "label": "Mixed Forests"},
+        6: {"color": "#b5874a", "label": "Closed Shrublands"},
+        7: {"color": "#cca96e", "label": "Open Shrublands"},
+        8: {"color": "#c4b37a", "label": "Woody Savannas"},
+        9: {"color": "#d9c46a", "label": "Savannas"},
+        10: {"color": "#b8d48a", "label": "Grasslands"},
+        11: {"color": "#5ba8a0", "label": "Permanent Wetlands"},
+        12: {"color": "#e8d48a", "label": "Croplands"},
+        13: {"color": "#c1553a", "label": "Urban and Built-Up"},
+        14: {"color": "#d4c47a", "label": "Cropland/Natural Vegetation Mosaic"},
+        15: {"color": "#e8e8e8", "label": "Snow and Ice"},
+        16: {"color": "#c8b89a", "label": "Barren or Sparsely Vegetated"},
+        17: {"color": "#4a7ab5", "label": "Water"},
+        18: {"color": "#7a9e6e", "label": "Wooded Tundra"},
+        19: {"color": "#a89e7a", "label": "Mixed Tundra"},
+        20: {"color": "#c8bea8", "label": "Barren Tundra"},
+        21: {"color": "#2362af", "label": "Lake"},
     }
     colors = np.array([v["color"] for k, v in landuse.items()])
     bounds = np.array(list(landuse) + [22])
@@ -880,33 +880,33 @@ class USGS24:
 
     name = "usgs24"
     landuse = {
-        1: {"color": "#ff0000", "label": "Urban and Built-up Land"},
-        2: {"color": "#ffff00", "label": "Dryland Cropland and Pasture"},
-        3: {"color": "#ffff33", "label": "Irrigated Cropland and Pasture"},
+        1: {"color": "#c1553a", "label": "Urban and Built-up Land"},
+        2: {"color": "#e8d48a", "label": "Dryland Cropland and Pasture"},
+        3: {"color": "#eddc9f", "label": "Irrigated Cropland and Pasture"},
         4: {
-            "color": "#ffff4c",
+            "color": "#d9c97f",
             "label": "Mixed Dryland/Irrigated Cropland and Pasture",
         },
-        5: {"color": "#b2e64c", "label": "Cropland/Grassland Mosaic"},
-        6: {"color": "#b2e64c", "label": "Cropland/Woodland Mosaic"},
-        7: {"color": "#00ff00", "label": "Grassland"},
-        8: {"color": "#4cb200", "label": "Shrubland"},
-        9: {"color": "#d1691f", "label": "Mixed Shrubland/Grassland"},
-        10: {"color": "#ffd600", "label": "Savanna"},
-        11: {"color": "#33cc66", "label": "Deciduous Broadleaf Forest"},
-        12: {"color": "#33cc33", "label": "Deciduous Needleleaf Forest"},
-        13: {"color": "#006633", "label": "Evergreen Broadleaf Forest"},
-        14: {"color": "#006600", "label": "Evergreen Needleleaf Forest"},
-        15: {"color": "#339933", "label": "Mixed Forests"},
-        16: {"color": "#0000e0", "label": "Water Bodies"},
-        17: {"color": "#00ffff", "label": "Herbaceous Wetlands"},
-        18: {"color": "#33ffff", "label": "Wooden Wetlands"},
-        19: {"color": "#e9e9b2", "label": "Barren or Sparsely Vegetated"},
-        20: {"color": "#db143b", "label": "Herbaceous Tundraa"},
-        21: {"color": "#db143b", "label": "Wooded Tundra"},
-        22: {"color": "#f7804f", "label": "Mixed Tundra"},
-        23: {"color": "#e8967a", "label": "Barren Tundra"},
-        24: {"color": "#ffffff", "label": "Snow and Ice"},
+        5: {"color": "#d4c47a", "label": "Cropland/Grassland Mosaic"},
+        6: {"color": "#cdbb6c", "label": "Cropland/Woodland Mosaic"},
+        7: {"color": "#b8d48a", "label": "Grassland"},
+        8: {"color": "#cca96e", "label": "Shrubland"},
+        9: {"color": "#e0cc7f", "label": "Mixed Shrubland/Grassland"},
+        10: {"color": "#d9c46a", "label": "Savanna"},
+        11: {"color": "#8db85a", "label": "Deciduous Broadleaf Forest"},
+        12: {"color": "#6aaa4e", "label": "Deciduous Needleleaf Forest"},
+        13: {"color": "#2d7a3a", "label": "Evergreen Broadleaf Forest"},
+        14: {"color": "#1a5e1a", "label": "Evergreen Needleleaf Forest"},
+        15: {"color": "#4e8c3a", "label": "Mixed Forests"},
+        16: {"color": "#4a7ab5", "label": "Water Bodies"},
+        17: {"color": "#5ba8a0", "label": "Herbaceous Wetlands"},
+        18: {"color": "#6fb8af", "label": "Wooden Wetlands"},
+        19: {"color": "#c8b89a", "label": "Barren or Sparsely Vegetated"},
+        20: {"color": "#b5ab85", "label": "Herbaceous Tundraa"},
+        21: {"color": "#7a9e6e", "label": "Wooded Tundra"},
+        22: {"color": "#9c9270", "label": "Mixed Tundra"},
+        23: {"color": "#c8bea8", "label": "Barren Tundra"},
+        24: {"color": "#e8e8e8", "label": "Snow and Ice"},
     }
     colors = np.array([v["color"] for k, v in landuse.items()])
     bounds = np.array(list(landuse) + [22])
@@ -917,6 +917,39 @@ class USGS24:
     cmap = plt.get_cmap(name)
     kwargs = dict(cmap=cmap, norm=norm)
     cbar_kwargs = dict(label="USGS Landuse")
+    cbar_kwargs2 = cbar_kwargs | dict(spacing="proportional", ticks=bounds)
+
+class SOIL16:
+    """Colormap for 16-category Soil Dataset."""
+
+    name = "soil16"
+    landuse = {
+        1: {"color": "#d4b483", "label": "Sand"},
+        2: {"color": "#c8a46e", "label": "Loamy Sand"},
+        3: {"color": "#b89458", "label": "Sandy Loam"},
+        4: {"color": "#a07840", "label": "Silt Loam"},
+        5: {"color": "#c8b89a", "label": "Silt"},
+        6: {"color": "#8c6430", "label": "Loam"},
+        7: {"color": "#7a5020", "label": "Sandy Clay Loam"},
+        8: {"color": "#6e4818", "label": "Silty Clay Loam"},
+        9: {"color": "#603c10", "label": "Clay Loam"},
+        10: {"color": "#543008", "label": "Sandy Clay"},
+        11: {"color": "#482800", "label": "Silty Clay"},
+        12: {"color": "#3c2000", "label": "Clay"},
+        13: {"color": "#5ba8a0", "label": "Organic Material"},
+        14: {"color": "#4a7ab5", "label": "Water"},
+        15: {"color": "#e8e8e8", "label": "Bedrock"},
+        16: {"color": "#c8b89a", "label": "Other/Ice"},
+    }
+    colors = np.array([v["color"] for k, v in landuse.items()])
+    bounds = np.array(list(landuse) + [22])
+    labels = np.array([f"{k}  " + v["label"] for k, v in landuse.items()])
+    cmap = mcolors.LinearSegmentedColormap.from_list(name, colors, N=len(bounds) - 1)
+    norm = mcolors.BoundaryNorm(boundaries=bounds, ncolors=len(bounds))
+    plt.colormaps.register(cmap, force=True)
+    cmap = plt.get_cmap(name)
+    kwargs = dict(cmap=cmap, norm=norm)
+    cbar_kwargs = dict(label="Soild Categories")
     cbar_kwargs2 = cbar_kwargs | dict(spacing="proportional", ticks=bounds)
 
 
