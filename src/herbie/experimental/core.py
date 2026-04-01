@@ -244,6 +244,91 @@ class Herbie:
         console = Console()
         console.print(self)
 
+    def _repr_html_(self) -> str:
+        """HTML representation for Jupyter Notebooks."""
+        # Clean URLs for HTML display
+        urls_html = "".join([f'<li><a href="{url}" target="_blank">{url}</a></li>' for url in self.remote_urls])
+
+        # Configuration parameters
+        params_html = "".join([f'<tr style="border-bottom: 1px solid var(--jp-border-color3, #eee);"><td style="padding: 4px;"><strong>{k}</strong></td><td style="padding: 4px;"><code>{v}</code></td></tr>' for k, v in self.template.params.items()])
+
+        # Data/Index strings
+        data_src = f'<a href="{self.data}" target="_blank">{self.data}</a>' if getattr(self, "data", None) else '<span style="color: red;">Not Found</span>'
+        idx_src = f'<a href="{self.index}" target="_blank">{self.index}</a>' if getattr(self, "index", None) else '<span style="color: red;">Not Found</span>'
+
+        # Determine config info
+        config_html = ""
+        try:
+            from herbie.experimental.config import settings
+            default_settings = settings.get("default", {})
+            model_settings = settings.get(self.model_name, {})
+
+            config_html += '<ul style="margin-top: 5px; padding-left: 20px;">'
+            if default_settings:
+                config_html += f'<li><strong>Default settings:</strong> <code>{default_settings}</code></li>'
+            if model_settings:
+                config_html += f'<li><strong>Model "{self.model_name}" settings:</strong> <code>{model_settings}</code></li>'
+            config_html += '</ul>'
+        except Exception as e:
+            config_html = f'<i>Could not load settings: {e}</i>'
+
+        # Valid date handling
+        valid_date_str = f"{self.valid_date:%Y-%b-%d %H:%M UTC}" if getattr(self, "valid_date", None) else "N/A"
+        date_str = f"{self.date:%Y-%b-%d %H:%M UTC}" if getattr(self, "date", None) else "N/A"
+        step_str = f"F{self.step:02d}" if isinstance(self.step, int) else str(self.step)
+
+        html = f"""
+        <div style="font-family: var(--jp-ui-font-family, sans-serif); border: 1px solid var(--jp-border-color2, #ddd); border-radius: 4px; padding: 10px; max-width: 800px; background-color: var(--jp-layout-color1, #fff);">
+            <div style="display: flex; align-items: center; margin-bottom: 10px;">
+                <div style="background-color: white; border: 1px solid #ccc; padding: 2px 5px; border-radius: 4px; display: inline-flex; overflow: hidden; font-weight: bold; margin-right: 10px;">
+                    <span style="color: red; background: white; padding: 0 4px;">▌</span><span style="color: blue; background: #f0ead2; padding: 0 4px;">▌</span><span style="color: black; background: #f0ead2; padding: 0 4px;">Herbie</span>
+                </div>
+                <div style="font-size: 1.2em; font-weight: bold; color: var(--jp-content-font-color1, #333);">
+                    {self.model_name.upper()} <span style="font-size: 0.8em; font-weight: normal; font-style: italic; color: var(--jp-content-font-color2, #777);">{self.template.MODEL_DESCRIPTION}</span>
+                </div>
+            </div>
+
+            <div style="margin-left: 10px; font-size: 0.95em; color: var(--jp-content-font-color1, #333);">
+                <p style="margin: 5px 0;"><strong>Initialized:</strong> {date_str} &nbsp;&nbsp; <strong>Forecast Hour:</strong> {step_str}</p>
+                <p style="margin: 5px 0;"><strong>Valid Date:</strong> {valid_date_str}</p>
+
+                <details style="margin-top: 10px; background: var(--jp-layout-color2, #f9f9f9); padding: 5px 10px; border-radius: 4px; border: 1px solid var(--jp-border-color2, #eee);">
+                    <summary style="cursor: pointer; font-weight: bold;">File Information</summary>
+                    <ul style="margin-top: 5px; padding-left: 20px;">
+                        <li><strong>Local Path:</strong> <code>{self.local_path}</code></li>
+                        <li><strong>Data Source:</strong> {data_src}</li>
+                        <li><strong>Index Source:</strong> {idx_src}</li>
+                    </ul>
+                </details>
+
+                <details style="margin-top: 5px; background: var(--jp-layout-color2, #f9f9f9); padding: 5px 10px; border-radius: 4px; border: 1px solid var(--jp-border-color2, #eee);">
+                    <summary style="cursor: pointer; font-weight: bold;">Model Parameters</summary>
+                    <table style="width: 100%; border-collapse: collapse; margin-top: 5px; font-size: 0.9em;">
+                        <thead><tr style="border-bottom: 1px solid var(--jp-border-color2, #ccc);">
+                            <th style="padding: 4px; text-align: left;">Parameter</th><th style="padding: 4px; text-align: left;">Value</th>
+                        </tr></thead>
+                        <tbody>
+                            {params_html}
+                        </tbody>
+                    </table>
+                </details>
+
+                <details style="margin-top: 5px; background: var(--jp-layout-color2, #f9f9f9); padding: 5px 10px; border-radius: 4px; border: 1px solid var(--jp-border-color2, #eee);">
+                    <summary style="cursor: pointer; font-weight: bold;">Configuration Defaults</summary>
+                    {config_html}
+                </details>
+
+                <details style="margin-top: 5px; background: var(--jp-layout-color2, #f9f9f9); padding: 5px 10px; border-radius: 4px; border: 1px solid var(--jp-border-color2, #eee);">
+                    <summary style="cursor: pointer; font-weight: bold;">Remote URLs constructed</summary>
+                    <ol style="margin-top: 5px; padding-left: 25px; font-family: monospace; font-size: 0.9em; word-break: break-all;">
+                        {urls_html}
+                    </ol>
+                </details>
+            </div>
+        </div>
+        """
+        return html
+
     @functools.cached_property
     def index_as_dataframe(self) -> InventoryDataFrame:
         """Read and cache an index file."""
