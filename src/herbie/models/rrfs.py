@@ -38,8 +38,11 @@ class rrfs:
 
         # Format the domain parameter (default to conus)
         domain_map = {"alaska": "ak", "hawaii": "hi", "puerto rico": "pr"}
-        self.domain = getattr(self, "domain", None) or "conus"
-        self.domain = domain_map.get(self.domain, self.domain)
+        if self.product == "natlev":
+            self.domain = "na"
+        else:
+            self.domain = getattr(self, "domain", None) or "conus"
+            self.domain = domain_map.get(self.domain, self.domain)
 
         # Resolution depends on the domain
         resolution = "2p5km" if self.domain in ("hi", "pr") else "3km"
