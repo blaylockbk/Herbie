@@ -5,15 +5,13 @@ from unittest.mock import Mock, patch
 
 import pytest
 
-from herbie import Herbie, config
+from herbie import Herbie
 
 now = datetime.now()
 today = datetime(now.year, now.month, now.day, now.hour) - timedelta(hours=6)
 
-save_dir = config["default"]["save_dir"] / "Herbie-Tests-Data/"
 
-
-def test_subset_raises_on_non_206_response():
+def test_subset_raises_on_non_206_response(tmp_path):
     """RuntimeError should fire when the server returns 200 instead of 206.
 
     This prevents the silent disk-space blowup described in issue #514:
@@ -25,7 +23,7 @@ def test_subset_raises_on_non_206_response():
         today,
         model="hrrr",
         product="sfc",
-        save_dir=save_dir,
+        save_dir=tmp_path,
         overwrite=True,
     )
 
