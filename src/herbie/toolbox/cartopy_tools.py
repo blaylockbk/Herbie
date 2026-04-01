@@ -33,10 +33,11 @@ import requests
 import shapely.geometry as sgeom
 import xarray as xr
 from cartopy.io import shapereader
+from cartopy.mpl.geoaxes import GeoAxes
 from metpy.plots import USCOUNTIES
 
-from typing import Literal, Optional, Union
-from herbie import Path
+from typing import Literal
+from pathlib import Path
 
 try:
     import geopandas
@@ -46,7 +47,7 @@ except Exception:
     # )
     pass
 
-ExtentPadding = Union[Literal["auto"], float, dict[str, float]]
+ExtentPadding = Literal["auto"] | float | dict[str, float]
 
 pc = ccrs.PlateCarree()
 pc._threshold = 0.01  # https://github.com/SciTools/cartopy/issues/8
@@ -154,10 +155,10 @@ def _adjust_extent(
 
 def _center_extent(
     self,
-    lon: Optional[Union[int, float]] = None,
-    lat: Optional[Union[int, float]] = None,
-    city: Optional[str] = None,
-    state: Optional[str] = None,
+    lon: int | float | None = None,
+    lat: int | float | None = None,
+    city: str | None = None,
+    state: str | None = None,
     *,
     pad: ExtentPadding = "auto",
     verbose: bool = False,
@@ -259,8 +260,8 @@ def _copy_extent(self, src_ax):
 ########################################################################
 # Main Functions
 def check_cartopy_axes(
-    ax=None, crs=pc, *, fignum: Optional[int] = None, verbose: bool = False
-):
+    ax: GeoAxes | None = None, crs=pc, *, fignum: int | None = None, verbose: bool = False
+) -> GeoAxes:
     """
     Check if an axes is a cartopy axes, else create a new cartopy axes.
 
@@ -310,8 +311,8 @@ def check_cartopy_axes(
 
 def get_ETOPO1(
     top: Literal["bedrock", "ice"] = "ice",
-    coarsen: Optional[int] = None,
-    thin: Optional[int] = None,
+    coarsen: int | None = None,
+    thin: int | None = None,
 ):
     """
     Return the ETOPO1 elevation and bathymetry DataArray.
@@ -365,10 +366,10 @@ def get_ETOPO1(
     # The coarsen method is slow, so save a copy to load.
     # The thin method is fast, so don't worry about saving a copy.
     src = f"http://iridl.ldeo.columbia.edu/SOURCES/.NOAA/.NGDC/.ETOPO1/.z_{top}/data.nc"
-    dst = Path(f"$HOME/.local/share/ETOPO1/ETOPO1_{top}.nc").expand()
+    dst = Path(f"~/.local/share/ETOPO1/ETOPO1_{top}.nc").expanduser()
     dst_coarsen = Path(
-        f"$HOME/.local/share/ETOPO1/ETOPO1_{top}_coarsen-{coarsen}.nc"
-    ).expand()
+        f"~/.local/share/ETOPO1/ETOPO1_{top}_coarsen-{coarsen}.nc"
+    ).expanduser()
 
     if not dst.exists():
         # Download the full ETOPO1 dataset
@@ -397,7 +398,7 @@ def inset_global_map(
     x: float = 0.95,
     y: float = 0.95,
     size: float = 0.3,
-    theme: Optional[Literal["dark", "grey", "mario", "star_wars", "monochrome", "colorblind_friendly", "muted"]] = None,
+    theme: Literal["dark", "grey", "mario", "star_wars", "monochrome", "colorblind_friendly", "muted"] | None = None,
     facecolor: str = "#f88d0083",
     kind: Literal["point", "area"] = "area",
 ):
@@ -491,9 +492,9 @@ def inset_global_map(
 
 
 def state_polygon(
-    state: Optional[str] = None,
+    state: str | None = None,
     country: str = "USA",
-    county: Optional[str] = None,
+    county: str | None = None,
     verbose: bool = True,
 ):
     """
@@ -623,23 +624,32 @@ class EasyMap:
     """
     Build a Cartopy axes with commonly used map elements.
 
-    Most the time when I use Cartopy, I just want to make a map that I
-    can easily add data to. This class does about 98% of what I need
-    from Cartopy.
+    Most of the time when using Cartopy, you simply need a standard map
+    to quickly plot data onto. This class provides a fast, chainable API
+    that covers 98% of typical Cartopy map generation needs.
+
+    All feature methods (e.g., `OCEAN()`, `LAND()`, `PLACES()`) return
+    the `EasyMap` instance itself, allowing you to chain them together.
+    The fully constructed Cartopy `GeoAxes` is accessible via the `.ax`
+    attribute.
+
+    Examples
+    --------
+    >>> ax = EasyMap().OCEAN().LAND().STATES().ax
     """
 
     def __init__(
         self,
         scale: Literal["110m", "50m", "10m"] = "110m",
-        ax=None,
+        ax: GeoAxes | None = None,
         crs=pc,
         *,
         figsize=None,
         fignum: int = None,
         dpi: int = None,
-        theme: Optional[Literal["dark", "grey", "mario", "star_wars", "monochrome", "colorblind_friendly", "muted"]] = None,
+        theme: Literal["dark", "grey", "mario", "star_wars", "monochrome", "colorblind_friendly", "muted"] | None = None,
         add_coastlines: bool = True,
-        facecolor: Optional[str] = None,
+        facecolor: str | None = None,
         coastlines_kw={},
         verbose: bool = False,
         **kwargs,
@@ -705,7 +715,7 @@ class EasyMap:
         >>> feat.OCEAN().STATES()
         """
         self.scale = scale
-        self.ax = ax
+        self.ax: GeoAxes = ax
         self.crs = crs
         self.figsize = figsize
         self.fignum = fignum
@@ -770,7 +780,7 @@ class EasyMap:
 
     # ========================
     # Commonly needed features
-    def COASTLINES(self, **kwargs):
+    def COASTLINES(self, **kwargs) -> "EasyMap":
         """Add coastlines to map."""
         kwargs = {"zorder": 100, "facecolor": "none"} | self.kwargs | kwargs
         self.ax.add_feature(feature.COASTLINE.with_scale(self.scale), **kwargs)
@@ -778,7 +788,7 @@ class EasyMap:
             print("🐛 COASTLINES:", kwargs)
         return self
 
-    def BORDERS(self, **kwargs):
+    def BORDERS(self, **kwargs) -> "EasyMap":
         """Add country borders to map (ecludes coastlines)."""
         kwargs = {"linewidth": 0.5} | self.kwargs | kwargs
         self.ax.add_feature(feature.BORDERS.with_scale(self.scale), **kwargs)
@@ -786,7 +796,7 @@ class EasyMap:
             print("🐛 BORDERS:", kwargs)
         return self
 
-    def STATES(self, **kwargs):
+    def STATES(self, **kwargs) -> "EasyMap":
         """State and Province borders.
 
         Note: If scale="110m", only the US States are drawn.
@@ -799,7 +809,7 @@ class EasyMap:
             print("🐛 STATES:", kwargs)
         return self
 
-    def STATES2(self, **kwargs):
+    def STATES2(self, **kwargs) -> "EasyMap":
         """States and Provinces (US, Canada, Australia, Brazil, China, Inda, etc.).
 
         Alternative source for data than provided by STATES.
@@ -817,7 +827,7 @@ class EasyMap:
             print("🐛 STATES2:", kwargs)
         return self
 
-    def COUNTIES(self, counties_scale="20m", **kwargs):
+    def COUNTIES(self, counties_scale="20m", **kwargs) -> "EasyMap":
         """Add US counties to map."""
         _counties_scale = {"20m", "5m", "500k"}
         assert (
@@ -829,7 +839,7 @@ class EasyMap:
             print("🐛 COUNTIES:", kwargs)
         return self
 
-    def OCEAN(self, **kwargs):
+    def OCEAN(self, **kwargs) -> "EasyMap":
         """Add color-filled ocean area to map."""
         kwargs = {"edgecolor": "none", "facecolor": self.water} | self.kwargs | kwargs
 
@@ -838,7 +848,7 @@ class EasyMap:
             print("🐛 OCEAN:", kwargs)
         return self
 
-    def LAND(self, **kwargs):
+    def LAND(self, **kwargs) -> "EasyMap":
         """Add color-filled land area to map."""
         kwargs = {"edgecolor": "none", "linewidth": 0, "facecolor": self.land} | self.kwargs | kwargs
 
@@ -847,7 +857,7 @@ class EasyMap:
             print("🐛 LAND:", kwargs)
         return self
 
-    def RIVERS(self, **kwargs):
+    def RIVERS(self, **kwargs) -> "EasyMap":
         """Add rivers to map."""
         kwargs = {"linewidth": 0.3, "color": self.water} | self.kwargs | kwargs
 
@@ -856,7 +866,7 @@ class EasyMap:
             print("🐛 RIVERS:", kwargs)
         return self
 
-    def LAKES(self, **kwargs):
+    def LAKES(self, **kwargs) -> "EasyMap":
         """Add color-filled lake area to map."""
         kwargs = {"linewidth": 0, "facecolor": self.theme_dict["lake"], "edgecolor": self.theme_dict["lake"]} | self.kwargs | kwargs
 
@@ -875,7 +885,7 @@ class EasyMap:
         kind: Literal["pcolormesh", "contourf"] = "pcolormesh",
         extent=None,
         **kwargs,
-    ):
+    ) -> "EasyMap":
         """
         Add terrain data from ETOPO1 dataset to map.
 
@@ -956,7 +966,7 @@ class EasyMap:
         kind: Literal["pcolormesh", "contourf"] = "pcolormesh",
         extent=None,
         **kwargs,
-    ):
+    ) -> "EasyMap":
         """
         Add bathymetry data from ETOPO1 dataset to map.
 
@@ -1029,7 +1039,7 @@ class EasyMap:
 
         return self
 
-    def PLAYAS(self, **kwargs):
+    def PLAYAS(self, **kwargs) -> "EasyMap":
         """Add color-filled playa area to map."""
         kwargs = {"linewidth": 0, "facecolor": self.theme_dict["playa"], "edgecolor": "none"} | self.kwargs | kwargs
 
@@ -1039,7 +1049,7 @@ class EasyMap:
             print("🐛 PLAYAS:", kwargs)
         return self
 
-    def TIMEZONE(self, **kwargs):
+    def TIMEZONE(self, **kwargs) -> "EasyMap":
         """Add timezone boundaries to map."""
         kwargs = {"linewidth": 0.2, "facecolor": "none", "linestyle": ":"} | self.kwargs | kwargs
         tz = feature.NaturalEarthFeature("cultural", "time_zones", "10m")
@@ -1048,7 +1058,7 @@ class EasyMap:
             print("🐛 TIMEZONE:", kwargs)
         return self
 
-    def ROADS(self, road_types=None, **kwargs):
+    def ROADS(self, road_types=None, **kwargs) -> "EasyMap":
         """
         Add major roads to map.
 
@@ -1097,7 +1107,7 @@ class EasyMap:
         labels: bool = True,
         label_kw={},
         scatter_kw={},
-    ):
+    ) -> "EasyMap":
         """
         Add points and labels for major cities to map.
 
@@ -1144,7 +1154,7 @@ class EasyMap:
         ] = "terrain-background",
         zoom: int = 3,
         alpha=1,
-    ):
+    ) -> "EasyMap":
         """
         Add Stamen map tiles to background.
 
@@ -1190,7 +1200,7 @@ class EasyMap:
 
         return self
 
-    def OSM(self, zoom: int = 1, alpha=1):
+    def OSM(self, zoom: int = 1, alpha=1) -> "EasyMap":
         """
         Add Open Street Map tiles as background image.
 
@@ -1223,7 +1233,7 @@ class EasyMap:
 
         return self
 
-    def STOCK(self, **kwargs):
+    def STOCK(self, **kwargs) -> "EasyMap":
         """Show stock image background (suitable for full-globe images)."""
         self.ax.stock_img()
         return self
@@ -1233,7 +1243,7 @@ class EasyMap:
         DATE,
         layer="VIIRS_NOAA20_CorrectedReflectance_TrueColor",
         pixels=1000,
-    ):
+    ) -> "EasyMap":
         """Add NASA image from Global Imagery Browse Service (GIBS).
 
         Parameters
@@ -1295,12 +1305,12 @@ class EasyMap:
         x,
         y=None,
         *,
-        text: Optional[str] = None,
+        text: str | None = None,
         method: Literal["fill", "cutout", "border"] = "cutout",
-        facealpha: Union[Literal[0], Literal[1], float] = 0.25,
+        facealpha: Literal[0] | Literal[1] | float = 0.25,
         text_kwargs={},
         **kwargs,
-    ):
+    ) -> "EasyMap":
         """
         Add a polygon of the domain boundary to a map.
 
