@@ -22,6 +22,7 @@ from .cfs import *
 from .ecmwf import *
 from .gdps import *
 from .gefs import *
+from .geps import *
 from .gfs import *
 from .hafs import *
 from .hiresw import *
@@ -33,6 +34,7 @@ from .nbm import *
 from .nexrad import *
 from .rap import *
 from .rdps import *
+from .reps import *
 from .rrfs import *
 from .rtma import *
 from .urma import *
