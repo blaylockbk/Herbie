@@ -73,7 +73,7 @@ class gefs:
                 "atmos.5b": f"{filedir}/atmos/pgrb2bp5/ge{self.member}.t{self.date:%H}z.pgrb2b.0p50.f{self.fxx:03d}",
                 "atmos.25": f"{filedir}/atmos/pgrb2sp25/ge{self.member}.t{self.date:%H}z.pgrb2s.0p25.f{self.fxx:03d}",
                 "wave": f"{filedir}/wave/gridded/gefs.wave.t{self.date:%H}z.{self.member}.global.0p25.f{self.fxx:03d}.grib2",
-                "chem.5": f"{filedir}/chem/pgrb2ap25/gefs.chem.t{self.date:%H}z.a2d_0p25.f{self.fxx:03d}.grib2",
+                "chem.5": f"{filedir}/chem/pgrb2ap5/gefs.chem.t{self.date:%H}z.a3d_0p50.f{self.fxx:03d}.grib2",
                 "chem.25": f"{filedir}/chem/pgrb2ap25/gefs.chem.t{self.date:%H}z.a2d_0p25.f{self.fxx:03d}.grib2",
             }
 
