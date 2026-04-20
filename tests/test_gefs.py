@@ -35,3 +35,17 @@ def test_gefs_reforecast():
 
     assert H.grib, "GEFS grib2 file not found"
     assert H.idx, "GEFS index file not found"
+
+
+def test_gefs_chem5_uses_half_degree_path():
+    """chem.5 must resolve to the 0.5° bucket path, not the 0.25° one."""
+    H = Herbie(
+        "2023-06-08 00:00",
+        model="gefs",
+        product="chem.5",
+        member="c00",
+        fxx=3,
+        save_dir=save_dir,
+    )
+    assert "pgrb2ap5" in H.SOURCES["aws"]
+    assert "a3d_0p50" in H.SOURCES["aws"]

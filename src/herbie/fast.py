@@ -170,7 +170,7 @@ class FastHerbie:
 
         if len(self.file_not_exists) > 0:
             log.warning(
-                f"Could not find {len(self.file_not_exists)}/{len(self.file_exists)} GRIB files."
+                f"Could not find {len(self.file_not_exists)}/{len(self.file_not_exists) + len(self.file_exists)} GRIB files."
             )
 
     def __len__(self) -> int:
