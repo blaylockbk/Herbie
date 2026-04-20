@@ -97,3 +97,17 @@ def test_rrfs_natlev_file_exists():
     )
     assert H.grib, "RRFS natlev grib2 file not found"
     assert H.idx, "RRFS natlev index file not found"
+
+
+def test_rrfs_2dfld_product_accepted():
+    """2dfld should be a valid product and default to domain='conus'."""
+    H = Herbie(
+        today,
+        model="rrfs",
+        product="2dfld",
+        fxx=0,
+        save_dir=save_dir,
+    )
+    assert H.product == "2dfld"
+    assert H.domain == "conus"
+    assert "2dfld" in H.SOURCES["aws"]
