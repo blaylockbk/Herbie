@@ -673,33 +673,47 @@ class HerbieModel(ABC):
         This is the *only* method that performs parallel HEAD requests to
         all sources simultaneously.  Other methods (inventory, download,
         xarray) are lazy and check sources one at a time.
+
+        Sources are shown in three separate sections depending on type:
+        Remote GRIB Sources, Remote Directory Sources, Remote Zarr Sources.
+        The GRIB section includes an Index column showing whether the
+        companion index file was also found.
         """
-        # Check all remote sources in parallel
-        remote_urls: dict[str, str] = {}
-        for name, src in self._sources.items():
-            if isinstance(src, (GribSource, EccodesGribSource)):
-                remote_urls[name] = src.url
+        from rich.console import Group
 
-        results: dict[str, dict] = {}
-        with ThreadPoolExecutor(max_workers=min(8, len(remote_urls))) as pool:
-            futures = {
-                pool.submit(_url_info, url): name for name, url in remote_urls.items()
-            }
-            for future in as_completed(futures):
-                results[futures[future]] = future.result()
+        # ── Categorize sources by type ─────────────────────────────────────
+        grib_srcs: dict = {
+            n: s
+            for n, s in self._sources.items()
+            if isinstance(s, (GribSource, EccodesGribSource))
+        }
+        dir_srcs: dict = {
+            n: s for n, s in self._sources.items() if isinstance(s, DirectorySource)
+        }
+        zarr_srcs: dict = {
+            n: s for n, s in self._sources.items() if isinstance(s, ZarrSource)
+        }
 
-        # Check local files
-        local_files: list[tuple[Path, str]] = []
-        base = self.local_path
-        if base.exists():
-            local_files.append((base, "full"))
-        # Subsets (same parent dir, matching name pattern)
-        if base.parent.exists():
-            for p in sorted(base.parent.glob(f"{base.name}__subset-*")):
-                local_files.append((p, "subset"))
+        # ── Parallel HEAD requests ─────────────────────────────────────────
+        # For each GRIB source check both the GRIB file and its first index
+        # suffix URL.  For Zarr sources just check the store URL.
+        check_map: dict[tuple[str, str], str] = {}
+        for name, src in grib_srcs.items():
+            check_map[(name, "grib")] = src.url
+            check_map[(name, "idx")] = src.url + src.index_suffixes[0]
+        for name, src in zarr_srcs.items():
+            check_map[(name, "zarr")] = src.url
 
-        # ── Rich display ───────────────────────────────────────────────────
-        # Header
+        url_results: dict[tuple[str, str], dict] = {}
+        if check_map:
+            with ThreadPoolExecutor(max_workers=min(16, len(check_map))) as pool:
+                futures = {
+                    pool.submit(_url_info, url): key for key, url in check_map.items()
+                }
+                for future in as_completed(futures):
+                    url_results[futures[future]] = future.result()
+
+        # ── Header / metadata grid ─────────────────────────────────────────
         logo = Text()
         logo.append("▌", style="bold red on white")
         logo.append("▌", style="bold blue on #f0ead2")
@@ -707,25 +721,96 @@ class HerbieModel(ABC):
         logo.append(f" {self.MODEL_NAME}", style="bold cyan")
         logo.append(f" — {self.MODEL_DESCRIPTION}", style="dim italic")
 
-        # Remote sources table
-        src_table = Table(box=box.SIMPLE_HEAD, title="[bold]Remote Sources[/bold]")
-        src_table.add_column("Source", style="bold cyan")
-        src_table.add_column("Exists", justify="center")
-        src_table.add_column("Size", justify="right")
-        src_table.add_column("URL", style="dim", overflow="fold", max_width=60)
+        info_grid = Table.grid(padding=(0, 2))
+        info_grid.add_column()
+        info_grid.add_column()
+        info_grid.add_row(
+            f"[bold]Initialized:[/bold] [green]{self.date:%Y-%b-%d %H:%M UTC}[/green]"
+            f"  [bold]F{self.fxx:02d}[/bold]",
+            f"[bold]Valid:[/bold] [green]{self.valid_date:%Y-%b-%d %H:%M UTC}[/green]",
+        )
+        param_str = "  ".join(f"{k}=[cyan]{v}[/cyan]" for k, v in self.params.items())
+        info_grid.add_row(param_str, "")
 
-        for name in self._sources:
-            if name not in results:
-                continue
-            info = results[name]
-            exists_str = "[green]✓[/green]" if info["exists"] else "[red]✗[/red]"
-            size_str = _fmt_size(info["size"])
-            src_table.add_row(name, exists_str, size_str, remote_urls[name])
+        renderables = [info_grid]
 
-        # Local files table
+        # ── Remote GRIB Sources ────────────────────────────────────────────
+        if grib_srcs:
+            grib_table = Table(
+                box=box.SIMPLE_HEAD,
+                title="[bold]Remote GRIB Sources[/bold]",
+                title_justify="left",
+            )
+            grib_table.add_column("Source", style="bold cyan")
+            grib_table.add_column("GRIB", justify="center")
+            grib_table.add_column("Index", justify="center")
+            grib_table.add_column("Size", justify="right")
+            grib_table.add_column("URL", style="dim", overflow="fold", max_width=60)
+
+            for name, src in grib_srcs.items():
+                g_info = url_results.get(
+                    (name, "grib"), {"exists": False, "size": None}
+                )
+                ix_info = url_results.get((name, "idx"), {"exists": False})
+                grib_str = "[green]✓[/green]" if g_info["exists"] else "[red]✗[/red]"
+                idx_str = "[green]✓[/green]" if ix_info["exists"] else "[red]✗[/red]"
+                size_str = _fmt_size(g_info["size"])
+                url_str = f"[link={src.url}]{src.url}[/link]"
+                grib_table.add_row(name, grib_str, idx_str, size_str, url_str)
+
+            renderables.append(grib_table)
+
+        # ── Remote Directory Sources ───────────────────────────────────────
+        if dir_srcs:
+            dir_table = Table(
+                box=box.SIMPLE_HEAD,
+                title="[bold]Remote Directory Sources[/bold]",
+                title_justify="left",
+            )
+            dir_table.add_column("Source", style="bold cyan")
+            dir_table.add_column("URL", style="dim", overflow="fold", max_width=70)
+            dir_table.add_column("Pattern", style="dim", overflow="fold", max_width=45)
+
+            for name, src in dir_srcs.items():
+                pat = src.file_pattern
+                pat_display = (pat[:44] + "…") if len(pat) > 45 else pat
+                url_str = f"[link={src.url}]{src.url}[/link]"
+                dir_table.add_row(name, url_str, pat_display)
+
+            renderables.append(dir_table)
+
+        # ── Remote Zarr Sources ────────────────────────────────────────────
+        if zarr_srcs:
+            zarr_table = Table(
+                box=box.SIMPLE_HEAD,
+                title="[bold]Remote Zarr Sources[/bold]",
+                title_justify="left",
+            )
+            zarr_table.add_column("Source", style="bold cyan")
+            zarr_table.add_column("Exists", justify="center")
+            zarr_table.add_column("URL", style="dim", overflow="fold", max_width=60)
+
+            for name, src in zarr_srcs.items():
+                info = url_results.get((name, "zarr"), {"exists": False})
+                exists_str = "[green]✓[/green]" if info["exists"] else "[red]✗[/red]"
+                url_str = f"[link={src.url}]{src.url}[/link]"
+                zarr_table.add_row(name, exists_str, url_str)
+
+            renderables.append(zarr_table)
+
+        # ── Local GRIB Files ───────────────────────────────────────────────
+        base = self.local_path
+        local_files: list[tuple[Path, str]] = []
+        if base.exists():
+            local_files.append((base, "full"))
+        if base.parent.exists():
+            for p in sorted(base.parent.glob(f"{base.name}__subset-*")):
+                local_files.append((p, "subset"))
+
         loc_table = Table(
             box=box.SIMPLE_HEAD,
-            title=f"[bold]Local Files[/bold]  [dim]{base.parent}[/dim]",
+            title=f"[bold]Local GRIB Files[/bold]  [dim]{base.parent}[/dim]",
+            title_justify="left",
         )
         loc_table.add_column("File", style="yellow")
         loc_table.add_column("Type")
@@ -743,22 +828,11 @@ class HerbieModel(ABC):
         else:
             loc_table.add_row("[dim]no local files[/dim]", "", "")
 
-        # Info row
-        info_grid = Table.grid(padding=(0, 2))
-        info_grid.add_column()
-        info_grid.add_column()
-        info_grid.add_row(
-            f"[bold]Initialized:[/bold] [green]{self.date:%Y-%b-%d %H:%M UTC}[/green]"
-            f"  [bold]F{self.fxx:02d}[/bold]",
-            f"[bold]Valid:[/bold] [green]{self.valid_date:%Y-%b-%d %H:%M UTC}[/green]",
-        )
-        param_str = "  ".join(f"{k}=[cyan]{v}[/cyan]" for k, v in self.params.items())
-        info_grid.add_row(param_str, "")
+        renderables.append(loc_table)
 
-        from rich.columns import Columns
-
+        # ── Assemble panel ─────────────────────────────────────────────────
         panel = Panel(
-            Columns([info_grid, src_table, loc_table], equal=False, expand=True),
+            Group(*renderables),
             title=logo,
             border_style="cyan",
             box=box.ROUNDED,
@@ -820,21 +894,69 @@ class HerbieModel(ABC):
 
     def _repr_html_(self) -> str:
         params_html = "".join(
-            f"<tr><td><b>{k}</b></td><td><code>{v}</code></td></tr>"
+            f"<tr>"
+            f"<td style='padding:2px 8px'><b>{k}</b></td>"
+            f"<td style='padding:2px 8px'><code>{v}</code></td>"
+            f"</tr>"
             for k, v in self.params.items()
         )
         src_name, src_url = (
             self._found_grib if "_found_grib" in self.__dict__ else (None, None)
         )
-        src_html = (
-            f'<a href="{src_url}" target="_blank">{src_url}</a>'
-            if src_url
-            else "<i>not yet resolved</i>"
+
+        # Build one row per source in declared priority order
+        source_rows_html = ""
+        for name, src in self._sources.items():
+            if isinstance(src, (GribSource, EccodesGribSource)):
+                url = src.url
+                idx_url = src.url + src.index_suffixes[0]
+                src_type = "GRIB2" if isinstance(src, GribSource) else "GRIB2/ecCodes"
+                source_rows_html += (
+                    f"<tr style='border-bottom:1px solid #f0f0f0'>"
+                    f"<td style='padding:3px 8px'><code>{name}</code></td>"
+                    f"<td style='padding:3px 8px;color:#888'>{src_type}</td>"
+                    f"<td style='padding:3px 8px;word-break:break-all'>"
+                    f"<a href='{url}' target='_blank'"
+                    f" style='font-size:0.82em'>{url}</a></td>"
+                    f"<td style='padding:3px 8px;white-space:nowrap'>"
+                    f"<a href='{idx_url}' target='_blank'"
+                    f" style='font-size:0.82em;color:#666'>{src.index_suffixes[0]}</a>"
+                    f"</td>"
+                    f"</tr>"
+                )
+            elif isinstance(src, ZarrSource):
+                url = src.url
+                source_rows_html += (
+                    f"<tr style='border-bottom:1px solid #f0f0f0'>"
+                    f"<td style='padding:3px 8px'><code>{name}</code></td>"
+                    f"<td style='padding:3px 8px;color:#888'>Zarr</td>"
+                    f"<td style='padding:3px 8px;word-break:break-all' colspan='2'>"
+                    f"<a href='{url}' target='_blank'"
+                    f" style='font-size:0.82em'>{url}</a></td>"
+                    f"</tr>"
+                )
+            elif isinstance(src, DirectorySource):
+                url = src.url
+                source_rows_html += (
+                    f"<tr style='border-bottom:1px solid #f0f0f0'>"
+                    f"<td style='padding:3px 8px'><code>{name}</code></td>"
+                    f"<td style='padding:3px 8px;color:#888'>Directory</td>"
+                    f"<td style='padding:3px 8px;word-break:break-all' colspan='2'>"
+                    f"<a href='{url}' target='_blank'"
+                    f" style='font-size:0.82em'>{url}</a></td>"
+                    f"</tr>"
+                )
+
+        resolved_badge = (
+            f"<code style='background:#e6f4ea;color:#1a7f37;"
+            f"padding:1px 6px;border-radius:3px'>{src_name}</code>"
+            if src_name
+            else "<span style='color:#aaa;font-style:italic'>not yet resolved</span>"
         )
 
         return f"""
         <div style="font-family: sans-serif; border: 1px solid #ddd; border-radius: 4px;
-                    padding: 12px; max-width: 800px;">
+                    padding: 12px; max-width: 900px;">
           <div style="display: flex; align-items: center; margin-bottom: 8px;">
             <span style="background:white; border:1px solid #ccc; padding:2px 5px;
                          border-radius:4px; font-weight:bold; margin-right:10px;">
@@ -853,10 +975,25 @@ class HerbieModel(ABC):
             <summary style="cursor:pointer;font-weight:bold">Parameters</summary>
             <table style="border-collapse:collapse;margin-top:4px">{params_html}</table>
           </details>
-          <details style="margin-top:4px">
-            <summary style="cursor:pointer;font-weight:bold">Source</summary>
-            <p style="margin:4px 0"><b>Name:</b> {src_name or "not yet resolved"}</p>
-            <p style="margin:4px 0"><b>URL:</b> {src_html}</p>
-            <p style="margin:4px 0"><b>Local:</b> <code>{self.local_path}</code></p>
+          <details style="margin-top:4px" open>
+            <summary style="cursor:pointer;font-weight:bold">Sources</summary>
+            <p style="margin:6px 0 4px 0">
+              <b>Resolved:</b> {resolved_badge} &nbsp;&nbsp;
+              <b>Local:</b> <code style="font-size:0.85em">{self.local_path}</code>
+            </p>
+            <table style="border-collapse:collapse;margin-top:6px;width:100%;
+                          font-size:0.9em;border:1px solid #e0e0e0">
+              <thead>
+                <tr style="background:#f5f5f5;border-bottom:2px solid #ddd">
+                  <th style="text-align:left;padding:5px 8px">Name</th>
+                  <th style="text-align:left;padding:5px 8px">Type</th>
+                  <th style="text-align:left;padding:5px 8px">URL</th>
+                  <th style="text-align:left;padding:5px 8px">Index</th>
+                </tr>
+              </thead>
+              <tbody>
+                {source_rows_html}
+              </tbody>
+            </table>
           </details>
         </div>"""
