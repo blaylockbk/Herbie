@@ -666,6 +666,27 @@ class HerbieModel(ABC):
 
         return ds
 
+    def found(self) -> dict[str, tuple]:
+        """
+        Resolve and return the first available GRIB source and index file.
+
+        Unlike ``status()``, which fires parallel HEAD requests to *every*
+        source, ``found()`` walks sources in priority order and stops at the
+        first hit — exactly the same logic used by ``inventory()``,
+        ``download()``, and ``xarray()``.  Call it to confirm which source
+        will actually be used before doing any real work.
+
+        Results are cached, so repeated calls are free.
+        """
+        # Trigger lazy resolution (cached after the first call)
+        grib_src, grib_url = self._found_grib
+        idx_src, idx_url = self._found_index
+
+        return {
+            "grib": self._found_grib,
+            "index": self._found_index,
+        }
+
     def status(self) -> None:
         """
         Check and display the availability of all sources and local files.
@@ -972,11 +993,11 @@ class HerbieModel(ABC):
             <b>Valid:</b> {self.valid_date:%Y-%b-%d %H:%M UTC}
           </p>
           <details style="margin-top:8px">
-            <summary style="cursor:pointer;font-weight:bold">Parameters</summary>
+            <summary style="cursor:pointer;font-weight:bold"> Parameters</summary>
             <table style="border-collapse:collapse;margin-top:4px">{params_html}</table>
           </details>
           <details style="margin-top:4px" open>
-            <summary style="cursor:pointer;font-weight:bold">Sources</summary>
+            <summary style="cursor:pointer;font-weight:bold"> Sources</summary>
             <p style="margin:6px 0 4px 0">
               <b>Resolved:</b> {resolved_badge} &nbsp;&nbsp;
               <b>Local:</b> <code style="font-size:0.85em">{self.local_path}</code>
