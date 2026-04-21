@@ -163,6 +163,7 @@ class HerbieModel(ABC):
     def _build_sources(self) -> dict[str, Source]:
         """
         Return an ordered dict of ``{source_name: Source}``.
+
         Dict insertion order defines the default search priority.
         """
         ...
@@ -171,8 +172,7 @@ class HerbieModel(ABC):
 
     def _resolve_params(self, kwargs: dict) -> dict:
         """
-        Merge PARAMS defaults with user-supplied kwargs, apply aliases,
-        and validate all values.
+        Merge PARAMS defaults with user-supplied kwargs, apply aliases, and validate all values.
 
         ``kwargs`` may include any key defined in ``PARAMS`` plus any
         extra model-specific kwargs (they are stored as-is).
