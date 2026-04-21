@@ -90,7 +90,6 @@ class IFS(HerbieModel):
                 "mmsf": "Multi-model seasonal forecast (ECMWF model only)",
             },
         },
-
     }
 
     def _build_sources(self) -> dict:
@@ -122,7 +121,8 @@ class IFS(HerbieModel):
                 f"https://storage.googleapis.com/ecmwf-open-data/{post_root}", idx
             ),
             "aws": EccodesGribSource(
-                f"https://ecmwf-forecasts.s3.eu-central-1.amazonaws.com/{post_root}", idx
+                f"https://ecmwf-forecasts.s3.eu-central-1.amazonaws.com/{post_root}",
+                idx,
             ),
             "ecmwf": EccodesGribSource(
                 f"https://data.ecmwf.int/forecasts/{post_root}", idx
@@ -174,7 +174,6 @@ class AIFS(HerbieModel):
                 "enfo": "50-member ensemble forecast",
             },
         },
-
     }
 
     def _build_sources(self) -> dict:
@@ -214,7 +213,8 @@ class AIFS(HerbieModel):
                 f"https://storage.googleapis.com/ecmwf-open-data/{post_root}", idx
             ),
             "aws": EccodesGribSource(
-                f"https://ecmwf-forecasts.s3.eu-central-1.amazonaws.com/{post_root}", idx
+                f"https://ecmwf-forecasts.s3.eu-central-1.amazonaws.com/{post_root}",
+                idx,
             ),
             "ecmwf": EccodesGribSource(
                 f"https://data.ecmwf.int/forecasts/{post_root}", idx

@@ -22,6 +22,7 @@ from herbie.v2._sources import GribSource
 # Storm lookup helper (shared by HAFSA and HAFSB)
 # ---------------------------------------------------------------------------
 
+
 class _StormLookup:
     """Lazily fetch active storm IDs and names from the NOMADS HAFS directory."""
 
@@ -32,7 +33,9 @@ class _StormLookup:
             text = requests.get(url, timeout=8).text
             storms: dict[str, str] = {}
             for msg in set(re.findall(r"message\d+", text)):
-                parts = re.split(r"\s+", requests.get(url + msg, timeout=5).text, maxsplit=3)
+                parts = re.split(
+                    r"\s+", requests.get(url + msg, timeout=5).text, maxsplit=3
+                )
                 if len(parts) >= 3:
                     storms[parts[1].lower()] = parts[2].lower()
             return storms
@@ -50,6 +53,7 @@ _STORMS = _StormLookup()
 # ---------------------------------------------------------------------------
 # HAFSA
 # ---------------------------------------------------------------------------
+
 
 class HAFSA(HerbieModel):
     """
@@ -99,17 +103,20 @@ class HAFSA(HerbieModel):
         "product": {
             "default": "storm.atm",
             "valid": [
-                "storm.atm", "storm.sat",
-                "parent.atm", "parent.sat", "parent.swath",
+                "storm.atm",
+                "storm.sat",
+                "parent.atm",
+                "parent.sat",
+                "parent.swath",
                 "ww3",
             ],
             "descriptions": {
-                "storm.atm":    "Storm-following domain, atmospheric fields",
-                "storm.sat":    "Storm-following domain, satellite-sim fields",
-                "parent.atm":   "Parent domain, atmospheric fields",
-                "parent.sat":   "Parent domain, satellite-sim fields",
+                "storm.atm": "Storm-following domain, atmospheric fields",
+                "storm.sat": "Storm-following domain, satellite-sim fields",
+                "parent.atm": "Parent domain, atmospheric fields",
+                "parent.sat": "Parent domain, satellite-sim fields",
                 "parent.swath": "Parent domain, max-wind swath",
-                "ww3":          "WaveWatch III wave output",
+                "ww3": "WaveWatch III wave output",
             },
         },
     }
@@ -176,6 +183,7 @@ class HAFSB(HAFSA):
 # HIRESW
 # ---------------------------------------------------------------------------
 
+
 class HIRESW(HerbieModel):
     """
     NOAA High-Resolution Window (HIRESW) Forecast System.
@@ -221,17 +229,17 @@ class HIRESW(HerbieModel):
             "descriptions": {
                 "arw_2p5km": "CONUS ARW 2.5-km",
                 "fv3_2p5km": "CONUS FV3 2.5-km",
-                "arw_5km":   "CONUS ARW 5-km",
-                "fv3_5km":   "CONUS FV3 5-km",
+                "arw_5km": "CONUS ARW 5-km",
+                "fv3_5km": "CONUS FV3 5-km",
             },
         },
         "domain": {
             "default": "conus",
             "valid": ["conus", "ak", "hi", "guam", "pr"],
             "aliases": {
-                "alaska":      "ak",
-                "hawaii":      "hi",
-                "puertorico":  "pr",
+                "alaska": "ak",
+                "hawaii": "hi",
+                "puertorico": "pr",
             },
         },
         "member": {
@@ -264,6 +272,7 @@ class HIRESW(HerbieModel):
 # ---------------------------------------------------------------------------
 # NAVGEM (recent — NOMADS)
 # ---------------------------------------------------------------------------
+
 
 class NavgemNOMADS(HerbieModel):
     """
@@ -306,6 +315,7 @@ class NavgemNOMADS(HerbieModel):
 # ---------------------------------------------------------------------------
 # NAVGEM / NOGAPS historical — GODAE server
 # ---------------------------------------------------------------------------
+
 
 class NavgemGODAE(HerbieModel):
     """
@@ -357,13 +367,26 @@ class NavgemGODAE(HerbieModel):
 
     # wgrib2 variable name → GODAE filename variable component
     _VAR_MAP = {
-        "TMP": "air_temp", "DEPR": "dwpt_dprs", "ABSV": "abs_vort",
-        "RH": "rltv_hum", "PRES": "pres", "UGRD": "wnd_ucmp",
-        "VGRD": "wnd_vcmp", "HGT": "geop_ht", "VAPP": "vpr_pres",
-        "VVEL": "wnd_vert_vel", "CAPE": "cape", "VIS": "visib",
-        "PWAT": "prcp_h20", "PRATE": "rain_rate", "SHTFL": "snsb_heat_flux",
-        "SNOD": "snw_dpth", "NSWRS": "sol_rad", "UFLX": "wnd_strs_ucmp",
-        "VFLX": "wnd_strs_vcmp", "PRMSL": "pres_msl",
+        "TMP": "air_temp",
+        "DEPR": "dwpt_dprs",
+        "ABSV": "abs_vort",
+        "RH": "rltv_hum",
+        "PRES": "pres",
+        "UGRD": "wnd_ucmp",
+        "VGRD": "wnd_vcmp",
+        "HGT": "geop_ht",
+        "VAPP": "vpr_pres",
+        "VVEL": "wnd_vert_vel",
+        "CAPE": "cape",
+        "VIS": "visib",
+        "PWAT": "prcp_h20",
+        "PRATE": "rain_rate",
+        "SHTFL": "snsb_heat_flux",
+        "SNOD": "snw_dpth",
+        "NSWRS": "sol_rad",
+        "UFLX": "wnd_strs_ucmp",
+        "VFLX": "wnd_strs_vcmp",
+        "PRMSL": "pres_msl",
     }
 
     def _parse_variable(self) -> tuple[str, str]:
@@ -409,9 +432,10 @@ class NavgemGODAE(HerbieModel):
             f"US058{product}-GR1mdl.0018_0056_{fxx:03d}00F0RL"
             f"{d:%Y%m%d%H}_{godae_level}{godae_var}"
         )
-        navgem_gr2 = navgem_url.replace("GR1mdl", "GR2mdl").replace(
-            "0018_0056", "0018_0056"
-        ) + ".gr2"
+        navgem_gr2 = (
+            navgem_url.replace("GR1mdl", "GR2mdl").replace("0018_0056", "0018_0056")
+            + ".gr2"
+        )
         nogaps_url = (
             f"https://usgodae.org/ftp/outgoing/fnmoc/models/nogaps/"
             f"{d:%Y/%Y%m%d%H}/"
@@ -420,7 +444,7 @@ class NavgemGODAE(HerbieModel):
         )
 
         return {
-            "navgem":      GribSource(navgem_url, [".idx"]),
+            "navgem": GribSource(navgem_url, [".idx"]),
             "navgem_grib2": GribSource(navgem_gr2, [".idx"]),
-            "nogaps":      GribSource(nogaps_url, [".idx"]),
+            "nogaps": GribSource(nogaps_url, [".idx"]),
         }

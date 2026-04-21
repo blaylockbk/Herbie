@@ -45,10 +45,18 @@ class RAP(HerbieModel):
         "product": {
             "default": "awp130pgrb",
             "valid": [
-                "awp130pgrb", "awp252pgrb", "awp236pgrb",
-                "awp130bgrb", "awp252bgrb",
-                "wrfprs", "wrfnat",
-                "awip32", "awp242", "awp200", "awp243", "wrfmsl",
+                "awp130pgrb",
+                "awp252pgrb",
+                "awp236pgrb",
+                "awp130bgrb",
+                "awp252bgrb",
+                "wrfprs",
+                "wrfnat",
+                "awip32",
+                "awp242",
+                "awp200",
+                "awp243",
+                "wrfmsl",
             ],
             "descriptions": {
                 "awp130pgrb": "CONUS pressure levels; 13-km resolution",
@@ -56,16 +64,15 @@ class RAP(HerbieModel):
                 "awp236pgrb": "CONUS pressure levels; 40-km resolution",
                 "awp130bgrb": "CONUS native levels; 13-km resolution",
                 "awp252bgrb": "CONUS native levels; 20-km resolution",
-                "wrfprs":     "Full domain pressure levels; 13-km",
-                "wrfnat":     "Full domain native levels; 13-km",
-                "awip32":     "North American Master Grid; 32-km",
-                "awp242":     "Alaska quadruple resolution; 11-km",
-                "awp200":     "Puerto Rico pressure levels; 16-km",
-                "awp243":     "Eastern North America; 0.4°",
-                "wrfmsl":     "WRFMSL; 13-km",
+                "wrfprs": "Full domain pressure levels; 13-km",
+                "wrfnat": "Full domain native levels; 13-km",
+                "awip32": "North American Master Grid; 32-km",
+                "awp242": "Alaska quadruple resolution; 11-km",
+                "awp200": "Puerto Rico pressure levels; 16-km",
+                "awp243": "Eastern North America; 0.4°",
+                "wrfmsl": "WRFMSL; 13-km",
             },
         },
-
     }
 
     def _build_sources(self) -> dict:
@@ -76,10 +83,16 @@ class RAP(HerbieModel):
         path = f"rap.{d:%Y%m%d}/rap.t{d:%H}z.{product}f{fxx:02d}.grib2"
         idx = [".idx", ".grib2.idx"]
         return {
-            "aws":    GribSource(f"https://noaa-rap-pds.s3.amazonaws.com/{path}", idx),
-            "nomads": GribSource(f"https://nomads.ncep.noaa.gov/pub/data/nccf/com/rap/prod/{path}", idx),
-            "google": GribSource(f"https://storage.googleapis.com/rapid-refresh/{path}", idx),
-            "azure":  GribSource(f"https://noaarap.blob.core.windows.net/rap/{path}", idx),
+            "aws": GribSource(f"https://noaa-rap-pds.s3.amazonaws.com/{path}", idx),
+            "nomads": GribSource(
+                f"https://nomads.ncep.noaa.gov/pub/data/nccf/com/rap/prod/{path}", idx
+            ),
+            "google": GribSource(
+                f"https://storage.googleapis.com/rapid-refresh/{path}", idx
+            ),
+            "azure": GribSource(
+                f"https://noaarap.blob.core.windows.net/rap/{path}", idx
+            ),
         }
 
 
@@ -114,14 +127,15 @@ class RAPHistorical(HerbieModel):
             "default": "analysis",
             "valid": ["analysis", "forecast"],
         },
-
     }
 
     def _build_sources(self) -> dict:
         d = self.date
         fxx = self.fxx
         product = self.params["product"]
-        base = f"https://www.ncei.noaa.gov/data/rapid-refresh/access/historical/{product}"
+        base = (
+            f"https://www.ncei.noaa.gov/data/rapid-refresh/access/historical/{product}"
+        )
         idx = [".inv", ".grb2.inv", ".grb.inv"]
         return {
             "rap_130": GribSource(

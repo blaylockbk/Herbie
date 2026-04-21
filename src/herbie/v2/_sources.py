@@ -32,13 +32,14 @@ DirectorySource
 
 from __future__ import annotations
 
+from collections.abc import Callable
 from dataclasses import dataclass, field
-from typing import Callable, Literal
-
+from typing import Literal
 
 # ---------------------------------------------------------------------------
 # GRIB2 sources
 # ---------------------------------------------------------------------------
+
 
 @dataclass
 class GribSource:
@@ -47,9 +48,7 @@ class GribSource:
     url: str
     """Full URL to the GRIB2 file."""
 
-    index_suffixes: list[str] = field(
-        default_factory=lambda: [".idx", ".grib2.idx"]
-    )
+    index_suffixes: list[str] = field(default_factory=lambda: [".idx", ".grib2.idx"])
     """Suffixes to try when looking for the companion index file.
     Each suffix is *appended* to ``url`` in order.  The first one that
     exists is used.
@@ -72,6 +71,7 @@ class EccodesGribSource:
 # Zarr source
 # ---------------------------------------------------------------------------
 
+
 @dataclass
 class ZarrSource:
     """A cloud-native Zarr store."""
@@ -92,6 +92,7 @@ class ZarrSource:
 # ---------------------------------------------------------------------------
 # Directory source  (one GRIB message per file — Canadian/Navy models)
 # ---------------------------------------------------------------------------
+
 
 @dataclass
 class DirectorySource:

@@ -94,16 +94,29 @@ class HRRR(HerbieModel):
         product = self.params["product"]
 
         path = f"hrrr.{d:%Y%m%d}/conus/hrrr.t{d:%H}z.wrf{product}f{fxx:02d}.grib2"
-        path_pando = f"hrrr/{product}/{d:%Y%m%d}/hrrr.t{d:%H}z.wrf{product}f{fxx:02d}.grib2"
+        path_pando = (
+            f"hrrr/{product}/{d:%Y%m%d}/hrrr.t{d:%H}z.wrf{product}f{fxx:02d}.grib2"
+        )
 
         idx = [".idx", ".grib2.idx"]
         return {
-            "aws":    GribSource(f"https://noaa-hrrr-bdp-pds.s3.amazonaws.com/{path}", idx),
-            "google": GribSource(f"https://storage.googleapis.com/high-resolution-rapid-refresh/{path}", idx),
-            "nomads": GribSource(f"https://nomads.ncep.noaa.gov/pub/data/nccf/com/hrrr/prod/{path}", idx),
-            "azure":  GribSource(f"https://noaahrrr.blob.core.windows.net/hrrr/{path}", idx),
-            "pando":  GribSource(f"https://pando-rgw01.chpc.utah.edu/{path_pando}", idx),
-            "pando2": GribSource(f"https://pando-rgw02.chpc.utah.edu/{path_pando}", idx),
+            "aws": GribSource(
+                f"https://noaa-hrrr-bdp-pds.s3.amazonaws.com/{path}", idx
+            ),
+            "google": GribSource(
+                f"https://storage.googleapis.com/high-resolution-rapid-refresh/{path}",
+                idx,
+            ),
+            "nomads": GribSource(
+                f"https://nomads.ncep.noaa.gov/pub/data/nccf/com/hrrr/prod/{path}", idx
+            ),
+            "azure": GribSource(
+                f"https://noaahrrr.blob.core.windows.net/hrrr/{path}", idx
+            ),
+            "pando": GribSource(f"https://pando-rgw01.chpc.utah.edu/{path_pando}", idx),
+            "pando2": GribSource(
+                f"https://pando-rgw02.chpc.utah.edu/{path_pando}", idx
+            ),
         }
 
 
@@ -156,13 +169,24 @@ class HRRRAK(HerbieModel):
         product = self.params["product"]
 
         path = f"hrrr.{d:%Y%m%d}/alaska/hrrr.t{d:%H}z.wrf{product}f{fxx:02d}.ak.grib2"
-        path_pando = f"hrrr/{product}/{d:%Y%m%d}/hrrr.t{d:%H}z.wrf{product}f{fxx:02d}.ak.grib2"
+        path_pando = (
+            f"hrrr/{product}/{d:%Y%m%d}/hrrr.t{d:%H}z.wrf{product}f{fxx:02d}.ak.grib2"
+        )
 
         idx = [".idx", ".grib2.idx"]
         return {
-            "nomads": GribSource(f"https://nomads.ncep.noaa.gov/pub/data/nccf/com/hrrr/prod/{path}", idx),
-            "aws":    GribSource(f"https://noaa-hrrr-bdp-pds.s3.amazonaws.com/{path}", idx),
-            "google": GribSource(f"https://storage.googleapis.com/high-resolution-rapid-refresh/{path}", idx),
-            "azure":  GribSource(f"https://noaahrrr.blob.core.windows.net/hrrr/{path}", idx),
-            "pando":  GribSource(f"https://pando-rgw01.chpc.utah.edu/{path_pando}", idx),
+            "nomads": GribSource(
+                f"https://nomads.ncep.noaa.gov/pub/data/nccf/com/hrrr/prod/{path}", idx
+            ),
+            "aws": GribSource(
+                f"https://noaa-hrrr-bdp-pds.s3.amazonaws.com/{path}", idx
+            ),
+            "google": GribSource(
+                f"https://storage.googleapis.com/high-resolution-rapid-refresh/{path}",
+                idx,
+            ),
+            "azure": GribSource(
+                f"https://noaahrrr.blob.core.windows.net/hrrr/{path}", idx
+            ),
+            "pando": GribSource(f"https://pando-rgw01.chpc.utah.edu/{path_pando}", idx),
         }

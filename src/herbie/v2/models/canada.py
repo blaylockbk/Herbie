@@ -86,7 +86,7 @@ class HRDPS(HerbieModel):
             "valid": ["continental", "north"],
             "descriptions": {
                 "continental": "Continental domain; 2.5-km resolution",
-                "north":       "Northern domain; 3-km resolution",
+                "north": "Northern domain; 3-km resolution",
             },
         },
     }

@@ -73,8 +73,10 @@ class RTMA(HerbieModel):
             path = f"rtma2p5.{d:%Y%m%d}/rtma2p5.{d:%Y%m%d%H}.{product}.184.grb2"
 
         return {
-            "aws":    GribSource(f"https://noaa-rtma-pds.s3.amazonaws.com/{path}", _IDX),
-            "nomads": GribSource(f"https://nomads.ncep.noaa.gov/pub/data/nccf/com/rtma/prod/{path}", _IDX),
+            "aws": GribSource(f"https://noaa-rtma-pds.s3.amazonaws.com/{path}", _IDX),
+            "nomads": GribSource(
+                f"https://nomads.ncep.noaa.gov/pub/data/nccf/com/rtma/prod/{path}", _IDX
+            ),
         }
 
 
@@ -97,8 +99,10 @@ class RTMA_AK(HerbieModel):
         product = self.params["product"]
         path = f"akrtma.{d:%Y%m%d}/akrtma.t{d:%H}z.2dvar{product}_ndfd_3p0.grb2"
         return {
-            "aws":    GribSource(f"https://noaa-rtma-pds.s3.amazonaws.com/{path}", _IDX),
-            "nomads": GribSource(f"https://nomads.ncep.noaa.gov/pub/data/nccf/com/rtma/prod/{path}", _IDX),
+            "aws": GribSource(f"https://noaa-rtma-pds.s3.amazonaws.com/{path}", _IDX),
+            "nomads": GribSource(
+                f"https://nomads.ncep.noaa.gov/pub/data/nccf/com/rtma/prod/{path}", _IDX
+            ),
         }
 
 
@@ -136,29 +140,34 @@ class URMA(HerbieModel):
             "default": "conus",
             "valid": ["conus", "alaska", "hawaii", "puertorico"],
             "descriptions": {
-                "conus":       "Continental US (2.5-km)",
-                "alaska":      "Alaska (3.0-km)",
-                "hawaii":      "Hawaii (2.5-km)",
-                "puertorico":  "Puerto Rico",
+                "conus": "Continental US (2.5-km)",
+                "alaska": "Alaska (3.0-km)",
+                "hawaii": "Hawaii (2.5-km)",
+                "puertorico": "Puerto Rico",
             },
         },
         "product": {
             "default": "anl",
             "valid": ["anl", "err", "ges"],
-            "aliases": {"analysis": "anl", "error": "err", "forecast": "ges", "guess": "ges"},
+            "aliases": {
+                "analysis": "anl",
+                "error": "err",
+                "forecast": "ges",
+                "guess": "ges",
+            },
         },
     }
 
     _PREFIX = {
-        "conus":      "urma2p5",
-        "alaska":     "akurma",
-        "hawaii":     "hiurma",
+        "conus": "urma2p5",
+        "alaska": "akurma",
+        "hawaii": "hiurma",
         "puertorico": "prurma",
     }
     _SUFFIX = {
-        "conus":      "_ndfd.grb2_wexp",
-        "alaska":     "_ndfd_3p0.grb2",
-        "hawaii":     "_ndfd_2p5.grb2",
+        "conus": "_ndfd.grb2_wexp",
+        "alaska": "_ndfd_3p0.grb2",
+        "hawaii": "_ndfd_2p5.grb2",
         "puertorico": "_ndfd.grb2",
     }
 
@@ -173,6 +182,8 @@ class URMA(HerbieModel):
         path = f"{prefix}.{d:%Y%m%d}/{filename}"
 
         return {
-            "aws":    GribSource(f"https://noaa-urma-pds.s3.amazonaws.com/{path}", _IDX),
-            "nomads": GribSource(f"https://nomads.ncep.noaa.gov/pub/data/nccf/com/urma/prod/{path}", _IDX),
+            "aws": GribSource(f"https://noaa-urma-pds.s3.amazonaws.com/{path}", _IDX),
+            "nomads": GribSource(
+                f"https://nomads.ncep.noaa.gov/pub/data/nccf/com/urma/prod/{path}", _IDX
+            ),
         }

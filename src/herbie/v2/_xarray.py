@@ -72,6 +72,7 @@ def load_xarray(
     # Try to merge multiple hypercubes (e.g. subhourly)
     try:
         import itertools
+
         data_vars = set(itertools.chain(*[list(ds) for ds in datasets]))
         data_vars.discard("gribfile_projection")
         merged = xr.concat(datasets, dim="step", data_vars=list(data_vars))

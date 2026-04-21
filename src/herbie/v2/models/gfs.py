@@ -64,7 +64,7 @@ class GFS(HerbieModel):
             "valid": ["pgrb2", "pgrb2b"],
             "aliases": {"common": "pgrb2", "uncommon": "pgrb2b"},
             "descriptions": {
-                "pgrb2":  "Common pressure-level fields; 0.25° resolution",
+                "pgrb2": "Common pressure-level fields; 0.25° resolution",
                 "pgrb2b": "Supplemental pressure-level fields; 0.25° resolution",
             },
         },
@@ -73,11 +73,10 @@ class GFS(HerbieModel):
             "valid": [0.25, 0.5, 1.0],
             "descriptions": {
                 0.25: "Quarter-degree (~28 km)",
-                0.5:  "Half-degree (~56 km)",
-                1.0:  "One-degree (~111 km)",
+                0.5: "Half-degree (~56 km)",
+                1.0: "One-degree (~111 km)",
             },
         },
-
     }
 
     def _build_sources(self) -> dict:
@@ -91,14 +90,22 @@ class GFS(HerbieModel):
         if d < datetime(2021, 3, 23):
             path = f"gfs.{d:%Y%m%d/%H}/gfs.t{d:%H}z.{product}.{res_str}.f{fxx:03d}"
         else:
-            path = f"gfs.{d:%Y%m%d/%H}/atmos/gfs.t{d:%H}z.{product}.{res_str}.f{fxx:03d}"
+            path = (
+                f"gfs.{d:%Y%m%d/%H}/atmos/gfs.t{d:%H}z.{product}.{res_str}.f{fxx:03d}"
+            )
 
         idx = [".idx", ".grb2.inv"]
         return {
-            "aws":      GribSource(f"https://noaa-gfs-bdp-pds.s3.amazonaws.com/{path}", idx),
-            "google":   GribSource(f"https://storage.googleapis.com/global-forecast-system/{path}", idx),
-            "nomads":   GribSource(f"https://nomads.ncep.noaa.gov/pub/data/nccf/com/gfs/prod/{path}", idx),
-            "azure":    GribSource(f"https://noaagfs.blob.core.windows.net/gfs/{path}", idx),
+            "aws": GribSource(f"https://noaa-gfs-bdp-pds.s3.amazonaws.com/{path}", idx),
+            "google": GribSource(
+                f"https://storage.googleapis.com/global-forecast-system/{path}", idx
+            ),
+            "nomads": GribSource(
+                f"https://nomads.ncep.noaa.gov/pub/data/nccf/com/gfs/prod/{path}", idx
+            ),
+            "azure": GribSource(
+                f"https://noaagfs.blob.core.windows.net/gfs/{path}", idx
+            ),
             "ncar_rda": GribSource(
                 f"https://data.rda.ucar.edu/d084001/{d:%Y/%Y%m%d}"
                 f"/gfs.0p25.{d:%Y%m%d%H}.f{fxx:03d}.grib2",
@@ -139,7 +146,6 @@ class GDAS(HerbieModel):
             "default": "pgrb2.0p25",
             "valid": ["pgrb2.0p25", "pgrb2.1p00"],
         },
-
     }
 
     def _build_sources(self) -> dict:
@@ -154,10 +160,16 @@ class GDAS(HerbieModel):
 
         idx = [".idx"]
         return {
-            "aws":    GribSource(f"https://noaa-gfs-bdp-pds.s3.amazonaws.com/{path}", idx),
-            "google": GribSource(f"https://storage.googleapis.com/global-forecast-system/{path}", idx),
-            "nomads": GribSource(f"https://nomads.ncep.noaa.gov/pub/data/nccf/com/gfs/prod/{path}", idx),
-            "azure":  GribSource(f"https://noaagfs.blob.core.windows.net/gfs/{path}", idx),
+            "aws": GribSource(f"https://noaa-gfs-bdp-pds.s3.amazonaws.com/{path}", idx),
+            "google": GribSource(
+                f"https://storage.googleapis.com/global-forecast-system/{path}", idx
+            ),
+            "nomads": GribSource(
+                f"https://nomads.ncep.noaa.gov/pub/data/nccf/com/gfs/prod/{path}", idx
+            ),
+            "azure": GribSource(
+                f"https://noaagfs.blob.core.windows.net/gfs/{path}", idx
+            ),
         }
 
 
@@ -189,11 +201,15 @@ class GFSWave(HerbieModel):
         "product": {
             "default": "global.0p25",
             "valid": [
-                "arctic.9km", "atlocn.0p16", "epacif.0p16",
-                "global.0p16", "global.0p25", "gsouth.0p25", "wcoast.0p16",
+                "arctic.9km",
+                "atlocn.0p16",
+                "epacif.0p16",
+                "global.0p16",
+                "global.0p25",
+                "gsouth.0p25",
+                "wcoast.0p16",
             ],
         },
-
     }
 
     def _build_sources(self) -> dict:
@@ -207,7 +223,11 @@ class GFSWave(HerbieModel):
         )
         idx = [".idx"]
         return {
-            "aws":    GribSource(f"https://noaa-gfs-bdp-pds.s3.amazonaws.com/{path}", idx),
-            "nomads": GribSource(f"https://nomads.ncep.noaa.gov/pub/data/nccf/com/gfs/prod/{path}", idx),
-            "google": GribSource(f"https://storage.googleapis.com/global-forecast-system/{path}", idx),
+            "aws": GribSource(f"https://noaa-gfs-bdp-pds.s3.amazonaws.com/{path}", idx),
+            "nomads": GribSource(
+                f"https://nomads.ncep.noaa.gov/pub/data/nccf/com/gfs/prod/{path}", idx
+            ),
+            "google": GribSource(
+                f"https://storage.googleapis.com/global-forecast-system/{path}", idx
+            ),
         }

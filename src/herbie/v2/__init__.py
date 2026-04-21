@@ -33,7 +33,7 @@ import pkgutil
 import herbie.v2.models as _models_pkg
 from herbie.v2._base import HerbieModel
 from herbie.v2._namespace import Herbie
-from herbie.v2.models.fast import FastHerbie
+from herbie.v2.fast import FastHerbie
 
 # ---------------------------------------------------------------------------
 # Auto-discover and register all HerbieModel subclasses

@@ -12,6 +12,7 @@ from herbie.v2._sources import GribSource
 # NBM QMD
 # ---------------------------------------------------------------------------
 
+
 class NBMQMD(HerbieModel):
     """
     NOAA National Blend of Models — Quantile Mapping Downscaling (QMD).
@@ -44,20 +45,22 @@ class NBMQMD(HerbieModel):
         d = self.date
         fxx = max(self.fxx, 1)
         product = self.params["product"]
-        path = (
-            f"blend.{d:%Y%m%d/%H}/qmd/"
-            f"blend.t{d:%H}z.qmd.f{fxx:03d}.{product}.grib2"
-        )
+        path = f"blend.{d:%Y%m%d/%H}/qmd/blend.t{d:%H}z.qmd.f{fxx:03d}.{product}.grib2"
         idx = [".idx", ".grib2.idx"]
         return {
-            "nomads": GribSource(f"https://nomads.ncep.noaa.gov/pub/data/nccf/com/blend/prod/{path}", idx),
-            "aws":    GribSource(f"https://noaa-nbm-grib2-pds.s3.amazonaws.com/{path}", idx),
+            "nomads": GribSource(
+                f"https://nomads.ncep.noaa.gov/pub/data/nccf/com/blend/prod/{path}", idx
+            ),
+            "aws": GribSource(
+                f"https://noaa-nbm-grib2-pds.s3.amazonaws.com/{path}", idx
+            ),
         }
 
 
 # ---------------------------------------------------------------------------
 # HREF
 # ---------------------------------------------------------------------------
+
 
 class HREF(HerbieModel):
     """
@@ -107,7 +110,7 @@ class HREF(HerbieModel):
                 "avrg": "Average of mean and pmmn (precipitation only)",
                 "sprd": "Ensemble spread",
                 "prob": "Probabilistic output",
-                "eas":  "Ensemble Agreement Scale probability",
+                "eas": "Ensemble Agreement Scale probability",
             },
         },
         "domain": {
@@ -123,18 +126,20 @@ class HREF(HerbieModel):
         product = self.params["product"]
         domain = self.params["domain"]
         path = (
-            f"href.{d:%Y%m%d}/ensprod/"
-            f"href.t{d:%H}z.{domain}.{product}.f{fxx:02d}.grib2"
+            f"href.{d:%Y%m%d}/ensprod/href.t{d:%H}z.{domain}.{product}.f{fxx:02d}.grib2"
         )
         idx = [".grib2.idx", ".idx"]
         return {
-            "nomads": GribSource(f"https://nomads.ncep.noaa.gov/pub/data/nccf/com/href/prod/{path}", idx),
+            "nomads": GribSource(
+                f"https://nomads.ncep.noaa.gov/pub/data/nccf/com/href/prod/{path}", idx
+            ),
         }
 
 
 # ---------------------------------------------------------------------------
 # CFS
 # ---------------------------------------------------------------------------
+
 
 class CFS(HerbieModel):
     """
@@ -171,9 +176,9 @@ class CFS(HerbieModel):
             "default": "6_hourly",
             "valid": ["time_series", "6_hourly", "monthly_means"],
             "descriptions": {
-                "time_series":    "CFS daily-mean time series (single variable per file)",
-                "6_hourly":       "CFS 6-hourly gridded output",
-                "monthly_means":  "CFS monthly-mean output",
+                "time_series": "CFS daily-mean time series (single variable per file)",
+                "6_hourly": "CFS 6-hourly gridded output",
+                "monthly_means": "CFS monthly-mean output",
             },
         },
         "member": {
@@ -217,6 +222,7 @@ class CFS(HerbieModel):
         else:  # monthly_means
             import calendar
             from datetime import timedelta
+
             month_offset = self.params.get("month", 1)
             # approximate: advance ~30 days per month
             valid_month = d + timedelta(days=30 * month_offset - 1)
@@ -233,14 +239,17 @@ class CFS(HerbieModel):
                 )
 
         return {
-            "aws":    GribSource(f"https://noaa-cfs-pds.s3.amazonaws.com/{post}", idx),
-            "nomads": GribSource(f"https://nomads.ncep.noaa.gov/pub/data/nccf/com/cfs/prod/{post}", idx),
+            "aws": GribSource(f"https://noaa-cfs-pds.s3.amazonaws.com/{post}", idx),
+            "nomads": GribSource(
+                f"https://nomads.ncep.noaa.gov/pub/data/nccf/com/cfs/prod/{post}", idx
+            ),
         }
 
 
 # ---------------------------------------------------------------------------
 # AIGFS  (AI Global Forecast System)
 # ---------------------------------------------------------------------------
+
 
 class AIGFS(HerbieModel):
     """
@@ -286,13 +295,16 @@ class AIGFS(HerbieModel):
         )
         idx = [".grib2.idx", ".idx"]
         return {
-            "nomads": GribSource(f"https://nomads.ncep.noaa.gov/pub/data/nccf/com/aigfs/prod/{path}", idx),
+            "nomads": GribSource(
+                f"https://nomads.ncep.noaa.gov/pub/data/nccf/com/aigfs/prod/{path}", idx
+            ),
         }
 
 
 # ---------------------------------------------------------------------------
 # HGEFS  (Hybrid Global Ensemble Forecast System)
 # ---------------------------------------------------------------------------
+
 
 class HGEFS(HerbieModel):
     """
@@ -345,5 +357,7 @@ class HGEFS(HerbieModel):
         )
         idx = [".grib2.idx"]
         return {
-            "nomads": GribSource(f"https://nomads.ncep.noaa.gov/pub/data/nccf/com/hgefs/prod/{path}", idx),
+            "nomads": GribSource(
+                f"https://nomads.ncep.noaa.gov/pub/data/nccf/com/hgefs/prod/{path}", idx
+            ),
         }

@@ -52,8 +52,10 @@ class Herbie:
     def available_models(cls) -> list[str]:
         """Return a sorted list of all registered model names."""
         from herbie.v2._base import HerbieModel
+
         return sorted(
-            name for name, obj in vars(cls).items()
+            name
+            for name, obj in vars(cls).items()
             if isinstance(obj, type) and issubclass(obj, HerbieModel)
         )
 

@@ -32,13 +32,19 @@ Usage
 
 from __future__ import annotations
 
+from collections.abc import Iterable
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
-from typing import Iterable
 
 import pandas as pd
 from rich.console import Console
-from rich.progress import BarColumn, Progress, SpinnerColumn, TaskProgressColumn, TextColumn
+from rich.progress import (
+    BarColumn,
+    Progress,
+    SpinnerColumn,
+    TaskProgressColumn,
+    TextColumn,
+)
 
 from herbie.v2._base import HerbieModel
 
@@ -109,10 +115,7 @@ class FastHerbie:
         return iter(self.objects)
 
     def __repr__(self) -> str:
-        return (
-            f"FastHerbie({self.model_cls.MODEL_NAME}, "
-            f"{len(self.objects)} objects)"
-        )
+        return f"FastHerbie({self.model_cls.MODEL_NAME}, {len(self.objects)} objects)"
 
     # ── Bulk operations ────────────────────────────────────────────────────
 
@@ -165,8 +168,7 @@ class FastHerbie:
             with ThreadPoolExecutor(max_workers=max_workers) as pool:
                 futures = {
                     pool.submit(
-                        obj.download, search,
-                        overwrite=overwrite, verbose=False
+                        obj.download, search, overwrite=overwrite, verbose=False
                     ): i
                     for i, obj in enumerate(self.objects)
                 }
@@ -179,13 +181,9 @@ class FastHerbie:
                     progress.update(task, advance=1)
 
         if errors:
-            console.print(
-                f"[yellow]⚠ {len(errors)} download(s) failed:[/yellow]"
-            )
+            console.print(f"[yellow]⚠ {len(errors)} download(s) failed:[/yellow]")
             for i, exc in errors.items():
-                console.print(
-                    f"  [{i}] {self.objects[i]!r}: [red]{exc}[/red]"
-                )
+                console.print(f"  [{i}] {self.objects[i]!r}: [red]{exc}[/red]")
 
         return [results.get(i) for i in range(len(self.objects))]
 
@@ -232,9 +230,7 @@ class FastHerbie:
                 ds = obj.xarray(search, remove_grib=remove_grib)
                 datasets.append(ds)
             except Exception as exc:
-                console.print(
-                    f"[yellow]⚠ xarray failed for {obj!r}: {exc}[/yellow]"
-                )
+                console.print(f"[yellow]⚠ xarray failed for {obj!r}: {exc}[/yellow]")
                 datasets.append(None)
 
         # Filter out None
