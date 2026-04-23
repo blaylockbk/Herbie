@@ -36,8 +36,53 @@ from herbie.v2._namespace import Herbie
 from herbie.v2.fast import FastHerbie
 
 # ---------------------------------------------------------------------------
+# Explicit imports — required for IDE intellisense (Pylance / pyright / mypy)
+# ---------------------------------------------------------------------------
+# IDEs cannot resolve names added via globals()[name] = cls at runtime.
+# These imports are redundant at runtime but make every model class directly
+# visible to static analysers, enabling hover docs and parameter hints for:
+#
+#   from herbie.v2 import HRRR
+#   from herbie.v2 import IFS
+#   etc.
+
+# NOAA convection-allowing / mesoscale
+from herbie.v2.models.hrrr import HRRR, HRRRAK
+
+# NOAA global
+from herbie.v2.models.gfs import GFS, GDAS, GFSWave
+
+# NOAA regional / analysis
+from herbie.v2.models.noaa_models import GEFS, NAM, NBM, RRFS
+from herbie.v2.models.rap import RAP, RAPHistorical
+from herbie.v2.models.rtma import RTMA, RTMA_AK, URMA
+
+# NOAA ensemble / specialty
+from herbie.v2.models.more_models import AIGFS, CFS, HGEFS, HREF, NBMQMD
+
+# Hurricane / Navy
+from herbie.v2.models.hurricane_and_navy import (
+    HAFSA,
+    HAFSB,
+    HIRESW,
+    NavgemGODAE,
+    NavgemNOMADS,
+)
+
+# ECMWF
+from herbie.v2.models.ecmwf import AIFS, IFS
+
+# Canadian MSC
+from herbie.v2.models.canada import GDPS, HRDPS, RDPS
+
+# ---------------------------------------------------------------------------
 # Auto-discover and register all HerbieModel subclasses
 # ---------------------------------------------------------------------------
+# This loop still runs so that:
+#   1. Third-party models added via entry points are registered.
+#   2. Herbie.HRRR / Herbie["HRRR"] namespace access works.
+#   3. Any models added to herbie/v2/models/ without an explicit import
+#      above are still available at runtime.
 
 _registered: dict[str, type[HerbieModel]] = {}
 
@@ -56,8 +101,8 @@ for _finder, _module_name, _is_pkg in pkgutil.iter_modules(_models_pkg.__path__)
             # Attach to the Herbie namespace class
             setattr(Herbie, _cls_name, _cls)
 
-            # Also export at module level so `from herbie.v2 import HRRR` works
-            globals()[_cls_name] = _cls
+            # Export at module level (no-op if already imported explicitly above)
+            globals().setdefault(_cls_name, _cls)
 
             _registered[_cls_name] = _cls
 

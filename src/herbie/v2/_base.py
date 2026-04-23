@@ -156,6 +156,11 @@ class HerbieModel(ABC):
 
         # Build source map (string construction only — fast, no network)
         self.SOURCES: dict[str, Source] = self._build_sources()
+        if self.priority:
+            # Filter to only the requested sources, in priority order
+            self.SOURCES = {
+                k: self.SOURCES[k] for k in self.priority if k in self.SOURCES
+            }
 
     # ── Abstract interface ─────────────────────────────────────────────────
 
@@ -212,10 +217,12 @@ class HerbieModel(ABC):
     # ── Source ordering ────────────────────────────────────────────────────
 
     def _ordered_sources(self) -> dict[str, Source]:
-        """Return sources in priority order (user-supplied or model default)."""
-        if self.priority is None:
-            return self.SOURCES
-        return {k: self.SOURCES[k] for k in self.priority if k in self.SOURCES}
+        """Return sources in priority order (user-supplied or model default).
+
+        SOURCES is already reordered at construction time, so this is a
+        simple passthrough kept for internal consistency.
+        """
+        return self.SOURCES
 
     # ── Local path helpers ─────────────────────────────────────────────────
 
@@ -666,9 +673,9 @@ class HerbieModel(ABC):
 
         return ds
 
-    def find(self) -> dict[str, tuple]:
+    def find(self) -> "HerbieModel":
         """
-        Resolve the first available GRIB source and index file.
+        Resolve and display the first available GRIB source and index file.
 
         Unlike ``status()``, which fires parallel HEAD requests to *every*
         source, ``find()`` walks sources in priority order and stops at the
@@ -677,11 +684,74 @@ class HerbieModel(ABC):
         will actually be used before doing any real work.
 
         Results are cached, so repeated calls are free.
+
+        Returns
+        -------
+        self
+            The HerbieModel instance, enabling chaining::
+
+                ds = H.find().xarray("TMP:2 m above ground")
+
+        Examples
+        --------
+        >>> H = GFS("2025-01-01", fxx=6)
+        >>> H.find()                          # display + return self
+        >>> H.find().inventory("TMP:500 mb")  # chain into inventory
         """
-        return {
-            "grib": self._found_grib,
-            "index": self._found_index,
-        }
+        # Trigger lazy resolution (cached after the first call)
+        grib_src, grib_url = self._found_grib
+        idx_src, idx_url = self._found_index
+
+        # ── Rich display ───────────────────────────────────────────────────
+        logo = Text()
+        logo.append("▌", style="bold red on white")
+        logo.append("▌", style="bold blue on #f0ead2")
+        logo.append("Herbie", style="bold black on #f0ead2")
+        logo.append(f" {self.MODEL_NAME}", style="bold cyan")
+        logo.append(f" — {self.MODEL_DESCRIPTION}", style="dim italic")
+
+        grid = Table.grid(padding=(0, 2))
+        grid.add_column()  # label
+        grid.add_column()  # source badge
+        grid.add_column()  # url / path
+
+        # Header row
+        grid.add_row(
+            f"[bold]Initialized:[/bold] [green]{self.date:%Y-%b-%d %H:%M UTC}[/green]"
+            f"  [bold]F{self.fxx:02d}[/bold]",
+            "",
+            f"[bold]Valid:[/bold] [green]{self.valid_date:%Y-%b-%d %H:%M UTC}[/green]",
+        )
+
+        grid.add_row("", "", "")  # spacer
+
+        # GRIB row
+        if grib_url:
+            badge = f"[[bold cyan]{grib_src}[/bold cyan]]"
+            link = f"[link={grib_url}][dim]{grib_url}[/dim][/link]"
+            grid.add_row("[bold]GRIB [/bold]", badge, link)
+        else:
+            grid.add_row("[bold]GRIB [/bold]", "[red]not found[/red]", "")
+
+        # Index row
+        if idx_url:
+            badge = f"[[bold cyan]{idx_src}[/bold cyan]]"
+            link = f"[link={idx_url}][dim]{idx_url}[/dim][/link]"
+            grid.add_row("[bold]Index[/bold]", badge, link)
+        else:
+            grid.add_row("[bold]Index[/bold]", "[red]not found[/red]", "")
+
+        console.print(
+            Panel(
+                grid,
+                title=logo,
+                title_align="left",
+                border_style="cyan",
+                box=box.ROUNDED,
+            )
+        )
+
+        return self
 
     def status(self) -> None:
         """
@@ -693,8 +763,8 @@ class HerbieModel(ABC):
 
         Sources are shown in three separate sections depending on type:
         Remote GRIB Sources, Remote Directory Sources, Remote Zarr Sources.
-        The GRIB section includes an Index column showing whether the
-        companion index file was also found.
+        The GRIB section links to the index file (whichever suffix is
+        found first) appended to the source URL.
         """
         from rich.console import Group
 
@@ -713,12 +783,14 @@ class HerbieModel(ABC):
         }
 
         # ── Parallel HEAD requests ─────────────────────────────────────────
-        # For each GRIB source check both the GRIB file and its first index
-        # suffix URL.  For Zarr sources just check the store URL.
+        # For each GRIB source check the GRIB file and every index suffix.
+        # Index keys are (name, "idx:SUFFIX") so we know which suffix hit.
+        # For Zarr sources just check the store URL.
         check_map: dict[tuple[str, str], str] = {}
         for name, src in grib_srcs.items():
             check_map[(name, "grib")] = src.url
-            check_map[(name, "idx")] = src.url + src.index_suffixes[0]
+            for suffix in src.index_suffixes:
+                check_map[(name, f"idx:{suffix}")] = src.url + suffix
         for name, src in zarr_srcs.items():
             check_map[(name, "zarr")] = src.url
 
@@ -761,20 +833,30 @@ class HerbieModel(ABC):
             )
             grib_table.add_column("Source", style="bold cyan")
             grib_table.add_column("GRIB", justify="center")
-            grib_table.add_column("Index", justify="center")
             grib_table.add_column("Size", justify="right")
-            grib_table.add_column("URL", style="dim", overflow="fold", max_width=60)
+            grib_table.add_column("URL", style="dim", overflow="fold", max_width=70)
 
             for name, src in grib_srcs.items():
                 g_info = url_results.get(
                     (name, "grib"), {"exists": False, "size": None}
                 )
-                ix_info = url_results.get((name, "idx"), {"exists": False})
                 grib_str = "[green]✓[/green]" if g_info["exists"] else "[red]✗[/red]"
-                idx_str = "[green]✓[/green]" if ix_info["exists"] else "[red]✗[/red]"
                 size_str = _fmt_size(g_info["size"])
+                # Find first index suffix that exists
+                found_idx: tuple[str, str] | None = next(
+                    (
+                        (suffix, url_results[(name, f"idx:{suffix}")]["exists"])
+                        for suffix in src.index_suffixes
+                        if url_results.get((name, f"idx:{suffix}"), {}).get("exists")
+                    ),
+                    None,
+                )
+                idx_url = src.url + found_idx[0] if found_idx else None
                 url_str = f"[link={src.url}]{src.url}[/link]"
-                grib_table.add_row(name, grib_str, idx_str, size_str, url_str)
+                if idx_url:
+                    suffix_label = found_idx[0]
+                    url_str += f" [link={idx_url}]{suffix_label}[/link]"
+                grib_table.add_row(name, grib_str, size_str, url_str)
 
             renderables.append(grib_table)
 
