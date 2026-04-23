@@ -155,7 +155,7 @@ class HerbieModel(ABC):
         self.params = self._resolve_params(kwargs)
 
         # Build source map (string construction only — fast, no network)
-        self._sources: dict[str, Source] = self._build_sources()
+        self.SOURCES: dict[str, Source] = self._build_sources()
 
     # ── Abstract interface ─────────────────────────────────────────────────
 
@@ -214,8 +214,8 @@ class HerbieModel(ABC):
     def _ordered_sources(self) -> dict[str, Source]:
         """Return sources in priority order (user-supplied or model default)."""
         if self.priority is None:
-            return self._sources
-        return {k: self._sources[k] for k in self.priority if k in self._sources}
+            return self.SOURCES
+        return {k: self.SOURCES[k] for k in self.priority if k in self.SOURCES}
 
     # ── Local path helpers ─────────────────────────────────────────────────
 
@@ -227,7 +227,7 @@ class HerbieModel(ABC):
         Mirrors the URL path structure so that ``rclone sync`` of the
         remote bucket produces the same directory layout as Herbie.
         """
-        first: Source = next(iter(self._sources.values()))
+        first: Source = next(iter(self.SOURCES.values()))
         if isinstance(first, (GribSource, EccodesGribSource)):
             relative = Path(urlparse(first.url).path.lstrip("/"))
             return self.save_dir / relative
@@ -293,7 +293,7 @@ class HerbieModel(ABC):
 
         # ── 1. Local index file ────────────────────────────────────────────
         local = self.local_path
-        first_src = next(iter(self._sources.values()), None)
+        first_src = next(iter(self.SOURCES.values()), None)
         suffixes = (
             first_src.index_suffixes
             if isinstance(first_src, (GribSource, EccodesGribSource))
@@ -399,7 +399,7 @@ class HerbieModel(ABC):
 
         # Determine index style from the source descriptor
         style = "wgrib2"
-        for src in self._sources.values():
+        for src in self.SOURCES.values():
             if isinstance(src, (GribSource, EccodesGribSource)):
                 style = src.index_style
                 break
@@ -480,7 +480,7 @@ class HerbieModel(ABC):
 
                 # Determine style
                 style = "wgrib2"
-                for src in self._sources.values():
+                for src in self.SOURCES.values():
                     if isinstance(src, EccodesGribSource):
                         style = "eccodes"
                         break
@@ -550,10 +550,10 @@ class HerbieModel(ABC):
 
         # Determine which URL to download from
         if source is not None:
-            src = self._sources.get(source)
+            src = self.SOURCES.get(source)
             if src is None:
                 raise ValueError(
-                    f"Source {source!r} not found. Available: {list(self._sources)}"
+                    f"Source {source!r} not found. Available: {list(self.SOURCES)}"
                 )
             grib_url = (
                 src.url if isinstance(src, (GribSource, EccodesGribSource)) else None
