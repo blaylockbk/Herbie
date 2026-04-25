@@ -168,7 +168,6 @@ class HerbieModel(ABC):
     def _build_sources(self) -> dict[str, Source]:
         """
         Return an ordered dict of ``{source_name: Source}``.
-
         Dict insertion order defines the default search priority.
         """
         ...
@@ -177,7 +176,8 @@ class HerbieModel(ABC):
 
     def _resolve_params(self, kwargs: dict) -> dict:
         """
-        Merge PARAMS defaults with user-supplied kwargs, apply aliases, and validate all values.
+        Merge PARAMS defaults with user-supplied kwargs, apply aliases,
+        and validate all values.
 
         ``kwargs`` may include any key defined in ``PARAMS`` plus any
         extra model-specific kwargs (they are stored as-is).
@@ -993,18 +993,104 @@ class HerbieModel(ABC):
         )
 
     def _repr_html_(self) -> str:
-        params_html = "".join(
-            f"<tr>"
-            f"<td style='padding:2px 8px'><b>{k}</b></td>"
-            f"<td style='padding:2px 8px'><code>{v}</code></td>"
-            f"</tr>"
-            for k, v in self.params.items()
+        # ── Shared styles ──────────────────────────────────────────────────
+        BLUE = "#1565c0"  # herbie blue
+        BLUE_L = "#e8f0fe"  # light blue background for selected pill
+        GREY = "#f0f0f0"  # unselected pill background
+        GREY_T = "#888"  # unselected pill text
+
+        # ── fxx + date header ──────────────────────────────────────────────
+        fxx_widget = (
+            f"<span style='display:inline-flex;align-items:center;"
+            f"border:1px solid #ccc;border-radius:4px;padding:2px 10px;"
+            f"background:#fafafa;font-family:monospace;font-size:0.9em;"
+            f"color:#333;min-width:3em;justify-content:center'>"
+            f"F{self.fxx:02d}</span>"
         )
+
+        # ── Parameter widgets ──────────────────────────────────────────────
+        params_html = ""
+        for pname, pval in self.params.items():
+            cfg = self.PARAMS.get(pname, {})
+            valid = cfg.get("valid")
+            descs = cfg.get("descriptions", {})
+            aliases = cfg.get("aliases", {})
+
+            # Reverse-alias map so we can show canonical aliases as labels too
+            rev_alias: dict = {}
+            for alias, canonical in aliases.items():
+                rev_alias.setdefault(canonical, []).append(alias)
+
+            label_html = (
+                f"<td style='padding:4px 10px 4px 0;vertical-align:top;"
+                f"white-space:nowrap;color:#444;font-size:0.9em'>"
+                f"<b>{pname}</b></td>"
+            )
+
+            if valid:
+                # Pill buttons for discrete options
+                pills = ""
+                for opt in valid:
+                    selected = str(opt) == str(pval)
+                    desc = descs.get(opt, "")
+                    tooltip = f' title="{desc}"' if desc else ""
+                    bg = BLUE_L if selected else GREY
+                    color = BLUE if selected else GREY_T
+                    border = f"1px solid {BLUE}" if selected else "1px solid #ddd"
+                    fw = "600" if selected else "400"
+                    # Show aliases beneath the canonical name in tiny text
+                    alias_labels = rev_alias.get(opt, [])
+                    alias_html = (
+                        (
+                            f"<br><span style='font-size:0.7em;opacity:0.65'>"
+                            f"{', '.join(alias_labels)}</span>"
+                        )
+                        if alias_labels
+                        else ""
+                    )
+                    pills += (
+                        f"<span{tooltip} style='"
+                        f"display:inline-block;margin:2px 3px;"
+                        f"padding:3px 10px;border-radius:12px;"
+                        f"background:{bg};color:{color};border:{border};"
+                        f"font-size:0.82em;font-weight:{fw};"
+                        f"cursor:default;white-space:nowrap'>"
+                        f"{opt}{alias_html}</span>"
+                    )
+                # Description of the selected value
+                sel_desc = descs.get(pval, "")
+                desc_html = (
+                    (
+                        f"<div style='margin-top:3px;font-size:0.8em;color:#666'>"
+                        f"{sel_desc}</div>"
+                    )
+                    if sel_desc
+                    else ""
+                )
+                widget_html = (
+                    f"<td style='padding:4px 0'>"
+                    f"<div style='line-height:1.8'>{pills}</div>"
+                    f"{desc_html}</td>"
+                )
+            else:
+                # Text-input style for free-form / numeric values
+                widget_html = (
+                    f"<td style='padding:4px 0;vertical-align:middle'>"
+                    f"<span style='"
+                    f"display:inline-block;border:1px solid #ccc;"
+                    f"border-radius:4px;padding:2px 10px;"
+                    f"background:#fafafa;font-family:monospace;"
+                    f"font-size:0.9em;color:#333;min-width:4em;"
+                    f"text-align:center'>{pval}</span></td>"
+                )
+
+            params_html += f"<tr>{label_html}{widget_html}</tr>"
+
+        # ── Source rows ────────────────────────────────────────────────────
         src_name, src_url = (
             self._found_grib if "_found_grib" in self.__dict__ else (None, None)
         )
 
-        # Build one row per source in declared priority order
         source_rows_html = ""
         for name, src in self._ordered_sources().items():
             if isinstance(src, (GribSource, EccodesGribSource)):
@@ -1055,9 +1141,9 @@ class HerbieModel(ABC):
         )
 
         return f"""
-        <div style="font-family: sans-serif; border: 1px solid #ddd; border-radius: 4px;
+        <div style="font-family: sans-serif; border: 1px solid #ddd; border-radius: 6px;
                     padding: 12px; max-width: 900px;">
-          <div style="display: flex; align-items: center; margin-bottom: 8px;">
+          <div style="display:flex; align-items:center; margin-bottom:8px;">
             <span style="background:white; border:1px solid #ccc; padding:2px 5px;
                          border-radius:4px; font-weight:bold; margin-right:10px;">
               <span style="color:red;">▌</span><span style="color:blue;
@@ -1066,18 +1152,22 @@ class HerbieModel(ABC):
             <b style="font-size:1.1em;">{self.MODEL_NAME}</b>
             <span style="font-size:.9em; color:#666; margin-left:8px;">{self.MODEL_DESCRIPTION}</span>
           </div>
-          <p style="margin:4px 0">
+          <p style="margin:4px 0;font-size:0.9em">
             <b>Initialized:</b> {self.date:%Y-%b-%d %H:%M UTC} &nbsp;
-            <b>F{self.fxx:02d}</b> &nbsp;
+            {fxx_widget} &nbsp;
             <b>Valid:</b> {self.valid_date:%Y-%b-%d %H:%M UTC}
           </p>
-          <details style="margin-top:8px">
-            <summary style="cursor:pointer;font-weight:bold">&#9654; Parameters</summary>
-            <table style="border-collapse:collapse;margin-top:4px">{params_html}</table>
+          <details style="margin-top:8px" open>
+            <summary style="cursor:pointer;font-weight:bold;font-size:0.95em">
+              &#9654; Parameters</summary>
+            <table style="border-collapse:collapse;margin-top:6px">
+              {params_html}
+            </table>
           </details>
-          <details style="margin-top:4px" open>
-            <summary style="cursor:pointer;font-weight:bold">&#9654; Sources</summary>
-            <p style="margin:6px 0 4px 0">
+          <details style="margin-top:6px" open>
+            <summary style="cursor:pointer;font-weight:bold;font-size:0.95em">
+              &#9654; Sources</summary>
+            <p style="margin:6px 0 4px 0;font-size:0.9em">
               <b>Resolved:</b> {resolved_badge} &nbsp;&nbsp;
               <b>Local:</b> <code style="font-size:0.85em">{self.local_path}</code>
             </p>
@@ -1091,9 +1181,7 @@ class HerbieModel(ABC):
                   <th style="text-align:left;padding:5px 8px">Index</th>
                 </tr>
               </thead>
-              <tbody>
-                {source_rows_html}
-              </tbody>
+              <tbody>{source_rows_html}</tbody>
             </table>
           </details>
         </div>"""
