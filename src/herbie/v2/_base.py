@@ -345,7 +345,7 @@ class HerbieModel(ABC):
         ``_found_index`` re-evaluate and pick up the newly local file.
         Also clears ``_index_df`` so inventory re-reads from the new file.
         """
-        for attr in ("_found_grib", "_found_index", "_index_df"):
+        for attr in ("_found_grib", "_found_index", "_index_df", "_status_results"):
             self.__dict__.pop(attr, None)
 
     # ── Convenience properties ─────────────────────────────────────────────
@@ -803,6 +803,9 @@ class HerbieModel(ABC):
                 for future in as_completed(futures):
                     url_results[futures[future]] = future.result()
 
+        # Cache results so _repr_html_ can use them
+        self._status_results = url_results
+
         # ── Header / metadata grid ─────────────────────────────────────────
         logo = Text()
         logo.append("▌", style="bold red on white")
@@ -994,6 +997,16 @@ class HerbieModel(ABC):
 
     def _repr_html_(self) -> str:
         # ── Design tokens ──────────────────────────────────────────────────
+        def _fmt_size_html(n):
+            """Format bytes for HTML display, returns dim dash if None."""
+            if n is None:
+                return "<span style='color:#ccc'>—</span>"
+            for unit in ("B", "KB", "MB", "GB"):
+                if n < 1024:
+                    return f"{n:.1f} {unit}"
+                n /= 1024
+            return f"{n:.1f} TB"
+
         BLUE = "#1565c0"
         BLUE_L = "#e8f0fe"
         BLUE_D = "#0d47a1"  # darker for selected border
@@ -1137,42 +1150,114 @@ class HerbieModel(ABC):
             )
 
         # ── Source rows ────────────────────────────────────────────────────
+        # Determine what we know about each source's availability:
+        #
+        #   _status_results   → status() was run: full ✓/✗ for every source
+        #   _found_grib cache → lazy resolution ran: ✓ for winner, ✗ for
+        #                       sources tried before it, blank for the rest
+        #   neither           → no marks
+        status_cache = self.__dict__.get("_status_results")  # set by status()
+        found_name = self.__dict__.get("_found_grib", (None, None))[0]
+
+        # Build per-source indicator: True=exists, False=missing, None=unknown
+        source_known: dict[str, bool | None] = {}
+        if status_cache is not None:
+            # Full knowledge from status()
+            for n, s in self.SOURCES.items():
+                if isinstance(s, (GribSource, EccodesGribSource)):
+                    source_known[n] = status_cache.get((n, "grib"), {}).get(
+                        "exists", False
+                    )
+                elif isinstance(s, ZarrSource):
+                    source_known[n] = status_cache.get((n, "zarr"), {}).get(
+                        "exists", False
+                    )
+                else:
+                    source_known[n] = None
+        elif found_name is not None:
+            # Partial knowledge from lazy resolution
+            passed_winner = False
+            for n in self.SOURCES:
+                if passed_winner:
+                    source_known[n] = None  # never checked
+                elif n == found_name:
+                    source_known[n] = True  # this one was found
+                    passed_winner = True
+                else:
+                    source_known[n] = False  # tried, not found
+        else:
+            for n in self.SOURCES:
+                source_known[n] = None
+
+        def _src_indicator(known: bool | None) -> str:
+            if known is True:
+                return (
+                    "<span style='color:#1a7f37;font-size:0.9em;margin-right:4px'"
+                    " title='exists'>&#10003;</span>"
+                )
+            if known is False:
+                return (
+                    "<span style='color:#c0392b;font-size:0.9em;margin-right:4px'"
+                    " title='not found'>&#10007;</span>"
+                )
+            return "<span style='display:inline-block;width:14px'></span>"
+
+        # size helper — only populated when status_cache is available
+        def _size_cell(name: str) -> str:
+            if status_cache is None:
+                return ""
+            n = status_cache.get((name, "grib"), {}).get("size")
+            txt = _fmt_size_html(n)
+            return (
+                f"<td style='padding:4px 8px;text-align:right;"
+                f"white-space:nowrap;font-size:0.78em;color:#666'>{txt}</td>"
+            )
+
+        show_size = status_cache is not None
         source_rows_html = ""
         n_sources = len(self.SOURCES)
         for name, src in self._ordered_sources().items():
+            indicator = _src_indicator(source_known.get(name))
+            size_td = _size_cell(name)
             if isinstance(src, (GribSource, EccodesGribSource)):
                 url = src.url
                 idx_url = src.url + src.index_suffixes[0]
                 src_type = "GRIB2" if isinstance(src, GribSource) else "GRIB2/ecCodes"
                 source_rows_html += (
                     f"<tr style='border-bottom:1px solid #f0f0f0'>"
-                    f"<td style='padding:4px 8px;white-space:nowrap'><code style='font-size:0.85em'>{name}</code></td>"
+                    f"<td style='padding:4px 8px;white-space:nowrap'>{indicator}"
+                    f"<code style='font-size:0.85em'>{name}</code></td>"
                     f"<td style='padding:4px 8px;color:#999;font-size:0.8em;white-space:nowrap'>{src_type}</td>"
                     f"<td style='padding:4px 8px;word-break:break-all;font-family:monospace;font-size:0.78em'>"
                     f"<a href='{url}' target='_blank' style='color:{BLUE};text-decoration:none'>{url}</a></td>"
                     f"<td style='padding:4px 8px;white-space:nowrap'>"
                     f"<a href='{idx_url}' target='_blank' style='font-size:0.78em;font-family:monospace;"
                     f"color:#999;text-decoration:none'>{src.index_suffixes[0]}</a></td>"
+                    f"{size_td}"
                     f"</tr>"
                 )
             elif isinstance(src, ZarrSource):
                 url = src.url
                 source_rows_html += (
                     f"<tr style='border-bottom:1px solid #f0f0f0'>"
-                    f"<td style='padding:4px 8px;white-space:nowrap'><code style='font-size:0.85em'>{name}</code></td>"
+                    f"<td style='padding:4px 8px;white-space:nowrap'>{indicator}"
+                    f"<code style='font-size:0.85em'>{name}</code></td>"
                     f"<td style='padding:4px 8px;color:#999;font-size:0.8em'>Zarr</td>"
                     f"<td style='padding:4px 8px;font-family:monospace;font-size:0.78em' colspan='2'>"
                     f"<a href='{url}' target='_blank' style='color:{BLUE};text-decoration:none'>{url}</a></td>"
+                    f"{size_td}"
                     f"</tr>"
                 )
             elif isinstance(src, DirectorySource):
                 url = src.url
                 source_rows_html += (
                     f"<tr style='border-bottom:1px solid #f0f0f0'>"
-                    f"<td style='padding:4px 8px;white-space:nowrap'><code style='font-size:0.85em'>{name}</code></td>"
+                    f"<td style='padding:4px 8px;white-space:nowrap'>{indicator}"
+                    f"<code style='font-size:0.85em'>{name}</code></td>"
                     f"<td style='padding:4px 8px;color:#999;font-size:0.8em'>Directory</td>"
                     f"<td style='padding:4px 8px;font-family:monospace;font-size:0.78em' colspan='2'>"
                     f"<a href='{url}' target='_blank' style='color:{BLUE};text-decoration:none'>{url}</a></td>"
+                    f"{size_td}"
                     f"</tr>"
                 )
 
@@ -1247,6 +1332,48 @@ class HerbieModel(ABC):
             info_btn_html = ""
             modal_html = ""
 
+        # ── Local files (full + subsets) ──────────────────────────────────
+        _base = self.local_path
+        _local_files: list[tuple[Path, str]] = []
+        if _base.is_file():
+            _local_files.append((_base, "full"))
+        if _base.parent.exists():
+            for _p in sorted(_base.parent.glob(f"{_base.name}__subset-*")):
+                _local_files.append((_p, "subset"))
+
+        if _local_files:
+            _lrows = ""
+            for _p, _kind in _local_files:
+                _sz = _fmt_size_html(_p.stat().st_size)
+                if _kind == "full":
+                    _badge = (
+                        f"<span style='background:{GREEN_BG};color:{GREEN_T};"
+                        f"padding:1px 6px;border-radius:8px;font-size:0.75em;"
+                        f"font-weight:600'>full</span>"
+                    )
+                else:
+                    _badge = "<span style='color:#999;font-size:0.75em'>subset</span>"
+                _lrows += (
+                    f"<tr style='border-bottom:1px solid #f0f0f0'>"
+                    f"<td style='padding:3px 8px'>{_badge}</td>"
+                    f"<td style='padding:3px 8px;font-family:monospace;font-size:0.78em;color:#555'>"
+                    f"{_p.name}</td>"
+                    f"<td style='padding:3px 8px;text-align:right;font-size:0.78em;color:#666;"
+                    f"white-space:nowrap'>{_sz}</td>"
+                    f"</tr>"
+                )
+            local_files_html = (
+                f"<div style='margin-top:8px;font-size:0.82em;font-weight:600;color:#555;"
+                f"text-transform:uppercase;letter-spacing:0.05em;margin-bottom:4px'>"
+                f"Local files</div>"
+                f"<table style='border-collapse:collapse;width:100%;"
+                f"border:1px solid #e8e8e8;border-radius:4px'>"
+                f"<tbody>{_lrows}</tbody>"
+                f"</table>"
+            )
+        else:
+            local_files_html = ""
+
         sep = "<hr style='border:none;border-top:1px solid #eee;margin:10px 0'>"
 
         return f"""
@@ -1310,10 +1437,12 @@ class HerbieModel(ABC):
                   <th style="text-align:left;padding:5px 8px;font-size:0.82em;color:#555">Type</th>
                   <th style="text-align:left;padding:5px 8px;font-size:0.82em;color:#555">URL</th>
                   <th style="text-align:left;padding:5px 8px;font-size:0.82em;color:#555">Index</th>
+                  {"<th style='text-align:right;padding:5px 8px;font-size:0.82em;color:#555'>Size</th>" if show_size else ""}
                 </tr>
               </thead>
               <tbody>{source_rows_html}</tbody>
             </table>
+            {local_files_html}
           </details>
 
         </div>"""
