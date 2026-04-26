@@ -993,22 +993,43 @@ class HerbieModel(ABC):
         )
 
     def _repr_html_(self) -> str:
-        # ── Shared styles ──────────────────────────────────────────────────
-        BLUE = "#1565c0"  # herbie blue
-        BLUE_L = "#e8f0fe"  # light blue background for selected pill
-        GREY = "#f0f0f0"  # unselected pill background
-        GREY_T = "#888"  # unselected pill text
+        # ── Design tokens ──────────────────────────────────────────────────
+        BLUE = "#1565c0"
+        BLUE_L = "#e8f0fe"
+        BLUE_D = "#0d47a1"  # darker for selected border
+        GREY_BG = "#f5f5f5"
+        GREY_T = "#888"
+        GREEN_BG = "#e6f4ea"
+        GREEN_T = "#1a7f37"
+        RED_BG = "#fce8e6"
+        RED_T = "#c0392b"
 
-        # ── fxx + date header ──────────────────────────────────────────────
+        # ── Herbie badge (solid bars, always black text) ───────────────────
+        badge = (
+            "<span style='"
+            "display:inline-flex;align-items:center;"
+            "border:1px solid #ccc;border-radius:6px;"
+            "padding:2px 8px 2px 6px;margin-right:10px;"
+            "font-weight:600;background:white;color:black;"
+            "font-size:0.9em;white-space:nowrap'>"
+            "<span style='width:5px;height:13px;background:#e53935;"
+            "border-radius:1px;margin-right:2px;flex-shrink:0'></span>"
+            "<span style='width:5px;height:13px;background:#1565c0;"
+            "border-radius:1px;margin-right:6px;flex-shrink:0'></span>"
+            "Herbie</span>"
+        )
+
+        # ── fxx widget ─────────────────────────────────────────────────────
         fxx_widget = (
             f"<span style='display:inline-flex;align-items:center;"
-            f"border:1px solid #ccc;border-radius:4px;padding:2px 10px;"
-            f"background:#fafafa;font-family:monospace;font-size:0.9em;"
+            f"border:1px solid #ccc;border-radius:4px;padding:1px 8px;"
+            f"background:#fafafa;font-family:monospace;font-size:0.88em;"
             f"color:#333;min-width:3em;justify-content:center'>"
             f"F{self.fxx:02d}</span>"
         )
 
-        # ── Parameter widgets ──────────────────────────────────────────────
+        # ── Parameter section ──────────────────────────────────────────────
+        # Stack layout: label on top, pills below, description below that
         params_html = ""
         for pname, pval in self.params.items():
             cfg = self.PARAMS.get(pname, {})
@@ -1016,82 +1037,108 @@ class HerbieModel(ABC):
             descs = cfg.get("descriptions", {})
             aliases = cfg.get("aliases", {})
 
-            # Reverse-alias map so we can show canonical aliases as labels too
             rev_alias: dict = {}
             for alias, canonical in aliases.items():
                 rev_alias.setdefault(canonical, []).append(alias)
 
-            label_html = (
-                f"<td style='padding:4px 10px 4px 0;vertical-align:top;"
-                f"white-space:nowrap;color:#444;font-size:0.9em'>"
-                f"<b>{pname}</b></td>"
-            )
-
             if valid:
-                # Pill buttons for discrete options
+                # Pill row
                 pills = ""
                 for opt in valid:
                     selected = str(opt) == str(pval)
                     desc = descs.get(opt, "")
                     tooltip = f' title="{desc}"' if desc else ""
-                    bg = BLUE_L if selected else GREY
-                    color = BLUE if selected else GREY_T
-                    border = f"1px solid {BLUE}" if selected else "1px solid #ddd"
-                    fw = "600" if selected else "400"
-                    # Show aliases beneath the canonical name in tiny text
                     alias_labels = rev_alias.get(opt, [])
                     alias_html = (
                         (
-                            f"<br><span style='font-size:0.7em;opacity:0.65'>"
-                            f"{', '.join(alias_labels)}</span>"
+                            f"<div style='font-size:0.68em;opacity:0.6;"
+                            f"margin-top:1px;line-height:1'>"
+                            f"{', '.join(alias_labels)}</div>"
                         )
                         if alias_labels
                         else ""
                     )
+                    if selected:
+                        pill_style = (
+                            f"display:inline-flex;flex-direction:column;"
+                            f"align-items:center;margin:2px 4px 2px 0;"
+                            f"padding:4px 12px;border-radius:14px;"
+                            f"background:{BLUE_L};color:{BLUE_D};"
+                            f"border:1.5px solid {BLUE};"
+                            f"font-size:0.82em;font-weight:700;"
+                            f"cursor:default;min-width:2em;text-align:center"
+                        )
+                    else:
+                        pill_style = (
+                            f"display:inline-flex;flex-direction:column;"
+                            f"align-items:center;margin:2px 4px 2px 0;"
+                            f"padding:4px 12px;border-radius:14px;"
+                            f"background:{GREY_BG};color:{GREY_T};"
+                            f"border:1px solid #ddd;"
+                            f"font-size:0.82em;font-weight:400;"
+                            f"cursor:default;min-width:2em;text-align:center"
+                        )
                     pills += (
-                        f"<span{tooltip} style='"
-                        f"display:inline-block;margin:2px 3px;"
-                        f"padding:3px 10px;border-radius:12px;"
-                        f"background:{bg};color:{color};border:{border};"
-                        f"font-size:0.82em;font-weight:{fw};"
-                        f"cursor:default;white-space:nowrap'>"
-                        f"{opt}{alias_html}</span>"
+                        f"<span{tooltip} style='{pill_style}'>"
+                        f"<span>{opt}</span>{alias_html}</span>"
                     )
-                # Description of the selected value
+
                 sel_desc = descs.get(pval, "")
                 desc_html = (
                     (
-                        f"<div style='margin-top:3px;font-size:0.8em;color:#666'>"
-                        f"{sel_desc}</div>"
+                        f"<div style='font-size:0.78em;color:#666;"
+                        f"margin-top:3px;margin-left:2px'>{sel_desc}</div>"
                     )
                     if sel_desc
                     else ""
                 )
-                widget_html = (
-                    f"<td style='padding:4px 0'>"
-                    f"<div style='line-height:1.8'>{pills}</div>"
-                    f"{desc_html}</td>"
+
+                params_html += (
+                    f"<div style='margin-bottom:10px'>"
+                    f"<div style='font-size:0.82em;font-weight:600;"
+                    f"color:#444;margin-bottom:3px;text-transform:uppercase;"
+                    f"letter-spacing:0.04em'>{pname}</div>"
+                    f"<div style='display:flex;flex-wrap:wrap;align-items:flex-start'>"
+                    f"{pills}</div>"
+                    f"{desc_html}"
+                    f"</div>"
                 )
             else:
                 # Text-input style for free-form / numeric values
-                widget_html = (
-                    f"<td style='padding:4px 0;vertical-align:middle'>"
-                    f"<span style='"
-                    f"display:inline-block;border:1px solid #ccc;"
-                    f"border-radius:4px;padding:2px 10px;"
-                    f"background:#fafafa;font-family:monospace;"
-                    f"font-size:0.9em;color:#333;min-width:4em;"
-                    f"text-align:center'>{pval}</span></td>"
+                widget = (
+                    f"<span style='display:inline-block;border:1px solid #ccc;"
+                    f"border-radius:4px;padding:2px 10px;background:#fafafa;"
+                    f"font-family:monospace;font-size:0.88em;color:#333;"
+                    f"min-width:4em;text-align:center'>{pval}</span>"
+                )
+                params_html += (
+                    f"<div style='margin-bottom:10px'>"
+                    f"<div style='font-size:0.82em;font-weight:600;"
+                    f"color:#444;margin-bottom:3px;text-transform:uppercase;"
+                    f"letter-spacing:0.04em'>{pname}</div>"
+                    f"{widget}</div>"
                 )
 
-            params_html += f"<tr>{label_html}{widget_html}</tr>"
-
-        # ── Source rows ────────────────────────────────────────────────────
+        # ── Resolved badge ─────────────────────────────────────────────────
         src_name, src_url = (
             self._found_grib if "_found_grib" in self.__dict__ else (None, None)
         )
+        if src_name:
+            resolved_badge = (
+                f"<span style='background:{GREEN_BG};color:{GREEN_T};"
+                f"padding:2px 10px;border-radius:10px;font-size:0.82em;"
+                f"font-weight:600;border:1px solid #b7dfbf'>{src_name}</span>"
+            )
+        else:
+            resolved_badge = (
+                f"<span style='background:{RED_BG};color:{RED_T};"
+                f"padding:2px 10px;border-radius:10px;font-size:0.82em;"
+                f"font-weight:600;border:1px solid #f0b4ae'>unresolved</span>"
+            )
 
+        # ── Source rows ────────────────────────────────────────────────────
         source_rows_html = ""
+        n_sources = len(self.SOURCES)
         for name, src in self._ordered_sources().items():
             if isinstance(src, (GribSource, EccodesGribSource)):
                 url = src.url
@@ -1099,89 +1146,174 @@ class HerbieModel(ABC):
                 src_type = "GRIB2" if isinstance(src, GribSource) else "GRIB2/ecCodes"
                 source_rows_html += (
                     f"<tr style='border-bottom:1px solid #f0f0f0'>"
-                    f"<td style='padding:3px 8px'><code>{name}</code></td>"
-                    f"<td style='padding:3px 8px;color:#888'>{src_type}</td>"
-                    f"<td style='padding:3px 8px;word-break:break-all'>"
-                    f"<a href='{url}' target='_blank'"
-                    f" style='font-size:0.82em'>{url}</a></td>"
-                    f"<td style='padding:3px 8px;white-space:nowrap'>"
-                    f"<a href='{idx_url}' target='_blank'"
-                    f" style='font-size:0.82em;color:#666'>{src.index_suffixes[0]}</a>"
-                    f"</td>"
+                    f"<td style='padding:4px 8px;white-space:nowrap'><code style='font-size:0.85em'>{name}</code></td>"
+                    f"<td style='padding:4px 8px;color:#999;font-size:0.8em;white-space:nowrap'>{src_type}</td>"
+                    f"<td style='padding:4px 8px;word-break:break-all;font-family:monospace;font-size:0.78em'>"
+                    f"<a href='{url}' target='_blank' style='color:{BLUE};text-decoration:none'>{url}</a></td>"
+                    f"<td style='padding:4px 8px;white-space:nowrap'>"
+                    f"<a href='{idx_url}' target='_blank' style='font-size:0.78em;font-family:monospace;"
+                    f"color:#999;text-decoration:none'>{src.index_suffixes[0]}</a></td>"
                     f"</tr>"
                 )
             elif isinstance(src, ZarrSource):
                 url = src.url
                 source_rows_html += (
                     f"<tr style='border-bottom:1px solid #f0f0f0'>"
-                    f"<td style='padding:3px 8px'><code>{name}</code></td>"
-                    f"<td style='padding:3px 8px;color:#888'>Zarr</td>"
-                    f"<td style='padding:3px 8px;word-break:break-all' colspan='2'>"
-                    f"<a href='{url}' target='_blank'"
-                    f" style='font-size:0.82em'>{url}</a></td>"
+                    f"<td style='padding:4px 8px;white-space:nowrap'><code style='font-size:0.85em'>{name}</code></td>"
+                    f"<td style='padding:4px 8px;color:#999;font-size:0.8em'>Zarr</td>"
+                    f"<td style='padding:4px 8px;font-family:monospace;font-size:0.78em' colspan='2'>"
+                    f"<a href='{url}' target='_blank' style='color:{BLUE};text-decoration:none'>{url}</a></td>"
                     f"</tr>"
                 )
             elif isinstance(src, DirectorySource):
                 url = src.url
                 source_rows_html += (
                     f"<tr style='border-bottom:1px solid #f0f0f0'>"
-                    f"<td style='padding:3px 8px'><code>{name}</code></td>"
-                    f"<td style='padding:3px 8px;color:#888'>Directory</td>"
-                    f"<td style='padding:3px 8px;word-break:break-all' colspan='2'>"
-                    f"<a href='{url}' target='_blank'"
-                    f" style='font-size:0.82em'>{url}</a></td>"
+                    f"<td style='padding:4px 8px;white-space:nowrap'><code style='font-size:0.85em'>{name}</code></td>"
+                    f"<td style='padding:4px 8px;color:#999;font-size:0.8em'>Directory</td>"
+                    f"<td style='padding:4px 8px;font-family:monospace;font-size:0.78em' colspan='2'>"
+                    f"<a href='{url}' target='_blank' style='color:{BLUE};text-decoration:none'>{url}</a></td>"
                     f"</tr>"
                 )
 
-        resolved_badge = (
-            f"<code style='background:#e6f4ea;color:#1a7f37;"
-            f"padding:1px 6px;border-radius:3px'>{src_name}</code>"
-            if src_name
-            else "<span style='color:#aaa;font-style:italic'>not yet resolved</span>"
-        )
+        # ── Local file existence indicator ────────────────────────────
+        if self.local_path.is_file():
+            local_exists_badge = (
+                f"<span style='background:{GREEN_BG};color:{GREEN_T};"
+                f"padding:1px 7px;border-radius:10px;font-size:0.8em;"
+                f"font-weight:600;border:1px solid #b7dfbf'>✔ exists</span>"
+            )
+        else:
+            local_exists_badge = (
+                f"<span style='background:{RED_BG};color:{RED_T};"
+                f"padding:1px 7px;border-radius:10px;font-size:0.8em;"
+                f"font-weight:600;border:1px solid #f0b4ae'>✘ not on disk</span>"
+            )
+
+        # ── Info button + MODEL_WEBSITES modal ───────────────────────────
+        # Each HerbieModel instance gets a unique ID so multiple cells
+        # in the same notebook don't interfere with each other.
+        import hashlib as _hl
+
+        _uid = _hl.md5(f"{id(self)}".encode()).hexdigest()[:8]
+        modal_id = f"herbie-modal-{_uid}"
+        overlay_id = f"herbie-overlay-{_uid}"
+
+        if self.MODEL_WEBSITES:
+            links_html = "".join(
+                f"<a href='{url}' target='_blank' style='"
+                f"display:block;padding:6px 0;color:{BLUE};"
+                f"text-decoration:none;font-size:0.9em'>"
+                f"&#8599;&nbsp;{label}</a>"
+                for label, url in self.MODEL_WEBSITES.items()
+            )
+            modal_html = (
+                f"<!-- overlay -->"
+                f"<div id='{overlay_id}' onclick=\""
+                f"document.getElementById('{modal_id}').style.display='none';"
+                f"document.getElementById('{overlay_id}').style.display='none'\""
+                f" style='display:none;position:fixed;inset:0;z-index:999'></div>"
+                f"<!-- modal -->"
+                f"<div id='{modal_id}' style='"
+                f"display:none;position:absolute;top:2.2em;right:0;"
+                f"background:white;color:#111;border:1px solid #ddd;"
+                f"border-radius:8px;padding:14px 18px;min-width:220px;"
+                f"box-shadow:0 4px 16px rgba(0,0,0,0.15);z-index:1000;"
+                f"font-family:sans-serif'>"
+                f"<div style='font-weight:700;font-size:0.85em;text-transform:uppercase;"
+                f"letter-spacing:0.05em;color:#555;margin-bottom:8px'>Resources</div>"
+                f"{links_html}"
+                f"</div>"
+            )
+            info_btn_html = (
+                f"<div style='position:relative'>"
+                f'<button onclick="'
+                f"var m=document.getElementById('{modal_id}');"
+                f"var o=document.getElementById('{overlay_id}');"
+                f"var show=m.style.display==='none';"
+                f"m.style.display=show?'block':'none';"
+                f"o.style.display=show?'block':'none'\" "
+                f"style='background:none;border:1px solid #ccc;border-radius:50%;"
+                f"width:22px;height:22px;cursor:pointer;font-size:0.8em;"
+                f"color:#999;display:flex;align-items:center;justify-content:center;"
+                f"padding:0;line-height:1' title='Resources & links'>"
+                f"&#x2139;"
+                f"</button>"
+                f"{modal_html}"
+                f"</div>"
+            )
+            modal_html = ""  # already embedded in info_btn_html
+        else:
+            info_btn_html = ""
+            modal_html = ""
+
+        sep = "<hr style='border:none;border-top:1px solid #eee;margin:10px 0'>"
 
         return f"""
-        <div style="font-family: sans-serif; border: 1px solid #ddd; border-radius: 6px;
-                    padding: 12px; max-width: 900px;">
-          <div style="display:flex; align-items:center; margin-bottom:8px;">
-            <span style="background:white; border:1px solid #ccc; padding:2px 5px;
-                         border-radius:4px; font-weight:bold; margin-right:10px;">
-              <span style="color:red;">▌</span><span style="color:blue;
-              background:#f0ead2;">▌</span><span style="background:#f0ead2;">Herbie</span>
-            </span>
-            <b style="font-size:1.1em;">{self.MODEL_NAME}</b>
-            <span style="font-size:.9em; color:#666; margin-left:8px;">{self.MODEL_DESCRIPTION}</span>
+        <div style="font-family:sans-serif;border:1px solid #ddd;border-radius:8px;
+                    padding:14px 16px;max-width:900px;line-height:1.4">
+
+          <!-- Header -->
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+            <div style="display:flex;align-items:center">
+              {badge}
+              <div>
+                <span style="font-size:1.2em;font-weight:700">{self.MODEL_NAME}</span>
+                <span style="font-size:0.85em;color:#888;margin-left:8px">{self.MODEL_DESCRIPTION}</span>
+              </div>
+            </div>
+            {info_btn_html}
           </div>
-          <p style="margin:4px 0;font-size:0.9em">
-            <b>Initialized:</b> {self.date:%Y-%b-%d %H:%M UTC} &nbsp;
-            {fxx_widget} &nbsp;
+          {modal_html}
+
+          <!-- Date / fxx row -->
+          <div style="font-size:0.88em;color:#444;margin-bottom:2px">
+            <b>Initialized:</b> {self.date:%Y-%b-%d %H:%M UTC}
+            &nbsp;{fxx_widget}&nbsp;
             <b>Valid:</b> {self.valid_date:%Y-%b-%d %H:%M UTC}
-          </p>
-          <details style="margin-top:8px" open>
-            <summary style="cursor:pointer;font-weight:bold;font-size:0.95em">
-              &#9654; Parameters</summary>
-            <table style="border-collapse:collapse;margin-top:6px">
+          </div>
+
+          {sep}
+
+          <!-- Parameters -->
+          <details open>
+            <summary style="cursor:pointer;font-size:0.88em;font-weight:700;
+                            color:#555;letter-spacing:0.05em;text-transform:uppercase;
+                            margin-bottom:8px;list-style:none">
+              &#9654; Parameters
+            </summary>
+            <div style="padding:6px 0 2px 0">
               {params_html}
-            </table>
+            </div>
           </details>
-          <details style="margin-top:6px" open>
-            <summary style="cursor:pointer;font-weight:bold;font-size:0.95em">
-              &#9654; Sources</summary>
-            <p style="margin:6px 0 4px 0;font-size:0.9em">
-              <b>Resolved:</b> {resolved_badge} &nbsp;&nbsp;
-              <b>Local:</b> <code style="font-size:0.85em">{self.local_path}</code>
-            </p>
-            <table style="border-collapse:collapse;margin-top:6px;width:100%;
-                          font-size:0.9em;border:1px solid #e0e0e0">
+
+          {sep}
+
+          <!-- Sources -->
+          <details open>
+            <summary style="cursor:pointer;font-size:0.88em;font-weight:700;
+                            color:#555;letter-spacing:0.05em;text-transform:uppercase;
+                            margin-bottom:8px;list-style:none">
+              &#9654; Sources ({n_sources})
+            </summary>
+            <div style="font-size:0.88em;margin-bottom:6px">
+              <b>Resolved:</b>&nbsp;{resolved_badge}
+              &nbsp;&nbsp;
+              <b>Local:</b>&nbsp;{local_exists_badge}&nbsp;<code style="font-size:0.85em;font-family:monospace;
+              color:#555">{self.local_path}</code>
+            </div>
+            <table style="border-collapse:collapse;width:100%;
+                          border:1px solid #e8e8e8;border-radius:4px">
               <thead>
-                <tr style="background:#f5f5f5;border-bottom:2px solid #ddd">
-                  <th style="text-align:left;padding:5px 8px">Name</th>
-                  <th style="text-align:left;padding:5px 8px">Type</th>
-                  <th style="text-align:left;padding:5px 8px">URL</th>
-                  <th style="text-align:left;padding:5px 8px">Index</th>
+                <tr style="background:#f8f8f8;border-bottom:2px solid #e0e0e0">
+                  <th style="text-align:left;padding:5px 8px;font-size:0.82em;color:#555">Name</th>
+                  <th style="text-align:left;padding:5px 8px;font-size:0.82em;color:#555">Type</th>
+                  <th style="text-align:left;padding:5px 8px;font-size:0.82em;color:#555">URL</th>
+                  <th style="text-align:left;padding:5px 8px;font-size:0.82em;color:#555">Index</th>
                 </tr>
               </thead>
               <tbody>{source_rows_html}</tbody>
             </table>
           </details>
+
         </div>"""
