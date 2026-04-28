@@ -5,7 +5,7 @@ Design principles
 -----------------
 - **Lazy** — no network I/O at construction time.  Sources are resolved
   (and cached) the first time ``inventory()``, ``download()``, or
-  ``xarray()`` is called.  ``status()`` is the explicit "go check
+  ``xarray()`` is called.  ``resolve()`` is the explicit "go check
   everything" method.
 
 - **Source abstraction** — subclasses return a ``dict[str, Source]``
@@ -673,140 +673,211 @@ class HerbieModel(ABC):
 
         return ds
 
-    def find(self) -> "HerbieModel":
+    def resolve(self, *sources: str) -> "HerbieModel":
         """
-        Resolve and display the first available GRIB source and index file.
+        Resolve source availability and cache the results.
 
-        Unlike ``status()``, which fires parallel HEAD requests to *every*
-        source, ``find()`` walks sources in priority order and stops at the
-        first hit — exactly the same logic used by ``inventory()``,
-        ``download()``, and ``xarray()``.  Call it to confirm which source
-        will actually be used before doing any real work.
+        Returns ``self`` for method chaining.
 
-        Results are cached, so repeated calls are free.
+        Parameters
+        ----------
+        *sources
+            Which sources to check.
 
-        Returns
-        -------
-        self
-            The HerbieModel instance, enabling chaining::
+            ``resolve()``
+                Trigger lazy resolution of the first available GRIB source
+                and its companion index file — the same logic used by
+                ``inventory()``, ``download()``, and ``xarray()``, but
+                made explicit and chainable.  Stops at the first hit.
 
-                ds = H.find().xarray("TMP:2 m above ground")
+            ``resolve('all')``
+                Fire parallel HEAD requests to *every* source and cache
+                the results (availability + file size).  This is the most
+                complete picture and is what the ``H`` notebook display and
+                ``H.status()`` draw from.
+
+            ``resolve('aws')`` / ``resolve('aws', 'google')``
+                Check only the named source(s), in the order given.  The
+                first one that responds becomes the active GRIB source,
+                overriding any previously cached resolution.  Useful for
+                forcing a specific source without changing ``priority``.
 
         Examples
         --------
-        >>> H = GFS("2025-01-01", fxx=6)
-        >>> H.find()                          # display + return self
-        >>> H.find().inventory("TMP:500 mb")  # chain into inventory
+        >>> H = HRRR("2025-01-01").resolve('all')   # check everything, chain
+        >>> H = HRRR("2025-01-01").resolve()         # first available
+        >>> H.resolve('nomads')                      # switch to nomads
+        >>> H.resolve('aws', 'google')               # prefer aws, fall back to google
         """
-        # Trigger lazy resolution (cached after the first call)
-        grib_src, grib_url = self._found_grib
-        idx_src, idx_url = self._found_index
+        if not sources:
+            # Trigger both lazy cached_property resolutions (stop at first hit)
+            _ = self._found_grib
+            _ = self._found_index
+            return self
 
-        # ── Rich display ───────────────────────────────────────────────────
-        logo = Text()
-        logo.append("▌", style="bold red on white")
-        logo.append("▌", style="bold blue on #f0ead2")
-        logo.append("Herbie", style="bold black on #f0ead2")
-        logo.append(f" {self.MODEL_NAME}", style="bold cyan")
-        logo.append(f" — {self.MODEL_DESCRIPTION}", style="dim italic")
+        if sources == ("all",):
+            # Parallel HEAD check of every source
+            check_map: dict[tuple[str, str], str] = {}
+            for name, src in self.SOURCES.items():
+                if isinstance(src, (GribSource, EccodesGribSource)):
+                    check_map[(name, "grib")] = src.url
+                    for suffix in src.index_suffixes:
+                        check_map[(name, f"idx:{suffix}")] = src.url + suffix
+                elif isinstance(src, ZarrSource):
+                    check_map[(name, "zarr")] = src.url
 
-        grid = Table.grid(padding=(0, 2))
-        grid.add_column()  # label
-        grid.add_column()  # source badge
-        grid.add_column()  # url / path
+            results: dict[tuple[str, str], dict] = {}
+            if check_map:
+                with ThreadPoolExecutor(max_workers=min(16, len(check_map))) as pool:
+                    futures = {
+                        pool.submit(_url_info, url): key
+                        for key, url in check_map.items()
+                    }
+                    for future in as_completed(futures):
+                        results[futures[future]] = future.result()
 
-        # Header row
-        grid.add_row(
-            f"[bold]Initialized:[/bold] [green]{self.date:%Y-%b-%d %H:%M UTC}[/green]"
-            f"  [bold]F{self.fxx:02d}[/bold]",
-            "",
-            f"[bold]Valid:[/bold] [green]{self.valid_date:%Y-%b-%d %H:%M UTC}[/green]",
-        )
+            self._status_results = results  # consumed by _repr_html_ and status()
 
-        grid.add_row("", "", "")  # spacer
+            # Also set _found_grib / _found_index to first available so
+            # subsequent inventory/download/xarray calls don't re-check.
+            if "_found_grib" not in self.__dict__:
+                for name, src in self.SOURCES.items():
+                    if isinstance(src, (GribSource, EccodesGribSource)):
+                        if results.get((name, "grib"), {}).get("exists"):
+                            self.__dict__["_found_grib"] = (name, src.url)
+                            break
+                        elif isinstance(src, ZarrSource):
+                            if results.get((name, "zarr"), {}).get("exists"):
+                                self.__dict__["_found_grib"] = (name, src.url)
+                                break
+                else:
+                    self.__dict__.setdefault("_found_grib", (None, None))
 
-        # GRIB row
-        if grib_url:
-            badge = f"[[bold cyan]{grib_src}[/bold cyan]]"
-            link = f"[link={grib_url}][dim]{grib_url}[/dim][/link]"
-            grid.add_row("[bold]GRIB [/bold]", badge, link)
-        else:
-            grid.add_row("[bold]GRIB [/bold]", "[red]not found[/red]", "")
+            if "_found_index" not in self.__dict__:
+                for name, src in self.SOURCES.items():
+                    if isinstance(src, (GribSource, EccodesGribSource)):
+                        for suffix in src.index_suffixes:
+                            if results.get((name, f"idx:{suffix}"), {}).get("exists"):
+                                self.__dict__["_found_index"] = (name, src.url + suffix)
+                                break
+                        if "_found_index" in self.__dict__:
+                            break
+                else:
+                    self.__dict__.setdefault("_found_index", (None, None))
 
-        # Index row
-        if idx_url:
-            badge = f"[[bold cyan]{idx_src}[/bold cyan]]"
-            link = f"[link={idx_url}][dim]{idx_url}[/dim][/link]"
-            grid.add_row("[bold]Index[/bold]", badge, link)
-        else:
-            grid.add_row("[bold]Index[/bold]", "[red]not found[/red]", "")
+            return self
 
-        console.print(
-            Panel(
-                grid,
-                title=logo,
-                title_align="left",
-                border_style="cyan",
-                box=box.ROUNDED,
+        # Named source(s) — check in the order given, stop at first hit.
+        # Invalidate any prior resolution so the new result takes effect.
+        bad = [n for n in sources if n not in self.SOURCES and n != "all"]
+        if bad:
+            raise ValueError(
+                f"Unknown source(s): {bad}. Available: {list(self.SOURCES)}"
             )
-        )
 
+        for name in sources:
+            src = self.SOURCES[name]
+            if isinstance(src, (GribSource, EccodesGribSource)):
+                grib_info = _url_info(src.url)
+                # Update _status_results so display reflects what we checked
+                if not hasattr(self, "_status_results"):
+                    self._status_results = {}
+                self._status_results[(name, "grib")] = grib_info
+                if grib_info["exists"]:
+                    # Override cached resolution
+                    self.__dict__["_found_grib"] = (name, src.url)
+                    self.__dict__.pop("_found_index", None)  # re-resolve index
+                    # Find companion index
+                    for suffix in src.index_suffixes:
+                        idx_url = src.url + suffix
+                        idx_info = _url_info(idx_url)
+                        self._status_results[(name, f"idx:{suffix}")] = idx_info
+                        if idx_info["exists"]:
+                            self.__dict__["_found_index"] = (name, idx_url)
+                            break
+                    else:
+                        self.__dict__.setdefault("_found_index", (None, None))
+                    return self
+            elif isinstance(src, ZarrSource):
+                zarr_info = _url_info(src.url)
+                if not hasattr(self, "_status_results"):
+                    self._status_results = {}
+                self._status_results[(name, "zarr")] = zarr_info
+                if zarr_info["exists"]:
+                    self.__dict__["_found_grib"] = (name, src.url)
+                    return self
+
+        # None of the specified sources were found
+        self.__dict__["_found_grib"] = (None, None)
         return self
 
     def status(self) -> None:
         """
-        Check and display the availability of all sources and local files.
+        Display source availability and local files in the terminal.
 
-        This is the *only* method that performs parallel HEAD requests to
-        all sources simultaneously.  Other methods (inventory, download,
-        xarray) are lazy and check sources one at a time.
+        This is the Rich terminal equivalent of the notebook ``_repr_html_``
+        display — it renders whatever Herbie currently knows from cached
+        resolution results.  It performs **no network I/O**.
 
-        Sources are shown in three separate sections depending on type:
-        Remote GRIB Sources, Remote Directory Sources, Remote Zarr Sources.
-        The GRIB section links to the index file (whichever suffix is
-        found first) appended to the source URL.
+        To populate the display with availability and file sizes, call
+        ``H.resolve('all')`` first::
+
+            H.resolve('all').status()
+
+        Or chain directly::
+
+            H = HRRR("2025-01-01").resolve('all')
+            H.status()
         """
         from rich.console import Group
 
-        # ── Categorize sources by type ─────────────────────────────────────
-        ordered = self._ordered_sources()  # respects user priority
-        grib_srcs: dict = {
+        # ── What do we know about each source? ────────────────────────────
+        status_cache = self.__dict__.get("_status_results")
+        found_name = self.__dict__.get("_found_grib", (None, None))[0]
+
+        # Categorise sources
+        grib_srcs = {
             n: s
-            for n, s in ordered.items()
+            for n, s in self.SOURCES.items()
             if isinstance(s, (GribSource, EccodesGribSource))
         }
-        dir_srcs: dict = {
-            n: s for n, s in ordered.items() if isinstance(s, DirectorySource)
+        dir_srcs = {
+            n: s for n, s in self.SOURCES.items() if isinstance(s, DirectorySource)
         }
-        zarr_srcs: dict = {
-            n: s for n, s in ordered.items() if isinstance(s, ZarrSource)
-        }
+        zarr_srcs = {n: s for n, s in self.SOURCES.items() if isinstance(s, ZarrSource)}
 
-        # ── Parallel HEAD requests ─────────────────────────────────────────
-        # For each GRIB source check the GRIB file and every index suffix.
-        # Index keys are (name, "idx:SUFFIX") so we know which suffix hit.
-        # For Zarr sources just check the store URL.
-        check_map: dict[tuple[str, str], str] = {}
-        for name, src in grib_srcs.items():
-            check_map[(name, "grib")] = src.url
-            for suffix in src.index_suffixes:
-                check_map[(name, f"idx:{suffix}")] = src.url + suffix
-        for name, src in zarr_srcs.items():
-            check_map[(name, "zarr")] = src.url
+        # Per-source known state: True=exists, False=missing, None=unknown
+        source_known: dict[str, bool | None] = {}
+        if status_cache is not None:
+            for n, s in self.SOURCES.items():
+                if isinstance(s, (GribSource, EccodesGribSource)):
+                    source_known[n] = status_cache.get((n, "grib"), {}).get("exists")
+                elif isinstance(s, ZarrSource):
+                    source_known[n] = status_cache.get((n, "zarr"), {}).get("exists")
+                else:
+                    source_known[n] = None
+        elif found_name is not None:
+            passed = False
+            for n in self.SOURCES:
+                if passed:
+                    source_known[n] = None
+                elif n == found_name:
+                    source_known[n] = True
+                    passed = True
+                else:
+                    source_known[n] = False
+        else:
+            for n in self.SOURCES:
+                source_known[n] = None
 
-        url_results: dict[tuple[str, str], dict] = {}
-        if check_map:
-            with ThreadPoolExecutor(max_workers=min(16, len(check_map))) as pool:
-                futures = {
-                    pool.submit(_url_info, url): key for key, url in check_map.items()
-                }
-                for future in as_completed(futures):
-                    url_results[futures[future]] = future.result()
+        def _indicator(known):
+            if known is True:
+                return "[green]✓[/green]"
+            if known is False:
+                return "[red]✗[/red]"
+            return "[dim]·[/dim]"
 
-        # Cache results so _repr_html_ can use them
-        self._status_results = url_results
-
-        # ── Header / metadata grid ─────────────────────────────────────────
+        # ── Logo / header ──────────────────────────────────────────────────
         logo = Text()
         logo.append("▌", style="bold red on white")
         logo.append("▌", style="bold blue on #f0ead2")
@@ -835,31 +906,32 @@ class HerbieModel(ABC):
                 title_justify="left",
             )
             grib_table.add_column("Source", style="bold cyan")
-            grib_table.add_column("GRIB", justify="center")
+            grib_table.add_column("", justify="center", width=3)  # ✓/✗
             grib_table.add_column("Size", justify="right")
             grib_table.add_column("URL", style="dim", overflow="fold", max_width=70)
 
             for name, src in grib_srcs.items():
-                g_info = url_results.get(
-                    (name, "grib"), {"exists": False, "size": None}
+                ind = _indicator(source_known.get(name))
+                size = _fmt_size(
+                    status_cache.get((name, "grib"), {}).get("size")
+                    if status_cache
+                    else None
                 )
-                grib_str = "[green]✓[/green]" if g_info["exists"] else "[red]✗[/red]"
-                size_str = _fmt_size(g_info["size"])
-                # Find first index suffix that exists
-                found_idx: tuple[str, str] | None = next(
-                    (
-                        (suffix, url_results[(name, f"idx:{suffix}")]["exists"])
-                        for suffix in src.index_suffixes
-                        if url_results.get((name, f"idx:{suffix}"), {}).get("exists")
-                    ),
-                    None,
-                )
-                idx_url = src.url + found_idx[0] if found_idx else None
+                # Find first known index suffix
+                found_idx_suffix = None
+                if status_cache:
+                    for suffix in src.index_suffixes:
+                        if status_cache.get((name, f"idx:{suffix}"), {}).get("exists"):
+                            found_idx_suffix = suffix
+                            break
                 url_str = f"[link={src.url}]{src.url}[/link]"
-                if idx_url:
-                    suffix_label = found_idx[0]
-                    url_str += f" [link={idx_url}]{suffix_label}[/link]"
-                grib_table.add_row(name, grib_str, size_str, url_str)
+                if found_idx_suffix:
+                    idx_url = src.url + found_idx_suffix
+                    url_str += f" [link={idx_url}]{found_idx_suffix}[/link]"
+                name_str = (
+                    f"{name}[bold cyan]*[/bold cyan]" if name == found_name else name
+                )
+                grib_table.add_row(name_str, ind, size, url_str)
 
             renderables.append(grib_table)
 
@@ -873,13 +945,12 @@ class HerbieModel(ABC):
             dir_table.add_column("Source", style="bold cyan")
             dir_table.add_column("URL", style="dim", overflow="fold", max_width=70)
             dir_table.add_column("Pattern", style="dim", overflow="fold", max_width=45)
-
             for name, src in dir_srcs.items():
                 pat = src.file_pattern
                 pat_display = (pat[:44] + "…") if len(pat) > 45 else pat
-                url_str = f"[link={src.url}]{src.url}[/link]"
-                dir_table.add_row(name, url_str, pat_display)
-
+                dir_table.add_row(
+                    name, f"[link={src.url}]{src.url}[/link]", pat_display
+                )
             renderables.append(dir_table)
 
         # ── Remote Zarr Sources ────────────────────────────────────────────
@@ -890,21 +961,20 @@ class HerbieModel(ABC):
                 title_justify="left",
             )
             zarr_table.add_column("Source", style="bold cyan")
-            zarr_table.add_column("Exists", justify="center")
+            zarr_table.add_column("", justify="center", width=3)
             zarr_table.add_column("URL", style="dim", overflow="fold", max_width=60)
-
             for name, src in zarr_srcs.items():
-                info = url_results.get((name, "zarr"), {"exists": False})
-                exists_str = "[green]✓[/green]" if info["exists"] else "[red]✗[/red]"
-                url_str = f"[link={src.url}]{src.url}[/link]"
-                zarr_table.add_row(name, exists_str, url_str)
-
+                ind = _indicator(source_known.get(name))
+                name_str = (
+                    f"{name}[bold cyan]*[/bold cyan]" if name == found_name else name
+                )
+                zarr_table.add_row(name_str, ind, f"[link={src.url}]{src.url}[/link]")
             renderables.append(zarr_table)
 
         # ── Local GRIB Files ───────────────────────────────────────────────
         base = self.local_path
         local_files: list[tuple[Path, str]] = []
-        if base.exists():
+        if base.is_file():
             local_files.append((base, "full"))
         if base.parent.exists():
             for p in sorted(base.parent.glob(f"{base.name}__subset-*")):
@@ -918,31 +988,26 @@ class HerbieModel(ABC):
         loc_table.add_column("File", style="yellow")
         loc_table.add_column("Type")
         loc_table.add_column("Size", justify="right")
-
         if local_files:
             for path, kind in local_files:
-                size = _fmt_size(path.stat().st_size)
                 kind_str = (
                     "[bold green]full[/bold green]"
                     if kind == "full"
                     else "[dim]subset[/dim]"
                 )
-                loc_table.add_row(path.name, kind_str, size)
+                loc_table.add_row(path.name, kind_str, _fmt_size(path.stat().st_size))
         else:
             loc_table.add_row("[dim]no local files[/dim]", "", "")
-
         renderables.append(loc_table)
 
-        # ── Assemble panel ─────────────────────────────────────────────────
-        panel = Panel(
-            Group(*renderables),
-            title=logo,
-            border_style="cyan",
-            box=box.ROUNDED,
+        console.print(
+            Panel(
+                Group(*renderables),
+                title=logo,
+                border_style="cyan",
+                box=box.ROUNDED,
+            )
         )
-        console.print(panel)
-
-    # ── Display ───────────────────────────────────────────────────────────
 
     def __repr__(self) -> str:
         params = ", ".join(f"{k}={v!r}" for k, v in self.params.items())
@@ -1156,8 +1221,9 @@ class HerbieModel(ABC):
         #   _found_grib cache → lazy resolution ran: ✓ for winner, ✗ for
         #                       sources tried before it, blank for the rest
         #   neither           → no marks
-        status_cache = self.__dict__.get("_status_results")  # set by status()
+        status_cache = self.__dict__.get("_status_results")  # set by resolve()
         found_name = self.__dict__.get("_found_grib", (None, None))[0]
+        found_idx = self.__dict__.get("_found_index", (None, None))[0]
 
         # Build per-source indicator: True=exists, False=missing, None=unknown
         source_known: dict[str, bool | None] = {}
@@ -1219,29 +1285,63 @@ class HerbieModel(ABC):
         for name, src in self._ordered_sources().items():
             indicator = _src_indicator(source_known.get(name))
             size_td = _size_cell(name)
+            is_active_grib = name == found_name
+            is_active_idx = name == found_idx
+
+            # No row background — keep it clean
+            row_bg = ""
+
+            # Arrow-only indicator in the name cell for the active source
+            arrow = (
+                (
+                    f"<span style='color:{BLUE};margin-right:3px;font-size:0.8em'"
+                    f" title='Active source — used by inventory, download, xarray'>"
+                    f"&#9654;</span>"
+                )
+                if is_active_grib
+                else "<span style='display:inline-block;width:14px'></span>"
+            )
+            name_html = f"{arrow}<code style='font-size:0.85em'>{name}</code>"
+
             if isinstance(src, (GribSource, EccodesGribSource)):
                 url = src.url
-                idx_url = src.url + src.index_suffixes[0]
                 src_type = "GRIB2" if isinstance(src, GribSource) else "GRIB2/ecCodes"
+                # Index link: bold if this source is also the active index source
+                found_idx_url = self.__dict__.get("_found_index", (None, None))[1]
+                idx_links = ""
+                for suffix in src.index_suffixes:
+                    iurl = src.url + suffix
+                    is_active_this_idx = is_active_idx and found_idx_url == iurl
+                    if is_active_this_idx:
+                        idx_links += (
+                            f"<a href='{iurl}' target='_blank' style='"
+                            f"font-size:0.78em;font-family:monospace;"
+                            f"font-weight:700;color:{BLUE};text-decoration:none'"
+                            f" title='Active index source'>{suffix}</a> "
+                        )
+                    else:
+                        idx_links += (
+                            f"<a href='{iurl}' target='_blank' style='"
+                            f"font-size:0.78em;font-family:monospace;"
+                            f"color:#999;text-decoration:none'>{suffix}</a> "
+                        )
                 source_rows_html += (
-                    f"<tr style='border-bottom:1px solid #f0f0f0'>"
-                    f"<td style='padding:4px 8px;white-space:nowrap'>{indicator}"
-                    f"<code style='font-size:0.85em'>{name}</code></td>"
+                    f"<tr style='border-bottom:1px solid #e8e8e8;{row_bg}'>"
+                    f"<td style='padding:4px 4px 4px 8px;white-space:nowrap;width:18px'>{indicator}</td>"
+                    f"<td style='padding:4px 8px 4px 0;white-space:nowrap;text-align:right'>{name_html}</td>"
                     f"<td style='padding:4px 8px;color:#999;font-size:0.8em;white-space:nowrap'>{src_type}</td>"
                     f"<td style='padding:4px 8px;word-break:break-all;font-family:monospace;font-size:0.78em'>"
                     f"<a href='{url}' target='_blank' style='color:{BLUE};text-decoration:none'>{url}</a></td>"
-                    f"<td style='padding:4px 8px;white-space:nowrap'>"
-                    f"<a href='{idx_url}' target='_blank' style='font-size:0.78em;font-family:monospace;"
-                    f"color:#999;text-decoration:none'>{src.index_suffixes[0]}</a></td>"
+                    f"<td style='padding:4px 8px;white-space:nowrap'>{idx_links}</td>"
                     f"{size_td}"
                     f"</tr>"
                 )
             elif isinstance(src, ZarrSource):
                 url = src.url
                 source_rows_html += (
-                    f"<tr style='border-bottom:1px solid #f0f0f0'>"
-                    f"<td style='padding:4px 8px;white-space:nowrap'>{indicator}"
-                    f"<code style='font-size:0.85em'>{name}</code></td>"
+                    f"<tr style='border-bottom:1px solid #e8e8e8;{row_bg}'>"
+                    f"<td style='padding:4px 4px 4px 8px;white-space:nowrap;width:18px'>{indicator}</td>"
+                    f"<td style='padding:4px 8px 4px 0;white-space:nowrap;text-align:right'>{name_html}</td>"
                     f"<td style='padding:4px 8px;color:#999;font-size:0.8em'>Zarr</td>"
                     f"<td style='padding:4px 8px;font-family:monospace;font-size:0.78em' colspan='2'>"
                     f"<a href='{url}' target='_blank' style='color:{BLUE};text-decoration:none'>{url}</a></td>"
@@ -1251,9 +1351,9 @@ class HerbieModel(ABC):
             elif isinstance(src, DirectorySource):
                 url = src.url
                 source_rows_html += (
-                    f"<tr style='border-bottom:1px solid #f0f0f0'>"
-                    f"<td style='padding:4px 8px;white-space:nowrap'>{indicator}"
-                    f"<code style='font-size:0.85em'>{name}</code></td>"
+                    f"<tr style='border-bottom:1px solid #e8e8e8;{row_bg}'>"
+                    f"<td style='padding:4px 4px 4px 8px;white-space:nowrap;width:18px'>{indicator}</td>"
+                    f"<td style='padding:4px 8px 4px 0;white-space:nowrap;text-align:right'>{name_html}</td>"
                     f"<td style='padding:4px 8px;color:#999;font-size:0.8em'>Directory</td>"
                     f"<td style='padding:4px 8px;font-family:monospace;font-size:0.78em' colspan='2'>"
                     f"<a href='{url}' target='_blank' style='color:{BLUE};text-decoration:none'>{url}</a></td>"
@@ -1433,7 +1533,8 @@ class HerbieModel(ABC):
                           border:1px solid #e8e8e8;border-radius:4px">
               <thead>
                 <tr style="background:#f8f8f8;border-bottom:2px solid #e0e0e0">
-                  <th style="text-align:left;padding:5px 8px;font-size:0.82em;color:#555">Name</th>
+                  <th style="padding:5px 4px 5px 8px;width:18px"></th>
+                  <th style="text-align:right;padding:5px 8px 5px 0;font-size:0.82em;color:#555">Name</th>
                   <th style="text-align:left;padding:5px 8px;font-size:0.82em;color:#555">Type</th>
                   <th style="text-align:left;padding:5px 8px;font-size:0.82em;color:#555">URL</th>
                   <th style="text-align:left;padding:5px 8px;font-size:0.82em;color:#555">Index</th>
