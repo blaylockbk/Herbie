@@ -99,6 +99,14 @@ experimental = [
     "pyarrow>=23.0.0",
     "rich[jupyter]>=14.3.3",
 ]
+zarr = [
+    "aiohttp>=3.13.5",
+    "dask>=2026.3.0",
+    "fsspec>=2026.3.0",
+    "requests>=2.32.5",
+    "s3fs>=2026.3.0",
+    "zarr>=3.1.6",
+]
 
 [tool.hatch]
 

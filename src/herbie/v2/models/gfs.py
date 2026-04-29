@@ -3,9 +3,10 @@
 from __future__ import annotations
 
 from datetime import datetime
+from typing import ClassVar
 
 from herbie.v2._base import HerbieModel
-from herbie.v2._sources import GribSource
+from herbie.v2._sources import GribSource, ZarrCatalogEntry
 
 
 class GFS(HerbieModel):
@@ -77,6 +78,34 @@ class GFS(HerbieModel):
                 1.0: "One-degree (~111 km)",
             },
         },
+    }
+
+    ZARR_SOURCES: ClassVar[dict] = {
+        # ── dynamical.org ──────────────────────────────────────────────────
+        # Continuous rolling archives. No date/fxx needed; slice with .sel().
+        # Coverage: 2021-05-01 to present.
+        # Requires: xarray>=2025.1.2, zarr>=3.0.8
+        # Spatial dims are latitude/longitude (regular lat-lon grid, not projected).
+        ("dynamical", "analysis"): ZarrCatalogEntry(
+            url="https://data.dynamical.org/noaa/gfs/analysis/latest.zarr",
+            description=(
+                "dynamical.org GFS analysis | 2021–present | 1-hr | "
+                "dims: time × latitude × longitude"
+            ),
+            time_dim="time",
+            lead_time_dim=None,
+            open_kwargs={"chunks": "auto"},
+        ),
+        ("dynamical", "forecast"): ZarrCatalogEntry(
+            url="https://data.dynamical.org/noaa/gfs/forecast/latest.zarr",
+            description=(
+                "dynamical.org GFS forecast | 2021–present | 00/06/12/18Z | "
+                "0–384 h lead | dims: init_time × lead_time × latitude × longitude"
+            ),
+            time_dim="init_time",
+            lead_time_dim="lead_time",
+            open_kwargs={"chunks": "auto"},
+        ),
     }
 
     def _build_sources(self) -> dict:

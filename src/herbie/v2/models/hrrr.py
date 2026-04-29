@@ -5,7 +5,63 @@ from __future__ import annotations
 from datetime import datetime
 
 from herbie.v2._base import HerbieModel
-from herbie.v2._sources import GribSource
+from herbie.v2._sources import GribSource, ZarrCatalogEntry
+
+# ---------------------------------------------------------------------------
+# Utah hrrrzarr store factory (per-variable, per-date access pattern)
+# ---------------------------------------------------------------------------
+
+
+def _utah_store(
+    date=None,
+    product: str = "analysis",
+    variable: str = "TMP",
+    level: str = "surface",
+    **_,
+) -> "xr.Dataset":
+    """
+    Open one variable from the Utah/MesoWest HRRR Zarr PDS bucket.
+
+    The hrrrzarr bucket stores each variable as a separate zarr group; two
+    groups must be opened together with ``open_mfdataset``::
+
+        hrrrzarr/sfc/{YYYYMMDD}/{YYYYMMDD}_{HH}z_anl.zarr/{level}/{variable}
+        hrrrzarr/sfc/{YYYYMMDD}/{YYYYMMDD}_{HH}z_anl.zarr/{level}/{variable}/{level}
+
+    Parameters
+    ----------
+    date
+        Model initialisation datetime (required).
+    product
+        ``'analysis'`` (fxx=0) or ``'forecast'`` (fxx≥1).
+    variable
+        GRIB2 short name, e.g. ``'TMP'``, ``'UGRD'``, ``'REFC'``.
+    level
+        Level type: ``'surface'``, ``'pressure'``, ``'hybrid'``, etc.
+    """
+    import s3fs
+    import xarray as xr
+    import pandas as pd
+
+    if date is None:
+        raise ValueError("source='utah' requires date= (e.g. date='2021-01-01 00:00').")
+    dt = pd.Timestamp(date)
+    product_str = "anl" if product == "analysis" else "fcst"
+    root = (
+        f"hrrrzarr/sfc/{dt:%Y%m%d}/"
+        f"{dt:%Y%m%d}_{dt:%H}z_{product_str}.zarr/{level}/{variable}"
+    )
+
+    s3 = s3fs.S3FileSystem(anon=True)
+
+    def _map(path: str):
+        return s3fs.S3Map(path, s3=s3)
+
+    return xr.open_mfdataset(
+        [_map(root), _map(f"{root}/{level}")],
+        engine="zarr",
+        combine="by_coords",
+    )
 
 
 class HRRR(HerbieModel):
@@ -86,6 +142,54 @@ class HRRR(HerbieModel):
                 "subh": "Sub-hourly (15-min) fields; 3-km resolution",
             },
         },
+    }
+
+    ZARR_SOURCES: ClassVar[dict] = {
+        # ── dynamical.org ──────────────────────────────────────────────────
+        # Continuous rolling archives. No date/fxx needed; slice with .sel().
+        # Requires: xarray>=2025.1.2, zarr>=3.0.8
+        ("dynamical", "analysis"): ZarrCatalogEntry(
+            url="https://data.dynamical.org/noaa/hrrr/analysis/latest.zarr",
+            description=(
+                "dynamical.org HRRR analysis | 2014–present | 1-hr | dims: time × y × x"
+            ),
+            time_dim="time",
+            lead_time_dim=None,
+            open_kwargs={"chunks": "auto"},
+        ),
+        ("dynamical", "forecast"): ZarrCatalogEntry(
+            url="https://data.dynamical.org/noaa/hrrr/forecast-48-hour/latest.zarr",
+            description=(
+                "dynamical.org HRRR 48-hr forecast | 2018–present | "
+                "00/06/12/18Z only | dims: init_time × lead_time × y × x"
+            ),
+            time_dim="init_time",
+            lead_time_dim="lead_time",
+            open_kwargs={"chunks": "auto"},
+        ),
+        # ── Utah / MesoWest hrrrzarr (AWS Open Data) ───────────────────────
+        # One zarr group per variable per date. Requires date=, variable=,
+        # level= kwargs passed to from_zarr(). Also requires: pip install s3fs
+        ("mesowest", "analysis"): ZarrCatalogEntry(
+            url="s3://hrrrzarr/sfc/",
+            description=(
+                "Utah/MesoWest hrrrzarr | 2015–present | per-variable | "
+                "pass date=, variable=, level= to from_zarr()"
+            ),
+            time_dim="time",
+            storage_options={"anon": True},
+            store_factory=lambda **kw: _utah_store(product="analysis", **kw),
+        ),
+        ("mesowest", "forecast"): ZarrCatalogEntry(
+            url="s3://hrrrzarr/sfc/",
+            description=(
+                "Utah/MesoWest hrrrzarr | 2015–present | per-variable | "
+                "pass date=, variable=, level= to from_zarr()"
+            ),
+            time_dim="time",
+            storage_options={"anon": True},
+            store_factory=lambda **kw: _utah_store(product="forecast", **kw),
+        ),
     }
 
     def _build_sources(self) -> dict:

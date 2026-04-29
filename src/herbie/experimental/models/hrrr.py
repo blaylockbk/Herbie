@@ -9,7 +9,7 @@ class HRRRTemplate(ModelTemplate):
     MODEL_WEBSITES = {
         "gsl": "https://rapidrefresh.noaa.gov/hrrr/",
         "nomads": "https://www.nco.ncep.noaa.gov/pmb/products/hrrr/",
-        "utah": "http://hrrr.chpc.utah.edu/",
+        "mesowest": "http://hrrr.chpc.utah.edu/",
     }
 
     PARAMS = {

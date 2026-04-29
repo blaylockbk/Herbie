@@ -57,6 +57,7 @@ from herbie.v2._sources import (
     EccodesGribSource,
     GribSource,
     Source,
+    ZarrCatalogEntry,
     ZarrSource,
 )
 
@@ -225,6 +226,125 @@ class HerbieModel(ABC):
         return self.SOURCES
 
     # ── Local path helpers ─────────────────────────────────────────────────
+
+    # ── Zarr catalog interface ─────────────────────────────────────────────
+
+    ZARR_SOURCES: ClassVar[dict] = {}
+    """
+    Model-level Zarr catalog.  Override in subclasses as::
+
+        ZARR_SOURCES = {
+            ("dynamical", "forecast"): ZarrCatalogEntry(...),
+            ("dynamical", "analysis"): ZarrCatalogEntry(...),
+        }
+
+    Keys are ``(source, product)`` tuples.  ``source`` identifies the
+    provider (e.g. ``'dynamical'``); ``product`` selects a specific dataset
+    from that provider (e.g. ``'analysis'``, ``'forecast'``).
+    """
+
+    @classmethod
+    def from_zarr(
+        cls,
+        source: str,
+        product: str = "forecast",
+        **open_kwargs,
+    ) -> "xr.Dataset":
+        """
+        Open a cloud Zarr dataset directly, without date/fxx construction.
+
+        Unlike the normal ``HRRR(date, fxx)`` constructor, this classmethod
+        returns the full multi-date (or variable-scoped) Dataset in one call.
+        Slice to a specific time/variable with ``.sel()`` afterwards.
+
+        Parameters
+        ----------
+        source
+            Provider name (e.g. ``'dynamical'``, ``'utah'``).
+            See ``HRRR.list_zarr_sources()`` for all available options.
+        product
+            Dataset name within the provider (e.g. ``'forecast'``,
+            ``'analysis'``).  Defaults to ``'forecast'`` where it exists.
+        **open_kwargs
+            Passed through to ``xr.open_zarr`` *or* to ``store_factory``
+            for sources that need extra arguments (e.g. ``date=``,
+            ``variable=``, ``level=`` for the Utah hrrrzarr store).
+
+        Returns
+        -------
+        xr.Dataset
+
+        Examples
+        --------
+        >>> ds = HRRR.from_zarr('dynamical', 'forecast')
+        >>> ds['temperature_2m'].sel(
+        ...     init_time='2025-01-01T00',
+        ...     lead_time='6h',
+        ... ).plot()
+
+        >>> ds = HRRR.from_zarr('dynamical', 'analysis')
+        >>> ds['temperature_2m'].sel(time='2025-01-01T06').plot()
+
+        >>> ds = HRRR.from_zarr(
+        ...     'utah', 'analysis',
+        ...     date='2021-01-01 00:00', variable='TMP', level='surface',
+        ... )
+        """
+        import xarray as xr
+
+        catalog: dict = cls.ZARR_SOURCES
+        entry = catalog.get((source, product))
+        if entry is None:
+            available = sorted(catalog.keys())
+            raise ValueError(
+                f"{cls.__name__}.from_zarr: no entry for "
+                f"source={source!r}, product={product!r}.\n"
+                f"Available (source, product) pairs: {available}\n"
+                f"Call {cls.__name__}.list_zarr_sources() for details."
+            )
+
+        from herbie.v2._xarray import open_zarr_catalog
+
+        if cls.verbose if hasattr(cls, "verbose") else True:
+            console.print(f"[dim]Opening zarr → [bold]{entry.description}[/bold][/dim]")
+
+        return open_zarr_catalog(entry, **open_kwargs)
+
+    @classmethod
+    def list_zarr_sources(cls) -> None:
+        """
+        Print a table of all available Zarr datasets for this model.
+
+        Shows the ``(source, product)`` key, URL, and dimension structure
+        for each entry in ``ZARR_SOURCES``.
+        """
+        catalog: dict = cls.ZARR_SOURCES
+        if not catalog:
+            console.print(
+                f"[yellow]{cls.__name__} has no Zarr sources defined.[/yellow]"
+            )
+            return
+
+        t = Table(
+            box=box.SIMPLE_HEAD,
+            title=f"[bold]{cls.__name__} Zarr Sources[/bold]",
+            title_justify="left",
+        )
+        t.add_column("source", style="bold cyan")
+        t.add_column("product", style="cyan")
+        t.add_column("Description", overflow="fold", max_width=60)
+        t.add_column("URL", style="dim", overflow="fold", max_width=55)
+
+        for (src, prod), entry in sorted(catalog.items()):
+            t.add_column  # no-op; columns already added
+            t.add_row(
+                src,
+                prod,
+                entry.description,
+                f"[link={entry.url}]{entry.url}[/link]",
+            )
+
+        console.print(t)
 
     @property
     def local_path(self) -> Path:

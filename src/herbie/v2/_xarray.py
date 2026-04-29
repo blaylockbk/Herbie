@@ -136,3 +136,37 @@ def open_zarr(source: ZarrSource) -> xr.Dataset:
         storage_options=source.storage_options or None,
         **source.open_kwargs,
     )
+
+def open_zarr_catalog(
+    entry: "ZarrCatalogEntry",
+    **extra_kwargs,
+) -> xr.Dataset:
+    """
+    Open a ``ZarrCatalogEntry`` as an ``xr.Dataset``.
+
+    If the entry has a ``store_factory``, it is called with ``extra_kwargs``
+    (e.g. ``date=``, ``variable=``, ``level=``).  If the factory returns an
+    ``xr.Dataset`` it is handed back directly; otherwise its return value is
+    treated as a zarr store and passed to ``xr.open_zarr``.
+
+    Any remaining ``extra_kwargs`` that are not consumed by the factory are
+    merged into the entry's ``open_kwargs`` and forwarded to ``xr.open_zarr``.
+    """
+    if entry.store_factory is not None:
+        result = entry.store_factory(**extra_kwargs)
+        if isinstance(result, xr.Dataset):
+            return result
+        # Factory returned a store object — open it
+        return xr.open_zarr(
+            result,
+            consolidated=entry.consolidated,
+            storage_options=entry.storage_options or None,
+            **{**entry.open_kwargs, **extra_kwargs},
+        )
+
+    return xr.open_zarr(
+        entry.url,
+        consolidated=entry.consolidated,
+        storage_options=entry.storage_options or None,
+        **{**entry.open_kwargs, **extra_kwargs},
+    )

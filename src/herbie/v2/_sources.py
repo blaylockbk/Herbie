@@ -68,6 +68,61 @@ class EccodesGribSource:
 
 
 # ---------------------------------------------------------------------------
+# Zarr catalog entry  (used by HerbieModel.from_zarr())
+# ---------------------------------------------------------------------------
+
+
+@dataclass
+class ZarrCatalogEntry:
+    """
+    Descriptor for a cloud Zarr dataset accessible via ``from_zarr()``.
+
+    Unlike ``ZarrSource`` (which plugs into the GRIB source-priority chain),
+    this is for multi-date or variable-specific Zarr stores where the
+    normal ``date`` / ``fxx`` constructor arguments do not apply.
+
+    Parameters
+    ----------
+    url
+        Canonical store URL shown in ``list_zarr_sources()`` output.
+        For ``store_factory``-backed stores this is display-only.
+    description
+        One-line human description including time range and dimensions.
+    time_dim
+        Name of the initialisation-time dimension (``'time'`` for analysis
+        stores, ``'init_time'`` for forecast stores).
+    lead_time_dim
+        Name of the lead-time / forecast-step dimension, or ``None`` for
+        analysis stores with no lead-time.
+    consolidated
+        Whether the store has a consolidated ``.zmetadata`` file.
+    open_kwargs
+        Passed to ``xr.open_zarr`` (e.g. ``{"chunks": "auto"}``).
+    storage_options
+        ``fsspec`` storage options (e.g. ``{"anon": True}`` for public S3).
+    store_factory
+        Optional ``(**kwargs) -> store | xr.Dataset`` callable.  When set,
+        it is called with any extra keyword arguments passed to
+        ``from_zarr()`` (e.g. ``date=``, ``variable=``, ``level=``).
+
+        * If it returns an ``xr.Dataset``, that dataset is returned
+          directly (useful for complex multi-group stores like Utah
+          hrrrzarr that require ``open_mfdataset``).
+        * If it returns anything else it is treated as a zarr store and
+          passed to ``xr.open_zarr``.
+    """
+
+    url: str
+    description: str
+    time_dim: str = "time"
+    lead_time_dim: str | None = None
+    consolidated: bool = True
+    open_kwargs: dict = field(default_factory=dict)
+    storage_options: dict = field(default_factory=dict)
+    store_factory: Callable | None = None
+
+
+# ---------------------------------------------------------------------------
 # Zarr source
 # ---------------------------------------------------------------------------
 
@@ -136,3 +191,4 @@ class DirectorySource:
 # ---------------------------------------------------------------------------
 
 Source = GribSource | EccodesGribSource | ZarrSource | DirectorySource
+ZarrCatalog = dict[tuple[str, str], ZarrCatalogEntry]
