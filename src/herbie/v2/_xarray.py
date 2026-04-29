@@ -37,12 +37,80 @@ _CFGRIB_READ_KEYS = [
     "Latin2InDegrees",
 ]
 
+# Coordinates that are spatial, temporal, or structural — not the vertical
+# level type that causes cfgrib to split into separate datasets.
+_SPLIT_SKIP_COORDS = frozenset(
+    {
+        "latitude",
+        "longitude",
+        "x",
+        "y",
+        "time",
+        "step",
+        "valid_time",
+        "gribfile_projection",
+        "number",  # ensemble member
+        "realization",
+    }
+)
+
+
+def _node_name(ds: xr.Dataset) -> str:
+    """
+    Derive a DataTree node name from the vertical/level coordinate(s) that
+    prevented cfgrib from merging this dataset with the others.
+
+    Rules
+    -----
+    * Skip coordinates in ``_SPLIT_SKIP_COORDS``.
+    * For array coordinates (multiple levels, e.g. pressure levels) use the
+      coordinate name alone: ``"isobaricInhPa"``.
+    * For scalar coordinates (single level, e.g. 2 m AGL) include the value:
+      ``"heightAboveGround_2"``.
+    * Multiple qualifying coordinates are joined with ``"__"``.
+    * Falls back to ``"unknown"`` when no qualifying coordinate is found.
+    """
+    parts = []
+    for name in sorted(ds.coords):
+        if name in _SPLIT_SKIP_COORDS:
+            continue
+        coord = ds.coords[name]
+        if coord.ndim == 0:
+            raw = coord.values.item()
+            val_str = (
+                str(int(raw))
+                if isinstance(raw, float) and raw.is_integer()
+                else str(raw)
+            )
+            parts.append(f"{name}_{val_str}")
+        else:
+            parts.append(name)
+    return "__".join(parts) if parts else "unknown"
+
+
+def _make_datatree(datasets: list[xr.Dataset]) -> xr.DataTree:
+    """
+    Package a list of cfgrib datasets into a DataTree, naming each node
+    after its distinguishing vertical coordinate(s).
+
+    Duplicate names (rare but possible) are disambiguated with a ``_N`` suffix.
+    """
+    mapping: dict[str, xr.Dataset] = {}
+    seen: dict[str, int] = {}
+    for ds in datasets:
+        name = _node_name(ds)
+        if name in mapping:
+            seen[name] = seen.get(name, 1) + 1
+            name = f"{name}_{seen[name]}"
+        mapping[name] = ds
+    return xr.DataTree.from_dict(mapping)
+
 
 def load_xarray(
     local_file: Path,
     *,
     backend_kwargs: dict | None = None,
-) -> xr.Dataset | list[xr.Dataset]:
+) -> xr.Dataset | xr.DataTree:
     """
     Open a local GRIB2 file (or subset file) with cfgrib.
 
@@ -69,16 +137,7 @@ def load_xarray(
     if len(datasets) == 1:
         return datasets[0]
 
-    # Try to merge multiple hypercubes (e.g. subhourly)
-    try:
-        import itertools
-
-        data_vars = set(itertools.chain(*[list(ds) for ds in datasets]))
-        data_vars.discard("gribfile_projection")
-        merged = xr.concat(datasets, dim="step", data_vars=list(data_vars))
-        return merged
-    except Exception:
-        return datasets
+    return _make_datatree(datasets)
 
 
 def _attach_crs(ds: xr.Dataset) -> None:
@@ -136,6 +195,7 @@ def open_zarr(source: ZarrSource) -> xr.Dataset:
         storage_options=source.storage_options or None,
         **source.open_kwargs,
     )
+
 
 def open_zarr_catalog(
     entry: "ZarrCatalogEntry",

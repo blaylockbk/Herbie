@@ -626,10 +626,12 @@ class FastHerbie:
         if not valid:
             return datasets
 
-        # Flatten any nested lists produced by cfgrib on multi-hypercube files
-        flat: list = []
+        # flatten any DataTree nodes alongside plain Datasets
+        flat: list[xr.Dataset] = []
         for item in valid:
-            if isinstance(item, list):
+            if isinstance(item, xr.DataTree):
+                flat.extend(item.leaves)  # or iterate .children.values() depending on desired shape
+            elif isinstance(item, list):
                 flat.extend(item)
             else:
                 flat.append(item)

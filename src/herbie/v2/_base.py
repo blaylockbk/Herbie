@@ -757,6 +757,8 @@ class HerbieModel(ABC):
         overwrite
             Re-download even if the file already exists locally.
         """
+        import xarray as xr
+
         if self.SOURCE_TYPE == "zarr":
             from herbie.v2._xarray import open_zarr
 
@@ -782,10 +784,9 @@ class HerbieModel(ABC):
         ds = load_xarray(local, backend_kwargs=backend_kwargs)
 
         if remove_grib:
-            if isinstance(ds, list):
-                ds = [d.load() for d in ds]
-                for d in ds:
-                    d.close()
+            if isinstance(ds, xr.DataTree):
+                ds = ds.load()
+                ds.close()
             else:
                 ds = ds.load()
                 ds.close()
