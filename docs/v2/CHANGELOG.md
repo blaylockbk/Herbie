@@ -92,3 +92,11 @@ Examples:
 
 - Get all 6-hr `TMP:2 m` forecasts for the day in one file.
 - Get all `GRD:10 m` forecasts initialized at a single time.
+
+## Zarr Support
+
+Built infrastructure to support access to Zarr model sources
+
+```python
+Herbie.HRRR.from_zarr('dynamical', 'analysis')
+```
