@@ -23,3 +23,15 @@ v2 (Preview)
    quickstart
    models
    migration
+
+.. toctree::
+   :maxdepth: 1
+   :caption: Examples
+
+   example_status.ipynb
+   example_step.ipynb
+   example_datatree.ipynb
+   example_zarr.ipynb
+
+
+
