@@ -14,3 +14,9 @@ Docstring reference for the ``herbie`` module
    paint
    wgrib2
    misc
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Herbie v2
+
+   v2
