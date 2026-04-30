@@ -1,6 +1,6 @@
-===================
-Herbie v2 (Preview)
-===================
+============
+v2 (Preview)
+============
 
 .. warning::
    Herbie v2 is under active development. The API may change before the
