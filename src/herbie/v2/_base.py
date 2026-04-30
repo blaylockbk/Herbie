@@ -78,7 +78,7 @@ def _parse_date(value) -> datetime:
 def _parse_step(value) -> int:
 
     if isinstance(value, timedelta):
-        return value.total_seconds() / 3600
+        return int(value.total_seconds() / 3600)
 
     if isinstance(value, str):
         import pandas as pd
@@ -135,7 +135,7 @@ class HerbieModel(ABC):
     def __init__(
         self,
         date: str | datetime,
-        step: int | str = 0,
+        step: int | str | timedelta = 0,
         *,
         product: str | None = None,
         priority: list[str] | None = None,
@@ -166,6 +166,21 @@ class HerbieModel(ABC):
             self.SOURCES = {
                 k: self.SOURCES[k] for k in self.priority if k in self.SOURCES
             }
+
+        # Per-source status bookkeeping — updated by resolve() and lazy
+        # resolution.  None = not yet checked; True/False = known result.
+        self._source_status: dict[str, dict] = {
+            name: {
+                "grib_exists": None,  # None | True | False
+                "grib_size": None,  # int | None
+                "idx": {  # suffix → None | True | False
+                    suffix: None for suffix in src.index_suffixes
+                }
+                if isinstance(src, (GribSource, EccodesGribSource))
+                else {},
+            }
+            for name, src in self.SOURCES.items()
+        }
 
     # ── Abstract interface ─────────────────────────────────────────────────
 
@@ -389,19 +404,29 @@ class HerbieModel(ABC):
         Lazily find the first available GRIB2 source.
 
         Checks local first, then iterates remote sources in priority
-        order.  Result is cached so subsequent calls are free.
+        order.  Updates ``_source_status`` for every source checked.
+        Result is cached so subsequent calls are free.
 
         Returns
         -------
         (source_name, url_or_path) or (None, None)
         """
-        # Local file takes priority
+        # Local file takes priority — no remote check needed
         if self.local_path.exists() and not self.overwrite:
             return ("local", str(self.local_path))
 
         for name, src in self._ordered_sources().items():
             if isinstance(src, (GribSource, EccodesGribSource)):
-                if _url_exists(src.url):
+                info = _url_info(src.url)
+                self._source_status[name]["grib_exists"] = info["exists"]
+                self._source_status[name]["grib_size"] = info.get("size")
+                if info["exists"]:
+                    return (name, src.url)
+            elif isinstance(src, ZarrSource):
+                info = _url_info(src.url)
+                self._source_status[name]["grib_exists"] = info["exists"]
+                self._source_status[name]["grib_size"] = info.get("size")
+                if info["exists"]:
                     return (name, src.url)
         return (None, None)
 
@@ -446,9 +471,10 @@ class HerbieModel(ABC):
                 continue
             for suffix in src.index_suffixes:
                 idx_url = src.url + suffix
-                if _url_exists(idx_url):
+                exists = _url_exists(idx_url)
+                self._source_status[name]["idx"][suffix] = exists
+                if exists:
                     return (name, idx_url)
-
         # ── 3. wgrib2 local generation fallback ────────────────────────────
         if local.exists():
             idx_path = generate_index_file(local)
@@ -469,8 +495,13 @@ class HerbieModel(ABC):
         ``_found_index`` re-evaluate and pick up the newly local file.
         Also clears ``_index_df`` so inventory re-reads from the new file.
         """
-        for attr in ("_found_grib", "_found_index", "_index_df", "_status_results"):
+        for attr in ("_found_grib", "_found_index", "_index_df"):
             self.__dict__.pop(attr, None)
+        # Reset bookkeeping but keep the structure
+        for entry in self._source_status.values():
+            entry["grib_exists"] = None
+            entry["grib_size"] = None
+            entry["idx"] = {k: None for k in entry["idx"]}
 
     # ── Convenience properties ─────────────────────────────────────────────
 
@@ -810,48 +841,50 @@ class HerbieModel(ABC):
             Which sources to check.
 
             ``resolve()``
-                Trigger lazy resolution of the first available GRIB source
-                and its companion index file — the same logic used by
-                ``inventory()``, ``download()``, and ``xarray()``, but
-                made explicit and chainable.  Stops at the first hit.
+                Walk sources in priority order and stop at the first
+                available GRIB file and its companion index — exactly the
+                same logic used implicitly by ``inventory()``,
+                ``download()``, and ``xarray()``, but made explicit and
+                chainable.  Updates ``_source_status`` for every source
+                actually checked.
 
             ``resolve('all')``
-                Fire parallel HEAD requests to *every* source and cache
-                the results (availability + file size).  This is the most
-                complete picture and is what the ``H`` notebook display and
-                ``H.status()`` draw from.
+                Fire parallel HEAD requests to *every* source
+                (GRIB + all index suffixes).  Fully populates
+                ``_source_status`` and sets ``_found_grib`` /
+                ``_found_index`` to the first available hit.
 
             ``resolve('aws')`` / ``resolve('aws', 'google')``
-                Check only the named source(s), in the order given.  The
-                first one that responds becomes the active GRIB source,
-                overriding any previously cached resolution.  Useful for
-                forcing a specific source without changing ``priority``.
+                Check only the named source(s) in the order given.
+                The first one that responds becomes the active source,
+                overriding any previously cached selection.  Updates
+                ``_source_status`` only for the sources checked.
 
         Examples
         --------
-        >>> H = HRRR("2025-01-01").resolve('all')   # check everything, chain
-        >>> H = HRRR("2025-01-01").resolve()         # first available
-        >>> H.resolve('nomads')                      # switch to nomads
-        >>> H.resolve('aws', 'google')               # prefer aws, fall back to google
+        >>> H = HRRR("2025-01-01").resolve('all')
+        >>> H = HRRR("2025-01-01").resolve()
+        >>> H.resolve('nomads')              # switch active source
+        >>> H.resolve('aws', 'google')       # prefer aws, fall back to google
         """
         if not sources:
-            # Trigger both lazy cached_property resolutions (stop at first hit)
+            # Trigger lazy resolution — updates _source_status as a side-effect
             _ = self._found_grib
             _ = self._found_index
             return self
 
         if sources == ("all",):
-            # Parallel HEAD check of every source
+            # ── Parallel HEAD check of every source ───────────────────────
             check_map: dict[tuple[str, str], str] = {}
-            for name, src in self.SOURCES.items():
-                if isinstance(src, (GribSource, EccodesGribSource)):
-                    check_map[(name, "grib")] = src.url
-                    for suffix in src.index_suffixes:
-                        check_map[(name, f"idx:{suffix}")] = src.url + suffix
-                elif isinstance(src, ZarrSource):
-                    check_map[(name, "zarr")] = src.url
+            for name, s in self.SOURCES.items():
+                if isinstance(s, (GribSource, EccodesGribSource)):
+                    check_map[(name, "grib")] = s.url
+                    for suffix in s.index_suffixes:
+                        check_map[(name, f"idx:{suffix}")] = s.url + suffix
+                elif isinstance(s, ZarrSource):
+                    check_map[(name, "zarr")] = s.url
 
-            results: dict[tuple[str, str], dict] = {}
+            raw: dict[tuple[str, str], dict] = {}
             if check_map:
                 with ThreadPoolExecutor(max_workers=min(16, len(check_map))) as pool:
                     futures = {
@@ -859,81 +892,89 @@ class HerbieModel(ABC):
                         for key, url in check_map.items()
                     }
                     for future in as_completed(futures):
-                        results[futures[future]] = future.result()
+                        raw[futures[future]] = future.result()
 
-            self._status_results = results  # consumed by _repr_html_ and status()
+            # Write results into _source_status
+            for name, s in self.SOURCES.items():
+                entry = self._source_status[name]
+                if isinstance(s, (GribSource, EccodesGribSource)):
+                    g = raw.get((name, "grib"), {})
+                    entry["grib_exists"] = g.get("exists", False)
+                    entry["grib_size"] = g.get("size")
+                    for suffix in s.index_suffixes:
+                        entry["idx"][suffix] = raw.get((name, f"idx:{suffix}"), {}).get(
+                            "exists", False
+                        )
+                elif isinstance(s, ZarrSource):
+                    g = raw.get((name, "zarr"), {})
+                    entry["grib_exists"] = g.get("exists", False)
+                    entry["grib_size"] = g.get("size")
 
-            # Also set _found_grib / _found_index to first available so
-            # subsequent inventory/download/xarray calls don't re-check.
-            if "_found_grib" not in self.__dict__:
-                for name, src in self.SOURCES.items():
-                    if isinstance(src, (GribSource, EccodesGribSource)):
-                        if results.get((name, "grib"), {}).get("exists"):
-                            self.__dict__["_found_grib"] = (name, src.url)
-                            break
-                        elif isinstance(src, ZarrSource):
-                            if results.get((name, "zarr"), {}).get("exists"):
-                                self.__dict__["_found_grib"] = (name, src.url)
-                                break
-                else:
-                    self.__dict__.setdefault("_found_grib", (None, None))
+            # Always re-pick _found_grib / _found_index from fresh results
+            self.__dict__.pop("_found_grib", None)
+            self.__dict__.pop("_found_index", None)
 
-            if "_found_index" not in self.__dict__:
-                for name, src in self.SOURCES.items():
-                    if isinstance(src, (GribSource, EccodesGribSource)):
-                        for suffix in src.index_suffixes:
-                            if results.get((name, f"idx:{suffix}"), {}).get("exists"):
-                                self.__dict__["_found_index"] = (name, src.url + suffix)
-                                break
-                        if "_found_index" in self.__dict__:
-                            break
-                else:
-                    self.__dict__.setdefault("_found_index", (None, None))
+            for name, s in self.SOURCES.items():
+                if self._source_status[name]["grib_exists"]:
+                    self.__dict__["_found_grib"] = (name, s.url)
+                    break
+            else:
+                self.__dict__["_found_grib"] = (None, None)
+
+            for name, s in self.SOURCES.items():
+                if not isinstance(s, (GribSource, EccodesGribSource)):
+                    continue
+                for suffix in s.index_suffixes:
+                    if self._source_status[name]["idx"].get(suffix):
+                        self.__dict__["_found_index"] = (name, s.url + suffix)
+                        break
+                if "_found_index" in self.__dict__:
+                    break
+            else:
+                self.__dict__["_found_index"] = (None, None)
 
             return self
 
-        # Named source(s) — check in the order given, stop at first hit.
-        # Invalidate any prior resolution so the new result takes effect.
-        bad = [n for n in sources if n not in self.SOURCES and n != "all"]
+        # ── Named source(s) ────────────────────────────────────────────────
+        bad = [n for n in sources if n not in self.SOURCES]
         if bad:
             raise ValueError(
                 f"Unknown source(s): {bad}. Available: {list(self.SOURCES)}"
             )
 
+        # Invalidate prior resolution so the new result takes effect
+        self.__dict__.pop("_found_grib", None)
+        self.__dict__.pop("_found_index", None)
+
         for name in sources:
-            src = self.SOURCES[name]
-            if isinstance(src, (GribSource, EccodesGribSource)):
-                grib_info = _url_info(src.url)
-                # Update _status_results so display reflects what we checked
-                if not hasattr(self, "_status_results"):
-                    self._status_results = {}
-                self._status_results[(name, "grib")] = grib_info
-                if grib_info["exists"]:
-                    # Override cached resolution
-                    self.__dict__["_found_grib"] = (name, src.url)
-                    self.__dict__.pop("_found_index", None)  # re-resolve index
-                    # Find companion index
-                    for suffix in src.index_suffixes:
-                        idx_url = src.url + suffix
-                        idx_info = _url_info(idx_url)
-                        self._status_results[(name, f"idx:{suffix}")] = idx_info
-                        if idx_info["exists"]:
+            s = self.SOURCES[name]
+            if isinstance(s, (GribSource, EccodesGribSource)):
+                g = _url_info(s.url)
+                self._source_status[name]["grib_exists"] = g["exists"]
+                self._source_status[name]["grib_size"] = g.get("size")
+                if g["exists"]:
+                    self.__dict__["_found_grib"] = (name, s.url)
+                    # Check all index suffixes for this source
+                    for suffix in s.index_suffixes:
+                        idx_url = s.url + suffix
+                        exists = _url_exists(idx_url)
+                        self._source_status[name]["idx"][suffix] = exists
+                        if exists and "_found_index" not in self.__dict__:
                             self.__dict__["_found_index"] = (name, idx_url)
-                            break
-                    else:
-                        self.__dict__.setdefault("_found_index", (None, None))
+                    if "_found_index" not in self.__dict__:
+                        self.__dict__["_found_index"] = (None, None)
                     return self
-            elif isinstance(src, ZarrSource):
-                zarr_info = _url_info(src.url)
-                if not hasattr(self, "_status_results"):
-                    self._status_results = {}
-                self._status_results[(name, "zarr")] = zarr_info
-                if zarr_info["exists"]:
-                    self.__dict__["_found_grib"] = (name, src.url)
+            elif isinstance(s, ZarrSource):
+                g = _url_info(s.url)
+                self._source_status[name]["grib_exists"] = g["exists"]
+                self._source_status[name]["grib_size"] = g.get("size")
+                if g["exists"]:
+                    self.__dict__["_found_grib"] = (name, s.url)
                     return self
 
-        # None of the specified sources were found
+        # None of the specified sources were available
         self.__dict__["_found_grib"] = (None, None)
+        self.__dict__["_found_index"] = (None, None)
         return self
 
     def status(self) -> None:
@@ -957,7 +998,6 @@ class HerbieModel(ABC):
         from rich.console import Group
 
         # ── What do we know about each source? ────────────────────────────
-        status_cache = self.__dict__.get("_status_results")
         found_name = self.__dict__.get("_found_grib", (None, None))[0]
 
         # Categorise sources
@@ -971,29 +1011,10 @@ class HerbieModel(ABC):
         }
         zarr_srcs = {n: s for n, s in self.SOURCES.items() if isinstance(s, ZarrSource)}
 
-        # Per-source known state: True=exists, False=missing, None=unknown
-        source_known: dict[str, bool | None] = {}
-        if status_cache is not None:
-            for n, s in self.SOURCES.items():
-                if isinstance(s, (GribSource, EccodesGribSource)):
-                    source_known[n] = status_cache.get((n, "grib"), {}).get("exists")
-                elif isinstance(s, ZarrSource):
-                    source_known[n] = status_cache.get((n, "zarr"), {}).get("exists")
-                else:
-                    source_known[n] = None
-        elif found_name is not None:
-            passed = False
-            for n in self.SOURCES:
-                if passed:
-                    source_known[n] = None
-                elif n == found_name:
-                    source_known[n] = True
-                    passed = True
-                else:
-                    source_known[n] = False
-        else:
-            for n in self.SOURCES:
-                source_known[n] = None
+        # Per-source known state read directly from _source_status
+        source_known: dict[str, bool | None] = {
+            n: self._source_status[n]["grib_exists"] for n in self.SOURCES
+        }
 
         def _indicator(known):
             if known is True:
@@ -1037,18 +1058,12 @@ class HerbieModel(ABC):
 
             for name, src in grib_srcs.items():
                 ind = _indicator(source_known.get(name))
-                size = _fmt_size(
-                    status_cache.get((name, "grib"), {}).get("size")
-                    if status_cache
-                    else None
-                )
+                size = _fmt_size(self._source_status[name]["grib_size"])
                 # Find first known index suffix
-                found_idx_suffix = None
-                if status_cache:
-                    for suffix in src.index_suffixes:
-                        if status_cache.get((name, f"idx:{suffix}"), {}).get("exists"):
-                            found_idx_suffix = suffix
-                            break
+                found_idx_suffix = next(
+                    (s for s, v in self._source_status[name]["idx"].items() if v),
+                    None,
+                )
                 url_str = f"[link={src.url}]{src.url}[/link]"
                 if found_idx_suffix:
                     idx_url = src.url + found_idx_suffix
@@ -1340,45 +1355,14 @@ class HerbieModel(ABC):
             )
 
         # ── Source rows ────────────────────────────────────────────────────
-        # Determine what we know about each source's availability:
-        #
-        #   _status_results   → status() was run: full ✓/✗ for every source
-        #   _found_grib cache → lazy resolution ran: ✓ for winner, ✗ for
-        #                       sources tried before it, blank for the rest
-        #   neither           → no marks
-        status_cache = self.__dict__.get("_status_results")  # set by resolve()
+        # _source_status is the single source of truth — updated by every
+        # code path that checks a source (resolve, lazy _found_grib, etc.)
         found_name = self.__dict__.get("_found_grib", (None, None))[0]
         found_idx = self.__dict__.get("_found_index", (None, None))[0]
 
-        # Build per-source indicator: True=exists, False=missing, None=unknown
-        source_known: dict[str, bool | None] = {}
-        if status_cache is not None:
-            # Full knowledge from status()
-            for n, s in self.SOURCES.items():
-                if isinstance(s, (GribSource, EccodesGribSource)):
-                    source_known[n] = status_cache.get((n, "grib"), {}).get(
-                        "exists", False
-                    )
-                elif isinstance(s, ZarrSource):
-                    source_known[n] = status_cache.get((n, "zarr"), {}).get(
-                        "exists", False
-                    )
-                else:
-                    source_known[n] = None
-        elif found_name is not None:
-            # Partial knowledge from lazy resolution
-            passed_winner = False
-            for n in self.SOURCES:
-                if passed_winner:
-                    source_known[n] = None  # never checked
-                elif n == found_name:
-                    source_known[n] = True  # this one was found
-                    passed_winner = True
-                else:
-                    source_known[n] = False  # tried, not found
-        else:
-            for n in self.SOURCES:
-                source_known[n] = None
+        source_known: dict[str, bool | None] = {
+            n: self._source_status[n]["grib_exists"] for n in self.SOURCES
+        }
 
         def _src_indicator(known: bool | None) -> str:
             if known is True:
@@ -1393,18 +1377,20 @@ class HerbieModel(ABC):
                 )
             return "<span style='display:inline-block;width:14px'></span>"
 
-        # size helper — only populated when status_cache is available
+        # size helper — shows dash when size is unknown (None)
         def _size_cell(name: str) -> str:
-            if status_cache is None:
-                return ""
-            n = status_cache.get((name, "grib"), {}).get("size")
+            n = self._source_status[name]["grib_size"]
+            if n is None and self._source_status[name]["grib_exists"] is None:
+                return ""  # not yet checked — omit the cell
             txt = _fmt_size_html(n)
             return (
                 f"<td style='padding:4px 8px;text-align:right;"
                 f"white-space:nowrap;font-size:0.78em;color:#666'>{txt}</td>"
             )
 
-        show_size = status_cache is not None
+        show_size = any(
+            e["grib_exists"] is not None for e in self._source_status.values()
+        )
         source_rows_html = ""
         n_sources = len(self.SOURCES)
         for name, src in self._ordered_sources().items():
@@ -1436,6 +1422,7 @@ class HerbieModel(ABC):
                 idx_links = ""
                 for suffix in src.index_suffixes:
                     iurl = src.url + suffix
+                    suffix_known = self._source_status[name]["idx"].get(suffix)
                     is_active_this_idx = is_active_idx and found_idx_url == iurl
                     if is_active_this_idx:
                         idx_links += (
