@@ -4,7 +4,7 @@ FastHerbie — bulk inventory aggregation and parallel multi-source download.
 Design
 ------
 FastHerbie constructs a collection of HerbieModel objects (one per
-date × fxx combination) and exposes a unified pipeline:
+date × step combination) and exposes a unified pipeline:
 
 1. **Aggregate** — fetch all index files in parallel and concatenate
    their rows into a single Polars DataFrame.  Every row carries the
@@ -35,7 +35,7 @@ Usage
 >>> fh = FastHerbie(
 ...     pd.date_range("2024-06-01", periods=24, freq="1h"),
 ...     model=HRRR,
-...     fxx=[0, 1, 3, 6],
+...     step=[0, 1, 3, 6],
 ...     product="sfc",
 ... )
 >>>
@@ -48,8 +48,8 @@ Usage
 >>> # One file per model-init hour
 >>> paths = fh.download("TMP:2 m above ground", partition_by="model_init_time")
 >>>
->>> # One file per (date, fxx) pair — every HerbieModel object gets its own file
->>> paths = fh.download("TMP:2 m above ground", partition_by=["model_init_time", "fxx"])
+>>> # One file per (date, step) pair — every HerbieModel object gets its own file
+>>> paths = fh.download("TMP:2 m above ground", partition_by=["model_init_time", "step"])
 >>>
 >>> # Open the combined data directly as xarray
 >>> ds = fh.xarray("TMP:2 m above ground")
@@ -172,7 +172,7 @@ class FastHerbie:
     """
     Create and operate on a collection of HerbieModel objects.
 
-    FastHerbie constructs one HerbieModel per ``(date, fxx)`` pair, then
+    FastHerbie constructs one HerbieModel per ``(date, step)`` pair, then
     provides a single interface to aggregate their inventories and
     download matching GRIB messages in parallel — across *all* source
     files simultaneously — into one or more output files.
@@ -184,9 +184,9 @@ class FastHerbie:
         ``pd.date_range(...)`` works perfectly.
     model
         A ``HerbieModel`` *subclass* (not an instance).  E.g. ``HRRR``, ``GFS``.
-    fxx
+    step
         Forecast lead time(s) in hours.  Either a single ``int``/``str`` or
-        an iterable of ints.  The cross-product of ``dates`` × ``fxx`` is
+        an iterable of ints.  The cross-product of ``dates`` × ``step`` is
         used when multiple values are provided.
     **kwargs
         Forwarded to the model constructor (``product``, ``priority``,
@@ -195,17 +195,17 @@ class FastHerbie:
     Attributes
     ----------
     objects : list[HerbieModel]
-        The constructed model objects (one per date × fxx combination).
+        The constructed model objects (one per date × step combination).
 
     Examples
     --------
     >>> fh = FastHerbie(
     ...     pd.date_range("2024-01-01", periods=6, freq="1h"),
     ...     model=HRRR,
-    ...     fxx=[0, 3, 6],
+    ...     step=[0, 3, 6],
     ...     product="sfc",
     ... )
-    >>> len(fh)          # 6 dates × 3 fxx values = 18
+    >>> len(fh)          # 6 dates × 3 step values = 18
     18
     >>> fh.inventory("TMP:2 m above ground")   # combined index
     >>> fh.download("TMP:2 m above ground")    # single output file
@@ -217,7 +217,7 @@ class FastHerbie:
         dates: Iterable,
         *,
         model: type[HerbieModel],
-        fxx: int | str | Iterable = 0,
+        step: int | str | Iterable = 0,
         **kwargs,
     ):
         if not (isinstance(model, type) and issubclass(model, HerbieModel)):
@@ -229,11 +229,11 @@ class FastHerbie:
         self.model_cls = model
 
         dates_list = list(dates)
-        fxx_list: list = [fxx] if isinstance(fxx, (int, str)) else list(fxx)
+        step_list: list = [step] if isinstance(step, (int, str)) else list(step)
 
-        # Build (date, fxx) cross-product — construction is fast (no network I/O)
+        # Build (date, step) cross-product — construction is fast (no network I/O)
         self.objects: list[HerbieModel] = [
-            model(date=d, fxx=f, **kwargs) for d in dates_list for f in fxx_list
+            model(date=d, step=f, **kwargs) for d in dates_list for f in step_list
         ]
 
     # ── Dunder ────────────────────────────────────────────────────────────
@@ -270,7 +270,7 @@ class FastHerbie:
         * ``end_byte``        — last byte of the message (``null`` for the
           last message in each file, which signals "read to EOF")
         * ``model_init_time`` — model initialization datetime
-        * ``fxx``             — forecast lead time in hours
+        * ``step``             — forecast lead time in hours
         * All variable/level/forecast columns from the index file
 
         The ``source`` + ``start_byte`` / ``end_byte`` triple is everything
@@ -303,7 +303,7 @@ class FastHerbie:
                     return None
                 return df.with_columns(
                     pl.lit(obj.date).cast(pl.Datetime).alias("model_init_time"),
-                    pl.lit(obj.fxx).cast(pl.Int32).alias("fxx"),
+                    pl.lit(obj.step).cast(pl.Int32).alias("step"),
                 )
             except Exception as exc:
                 with lock:
@@ -401,10 +401,10 @@ class FastHerbie:
 
             ``"model_init_time"``
                 One file per model initialization time.
-            ``"fxx"``
+            ``"step"``
                 One file per forecast lead time.
-            ``["model_init_time", "fxx"]``
-                One file per (date, fxx) pair — mirrors one file per
+            ``["model_init_time", "step"]``
+                One file per (date, step) pair — mirrors one file per
                 HerbieModel object.
             ``"variable"``
                 One file per GRIB variable name (wgrib2 style).
@@ -630,7 +630,9 @@ class FastHerbie:
         flat: list[xr.Dataset] = []
         for item in valid:
             if isinstance(item, xr.DataTree):
-                flat.extend(item.leaves)  # or iterate .children.values() depending on desired shape
+                flat.extend(
+                    item.leaves
+                )  # or iterate .children.values() depending on desired shape
             elif isinstance(item, list):
                 flat.extend(item)
             else:
@@ -668,9 +670,9 @@ class FastHerbie:
 
         Example::
 
-            columns  = ["model_init_time", "fxx"]
+            columns  = ["model_init_time", "step"]
             key_vals = (datetime(2024, 6, 1, 12), 6)
-            → "HRRR__model_init_time=20240601T12Z__fxx=6.grib2"
+            → "HRRR__model_init_time=20240601T12Z__step=6.grib2"
 
         Datetime values are formatted as ``YYYYMMDDThhZ``; all other values
         are converted to strings with unsafe filesystem characters stripped.

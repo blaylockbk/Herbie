@@ -33,7 +33,7 @@ def _utah_store(
     date
         Model initialisation datetime (required).
     product
-        ``'analysis'`` (fxx=0) or ``'forecast'`` (fxx≥1).
+        ``'analysis'`` (step=0) or ``'forecast'`` (step≥1).
     variable
         GRIB2 short name, e.g. ``'TMP'``, ``'UGRD'``, ``'REFC'``.
     level
@@ -76,7 +76,7 @@ class HRRR(HerbieModel):
     ----------
     date : str or datetime
         Model initialization datetime (UTC).
-    fxx : int or str, default 0
+    step : int or str, default 0
         Forecast lead time in hours (``0``–``18`` or ``0``–``48``).
         Pandas-style timedelta strings (``"6h"``) are also accepted.
     product : {'sfc', 'prs', 'nat', 'subh'}, default 'sfc'
@@ -91,7 +91,7 @@ class HRRR(HerbieModel):
         ``'nat'``
             Native hybrid-sigma-level fields.
         ``'subh'``
-            Sub-hourly (15-minute) output (fxx 00–18 only).
+            Sub-hourly (15-minute) output (step 00–18 only).
 
         Aliases: ``surface→sfc``, ``pressure→prs``,
         ``native→nat``, ``subhourly→subh``.
@@ -105,7 +105,7 @@ class HRRR(HerbieModel):
     Examples
     --------
     >>> from herbie.v2 import HRRR
-    >>> H = HRRR("2024-06-15 18:00", fxx=6, product="sfc")
+    >>> H = HRRR("2024-06-15 18:00", step=6, product="sfc")
     >>> H.inventory("TMP:2 m above ground")
     >>> ds = H.xarray("TMP:2 m above ground")
 
@@ -146,7 +146,7 @@ class HRRR(HerbieModel):
 
     ZARR_SOURCES: ClassVar[dict] = {
         # ── dynamical.org ──────────────────────────────────────────────────
-        # Continuous rolling archives. No date/fxx needed; slice with .sel().
+        # Continuous rolling archives. No date/step needed; slice with .sel().
         # Requires: xarray>=2025.1.2, zarr>=3.0.8
         ("dynamical", "analysis"): ZarrCatalogEntry(
             url="https://data.dynamical.org/noaa/hrrr/analysis/latest.zarr",
@@ -194,12 +194,12 @@ class HRRR(HerbieModel):
 
     def _build_sources(self) -> dict:
         d = self.date
-        fxx = self.fxx
+        step = self.step
         product = self.params["product"]
 
-        path = f"hrrr.{d:%Y%m%d}/conus/hrrr.t{d:%H}z.wrf{product}f{fxx:02d}.grib2"
+        path = f"hrrr.{d:%Y%m%d}/conus/hrrr.t{d:%H}z.wrf{product}f{step:02d}.grib2"
         path_pando = (
-            f"hrrr/{product}/{d:%Y%m%d}/hrrr.t{d:%H}z.wrf{product}f{fxx:02d}.grib2"
+            f"hrrr/{product}/{d:%Y%m%d}/hrrr.t{d:%H}z.wrf{product}f{step:02d}.grib2"
         )
 
         idx = [".idx", ".grib2.idx"]
@@ -236,7 +236,7 @@ class HRRRAK(HerbieModel):
     ----------
     date : str or datetime
         Model initialization datetime (UTC).
-    fxx : int or str, default 0
+    step : int or str, default 0
         Forecast lead time in hours (0–48).
     product : {'sfc', 'prs', 'nat', 'subh'}, default 'prs'
         Output product type (same options as HRRR).
@@ -269,12 +269,12 @@ class HRRRAK(HerbieModel):
 
     def _build_sources(self) -> dict:
         d = self.date
-        fxx = self.fxx
+        step = self.step
         product = self.params["product"]
 
-        path = f"hrrr.{d:%Y%m%d}/alaska/hrrr.t{d:%H}z.wrf{product}f{fxx:02d}.ak.grib2"
+        path = f"hrrr.{d:%Y%m%d}/alaska/hrrr.t{d:%H}z.wrf{product}f{step:02d}.ak.grib2"
         path_pando = (
-            f"hrrr/{product}/{d:%Y%m%d}/hrrr.t{d:%H}z.wrf{product}f{fxx:02d}.ak.grib2"
+            f"hrrr/{product}/{d:%Y%m%d}/hrrr.t{d:%H}z.wrf{product}f{step:02d}.ak.grib2"
         )
 
         idx = [".idx", ".grib2.idx"]

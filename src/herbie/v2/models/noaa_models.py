@@ -24,7 +24,7 @@ class NAM(HerbieModel):
     ----------
     date : str or datetime
         Model initialization datetime (UTC).
-    fxx : int, default 0
+    step : int, default 0
         Forecast lead time in hours (0–60).
     product : str, default 'conusnest.hiresf'
         Output domain and type.  Key options:
@@ -79,9 +79,9 @@ class NAM(HerbieModel):
 
     def _build_sources(self) -> dict:
         d = self.date
-        fxx = self.fxx
+        step = self.step
         product = self.params["product"]
-        path = f"nam.{d:%Y%m%d}/nam.t{d:%H}z.{product}{fxx:02d}.tm00.grib2"
+        path = f"nam.{d:%Y%m%d}/nam.t{d:%H}z.{product}{step:02d}.tm00.grib2"
         idx = [".idx", ".grib2.idx"]
         return {
             "aws": GribSource(f"https://noaa-nam-pds.s3.amazonaws.com/{path}", idx),
@@ -107,8 +107,8 @@ class NBM(HerbieModel):
     ----------
     date : str or datetime
         Model cycle datetime (UTC).
-    fxx : int, default 1
-        Forecast lead time in hours (1–214).  Note: fxx=0 is not provided.
+    step : int, default 1
+        Forecast lead time in hours (1–214).  Note: step=0 is not provided.
     product : {'co', 'ak', 'hi', 'gu', 'pr'}, default 'co'
         Domain:
 
@@ -148,11 +148,11 @@ class NBM(HerbieModel):
 
     def _build_sources(self) -> dict:
         d = self.date
-        # fxx=0 is not provided by NBM; silently floor to 1
-        fxx = max(self.fxx, 1)
+        # step=0 is not provided by NBM; silently floor to 1
+        step = max(self.step, 1)
         product = self.params["product"]
         path = (
-            f"blend.{d:%Y%m%d/%H}/core/blend.t{d:%H}z.core.f{fxx:03d}.{product}.grib2"
+            f"blend.{d:%Y%m%d/%H}/core/blend.t{d:%H}z.core.f{step:03d}.{product}.grib2"
         )
         idx = [".idx", ".grib2.idx"]
         return {
@@ -180,7 +180,7 @@ class GEFS(HerbieModel):
     ----------
     date : str or datetime
         Model initialization datetime (UTC).
-    fxx : int, default 0
+    step : int, default 0
         Forecast lead time in hours (0–384).
     product : str, default 'atmos.5'
         Output grid:
@@ -229,7 +229,7 @@ class GEFS(HerbieModel):
 
     def _build_sources(self) -> dict:
         d = self.date
-        fxx = self.fxx
+        step = self.step
         product = self.params["product"]
         member = self.params["member"]
 
@@ -256,22 +256,22 @@ class GEFS(HerbieModel):
 
         if d < datetime(2018, 7, 27):
             filepaths = {
-                "atmos.5": f"{filedir}/ge{member_str}.t{d:%H}z.pgrb2af{fxx:03d}",
-                "atmos.5b": f"{filedir}/ge{member_str}.t{d:%H}z.pgrb2bf{fxx:03d}",
+                "atmos.5": f"{filedir}/ge{member_str}.t{d:%H}z.pgrb2af{step:03d}",
+                "atmos.5b": f"{filedir}/ge{member_str}.t{d:%H}z.pgrb2bf{step:03d}",
             }
         elif d < datetime(2020, 9, 23):
             filepaths = {
-                "atmos.5": f"{filedir}/pgrb2a/ge{member_str}.t{d:%H}z.pgrb2af{fxx:02d}",
-                "atmos.5b": f"{filedir}/pgrb2b/ge{member_str}.t{d:%H}z.pgrb2bf{fxx:02d}",
+                "atmos.5": f"{filedir}/pgrb2a/ge{member_str}.t{d:%H}z.pgrb2af{step:02d}",
+                "atmos.5b": f"{filedir}/pgrb2b/ge{member_str}.t{d:%H}z.pgrb2bf{step:02d}",
             }
         else:
             filepaths = {
-                "atmos.5": f"{filedir}/atmos/pgrb2ap5/ge{member_str}.t{d:%H}z.pgrb2a.0p50.f{fxx:03d}",
-                "atmos.5b": f"{filedir}/atmos/pgrb2bp5/ge{member_str}.t{d:%H}z.pgrb2b.0p50.f{fxx:03d}",
-                "atmos.25": f"{filedir}/atmos/pgrb2sp25/ge{member_str}.t{d:%H}z.pgrb2s.0p25.f{fxx:03d}",
-                "wave": f"{filedir}/wave/gridded/gefs.wave.t{d:%H}z.{member_str}.global.0p25.f{fxx:03d}.grib2",
-                "chem.5": f"{filedir}/chem/pgrb2ap25/gefs.chem.t{d:%H}z.a2d_0p25.f{fxx:03d}.grib2",
-                "chem.25": f"{filedir}/chem/pgrb2ap25/gefs.chem.t{d:%H}z.a2d_0p25.f{fxx:03d}.grib2",
+                "atmos.5": f"{filedir}/atmos/pgrb2ap5/ge{member_str}.t{d:%H}z.pgrb2a.0p50.f{step:03d}",
+                "atmos.5b": f"{filedir}/atmos/pgrb2bp5/ge{member_str}.t{d:%H}z.pgrb2b.0p50.f{step:03d}",
+                "atmos.25": f"{filedir}/atmos/pgrb2sp25/ge{member_str}.t{d:%H}z.pgrb2s.0p25.f{step:03d}",
+                "wave": f"{filedir}/wave/gridded/gefs.wave.t{d:%H}z.{member_str}.global.0p25.f{step:03d}.grib2",
+                "chem.5": f"{filedir}/chem/pgrb2ap25/gefs.chem.t{d:%H}z.a2d_0p25.f{step:03d}.grib2",
+                "chem.25": f"{filedir}/chem/pgrb2ap25/gefs.chem.t{d:%H}z.a2d_0p25.f{step:03d}.grib2",
             }
 
         path = filepaths.get(product, filepaths.get("atmos.5"))
@@ -303,7 +303,7 @@ class RRFS(HerbieModel):
     ----------
     date : str or datetime
         Model initialization datetime (UTC).
-    fxx : int, default 0
+    step : int, default 0
         Forecast lead time in hours (0–60).
     product : {'prslev', 'natlev'}, default 'prslev'
         Level type.  Aliases: ``prs→prslev``, ``nat→natlev``.
@@ -340,14 +340,14 @@ class RRFS(HerbieModel):
 
     def _build_sources(self) -> dict:
         d = self.date
-        fxx = self.fxx
+        step = self.step
         product = self.params["product"]
         domain = self.params["domain"]
         resolution = "2p5km" if domain in ("hi", "pr") else "3km"
 
         path = (
             f"rrfs_a/rrfs.{d:%Y%m%d/%H}/"
-            f"rrfs.t{d:%H}z.{product}.{resolution}.f{fxx:03d}.{domain}.grib2"
+            f"rrfs.t{d:%H}z.{product}.{resolution}.f{step:03d}.{domain}.grib2"
         )
         idx = [".grib2.idx", ".idx"]
         return {

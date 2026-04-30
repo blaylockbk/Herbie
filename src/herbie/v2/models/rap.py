@@ -18,7 +18,7 @@ class RAP(HerbieModel):
     ----------
     date : str or datetime
         Model initialization datetime (UTC).
-    fxx : int or str, default 0
+    step : int or str, default 0
         Forecast lead time in hours (0–21, or 0–51 for 03/15Z).
     product : str, default 'awp130pgrb'
         Output grid and level type:
@@ -77,10 +77,10 @@ class RAP(HerbieModel):
 
     def _build_sources(self) -> dict:
         d = self.date
-        fxx = self.fxx
+        step = self.step
         product = self.params["product"]
 
-        path = f"rap.{d:%Y%m%d}/rap.t{d:%H}z.{product}f{fxx:02d}.grib2"
+        path = f"rap.{d:%Y%m%d}/rap.t{d:%H}z.{product}f{step:02d}.grib2"
         idx = [".idx", ".grib2.idx"]
         return {
             "aws": GribSource(f"https://noaa-rap-pds.s3.amazonaws.com/{path}", idx),
@@ -107,7 +107,7 @@ class RAPHistorical(HerbieModel):
     ----------
     date : str or datetime
         Model initialization datetime (UTC).
-    fxx : int, default 0
+    step : int, default 0
         Forecast lead time in hours.
     product : {'analysis', 'forecast'}, default 'analysis'
 
@@ -131,7 +131,7 @@ class RAPHistorical(HerbieModel):
 
     def _build_sources(self) -> dict:
         d = self.date
-        fxx = self.fxx
+        step = self.step
         product = self.params["product"]
         base = (
             f"https://www.ncei.noaa.gov/data/rapid-refresh/access/historical/{product}"
@@ -139,12 +139,12 @@ class RAPHistorical(HerbieModel):
         idx = [".inv", ".grb2.inv", ".grb.inv"]
         return {
             "rap_130": GribSource(
-                f"{base}/{d:%Y%m/%Y%m%d}/rap_130_{d:%Y%m%d_%H%M}_{fxx:03d}.grb2", idx
+                f"{base}/{d:%Y%m/%Y%m%d}/rap_130_{d:%Y%m%d_%H%M}_{step:03d}.grb2", idx
             ),
             "rap_252": GribSource(
-                f"{base}/{d:%Y%m/%Y%m%d}/rap_252_{d:%Y%m%d_%H%M}_{fxx:03d}.grb2", idx
+                f"{base}/{d:%Y%m/%Y%m%d}/rap_252_{d:%Y%m%d_%H%M}_{step:03d}.grb2", idx
             ),
             "ruc_252": GribSource(
-                f"{base}/{d:%Y%m/%Y%m%d}/ruc2_252_{d:%Y%m%d_%H%M}_{fxx:03d}.grb", idx
+                f"{base}/{d:%Y%m/%Y%m%d}/ruc2_252_{d:%Y%m%d_%H%M}_{step:03d}.grb", idx
             ),
         }

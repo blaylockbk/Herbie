@@ -29,7 +29,7 @@ class IFS(HerbieModel):
     date : str or datetime
         Model initialization datetime.  ECMWF runs at 00 and 12 UTC
         for ``oper``; 00, 06, 12, 18 UTC for ``scda``.
-    fxx : int or str, default 0
+    step : int or str, default 0
         Forecast lead time in hours.
 
         * ``oper`` / ``wave`` — 0, 6, 12, …, 360 h
@@ -52,7 +52,7 @@ class IFS(HerbieModel):
     Examples
     --------
     >>> from herbie.v2 import IFS
-    >>> H = IFS("2024-03-01", fxx=24, product="oper")
+    >>> H = IFS("2024-03-01", step=24, product="oper")
     >>> H.inventory("t:500")
     >>> ds = H.xarray("t:500")
 
@@ -94,7 +94,7 @@ class IFS(HerbieModel):
 
     def _build_sources(self) -> dict:
         d = self.date
-        fxx = self.fxx
+        step = self.step
         product = self.params["product"]
 
         # Resolution changed 2024-02-01
@@ -107,12 +107,12 @@ class IFS(HerbieModel):
         if d < datetime(2024, 2, 28, 6):
             post_root = (
                 f"{d:%Y%m%d/%Hz}/{resolution}/{product}"
-                f"/{d:%Y%m%d%H%M%S}-{fxx}h-{product}-{product_suffix}.grib2"
+                f"/{d:%Y%m%d%H%M%S}-{step}h-{product}-{product_suffix}.grib2"
             )
         else:
             post_root = (
                 f"{d:%Y%m%d/%Hz}/ifs/{resolution}/{product}"
-                f"/{d:%Y%m%d%H%M%S}-{fxx}h-{product}-{product_suffix}.grib2"
+                f"/{d:%Y%m%d%H%M%S}-{step}h-{product}-{product_suffix}.grib2"
             )
 
         idx = [".index"]
@@ -144,7 +144,7 @@ class AIFS(HerbieModel):
     ----------
     date : str or datetime
         Model initialization datetime (00 or 12 UTC).
-    fxx : int or str, default 0
+    step : int or str, default 0
         Forecast lead time in hours (0–240).
     product : {'oper', 'enfo'}, default 'oper'
         Forecast stream:
@@ -178,7 +178,7 @@ class AIFS(HerbieModel):
 
     def _build_sources(self) -> dict:
         d = self.date
-        fxx = self.fxx
+        step = self.step
         product = self.params["product"]
 
         product_suffix = "pf" if product == "enfo" else "fc"
@@ -188,23 +188,23 @@ class AIFS(HerbieModel):
             # Operational phase (current)
             post_root = (
                 f"{d:%Y%m%d/%Hz}/aifs-single/0p25/{product}"
-                f"/{d:%Y%m%d%H%M%S}-{fxx}h-{product}-{product_suffix}.grib2"
+                f"/{d:%Y%m%d%H%M%S}-{step}h-{product}-{product_suffix}.grib2"
             )
         elif d >= datetime(2025, 2, 9, 12):
             # Pre-operational
             post_root = (
                 f"{d:%Y%m%d/%Hz}/aifs-single/0p25/experimental/{product}"
-                f"/{d:%Y%m%d%H%M%S}-{fxx}h-{product}-{product_suffix}.grib2"
+                f"/{d:%Y%m%d%H%M%S}-{step}h-{product}-{product_suffix}.grib2"
             )
         elif product == "enfo":
             post_root = (
                 f"{d:%Y%m%d/%Hz}/aifs-ens/0p25/{product}"
-                f"/{d:%Y%m%d%H%M%S}-{fxx}h-{product}-{product_suffix}.grib2"
+                f"/{d:%Y%m%d%H%M%S}-{step}h-{product}-{product_suffix}.grib2"
             )
         else:
             post_root = (
                 f"{d:%Y%m%d/%Hz}/aifs/0p25/{product}"
-                f"/{d:%Y%m%d%H%M%S}-{fxx}h-{product}-{product_suffix}.grib2"
+                f"/{d:%Y%m%d%H%M%S}-{step}h-{product}-{product_suffix}.grib2"
             )
 
         idx = [".index"]

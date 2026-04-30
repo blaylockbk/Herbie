@@ -21,7 +21,7 @@ class NBMQMD(HerbieModel):
     ----------
     date : str or datetime
         Model cycle datetime (UTC).
-    fxx : int, default 1
+    step : int, default 1
         Forecast lead time in hours (1–214).
     product : {'co', 'ak', 'hi', 'gu', 'pr'}, default 'co'
         Domain (same as NBM).
@@ -43,9 +43,9 @@ class NBMQMD(HerbieModel):
 
     def _build_sources(self) -> dict:
         d = self.date
-        fxx = max(self.fxx, 1)
+        step = max(self.step, 1)
         product = self.params["product"]
-        path = f"blend.{d:%Y%m%d/%H}/qmd/blend.t{d:%H}z.qmd.f{fxx:03d}.{product}.grib2"
+        path = f"blend.{d:%Y%m%d/%H}/qmd/blend.t{d:%H}z.qmd.f{step:03d}.{product}.grib2"
         idx = [".idx", ".grib2.idx"]
         return {
             "nomads": GribSource(
@@ -73,7 +73,7 @@ class HREF(HerbieModel):
     date : str or datetime
         Model initialization datetime (UTC).
         Runs at 00/12Z (CONUS + Hawaii) and 06/18Z (CONUS + Alaska + PR).
-    fxx : int, default 0
+    step : int, default 0
         Forecast lead time in hours (0–48).
     product : str, default 'mean'
         Ensemble product:
@@ -122,12 +122,10 @@ class HREF(HerbieModel):
 
     def _build_sources(self) -> dict:
         d = self.date
-        fxx = self.fxx
+        step = self.step
         product = self.params["product"]
         domain = self.params["domain"]
-        path = (
-            f"href.{d:%Y%m%d}/ensprod/href.t{d:%H}z.{domain}.{product}.f{fxx:02d}.grib2"
-        )
+        path = f"href.{d:%Y%m%d}/ensprod/href.t{d:%H}z.{domain}.{product}.f{step:02d}.grib2"
         idx = [".grib2.idx", ".idx"]
         return {
             "nomads": GribSource(
@@ -151,7 +149,7 @@ class CFS(HerbieModel):
     ----------
     date : str or datetime
         Model initialization datetime (UTC).
-    fxx : int, default 0
+    step : int, default 0
         Forecast lead time in hours.
     product : {'time_series', '6_hourly', 'monthly_means'}, default '6_hourly'
 
@@ -200,7 +198,7 @@ class CFS(HerbieModel):
 
     def _build_sources(self) -> dict:
         d = self.date
-        fxx = self.fxx
+        step = self.step
         product = self.params["product"]
         member = self.params["member"]
         kind = self.params.get("kind", "pgbf")
@@ -261,7 +259,7 @@ class AIGFS(HerbieModel):
     ----------
     date : str or datetime
         Model initialization datetime (UTC).
-    fxx : int, default 0
+    step : int, default 0
         Forecast lead time in hours.
     product : {'sfc', 'pres'}, default 'sfc'
         Surface or pressure-level fields.
@@ -287,11 +285,11 @@ class AIGFS(HerbieModel):
 
     def _build_sources(self) -> dict:
         d = self.date
-        fxx = self.fxx
+        step = self.step
         product = self.params["product"]
         path = (
             f"aigfs.{d:%Y%m%d/%H}/model/atmos/grib2/"
-            f"aigfs.t{d:%H}z.{product}.f{fxx:03d}.grib2"
+            f"aigfs.t{d:%H}z.{product}.f{step:03d}.grib2"
         )
         idx = [".grib2.idx", ".idx"]
         return {
@@ -316,7 +314,7 @@ class HGEFS(HerbieModel):
     ----------
     date : str or datetime
         Model initialization datetime (UTC).
-    fxx : int, default 0
+    step : int, default 0
         Forecast lead time in hours (0–384).
     product : {'pres', 'sfc'}, default 'pres'
     member : {'spr', 'avg'}, default 'spr'
@@ -348,12 +346,12 @@ class HGEFS(HerbieModel):
 
     def _build_sources(self) -> dict:
         d = self.date
-        fxx = self.fxx
+        step = self.step
         product = self.params["product"]
         member = self.params["member"]
         path = (
             f"hgefs.{d:%Y%m%d/%H}/ensstat/products/atmos/grib2/"
-            f"hgefs.t{d:%H}z.{product}.{member}.f{fxx:03d}.grib2"
+            f"hgefs.t{d:%H}z.{product}.{member}.f{step:03d}.grib2"
         )
         idx = [".grib2.idx"]
         return {

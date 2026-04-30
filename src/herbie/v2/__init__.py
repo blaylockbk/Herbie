@@ -6,10 +6,10 @@ Quick start
 >>> from herbie.v2 import Herbie, HRRR, GFS, IFS
 
 >>> # Namespace style
->>> H = Herbie.HRRR("2025-01-01", fxx=6, product="sfc")
+>>> H = Herbie.HRRR("2025-01-01", step=6, product="sfc")
 
 >>> # Direct style (equivalent)
->>> H = HRRR("2025-01-01", fxx=6, product="sfc")
+>>> H = HRRR("2025-01-01", step=6, product="sfc")
 
 >>> # Inspect available fields
 >>> H.inventory("TMP:2 m above ground")

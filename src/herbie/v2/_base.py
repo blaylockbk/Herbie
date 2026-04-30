@@ -75,7 +75,11 @@ def _parse_date(value) -> datetime:
     return pd.to_datetime(value).to_pydatetime().replace(tzinfo=None)
 
 
-def _parse_fxx(value) -> int:
+def _parse_step(value) -> int:
+
+    if isinstance(value, timedelta):
+        return value.total_seconds() / 3600
+
     if isinstance(value, str):
         import pandas as pd
 
@@ -131,7 +135,7 @@ class HerbieModel(ABC):
     def __init__(
         self,
         date: str | datetime,
-        fxx: int | str = 0,
+        step: int | str = 0,
         *,
         product: str | None = None,
         priority: list[str] | None = None,
@@ -142,8 +146,8 @@ class HerbieModel(ABC):
     ):
         # ── Parse inputs (no network I/O) ──────────────────────────────────
         self.date = _parse_date(date)
-        self.fxx = _parse_fxx(fxx)
-        self.valid_date = self.date + timedelta(hours=self.fxx)
+        self.step = _parse_step(step)
+        self.valid_date = self.date + timedelta(hours=self.step)
         self.priority = priority
         self.save_dir = Path(save_dir or CONFIG["save_dir"]).expanduser()
         self.overwrite = overwrite
@@ -251,9 +255,9 @@ class HerbieModel(ABC):
         **open_kwargs,
     ) -> "xr.Dataset":
         """
-        Open a cloud Zarr dataset directly, without date/fxx construction.
+        Open a cloud Zarr dataset directly, without date/step construction.
 
-        Unlike the normal ``HRRR(date, fxx)`` constructor, this classmethod
+        Unlike the normal ``HRRR(date, step)`` constructor, this classmethod
         returns the full multi-date (or variable-scoped) Dataset in one call.
         Slice to a specific time/variable with ``.sel()`` afterwards.
 
@@ -1011,7 +1015,7 @@ class HerbieModel(ABC):
         info_grid.add_column()
         info_grid.add_row(
             f"[bold]Initialized:[/bold] [green]{self.date:%Y-%b-%d %H:%M UTC}[/green]"
-            f"  [bold]F{self.fxx:02d}[/bold]",
+            f"  [bold]F{self.step:02d}[/bold]",
             f"[bold]Valid:[/bold] [green]{self.valid_date:%Y-%b-%d %H:%M UTC}[/green]",
         )
         param_str = "  ".join(f"{k}=[cyan]{v}[/cyan]" for k, v in self.params.items())
@@ -1139,7 +1143,7 @@ class HerbieModel(ABC):
         )
         return (
             f"{self.MODEL_NAME}({self.date:%Y-%m-%d %H:%M UTC}, "
-            f"F{self.fxx:02d}, {params}{src})"
+            f"F{self.step:02d}, {params}{src})"
         )
 
     def __bool__(self) -> bool:
@@ -1160,7 +1164,7 @@ class HerbieModel(ABC):
         row1.append(self.MODEL_NAME, style="bold cyan")
         row1.append(" • initialized ", style="dim")
         row1.append(f"{self.date:%Y-%b-%d %H:%M UTC}", style="green")
-        row1.append(f"  F{self.fxx:02d}", style="bold bright_green")
+        row1.append(f"  F{self.step:02d}", style="bold bright_green")
         grid.add_row(row1)
 
         row2 = Text()
@@ -1218,13 +1222,13 @@ class HerbieModel(ABC):
             "Herbie</span>"
         )
 
-        # ── fxx widget ─────────────────────────────────────────────────────
-        fxx_widget = (
+        # ── step widget ─────────────────────────────────────────────────────
+        step_widget = (
             f"<span style='display:inline-flex;align-items:center;"
             f"border:1px solid #ccc;border-radius:4px;padding:1px 8px;"
             f"background:#fafafa;font-family:monospace;font-size:0.88em;"
             f"color:#333;min-width:3em;justify-content:center'>"
-            f"F{self.fxx:02d}</span>"
+            f"F{self.step:02d}</span>"
         )
 
         # ── Parameter section ──────────────────────────────────────────────
@@ -1614,10 +1618,10 @@ class HerbieModel(ABC):
           </div>
           {modal_html}
 
-          <!-- Date / fxx row -->
+          <!-- Date / step row -->
           <div style="font-size:0.88em;color:#444;margin-bottom:2px">
             <b>Initialized:</b> {self.date:%Y-%b-%d %H:%M UTC}
-            &nbsp;{fxx_widget}&nbsp;
+            &nbsp;{step_widget}&nbsp;
             <b>Valid:</b> {self.valid_date:%Y-%b-%d %H:%M UTC}
           </div>
 

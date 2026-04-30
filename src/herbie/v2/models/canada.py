@@ -33,7 +33,7 @@ def _parse_msc_filename(fname: str) -> dict:
     # Step / forecast hour
     m = re.search(r"_PT(\d+)H", fname)
     if m:
-        meta["fxx"] = int(m.group(1))
+        meta["step"] = int(m.group(1))
     # Resolution
     m = re.search(r"_RLatLon([.\d]+)_", fname)
     if m:
@@ -52,7 +52,7 @@ class HRDPS(HerbieModel):
     ----------
     date : str or datetime
         Model initialization datetime (UTC).
-    fxx : int, default 0
+    step : int, default 0
         Forecast lead time in hours (0–48).
     product : {'continental', 'north'}, default 'continental'
         Domain:
@@ -97,19 +97,19 @@ class HRDPS(HerbieModel):
 
     def _build_sources(self) -> dict:
         d = self.date
-        fxx = self.fxx
+        step = self.step
         product = self.params["product"]
         res = self._RES[product]
         base = (
             f"https://dd.weather.gc.ca/{d:%Y%m%d}/WXO-DD/"
-            f"model_hrdps/{product}/{res}/{d:%H}/{fxx:03d}/"
+            f"model_hrdps/{product}/{res}/{d:%H}/{step:03d}/"
         )
 
         tag = self._TAG[product]
         pattern = (
             rf"(?P<filename>{re.escape(f'{d:%Y%m%dT%HZ}_MSC_{tag}_')}"
             rf"(?P<variable>\w+)_(?P<level>[\w.\-]+)_"
-            rf"{re.escape(self._GRID[product])}_PT{fxx:03d}H\.grib2)"
+            rf"{re.escape(self._GRID[product])}_PT{step:03d}H\.grib2)"
         )
 
         return {
@@ -132,7 +132,7 @@ class RDPS(HerbieModel):
     ----------
     date : str or datetime
         Model initialization datetime (UTC).
-    fxx : int, default 0
+    step : int, default 0
         Forecast lead time in hours (0–84).
 
     References
@@ -151,15 +151,15 @@ class RDPS(HerbieModel):
 
     def _build_sources(self) -> dict:
         d = self.date
-        fxx = self.fxx
+        step = self.step
         base = (
             f"https://dd.weather.gc.ca/{d:%Y%m%d}/WXO-DD/"
-            f"model_rdps/10km/{d:%H}/{fxx:03d}/"
+            f"model_rdps/10km/{d:%H}/{step:03d}/"
         )
         pattern = (
             rf"(?P<filename>{re.escape(f'{d:%Y%m%dT%HZ}_MSC_RDPS_')}"
             rf"(?P<variable>\w+)_(?P<level>[\w.\-]+)_"
-            rf"RLatLon0\.09_PT{fxx:03d}H\.grib2)"
+            rf"RLatLon0\.09_PT{step:03d}H\.grib2)"
         )
         return {
             "msc": DirectorySource(
@@ -181,7 +181,7 @@ class GDPS(HerbieModel):
     ----------
     date : str or datetime
         Model initialization datetime (UTC).
-    fxx : int, default 0
+    step : int, default 0
         Forecast lead time in hours (0–240).
 
     References
@@ -200,14 +200,14 @@ class GDPS(HerbieModel):
 
     def _build_sources(self) -> dict:
         d = self.date
-        fxx = self.fxx
+        step = self.step
         base = (
             f"https://dd.weather.gc.ca/model_gem_global/15km/grib2/lat_lon/"
-            f"{d:%H}/{fxx:03d}/"
+            f"{d:%H}/{step:03d}/"
         )
         pattern = (
             rf"(?P<filename>CMC_glb_(?P<variable>\w+)_(?P<level>[\w.\-]+)_"
-            rf"latlon\.15x\.15_{d:%Y%m%d%H}_P{fxx:03d}\.grib2)"
+            rf"latlon\.15x\.15_{d:%Y%m%d%H}_P{step:03d}\.grib2)"
         )
         return {
             "msc": DirectorySource(

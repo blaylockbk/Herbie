@@ -20,7 +20,7 @@ class GFS(HerbieModel):
     ----------
     date : str or datetime
         Model initialization datetime (UTC).
-    fxx : int or str, default 0
+    step : int or str, default 0
         Forecast lead time in hours (0–384).
     product : {'pgrb2', 'pgrb2b'}, default 'pgrb2'
         Output product:
@@ -39,7 +39,7 @@ class GFS(HerbieModel):
     Examples
     --------
     >>> from herbie.v2 import GFS
-    >>> H = GFS("2024-01-01", fxx=24)
+    >>> H = GFS("2024-01-01", step=24)
     >>> H.inventory("TMP:500 mb")
     >>> ds = H.xarray("TMP:500 mb")
 
@@ -82,7 +82,7 @@ class GFS(HerbieModel):
 
     ZARR_SOURCES: ClassVar[dict] = {
         # ── dynamical.org ──────────────────────────────────────────────────
-        # Continuous rolling archives. No date/fxx needed; slice with .sel().
+        # Continuous rolling archives. No date/step needed; slice with .sel().
         # Coverage: 2021-05-01 to present.
         # Requires: xarray>=2025.1.2, zarr>=3.0.8
         # Spatial dims are latitude/longitude (regular lat-lon grid, not projected).
@@ -110,17 +110,17 @@ class GFS(HerbieModel):
 
     def _build_sources(self) -> dict:
         d = self.date
-        fxx = self.fxx
+        step = self.step
         product = self.params["product"]
         res = self.params["resolution"]
         res_str = f"{res:.2f}".replace(".", "p")  # 0.25 → "0p25"
 
         # GFS v16.0 layout change on 2021-03-23
         if d < datetime(2021, 3, 23):
-            path = f"gfs.{d:%Y%m%d/%H}/gfs.t{d:%H}z.{product}.{res_str}.f{fxx:03d}"
+            path = f"gfs.{d:%Y%m%d/%H}/gfs.t{d:%H}z.{product}.{res_str}.f{step:03d}"
         else:
             path = (
-                f"gfs.{d:%Y%m%d/%H}/atmos/gfs.t{d:%H}z.{product}.{res_str}.f{fxx:03d}"
+                f"gfs.{d:%Y%m%d/%H}/atmos/gfs.t{d:%H}z.{product}.{res_str}.f{step:03d}"
             )
 
         idx = [".idx", ".grb2.inv"]
@@ -137,7 +137,7 @@ class GFS(HerbieModel):
             ),
             "ncar_rda": GribSource(
                 f"https://data.rda.ucar.edu/d084001/{d:%Y/%Y%m%d}"
-                f"/gfs.0p25.{d:%Y%m%d%H}.f{fxx:03d}.grib2",
+                f"/gfs.0p25.{d:%Y%m%d%H}.f{step:03d}.grib2",
                 [".idx"],
             ),
         }
@@ -154,7 +154,7 @@ class GDAS(HerbieModel):
     ----------
     date : str or datetime
         Model initialization datetime (UTC).
-    fxx : int or str, default 0
+    step : int or str, default 0
         Forecast lead time in hours (0–9).
     product : {'pgrb2.0p25', 'pgrb2.1p00'}, default 'pgrb2.0p25'
         Output product and resolution.
@@ -179,13 +179,13 @@ class GDAS(HerbieModel):
 
     def _build_sources(self) -> dict:
         d = self.date
-        fxx = self.fxx
+        step = self.step
         product = self.params["product"]
 
         if d < datetime(2021, 3, 23):
-            path = f"gdas.{d:%Y%m%d/%H}/gdas.t{d:%H}z.{product}.f{fxx:03d}"
+            path = f"gdas.{d:%Y%m%d/%H}/gdas.t{d:%H}z.{product}.f{step:03d}"
         else:
-            path = f"gdas.{d:%Y%m%d/%H}/atmos/gdas.t{d:%H}z.{product}.f{fxx:03d}"
+            path = f"gdas.{d:%Y%m%d/%H}/atmos/gdas.t{d:%H}z.{product}.f{step:03d}"
 
         idx = [".idx"]
         return {
@@ -212,7 +212,7 @@ class GFSWave(HerbieModel):
     ----------
     date : str or datetime
         Model initialization datetime (UTC).
-    fxx : int, default 0
+    step : int, default 0
         Forecast lead time in hours (0–384).
     product : str, default 'global.0p25'
         Wave grid domain and resolution.  Options include
@@ -243,12 +243,12 @@ class GFSWave(HerbieModel):
 
     def _build_sources(self) -> dict:
         d = self.date
-        fxx = self.fxx
+        step = self.step
         product = self.params["product"]
 
         path = (
             f"gfs.{d:%Y%m%d/%H}/wave/gridded/"
-            f"gfswave.t{d:%H}z.{product}.f{fxx:03d}.grib2"
+            f"gfswave.t{d:%H}z.{product}.f{step:03d}.grib2"
         )
         idx = [".idx"]
         return {

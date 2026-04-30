@@ -79,7 +79,7 @@ class ZarrCatalogEntry:
 
     Unlike ``ZarrSource`` (which plugs into the GRIB source-priority chain),
     this is for multi-date or variable-specific Zarr stores where the
-    normal ``date`` / ``fxx`` constructor arguments do not apply.
+    normal ``date`` / ``step`` constructor arguments do not apply.
 
     Parameters
     ----------
@@ -172,7 +172,7 @@ class DirectorySource:
     Example for HRDPS::
 
         r"(?P<date>\\d{8}T\\d{2}Z)_MSC_HRDPS_(?P<variable>\\w+)_"
-        r"(?P<level>[\\w.-]+)_RLatLon(?P<res>[\\d.]+)_PT(?P<fxx>\\d+)H\\.grib2$"
+        r"(?P<level>[\\w.-]+)_RLatLon(?P<res>[\\d.]+)_PT(?P<step>\\d+)H\\.grib2$"
     """
 
     parse_metadata: Callable[[str], dict] | None = None

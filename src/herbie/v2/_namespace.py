@@ -7,13 +7,13 @@ Herbie namespace class.
 This gives users three equivalent calling styles::
 
     from herbie.v2 import Herbie
-    H = Herbie.HRRR("2025-01-01", fxx=6)   # namespace style
+    H = Herbie.HRRR("2025-01-01", step=6)   # namespace style
 
     from herbie.v2 import HRRR
-    H = HRRR("2025-01-01", fxx=6)           # direct style
+    H = HRRR("2025-01-01", step=6)           # direct style
 
     import herbie.v2 as herbie
-    H = herbie.HRRR("2025-01-01", fxx=6)   # module attribute style
+    H = herbie.HRRR("2025-01-01", step=6)   # module attribute style
 
 IDE / type-checker support
 --------------------------
@@ -90,7 +90,7 @@ class Herbie:
     Each model class can also be imported directly::
 
         from herbie.v2 import HRRR
-        H = HRRR("2025-01-01", fxx=6)
+        H = HRRR("2025-01-01", step=6)
     """
 
     # ── Static type annotations for IDE support ───────────────────────────

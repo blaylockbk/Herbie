@@ -3,7 +3,7 @@ Inventory (index file) parsing for Herbie v2.
 
 Supported formats
 -----------------
-wgrib2      ``<msg>:<byte>:<ref_time>:<var>:<level>:<fxx>[:…]``
+wgrib2      ``<msg>:<byte>:<ref_time>:<var>:<level>:<step>[:…]``
 eccodes     Newline-delimited JSON (ECMWF open data)
 directory   HTML directory listing  (Canadian MSC / Navy)
 

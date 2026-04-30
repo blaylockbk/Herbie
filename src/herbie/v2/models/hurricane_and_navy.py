@@ -66,7 +66,7 @@ class HAFSA(HerbieModel):
     ----------
     date : str or datetime
         Model initialization datetime (UTC).
-    fxx : int, default 0
+    step : int, default 0
         Forecast lead time in hours (0–126).
     storm : str
         Storm identifier.  Either the 8-character ATCF storm ID
@@ -144,14 +144,14 @@ class HAFSA(HerbieModel):
 
     def _build_sources(self) -> dict:
         d = self.date
-        fxx = self.fxx
+        step = self.step
         product = self.params.get("product", "storm.atm")
         storm = self._resolve_storm(self.params.get("storm"))
         flavor = self._FLAVOR
 
         path = (
             f"hfs{flavor}.{d:%Y%m%d/%H}/"
-            f"{storm}.{d:%Y%m%d%H}.hfs{flavor}.{product}.f{fxx:03d}.grb2"
+            f"{storm}.{d:%Y%m%d%H}.hfs{flavor}.{product}.f{step:03d}.grb2"
         )
         idx = [".grb2.idx", ".idx"]
         return {
@@ -170,7 +170,7 @@ class HAFSB(HAFSA):
 
     Parameters
     ----------
-    date, fxx, storm, product
+    date, step, storm, product
         Same as ``HAFSA``.
     """
 
@@ -196,7 +196,7 @@ class HIRESW(HerbieModel):
     date : str or datetime
         Model initialization datetime (UTC).
         Runs at 00 and 12 UTC.
-    fxx : int, default 0
+    step : int, default 0
         Forecast lead time in hours (0–48).
     product : str, default 'arw_2p5km'
         Dynamical core and resolution:
@@ -250,7 +250,7 @@ class HIRESW(HerbieModel):
 
     def _build_sources(self) -> dict:
         d = self.date
-        fxx = self.fxx
+        step = self.step
         product = self.params["product"]
         domain = self.params["domain"]
         member = self.params["member"]
@@ -258,7 +258,7 @@ class HIRESW(HerbieModel):
         member_sfx = "mem2" if member == 2 else ""
         path = (
             f"hiresw.{d:%Y%m%d}/"
-            f"hiresw.t{d:%H}z.{product}.f{fxx:02d}.{domain}{member_sfx}.grib2"
+            f"hiresw.t{d:%H}z.{product}.f{step:02d}.{domain}{member_sfx}.grib2"
         )
         idx = [".idx", ".grib2.idx"]
         return {
@@ -284,7 +284,7 @@ class NavgemNOMADS(HerbieModel):
     ----------
     date : str or datetime
         Model initialization datetime (UTC).
-    fxx : int, default 0
+    step : int, default 0
         Forecast lead time in hours (0–168).
 
     References
@@ -302,8 +302,8 @@ class NavgemNOMADS(HerbieModel):
 
     def _build_sources(self) -> dict:
         d = self.date
-        fxx = self.fxx
-        path = f"navgem.{d:%Y%m%d}/navgem_{d:%Y%m%d%H}f{fxx:03d}.grib2"
+        step = self.step
+        path = f"navgem.{d:%Y%m%d}/navgem_{d:%Y%m%d%H}f{step:03d}.grib2"
         return {
             "nomads": GribSource(
                 f"https://nomads.ncep.noaa.gov/pub/data/nccf/com/fnmoc/prod/{path}",
@@ -328,7 +328,7 @@ class NavgemGODAE(HerbieModel):
     ----------
     date : str or datetime
         Model initialization datetime (UTC).
-    fxx : int, default 0
+    step : int, default 0
         Forecast lead time in hours.
     variable : str
         Field to retrieve, in wgrib2-style format: ``'VARNAME:LEVEL'``.
@@ -422,14 +422,14 @@ class NavgemGODAE(HerbieModel):
 
     def _build_sources(self) -> dict:
         d = self.date
-        fxx = self.fxx
+        step = self.step
         product = self.params["product"]
         godae_var, godae_level = self._parse_variable()
 
         navgem_url = (
             f"https://usgodae.org/ftp/outgoing/fnmoc/models/navgem_0.5/"
             f"{d:%Y/%Y%m%d%H}/"
-            f"US058{product}-GR1mdl.0018_0056_{fxx:03d}00F0RL"
+            f"US058{product}-GR1mdl.0018_0056_{step:03d}00F0RL"
             f"{d:%Y%m%d%H}_{godae_level}{godae_var}"
         )
         navgem_gr2 = (
@@ -439,7 +439,7 @@ class NavgemGODAE(HerbieModel):
         nogaps_url = (
             f"https://usgodae.org/ftp/outgoing/fnmoc/models/nogaps/"
             f"{d:%Y/%Y%m%d%H}/"
-            f"US058{product}-GR1mdl.0058_0240_{fxx:03d}00F0RL"
+            f"US058{product}-GR1mdl.0058_0240_{step:03d}00F0RL"
             f"{d:%Y%m%d%H}_{godae_level}{godae_var}"
         )
 
