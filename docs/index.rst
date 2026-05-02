@@ -36,10 +36,10 @@ Herbie: Download Weather Forecast Model Data in Python
    :hidden:
 
    /user_guide/index
-   /v2/index
    /gallery/index
-   /grib_reference/index
    /api_reference/index
+   /v2/index
+   /grib_reference/index
 
 .. grid:: 2
     :gutter: 3

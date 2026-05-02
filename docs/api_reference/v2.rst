@@ -29,3 +29,10 @@ I recommend importing the Herbie Namespace or a specific model directly
 
    Herbie
    _base
+   _config
+   _download
+   _inventory
+   _search_help
+   _sources
+   _xarray
+   fast
