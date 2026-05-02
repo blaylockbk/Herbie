@@ -37,6 +37,7 @@ Usage
 ...     model=HRRR,
 ...     step=[0, 1, 3, 6],
 ...     product="sfc",
+...     label="hrrr_conus_sfc_june2024",
 ... )
 >>>
 >>> # Inspect the combined inventory (fetches all index files in parallel)
@@ -44,12 +45,15 @@ Usage
 >>>
 >>> # Download all matching messages into one file
 >>> path = fh.download("TMP:2 m above ground")
+>>> # → hrrr_conus_sfc_june2024.grib2
 >>>
->>> # One file per model-init hour
+>>> # One file per model-init hour (label used as stem)
 >>> paths = fh.download("TMP:2 m above ground", partition_by="model_init_time")
+>>> # → hrrr_conus_sfc_june2024__model_init_time=20240601T00Z.grib2  …
 >>>
->>> # One file per (date, step) pair — every HerbieModel object gets its own file
+>>> # One file per (date, step) pair
 >>> paths = fh.download("TMP:2 m above ground", partition_by=["model_init_time", "step"])
+>>> # → hrrr_conus_sfc_june2024__model_init_time=20240601T00Z__step=6.grib2  …
 >>>
 >>> # Open the combined data directly as xarray
 >>> ds = fh.xarray("TMP:2 m above ground")
@@ -68,7 +72,6 @@ import polars as pl
 from rich.console import Console
 from rich.progress import (
     BarColumn,
-    DownloadColumn,
     Progress,
     SpinnerColumn,
     TaskProgressColumn,
@@ -88,21 +91,6 @@ log = logging.getLogger(__name__)
 # ---------------------------------------------------------------------------
 
 
-def _maybe_index(grib_path: Path, method: str, verbose: bool = True) -> None:
-    """Generate a ``.idx`` sidecar for a freshly written custom GRIB file."""
-    from herbie.v2._inventory import generate_local_index
-
-    try:
-        idx = generate_local_index(grib_path, method=method, overwrite=False)
-        if idx and verbose:
-            console.print("[dim]  index → {}[/dim]".format(idx.name))
-    except Exception as exc:
-        if verbose:
-            console.print(
-                "[yellow]  ⚠  index generation skipped: {}[/yellow]".format(exc)
-            )
-
-
 def _create_multi_source_groups(df: pl.DataFrame) -> pl.DataFrame:
     """
     Collapse consecutive GRIB messages from the same source URL into
@@ -117,12 +105,6 @@ def _create_multi_source_groups(df: pl.DataFrame) -> pl.DataFrame:
     • the ``source`` URL changes, **or**
     • the ``grib_message`` sequence number is non-consecutive within a source.
 
-    The result DataFrame has columns:
-        ``source``, ``start_byte``, ``end_byte``, ``download_group``
-
-    and is sorted by ``download_group`` so the caller can concatenate
-    the downloaded fragments in a deterministic order.
-
     Parameters
     ----------
     df
@@ -132,7 +114,7 @@ def _create_multi_source_groups(df: pl.DataFrame) -> pl.DataFrame:
     Returns
     -------
     pl.DataFrame
-        One row per download group.
+        One row per download group, sorted by ``download_group``.
     """
     if df.is_empty():
         return pl.DataFrame(
@@ -179,6 +161,24 @@ def _create_multi_source_groups(df: pl.DataFrame) -> pl.DataFrame:
 
 
 # ---------------------------------------------------------------------------
+# Index sidecar helper
+# ---------------------------------------------------------------------------
+
+
+def _maybe_index(grib_path: Path, method: str, verbose: bool = True) -> None:
+    """Generate a ``.idx`` sidecar for a freshly written custom GRIB file."""
+    from herbie.v2._inventory import generate_local_index
+
+    try:
+        idx = generate_local_index(grib_path, method=method, overwrite=False)
+        if idx and verbose:
+            console.print(f"[dim]  index → {idx.name}[/dim]")
+    except Exception as exc:
+        if verbose:
+            console.print(f"[yellow]  ⚠  index generation skipped: {exc}[/yellow]")
+
+
+# ---------------------------------------------------------------------------
 # FastHerbie
 # ---------------------------------------------------------------------------
 
@@ -204,12 +204,20 @@ class FastHerbie:
         an iterable of ints.  The cross-product of ``dates`` × ``step`` is
         used when multiple values are provided.
     label
-        Optional human-readable stem for the output filename
-        (e.g. ``"hrrr_precip_june2024"``).  The file will be written as
-        ``<label>.grib2``.  When ``None`` (default), a name is auto-generated
-        from the model name and a content hash.  Note: if ``label`` is set and
-        ``overwrite=False``, repeated calls with different search strings will
-        return the existing file without re-downloading.
+        Optional human-readable stem for output filenames
+        (e.g. ``"hrrr_2m_temp_june2024"``).  Files are written as
+        ``<label>.grib2`` for single-file downloads, or
+        ``<label>__<partition_key>.grib2`` for partitioned downloads.
+        When ``None`` (default), a name is auto-generated from the model
+        name and a content hash.  Note: if ``label`` is set and
+        ``overwrite=False``, repeated calls with different search strings
+        resolve to the same filename — the existing file is returned
+        without re-downloading.
+    index_fallback_method
+        How to generate a local ``.idx`` sidecar after writing each output
+        file.  ``"auto"`` (default) uses wgrib2 if it is on ``PATH``,
+        otherwise falls back to the ``eccodes`` Python library.
+        ``"wgrib2"`` and ``"eccodes"`` force a specific backend.
     **kwargs
         Forwarded to the model constructor (``product``, ``priority``,
         ``save_dir``, ``overwrite``, etc.).
@@ -226,12 +234,15 @@ class FastHerbie:
     ...     model=HRRR,
     ...     step=[0, 3, 6],
     ...     product="sfc",
+    ...     label="hrrr_test",
     ... )
     >>> len(fh)          # 6 dates × 3 step values = 18
     18
-    >>> fh.inventory("TMP:2 m above ground")   # combined index
-    >>> fh.download("TMP:2 m above ground")    # single output file
-    >>> fh.download("TMP:2 m", partition_by="model_init_time")  # one file / hour
+    >>> fh.inventory("TMP:2 m above ground")
+    >>> fh.download("TMP:2 m above ground")
+    >>> # → hrrr_test.grib2
+    >>> fh.download("TMP:2 m above ground", partition_by="step")
+    >>> # → hrrr_test__step=0.grib2,  hrrr_test__step=3.grib2, …
     """
 
     def __init__(
@@ -241,6 +252,7 @@ class FastHerbie:
         model: type[HerbieModel],
         step: int | str | Iterable = 0,
         label: str | None = None,
+        index_fallback_method: str = "auto",
         **kwargs,
     ):
         if not (isinstance(model, type) and issubclass(model, HerbieModel)):
@@ -251,7 +263,7 @@ class FastHerbie:
 
         self.model_cls = model
         self.label = label
-        self.index_fallback_method = kwargs.get("index_fallback_method", "auto")
+        self.index_fallback_method = index_fallback_method
 
         dates_list = list(dates)
         step_list: list = [step] if isinstance(step, (int, str)) else list(step)
@@ -271,9 +283,10 @@ class FastHerbie:
 
     def __repr__(self) -> str:
         n = len(self.objects)
+        label_part = f", label={self.label!r}" if self.label else ""
         return (
             f"FastHerbie({self.model_cls.MODEL_NAME}, "
-            f"{n} object{'s' if n != 1 else ''})"
+            f"{n} object{'s' if n != 1 else ''}{label_part})"
         )
 
     # ── Combined inventory ─────────────────────────────────────────────────
@@ -295,7 +308,7 @@ class FastHerbie:
         * ``end_byte``        — last byte of the message (``null`` for the
           last message in each file, which signals "read to EOF")
         * ``model_init_time`` — model initialization datetime
-        * ``step``             — forecast lead time in hours
+        * ``step``            — forecast lead time in hours
         * All variable/level/forecast columns from the index file
 
         The ``source`` + ``start_byte`` / ``end_byte`` triple is everything
@@ -397,47 +410,43 @@ class FastHerbie:
            threads) to build the combined inventory DataFrame.
         2. ``search`` is applied to filter down to the messages of interest.
         3. Consecutive messages from the same source URL are merged into
-           contiguous byte-range groups — typically collapsing many messages
-           into far fewer HTTP Range requests.
+           contiguous byte-range groups.
         4. All range requests are dispatched concurrently
            (``max_workers`` threads).
-        5. The downloaded fragments are concatenated in deterministic order
+        5. Downloaded fragments are concatenated in deterministic order
            into the output file(s).
+
+        Output filenames are derived from the ``label`` set at construction
+        time (if any), or auto-generated from the model name and a content
+        hash.  Partition keys are appended with ``__`` as a separator:
+        ``<stem>__<col>=<val>[__<col>=<val>…].grib2``.
 
         Parameters
         ----------
         search
-            Inventory filter.  Rows where this matches will be downloaded.
-            ``None`` downloads every message across every object — use with
+            Inventory filter.  ``None`` downloads every message — use with
             care on large collections.
         dest
-            Explicit output path for the *single-file* case.  Auto-generated
-            when ``None`` and ``partition_by`` is not set.  Ignored when
-            ``partition_by`` is given.
+            Explicit output path for the *single-file* (non-partitioned)
+            case.  Ignored when ``partition_by`` is given.
         dest_dir
             Directory for output file(s).  Defaults to the first object's
             ``save_dir``.
         partition_by
-            Column name(s) in the combined inventory by which to split the
-            output into separate files.  Each unique combination of values
-            is written to its own GRIB2 file inside ``dest_dir``.
+            Column name(s) by which to split output into separate files.
+            Each unique combination of values gets its own GRIB2 file.
 
             Useful values:
 
-            ``"model_init_time"``
-                One file per model initialization time.
-            ``"step"``
-                One file per forecast lead time.
-            ``["model_init_time", "step"]``
-                One file per (date, step) pair — mirrors one file per
-                HerbieModel object.
-            ``"variable"``
-                One file per GRIB variable name (wgrib2 style).
+            - ``"model_init_time"``        — one file per model run
+            - ``"step"``                   — one file per forecast hour
+            - ``["model_init_time","step"]``— one file per (run, step) pair
+            - ``"variable"``               — one file per GRIB variable
 
         max_workers
-            Maximum concurrent download threads (for byte-range fetches).
+            Concurrent download threads for byte-range fetches.
         inventory_workers
-            Maximum concurrent threads for fetching index files.
+            Concurrent threads for fetching index files.
         overwrite
             Re-download files that already exist locally.
         verbose
@@ -448,8 +457,7 @@ class FastHerbie:
         Path
             When ``partition_by`` is ``None``: path of the single output.
         list[Path]
-            When ``partition_by`` is set: one path per partition, in the
-            order they appear in the inventory.
+            When ``partition_by`` is set: one path per partition.
         """
         from herbie.v2._download import download_groups as _download_groups
 
@@ -519,13 +527,9 @@ class FastHerbie:
             return out
 
         # ── Partitioned download ───────────────────────────────────────────
-        # Use polars partition_by to split the DataFrame; each partition is
-        # then grouped into range requests and downloaded independently.
-        # We collect (key_tuple, partition_df) pairs first so we can report
-        # a useful summary before any I/O begins.
+        stem = self._auto_stem(df, search)
         partitions: list[tuple[tuple, pl.DataFrame]] = []
         for part_df in df.partition_by(partition_by, maintain_order=True):
-            # Extract the partition key from the first row (all rows share it)
             key_vals = tuple(part_df[0, col] for col in partition_by)
             partitions.append((key_vals, part_df))
 
@@ -539,7 +543,7 @@ class FastHerbie:
 
         results: list[Path] = []
         for key_vals, part_df in partitions:
-            fname = self._partition_filename(key_vals, partition_by)
+            fname = self._partition_filename(stem, key_vals, partition_by)
             out_path = base_dir / fname
 
             if out_path.exists() and not overwrite:
@@ -601,7 +605,7 @@ class FastHerbie:
         Returns
         -------
         xr.Dataset
-            When ``partition_by`` is ``None`` *and* cfgrib produces a single
+            When ``partition_by`` is ``None`` and cfgrib produces a single
             hypercube.
         list[xr.Dataset]
             When ``partition_by`` is set, or when cfgrib produces multiple
@@ -630,7 +634,6 @@ class FastHerbie:
             try:
                 ds = load_xarray(path)
                 if remove_grib:
-                    # Load all data into memory before unlinking
                     if isinstance(ds, list):
                         ds = [d.load() for d in ds]
                         for d in ds:
@@ -654,13 +657,10 @@ class FastHerbie:
         if not valid:
             return datasets
 
-        # flatten any DataTree nodes alongside plain Datasets
         flat: list[xr.Dataset] = []
         for item in valid:
             if isinstance(item, xr.DataTree):
-                flat.extend(
-                    item.leaves
-                )  # or iterate .children.values() depending on desired shape
+                flat.extend(item.leaves)
             elif isinstance(item, list):
                 flat.extend(item)
             else:
@@ -673,44 +673,44 @@ class FastHerbie:
 
     # ── Private helpers ───────────────────────────────────────────────────
 
-    def _auto_filename(
-        self, df: pl.DataFrame, search: str | pl.Expr | list | None
-    ) -> str:
+    def _auto_stem(self, df: pl.DataFrame, search: str | pl.Expr | list | None) -> str:
         """
-        Generate a unique output filename for the single-file case.
+        Return the base filename stem (no extension) for this collection.
 
-        The filename encodes the model name, object count, and a short hash
-        of the search expression so repeated calls with different filters
-        produce distinct files.
+        Uses ``self.label`` when set; otherwise generates a stable name from
+        the model name, object count, and a short hash of the search
+        expression and source URLs.
         """
         if self.label is not None:
-            return f"{self.label}.grib2"
+            return self.label
         model = self.model_cls.MODEL_NAME
         n = len(self.objects)
-        # Stable hash: based on the search string and the set of source URLs
         sources_str = "|".join(sorted(df["source"].unique().to_list()))
         key = f"{search!r}|{sources_str}"
         h = hashlib.blake2b(key.encode(), digest_size=6).hexdigest()
-        return f"{model}__bulk_n{n}__{h}.grib2"
+        return f"{model}__bulk_n{n}__{h}"
+
+    def _auto_filename(
+        self, df: pl.DataFrame, search: str | pl.Expr | list | None
+    ) -> str:
+        """Single-file output name: ``<stem>.grib2``."""
+        return self._auto_stem(df, search) + ".grib2"
 
     @staticmethod
-    def _partition_filename(key_vals: tuple, columns: list[str]) -> str:
+    def _partition_filename(stem: str, key_vals: tuple, columns: list[str]) -> str:
         """
-        Build a safe filename from the partition key column names and values.
+        Build a safe filename from the stem and partition key.
 
         Example::
 
+            stem     = "hrrr_2m_temp"
             columns  = ["model_init_time", "step"]
             key_vals = (datetime(2024, 6, 1, 12), 6)
-            → "HRRR__model_init_time=20240601T12Z__step=6.grib2"
-
-        Datetime values are formatted as ``YYYYMMDDThhZ``; all other values
-        are converted to strings with unsafe filesystem characters stripped.
+            → "hrrr_2m_temp__model_init_time=20240601T12Z__step=6.grib2"
         """
         parts = []
         for col, val in zip(columns, key_vals):
             val_str = _fmt_key(val)
-            # Strip / replace characters unsafe for most filesystems
             val_str = (
                 val_str.replace(":", "")
                 .replace("/", "-")
@@ -718,7 +718,7 @@ class FastHerbie:
                 .replace(" ", "_")
             )
             parts.append(f"{col}={val_str}")
-        return "__".join(parts) + ".grib2"
+        return stem + "__" + "__".join(parts) + ".grib2"
 
 
 # ---------------------------------------------------------------------------
@@ -728,7 +728,6 @@ class FastHerbie:
 
 def _fmt_key(val) -> str:
     """Format a partition-key value as a compact, human-readable string."""
-    # Python datetime / numpy datetime64 / pandas Timestamp
     if hasattr(val, "strftime"):
         return val.strftime("%Y%m%dT%HZ")
     type_str = type(val).__name__.lower()
