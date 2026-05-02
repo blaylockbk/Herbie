@@ -203,6 +203,13 @@ class FastHerbie:
         Forecast lead time(s) in hours.  Either a single ``int``/``str`` or
         an iterable of ints.  The cross-product of ``dates`` × ``step`` is
         used when multiple values are provided.
+    label
+        Optional human-readable stem for the output filename
+        (e.g. ``"hrrr_precip_june2024"``).  The file will be written as
+        ``<label>.grib2``.  When ``None`` (default), a name is auto-generated
+        from the model name and a content hash.  Note: if ``label`` is set and
+        ``overwrite=False``, repeated calls with different search strings will
+        return the existing file without re-downloading.
     **kwargs
         Forwarded to the model constructor (``product``, ``priority``,
         ``save_dir``, ``overwrite``, etc.).
@@ -233,6 +240,7 @@ class FastHerbie:
         *,
         model: type[HerbieModel],
         step: int | str | Iterable = 0,
+        label: str | None = None,
         **kwargs,
     ):
         if not (isinstance(model, type) and issubclass(model, HerbieModel)):
@@ -242,6 +250,7 @@ class FastHerbie:
             )
 
         self.model_cls = model
+        self.label = label
         self.index_fallback_method = kwargs.get("index_fallback_method", "auto")
 
         dates_list = list(dates)
@@ -674,6 +683,8 @@ class FastHerbie:
         of the search expression so repeated calls with different filters
         produce distinct files.
         """
+        if self.label is not None:
+            return f"{self.label}.grib2"
         model = self.model_cls.MODEL_NAME
         n = len(self.objects)
         # Stable hash: based on the search string and the set of source URLs
