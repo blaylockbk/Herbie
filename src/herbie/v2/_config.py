@@ -20,6 +20,7 @@ _DEFAULTS: dict = {
     "save_dir": "~/herbie-data",
     "overwrite": False,
     "priority": None,  # None means use each model's source dict order
+    "index_fallback_method": "auto",
 }
 
 

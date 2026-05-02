@@ -88,6 +88,21 @@ log = logging.getLogger(__name__)
 # ---------------------------------------------------------------------------
 
 
+def _maybe_index(grib_path: Path, method: str, verbose: bool = True) -> None:
+    """Generate a ``.idx`` sidecar for a freshly written custom GRIB file."""
+    from herbie.v2._inventory import generate_local_index
+
+    try:
+        idx = generate_local_index(grib_path, method=method, overwrite=False)
+        if idx and verbose:
+            console.print("[dim]  index → {}[/dim]".format(idx.name))
+    except Exception as exc:
+        if verbose:
+            console.print(
+                "[yellow]  ⚠  index generation skipped: {}[/yellow]".format(exc)
+            )
+
+
 def _create_multi_source_groups(df: pl.DataFrame) -> pl.DataFrame:
     """
     Collapse consecutive GRIB messages from the same source URL into
@@ -227,6 +242,7 @@ class FastHerbie:
             )
 
         self.model_cls = model
+        self.index_fallback_method = kwargs.get("index_fallback_method", "auto")
 
         dates_list = list(dates)
         step_list: list = [step] if isinstance(step, (int, str)) else list(step)
@@ -487,9 +503,11 @@ class FastHerbie:
                     f"→ {len(groups)} range requests "
                     f"→ [yellow]{out_path.name}[/yellow]"
                 )
-            return _download_groups(
+            out = _download_groups(
                 groups, out_path, max_workers=max_workers, verbose=verbose
             )
+            _maybe_index(out, self.index_fallback_method, verbose)
+            return out
 
         # ── Partitioned download ───────────────────────────────────────────
         # Use polars partition_by to split the DataFrame; each partition is
@@ -536,6 +554,7 @@ class FastHerbie:
             out = _download_groups(
                 groups, out_path, max_workers=max_workers, verbose=verbose
             )
+            _maybe_index(out, self.index_fallback_method, verbose)
             results.append(out)
 
         return results

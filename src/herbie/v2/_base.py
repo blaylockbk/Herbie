@@ -76,10 +76,8 @@ def _parse_date(value) -> datetime:
 
 
 def _parse_step(value) -> int:
-
     if isinstance(value, timedelta):
         return int(value.total_seconds() / 3600)
-
     if isinstance(value, str):
         import pandas as pd
 
@@ -445,8 +443,6 @@ class HerbieModel(ABC):
         -------
         (source_name, url_or_path) or (None, None)
         """
-        from herbie.v2._inventory import generate_index_file
-
         # ── 1. Local index file ────────────────────────────────────────────
         local = self.local_path
         first_src = next(iter(self.SOURCES.values()), None)
@@ -475,13 +471,19 @@ class HerbieModel(ABC):
                 self._source_status[name]["idx"][suffix] = exists
                 if exists:
                     return (name, idx_url)
-        # ── 3. wgrib2 local generation fallback ────────────────────────────
+        # ── 3. Local generation fallback (wgrib2 or eccodes) ───────────────
         if local.exists():
-            idx_path = generate_index_file(local)
+            from herbie.v2._inventory import generate_local_index
+
+            idx_path = generate_local_index(
+                local, method=self.index_fallback_method, overwrite=False
+            )
             if idx_path is not None:
                 if self.verbose:
                     console.print(
-                        f"[dim]Generated index with wgrib2 → {idx_path.name}[/dim]"
+                        "[dim]Generated index ({}) → {}[/dim]".format(
+                            self.index_fallback_method, idx_path.name
+                        )
                     )
                 return ("generated", str(idx_path))
 
@@ -1402,7 +1404,12 @@ class HerbieModel(ABC):
             # No row background — keep it clean
             row_bg = ""
 
-            # Arrow-only indicator in the name cell for the active source
+            # Arrow for active; name+URL styled by resolution state:
+            #   active            → bold
+            #   checked, exists   → normal
+            #   checked, missing  → strikethrough
+            #   not yet checked   → italic
+            _known = source_known.get(name)  # True | False | None
             arrow = (
                 (
                     f"<span style='color:{BLUE};margin-right:3px;font-size:0.8em'"
@@ -1412,7 +1419,19 @@ class HerbieModel(ABC):
                 if is_active_grib
                 else "<span style='display:inline-block;width:14px'></span>"
             )
-            name_html = f"{arrow}<code style='font-size:0.85em'>{name}</code>"
+            if is_active_grib:
+                _name_style = "font-size:0.85em;font-weight:700"
+                _url_extra = "font-weight:700"
+            elif _known is False:
+                _name_style = "font-size:0.85em;text-decoration:line-through;color:#aaa"
+                _url_extra = "text-decoration:line-through;color:#ccc"
+            elif _known is None:
+                _name_style = "font-size:0.85em;font-style:italic;color:#999"
+                _url_extra = "font-style:italic;opacity:0.55"
+            else:
+                _name_style = "font-size:0.85em"
+                _url_extra = ""
+            name_html = f"{arrow}<code style='{_name_style}'>{name}</code>"
 
             if isinstance(src, (GribSource, EccodesGribSource)):
                 url = src.url
@@ -1443,7 +1462,7 @@ class HerbieModel(ABC):
                     f"<td style='padding:4px 8px 4px 0;white-space:nowrap;text-align:right'>{name_html}</td>"
                     f"<td style='padding:4px 8px;color:#999;font-size:0.8em;white-space:nowrap'>{src_type}</td>"
                     f"<td style='padding:4px 8px;word-break:break-all;font-family:monospace;font-size:0.78em'>"
-                    f"<a href='{url}' target='_blank' style='color:{BLUE};text-decoration:none'>{url}</a></td>"
+                    f"<a href='{url}' target='_blank' style='color:{BLUE};text-decoration:none;{_url_extra}'>{url}</a></td>"
                     f"<td style='padding:4px 8px;white-space:nowrap'>{idx_links}</td>"
                     f"{size_td}"
                     f"</tr>"
@@ -1468,7 +1487,7 @@ class HerbieModel(ABC):
                     f"<td style='padding:4px 8px 4px 0;white-space:nowrap;text-align:right'>{name_html}</td>"
                     f"<td style='padding:4px 8px;color:#999;font-size:0.8em'>Directory</td>"
                     f"<td style='padding:4px 8px;font-family:monospace;font-size:0.78em' colspan='2'>"
-                    f"<a href='{url}' target='_blank' style='color:{BLUE};text-decoration:none'>{url}</a></td>"
+                    f"<a href='{url}' target='_blank' style='color:{BLUE};text-decoration:none;{_url_extra}'>{url}</a></td>"
                     f"{size_td}"
                     f"</tr>"
                 )

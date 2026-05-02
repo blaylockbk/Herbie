@@ -191,12 +191,12 @@ def _read_directory(
 
 
 # ---------------------------------------------------------------------------
-# wgrib2 local fallback
+# Local index generation  (wgrib2 or eccodes fallback)
 # ---------------------------------------------------------------------------
 
 
-def generate_index(grib_path) -> str | None:
-    """Run ``wgrib2 -s`` on a local file; return the text, or None if unavailable."""
+def _generate_wgrib2_idx(grib_path: Path, idx_path: Path) -> "Path | None":
+    """Run ``wgrib2 -s`` and write the output to *idx_path*."""
     if not _WGRIB2:
         return None
     result = subprocess.run(
@@ -207,22 +207,153 @@ def generate_index(grib_path) -> str | None:
     )
     if result.returncode != 0:
         raise RuntimeError(
-            f"wgrib2 failed (code {result.returncode}):\n{result.stderr}"
+            "wgrib2 failed (code {}):{}{}".format(
+                result.returncode, "\n", result.stderr
+            )
+        )
+    idx_path.write_text(result.stdout)
+    return idx_path
+
+
+def _generate_eccodes_idx(grib_path: Path, idx_path: Path) -> "Path | None":
+    """
+    Iterate GRIB messages with the ``eccodes`` Python library and write a
+    wgrib2-compatible ``.idx`` text file.
+
+    The output uses eccodes ``shortName`` for the variable column, which is
+    consistent with ecCodes key conventions and ideal for IFS/ECMWF files.
+    The resulting file is parseable by ``read_index(..., style='wgrib2')``.
+    """
+    try:
+        import eccodes
+    except ImportError:
+        raise ImportError(
+            "The eccodes Python package is required for index_fallback_method='eccodes'. "
+            "Install it with: pip install eccodes  (or via cfgrib)"
+        ) from None
+
+    lines: list[str] = []
+    with open(grib_path, "rb") as fh:
+        msg_num = 0
+        while True:
+            h = eccodes.codes_grib_new_from_file(fh)
+            if h is None:
+                break
+            msg_num += 1
+            try:
+
+                def _get(key, default="", _h=h):  # noqa: E306  (default captures h by value)
+                    try:
+                        return eccodes.codes_get(_h, key)
+                    except eccodes.CodesInternalError:
+                        return default
+
+                offset = _get("offset", 0)
+                date_str = str(_get("dataDate", ""))
+                time_str = str(int(_get("dataTime", 0))).zfill(4)
+                ref_time = "d={}{}".format(date_str, time_str)
+                short_name = _get("shortName", "UNKNOWN")
+                type_level = _get("typeOfLevel", "unknown")
+                level = _get("level", 0)
+                step = str(_get("stepRange", "anl"))
+                lines.append(
+                    "{}:{}:{}:{}:{}:{}:{}:".format(
+                        msg_num, offset, ref_time, short_name, type_level, level, step
+                    )
+                )
+            finally:
+                eccodes.codes_release(h)
+
+    idx_path.write_text("\n".join(lines) + "\n")
+    return idx_path
+
+
+def generate_local_index(
+    grib_path,
+    method: str = "auto",
+    overwrite: bool = False,
+) -> "Path | None":
+    """
+    Generate a local ``.idx`` index file alongside *grib_path*.
+
+    Writes ``<grib_path>.idx`` and returns its path.  If the file already
+    exists and *overwrite* is ``False``, returns the existing path immediately
+    without invoking the backend.
+
+    Parameters
+    ----------
+    grib_path
+        Path to the local GRIB2 file.
+    method
+        ``"auto"``    — use wgrib2 if it is on ``PATH``, otherwise eccodes.
+        ``"wgrib2"``  — require wgrib2; raises ``RuntimeError`` if not found.
+        ``"eccodes"`` — use the ``eccodes`` Python library.
+    overwrite
+        Re-generate even if ``<grib_path>.idx`` already exists.
+
+    Returns
+    -------
+    Path | None
+        Path to the written ``.idx`` file, or ``None`` on failure.
+    """
+    grib_path = Path(grib_path)
+    idx_path = Path(str(grib_path) + ".idx")
+
+    if idx_path.exists() and not overwrite:
+        return idx_path
+
+    resolved = method
+    if method == "auto":
+        resolved = "wgrib2" if _WGRIB2 else "eccodes"
+    elif method == "wgrib2" and not _WGRIB2:
+        raise RuntimeError(
+            "index_fallback_method='wgrib2' requested but wgrib2 is not on PATH."
+        )
+
+    log.debug("Generating local index for %s via %s", grib_path.name, resolved)
+
+    if resolved == "wgrib2":
+        return _generate_wgrib2_idx(grib_path, idx_path)
+    if resolved == "eccodes":
+        return _generate_eccodes_idx(grib_path, idx_path)
+    raise ValueError(
+        "Unknown index_fallback_method {!r}. Use 'auto', 'wgrib2', or 'eccodes'.".format(
+            method
+        )
+    )
+
+
+# ---------------------------------------------------------------------------
+# Backward-compatible wrappers  (pre-v2 API)
+# ---------------------------------------------------------------------------
+
+
+def generate_index(grib_path) -> "str | None":
+    """Run ``wgrib2 -s`` on a local file; return the text, or ``None``."""
+    if not _WGRIB2:
+        return None
+    result = subprocess.run(
+        [_WGRIB2, "-s", str(grib_path)],
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+    )
+    if result.returncode != 0:
+        raise RuntimeError(
+            "wgrib2 failed (code {}):{}{}".format(
+                result.returncode, "\n", result.stderr
+            )
         )
     return result.stdout
 
 
 def generate_index_file(grib_path, overwrite: bool = False) -> "Path | None":
-    """Write ``<grib_path>.idx`` via wgrib2; return its path or None."""
-    grib_path = Path(grib_path)
-    idx_path = Path(str(grib_path) + ".idx")
-    if idx_path.exists() and not overwrite:
-        return idx_path
-    text = generate_index(grib_path)
-    if text is None:
-        return None
-    idx_path.write_text(text)
-    return idx_path
+    """Write ``<grib_path>.idx`` via wgrib2; return its path or ``None``.
+
+    .. deprecated::
+        Use :func:`generate_local_index` with ``method='wgrib2'`` instead.
+    """
+    return generate_local_index(grib_path, method="wgrib2", overwrite=overwrite)
 
 
 # ---------------------------------------------------------------------------
