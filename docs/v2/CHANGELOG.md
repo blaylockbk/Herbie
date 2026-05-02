@@ -24,6 +24,16 @@ from herbie.v2 import HRRR
 H = HRRR('2025-01-01')
 ```
 
+## Herbie config file
+
+There is a new config file that can be used
+
+...
+
+## Default download directory structure
+
+Herbie by default downloads ata to `~/herbie-data`, and the file structure matches the directory structure of the original model source.
+
 ## `fxx` is now `step`
 
 The forecast lead time is now controlled with the step parameter, and may be a timedelta object (which is converted to integer hours). The following are equivalent:

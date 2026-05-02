@@ -1,7 +1,7 @@
 Next prompts:
 
-In the html repr, I would like a strike through style on the grib and index sources that were checked but do not exist. Italics for sources that have not been checked, and bold for the active file.
+Can you write a docs page about how HRRR config files are written and used, including what options users might want to set, what the default is.
 
 ---
 
-Herbie should use local file if it exists, and this should be indicated in the status and html repr. But resolve('aws') should reset the status to use the remote file instead of the local file.
+Test the functionality of the candaian model inventory list

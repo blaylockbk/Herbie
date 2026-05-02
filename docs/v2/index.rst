@@ -57,7 +57,7 @@ For optional features, if you are on Linux, make sure wgrib2 is installed and in
    whats_new
    quickstart
    models
-   migration
+   example_fast.ipynb
 
 .. toctree::
    :maxdepth: 1
