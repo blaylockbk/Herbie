@@ -264,7 +264,7 @@ class aigefs:
         }
 
         self.IDX_SUFFIX = [".grib2.idx"]
-        self.LOCALFILE = f"aigefs.t{self.date:%H}z.{self.product}.{self.member}.f{self.fxx:03d}"
+        self.LOCALFILE = f"{self.get_remoteFileName}"
 
 
 class hgefs:
@@ -327,4 +327,4 @@ class hgefs:
         }
 
         self.IDX_SUFFIX = [".grib2.idx"]
-        self.LOCALFILE = f"hgefs.t{self.date:%H}z.{self.product}.{self.member}.f{self.fxx:03d}"
+        self.LOCALFILE = f"{self.get_remoteFileName}"
