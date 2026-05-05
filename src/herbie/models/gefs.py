@@ -81,7 +81,8 @@ class gefs:
             "atmos.5": [f"p{i:02d}" for i in range(1, 31)] + ["c00", "spr", "avg"],
             "atmos.5b": [f"p{i:02d}" for i in range(1, 31)] + ["c00"],
             "atmos.25": [f"p{i:02d}" for i in range(1, 31)] + ["c00", "spr", "avg"],
-            "wave": [f"p{i:02d}" for i in range(1, 31)] + ["spread", "mean", "prob"],
+            "wave": [f"p{i:02d}" for i in range(1, 31)]
+            + ["c00", "spread", "mean", "prob"],
             "chem.5": None,
             "chem.25": None,
         }
