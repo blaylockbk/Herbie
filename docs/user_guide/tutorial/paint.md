@@ -127,6 +127,47 @@ Here are other examples:
 | `water`          | Water                             | m          |
 |                  |                                   |            |
 
+## MODIS Landuse Categories
+
+```python
+import matplotlib.patches as mpatches
+import matplotlib.pyplot as plt
+
+from herbie import Herbie, paint
+from herbie.toolbox import EasyMap, pc
+
+H = Herbie("2026-03-01", model="hrrr")
+ds = H.xarray("VGTYP")
+
+ax = EasyMap("50m", figsize=(10, 8), crs=ds.herbie.crs).BORDERS().STATES().ax
+art = ax.pcolormesh(
+    ds.longitude, ds.latitude, ds.vgtyp, transform=pc, **paint.MODIS21.kwargs
+)
+
+# Create legend with patches instead of colorbar
+present = np.unique(ds.vgtyp).astype(int)
+n_cats = len(paint.MODIS21.labels)
+colors = ["#ffffff"] + [str(i) for i in paint.MODIS21.colors]
+labels = [""] + [str(i) for i in paint.MODIS21.labels]
+patches = [
+    mpatches.Patch(
+        color=colors[i],
+        label=labels[i],
+    )
+    for i in present
+    if 1 <= i <= n_cats
+]
+
+ax.legend(handles=patches, bbox_to_anchor=(1.01, 1), loc="upper left", fontsize=7)
+ax.set_title("HRRR Landuse (MODIS)", loc="left", fontweight="bold")
+ax.set_title(f"{H.date:%Hz %d %b %Y}", loc="right")
+
+plt.tight_layout()
+plt.savefig("../../_static/paint/herbie_paint_modis21", bbox_inches="tight")
+```
+
+![](../../_static/paint/herbie_paint_modis21.png)
+
 ## Lightness
 
 ![](../../_static/paint/NWS_Sequential_lightness.png)

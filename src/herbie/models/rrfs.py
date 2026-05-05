@@ -6,7 +6,7 @@ HELP = r"""
 Herbie(date, model='rrfs', ...)
 
 fxx : int
-product : {"prs", "nat", "testbed", "ififip"}
+product : {"prs", "nat", "2dfld", "testbed", "ififip"}
 member : {None, int}
     None for deterministic run, int (1-5) for ensemble members
 domain : {"conus", "alaska", "hawaii", "puerto rico", "na"}
@@ -26,6 +26,7 @@ class rrfs:
         self.PRODUCTS = {
             "prslev": "pressure level fields",
             "natlev": "native level fields",
+            "2dfld": "2D surface/post-processed fields",
             "testbed": "testbed fields",
             "ififip": "icing/freezing fields",
         }
@@ -38,8 +39,11 @@ class rrfs:
 
         # Format the domain parameter (default to conus)
         domain_map = {"alaska": "ak", "hawaii": "hi", "puerto rico": "pr"}
-        self.domain = getattr(self, "domain", None) or "conus"
-        self.domain = domain_map.get(self.domain, self.domain)
+        if self.product == "natlev":
+            self.domain = "na"
+        else:
+            self.domain = getattr(self, "domain", None) or "conus"
+            self.domain = domain_map.get(self.domain, self.domain)
 
         # Resolution depends on the domain
         resolution = "2p5km" if self.domain in ("hi", "pr") else "3km"

@@ -10,11 +10,10 @@ The GDPS is Canada's 15 km deterministic global model
 Description: https://eccc-msc.github.io/open-data/msc-data/nwp_gdps/readme_gdps-datamart_en/
 Data Source: https://dd.weather.gc.ca/model_gem_global/
 
-- Global domain: https://dd.weather.gc.ca/model_gem_global/{res}/grib2/lat_lon/{HH}/{hhh}/
+- Global domain: https://dd.weather.gc.ca/{YYYYMMDD}/WXO-DD/model_gem_global/{res}/grib2/lat_lon/{HH}/{hhh}/
 
-where `HH` is the models initialization time and `hhh` is the forecast lead time.
+where `YYYYMMDDHH` is the model init date, `HH` is the model init time and `hhh` is the forecast lead time.
 
-Data available for last 24 hours.
 
 Other Levels
 ------------
@@ -150,14 +149,14 @@ class gdps:
                 f"GDPS requires an argument for 'variable'. Here are some ideas:\n{_variable}."
             )
             print(
-                "For full list of files, see https://dd.weather.gc.ca/model_gem_global/15km/grib2/lat_lon/"
+                f"For full list of files, see https://dd.weather.gc.ca/{self.date:%Y%m%d}/WXO-DD/model_gem_global/15km/grib2/lat_lon/"
             )
         if not hasattr(self, "level"):
             print(
                 f"GDPS requires an argument for 'level'. Here are some ideas:\n{_level}"
             )
             print(
-                "For full list of files, see https://dd.weather.gc.ca/model_gem_global/15km/grib2/lat_lon/"
+                f"For full list of files, see https://dd.weather.gc.ca/{self.date:%Y%m%d}/WXO-DD/model_gem_global/15km/grib2/lat_lon/"
             )
 
         self.DESCRIPTION = "Canada's Global Deterministic Prediction System (GDPS)"
@@ -169,7 +168,7 @@ class gdps:
         }
         PATH = f"{self.date:%H}/{self.fxx:03d}/CMC_glb_{self.variable}_{self.level}_latlon.15x.15_{self.date:%Y%m%d%H}_P{self.fxx:03d}.grib2"
         self.SOURCES = {
-            "msc": f"https://dd.weather.gc.ca/model_gem_global/{self.product}/{PATH}"
+            "msc": f"https://dd.weather.gc.ca/{self.date:%Y%m%d}/WXO-DD/model_gem_global/{self.product}/{PATH}"
         }
 
         self.IDX_SUFFIX = [".grb2.idx", ".idx", ".grib.idx"]
