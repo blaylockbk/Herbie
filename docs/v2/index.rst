@@ -54,7 +54,8 @@ For optional features, if you are on Linux, make sure wgrib2 is installed and in
    :maxdepth: 1
    :caption: Herbie v2
 
-   whats_new
+   whats-new
+   migration-guide
    quickstart
    models
    example_fast.ipynb
