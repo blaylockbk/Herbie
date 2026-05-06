@@ -426,6 +426,13 @@ class HerbieModel(ABC):
                 self._source_status[name]["grib_size"] = info.get("size")
                 if info["exists"]:
                     return (name, src.url)
+            elif isinstance(src, DirectorySource):
+                # The "GRIB file" for a directory source is the directory URL;
+                # individual file URLs are resolved from the inventory DataFrame.
+                info = _url_info(src.url)
+                self._source_status[name]["grib_exists"] = info["exists"]
+                if info["exists"]:
+                    return (name, src.url)
         return (None, None)
 
     @functools.cached_property
@@ -667,6 +674,95 @@ class HerbieModel(ABC):
 
         return df
 
+    def _download_directory(
+        self,
+        search: str | pl.Expr | list[pl.Expr] | None,
+        dest: Path,
+        *,
+        verbose: bool = True,
+    ) -> Path:
+        """
+        Download individual per-message GRIB files from a DirectorySource
+        and concatenate them into a single GRIB2 file at *dest*.
+
+        Each row in the inventory carries its own URL in the ``source``
+        column.  All matched rows are fetched (with a Rich progress bar)
+        and their bytes are appended in inventory order.
+        """
+        import tempfile
+
+        import requests
+        from rich.progress import (
+            BarColumn,
+            MofNCompleteColumn,
+            Progress,
+            SpinnerColumn,
+            TextColumn,
+            TimeRemainingColumn,
+        )
+
+        idx_df = self.inventory(search)
+        if idx_df.is_empty():
+            raise ValueError(
+                f"No GRIB messages matched search={search!r}. "
+                "Use H.inventory() to see available fields."
+            )
+
+        # `source` holds the parent directory URL (set by read_index source_url=).
+
+        # `filename` holds the individual file's basename from the regex capture group.
+        # Construct per-file URLs by joining them.
+        if "filename" in idx_df.columns:
+            file_urls: list[str] = [
+                row["source"].rstrip("/") + "/" + row["filename"]
+                for row in idx_df.iter_rows(named=True)
+            ]
+        else:
+            # Fallback: source already contains full per-file URLs
+            file_urls = idx_df["source"].to_list()
+        n = len(file_urls)
+
+        if verbose:
+            console.print(
+                f"[bold]Downloading[/bold] {self.MODEL_NAME} "
+                f"({n} file{'s' if n != 1 else ''}) → [yellow]{dest.name}[/yellow]"
+            )
+
+        dest.parent.mkdir(parents=True, exist_ok=True)
+
+        with Progress(
+            SpinnerColumn(),
+            TextColumn("[progress.description]{task.description}"),
+            BarColumn(),
+            MofNCompleteColumn(),
+            TimeRemainingColumn(),
+            console=console,
+            transient=True,
+            disable=not verbose,
+        ) as progress:
+            task = progress.add_task(f"[cyan]{self.MODEL_NAME}", total=n)
+
+            with tempfile.TemporaryDirectory() as tmp_dir:
+                tmp_parts: list[Path] = []
+                for i, url in enumerate(file_urls):
+                    tmp = Path(tmp_dir) / f"part_{i:06d}.grib2"
+                    resp = requests.get(url, timeout=60)
+                    resp.raise_for_status()
+                    tmp.write_bytes(resp.content)
+                    tmp_parts.append(tmp)
+                    progress.advance(task)
+
+                # Concatenate in inventory order → single GRIB2 file
+                with open(dest, "wb") as out:
+                    for part in tmp_parts:
+                        out.write(part.read_bytes())
+
+        if verbose:
+            console.print(f"[bold green]✓ Done[/bold green] → [yellow]{dest}[/yellow]")
+
+        self._invalidate_cache()
+        return dest
+
     def download(
         self,
         search: str | pl.Expr | list[pl.Expr] | None = None,
@@ -711,6 +807,10 @@ class HerbieModel(ABC):
             if vb:
                 console.print(f"[dim]Already exists → {dest}[/dim]")
             return dest
+
+        # ── DirectorySource: fetch individual per-message files, concatenate ──
+        if self.SOURCE_TYPE == "directory":
+            return self._download_directory(search, dest, verbose=vb)
 
         # Determine which URL to download from
         if source is not None:
