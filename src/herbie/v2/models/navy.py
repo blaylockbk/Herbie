@@ -1,8 +1,8 @@
 """
 NAVGEM model templates for Herbie v2.
 
-NavgemNOMADS   — Navy Global Environment Model (recent, from NOMADS)
-NavgemGODAE    — NAVGEM / NOGAPS historical archive (GODAE server)
+NAVGEM   — Navy Global Environment Model (recent, from NOMADS)
+NAVGEM_GODAE    — NAVGEM / NOGAPS historical archive (GODAE server)
 """
 
 from __future__ import annotations
