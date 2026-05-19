@@ -48,13 +48,17 @@ if TYPE_CHECKING:
     # ── NOAA ensemble / specialty ─────────────────────────────────────────
     from herbie.v2.models.more_models import AIGFS, CFS, HGEFS, HREF, NBMQMD
 
-    # ── Hurricane / Navy ──────────────────────────────────────────────────
-    from herbie.v2.models.hurricane_and_navy import (
+    # ── Hurricane -------──────────────────────────────────────────────────
+    from herbie.v2.models.hurricane import (
         HAFSA,
         HAFSB,
         HIRESW,
-        NavgemGODAE,
-        NavgemNOMADS,
+    )
+
+    # ── Navy ------------──────────────────────────────────────────────────
+    from herbie.v2.models.navy import (
+        NAVGEM_GODAE,
+        NAVGEM,
     )
 
     # ── ECMWF ─────────────────────────────────────────────────────────────
@@ -86,6 +90,8 @@ class Herbie:
         Herbie.NBM     — National Blend of Models
         Herbie.GEFS    — Global Ensemble Forecast System
         Herbie.RRFS    — Rapid Refresh Forecast System
+        Herbie.NAVGEM_GODAE  — NAVGEM from GODAE
+        Herbie.NAVGEM — NAVGEM from NOMADS
 
     Each model class can also be imported directly::
 
@@ -127,12 +133,14 @@ class Herbie:
         HREF: ClassVar[type[HREF]]
         NBMQMD: ClassVar[type[NBMQMD]]
 
-        # Hurricane / Navy
+        # Hurricane
         HAFSA: ClassVar[type[HAFSA]]
         HAFSB: ClassVar[type[HAFSB]]
         HIRESW: ClassVar[type[HIRESW]]
-        NavgemNOMADS: ClassVar[type[NavgemNOMADS]]
-        NavgemGODAE: ClassVar[type[NavgemGODAE]]
+
+        # Navy
+        NAVGEM: ClassVar[type[NAVGEM]]
+        NAVGEM_GODAE: ClassVar[type[NAVGEM_GODAE]]
 
         # ECMWF
         IFS: ClassVar[type[IFS]]

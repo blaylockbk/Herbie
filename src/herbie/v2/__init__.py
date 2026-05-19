@@ -60,13 +60,17 @@ from herbie.v2.models.rtma import RTMA, RTMA_AK, URMA
 # NOAA ensemble / specialty
 from herbie.v2.models.more_models import AIGFS, CFS, HGEFS, HREF, NBMQMD
 
-# Hurricane / Navy
-from herbie.v2.models.hurricane_and_navy import (
+# Hurricane
+from herbie.v2.models.hurricane import (
     HAFSA,
     HAFSB,
     HIRESW,
-    NavgemGODAE,
-    NavgemNOMADS,
+)
+
+# Navy
+from herbie.v2.models.navy import (
+    NAVGEM_GODAE,
+    NAVGEM,
 )
 
 # ECMWF
