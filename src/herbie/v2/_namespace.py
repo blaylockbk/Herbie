@@ -41,8 +41,9 @@ if TYPE_CHECKING:
     from herbie.v2.models.gfs import GFS, GDAS, GFSWave
 
     # ── NOAA regional / analysis ──────────────────────────────────────────
-    from herbie.v2.models.noaa_models import GEFS, NAM, NBM, RRFS
+    from herbie.v2.models.noaa_models import GEFS, NAM, NBM
     from herbie.v2.models.rap import RAP, RAPHistorical
+    from herbie.v2.models.rrfs import RRFS, RRFSFireWx, REFS
     from herbie.v2.models.rtma import RTMA, RTMA_AK, URMA
 
     # ── NOAA ensemble / specialty ─────────────────────────────────────────
@@ -74,24 +75,26 @@ class Herbie:
 
     Available models are attached as class attributes at import time::
 
-        Herbie.HRRR    — High-Resolution Rapid Refresh (CONUS)
-        Herbie.HRRRAK  — High-Resolution Rapid Refresh (Alaska)
-        Herbie.GFS     — Global Forecast System
-        Herbie.GDAS    — Global Data Assimilation System
-        Herbie.GFSWave — GFS Wave Products
-        Herbie.IFS     — ECMWF Integrated Forecast System
-        Herbie.AIFS    — ECMWF AI Integrated Forecast System
-        Herbie.RAP     — Rapid Refresh
+        Herbie.HRRR         — High-Resolution Rapid Refresh (CONUS)
+        Herbie.HRRRAK       — High-Resolution Rapid Refresh (Alaska)
+        Herbie.GFS          — Global Forecast System
+        Herbie.GDAS         — Global Data Assimilation System
+        Herbie.GFSWave      — GFS Wave Products
+        Herbie.IFS          — ECMWF Integrated Forecast System
+        Herbie.AIFS         — ECMWF AI Integrated Forecast System
+        Herbie.RAP          — Rapid Refresh
         Herbie.RAPHistorical — RAP/RUC historical archive
-        Herbie.RTMA    — Real-Time Mesoscale Analysis (CONUS)
-        Herbie.RTMA_AK — Real-Time Mesoscale Analysis (Alaska)
-        Herbie.URMA    — Un-Restricted Mesoscale Analysis
-        Herbie.NAM     — North America Mesoscale
-        Herbie.NBM     — National Blend of Models
-        Herbie.GEFS    — Global Ensemble Forecast System
-        Herbie.RRFS    — Rapid Refresh Forecast System
-        Herbie.NAVGEM_GODAE  — NAVGEM from GODAE
-        Herbie.NAVGEM — NAVGEM from NOMADS
+        Herbie.RTMA         — Real-Time Mesoscale Analysis (CONUS)
+        Herbie.RTMA_AK      — Real-Time Mesoscale Analysis (Alaska)
+        Herbie.URMA         — Un-Restricted Mesoscale Analysis
+        Herbie.NAM          — North America Mesoscale
+        Herbie.NBM          — National Blend of Models
+        Herbie.GEFS         — Global Ensemble Forecast System
+        Herbie.RRFS         — Rapid Refresh Forecast System (deterministic)
+        Herbie.RRFSFireWx   — Rapid Refresh Forecast System (fire weather)
+        Herbie.REFS         — RRFS Ensemble Forecast System
+        Herbie.NAVGEM_GODAE — NAVGEM from GODAE
+        Herbie.NAVGEM       — NAVGEM from NOMADS
 
     Each model class can also be imported directly::
 
@@ -119,12 +122,16 @@ class Herbie:
         NAM: ClassVar[type[NAM]]
         NBM: ClassVar[type[NBM]]
         GEFS: ClassVar[type[GEFS]]
-        RRFS: ClassVar[type[RRFS]]
         RAP: ClassVar[type[RAP]]
         RAPHistorical: ClassVar[type[RAPHistorical]]
         RTMA: ClassVar[type[RTMA]]
         RTMA_AK: ClassVar[type[RTMA_AK]]
         URMA: ClassVar[type[URMA]]
+
+        # NOAA RRFS / REFS
+        RRFS: ClassVar[type[RRFS]]
+        RRFSFireWx: ClassVar[type[RRFSFireWx]]
+        REFS: ClassVar[type[REFS]]
 
         # NOAA ensemble / specialty
         AIGFS: ClassVar[type[AIGFS]]

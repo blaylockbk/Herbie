@@ -53,7 +53,8 @@ from herbie.v2.models.hrrr import HRRR, HRRRAK
 from herbie.v2.models.gfs import GFS, GDAS, GFSWave
 
 # NOAA regional / analysis
-from herbie.v2.models.noaa_models import GEFS, NAM, NBM, RRFS
+from herbie.v2.models.noaa_models import GEFS, NAM, NBM
+from herbie.v2.models.rrfs import RRFS, RRFSFireWx, REFS
 from herbie.v2.models.rap import RAP, RAPHistorical
 from herbie.v2.models.rtma import RTMA, RTMA_AK, URMA
 
