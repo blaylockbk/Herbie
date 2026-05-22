@@ -19,7 +19,7 @@ References
 
 from datetime import datetime
 
-from herbie.experimental.models import ModelTemplate
+from herbie.v2._base import HerbieModel
 from herbie.v2._sources import GribSource
 
 # Operational implementation date: 1200 UTC August 31, 2026.
@@ -36,7 +36,7 @@ _DOMAIN_RESOLUTION = {
 }
 
 
-class RRFS(ModelTemplate):
+class RRFS(HerbieModel):
     """
     Rapid Refresh Forecast System (RRFS) — Deterministic.
 
@@ -68,8 +68,8 @@ class RRFS(ModelTemplate):
     MODEL_NAME = "RRFS"
     MODEL_DESCRIPTION = "Rapid Refresh Forecast System"
     MODEL_WEBSITES = {
-        "ncep": "https://www.nco.ncep.noaa.gov/pmb/products/rrfs/",
-        "emc": "https://www.emc.ncep.noaa.gov/emc/pages/numerical_forecast_systems/rrfs.php",
+        "NCEP": "https://www.nco.ncep.noaa.gov/pmb/products/rrfs/",
+        "NOAA GSL": "https://rapidrefresh.noaa.gov/hrrr/",
         "scn": "https://www.weather.gov/media/notification/pdf_2026/scn26-48_RRFS_and_REFS_Implementation.pdf",
     }
 
@@ -98,9 +98,6 @@ class RRFS(ModelTemplate):
                 "alaska": "ak",
                 "hawaii": "hi",
                 "puerto_rico": "pr",
-                "puerto-rico": "pr",
-                "puerto rico": "pr",
-                "puertorico": "pr",
             },
             "descriptions": {
                 "conus": "Contiguous US — Lambert Conformal 3 km (1799×1059)",
@@ -156,11 +153,11 @@ class RRFS(ModelTemplate):
         }
 
     def get_remote_urls(self) -> dict[str, str]:
-        """Return remote URLs as a plain dict (required by ModelTemplate ABC)."""
+        """Return remote URLs as a plain dict (required by HerbieModel ABC)."""
         return {k: v.url for k, v in self._build_sources().items()}
 
 
-class RRFSFireWx(ModelTemplate):
+class RRFSFireWx(HerbieModel):
     """
     Rapid Refresh Forecast System — Fire Weather (RRFS-FireWx).
 
@@ -241,11 +238,11 @@ class RRFSFireWx(ModelTemplate):
         }
 
     def get_remote_urls(self) -> dict[str, str]:
-        """Return remote URLs as a plain dict (required by ModelTemplate ABC)."""
+        """Return remote URLs as a plain dict (required by HerbieModel ABC)."""
         return {k: v.url for k, v in self._build_sources().items()}
 
 
-class REFS(ModelTemplate):
+class REFS(HerbieModel):
     """
     RRFS Ensemble Forecast System (REFS).
 
@@ -275,6 +272,7 @@ class REFS(ModelTemplate):
     MODEL_DESCRIPTION = "RRFS Ensemble Forecast System"
     MODEL_WEBSITES = {
         "ncep": "https://www.nco.ncep.noaa.gov/pmb/products/refs/",
+        "NOAA GSL": "https://rapidrefresh.noaa.gov/hrrr/",
         "scn": "https://www.weather.gov/media/notification/pdf_2026/scn26-48_RRFS_and_REFS_Implementation.pdf",
     }
 
@@ -367,5 +365,5 @@ class REFS(ModelTemplate):
         }
 
     def get_remote_urls(self) -> dict[str, str]:
-        """Return remote URLs as a plain dict (required by ModelTemplate ABC)."""
+        """Return remote URLs as a plain dict (required by HerbieModel ABC)."""
         return {k: v.url for k, v in self._build_sources().items()}
