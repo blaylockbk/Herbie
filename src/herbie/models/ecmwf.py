@@ -45,6 +45,13 @@ class ifs:
         # example file
         # https://data.ecmwf.int/forecasts/20240229/00z/ifs/0p25/oper/20240229000000-0h-oper-fc.grib2
 
+        # IFS_50R1_DATE
+        if self.date >= datetime(2026, 5, 12, tzinfo=self.date.tzinfo):
+            if self.product == "scda":
+                self.product = "oper"
+            if self.product == "scwv":
+                self.product = "wave"
+
         # product suffix
         if self.product in ["enfo", "waef"]:
             product_suffix = "ef"

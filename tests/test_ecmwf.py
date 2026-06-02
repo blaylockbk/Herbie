@@ -34,6 +34,29 @@ def test_ifs_download(date):
 
 
 @pytest.mark.parametrize("date", DATES)
+def test_ifs_scda_download(date):
+    # use minus to avoid early download
+    date6 = date - timedelta(hours=6)
+    H = Herbie(date6, model="ifs", product="scda", save_dir=save_dir, overwrite=True)
+
+    # Test full file download
+    f = H.download()
+    assert H.get_localFilePath().exists()
+    f.unlink()
+
+@pytest.mark.parametrize("date", DATES)
+def test_ifs_scwv_download(date):
+    # use minus to avoid early download
+    date6 = date - timedelta(hours=6)
+    H = Herbie(date6, model="ifs", product="scwv", save_dir=save_dir, overwrite=True)
+
+    # Test full file download
+    f = H.download()
+    assert H.get_localFilePath().exists()
+    f.unlink()
+
+
+@pytest.mark.parametrize("date", DATES)
 def test_ifs_download_partial(date):
     H = Herbie(date, model="ifs", product="oper", save_dir=save_dir, overwrite=True)
     f = H.download(":2t:")
