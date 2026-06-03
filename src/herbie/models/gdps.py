@@ -8,155 +8,180 @@ Meteorological Service of Canada (MSC)
 The GDPS is Canada's 15 km deterministic global model
 
 Description: https://eccc-msc.github.io/open-data/msc-data/nwp_gdps/readme_gdps-datamart_en/
-Data Source: https://dd.weather.gc.ca/model_gem_global/
+Data Source: https://dd.weather.gc.ca/model_gdps/
 
-- Global domain: https://dd.weather.gc.ca/{YYYYMMDD}/WXO-DD/model_gem_global/{res}/grib2/lat_lon/{HH}/{hhh}/
+- Global domain: https://dd.weather.gc.ca/{YYYYMMDD}/WXO-DD/model_gdps/{res}/{HH}/{hhh}/
 
 where `YYYYMMDDHH` is the model init date, `HH` is the model init time and `hhh` is the forecast lead time.
 
 
-Other Levels
-------------
-`variable` is one of {'ACPCP', 'ALBDO', 'APCP', 'CAPE', 'CIN', 'CWAT', 'DLWRF', 'DPT',
-'DSWRF', 'GUST_MAX', 'GUST_MIN', 'GUST', 'HPBL', 'KX', 'LHTFL', 'NLWRS', 'NSWRS', 'PRATE',
-'PRMSL', 'PTYPE', 'RH', 'SDEN', 'SFCWRO', 'SHTFL', 'SKINT', 'SNOD', 'SOILVIC', 'SOILW',
-'SPFH', 'TCDC', 'TMAX', 'TMIN', 'TMP', 'TOTALX', 'TSOIL', 'UGRD', 'ULWRF', 'VGRD', 'WDIR',
-'WEAFR', 'WEAPE', 'WEARN', 'WEASN', 'WIND'}
-`level` is one of {'SFC', 'EATM', 'TGL_2', 'NTAT', 'TGL_10', 'ISBY_1000-500',
-'PVU_1.5', 'PVU_1', 'PVU_2', 'MSL', 'DBLL_100', 'DBLY_10', 'TGL_120', 'TGL_40', 'TGL_80'}
+Levels (match Datamart filenames exactly)
+-----------------------------------------
+Other levels: 'Sfc', 'MSL', 'EAtm', 'NTAtm', 'DBS-0to10cm', 'DBS-0to1cm', 'PVU-1', 'PVU-1.5', 'PVU-2',
+'AGL-2m', 'AGL-40m', 'AGL-80m', 'AGL-120m','EtaL-10000', 'EtaL-6500', 'IsbL-0850to0700',
+'IsbL-1000to0500', 'IsbL-1000to0850'
 
-Isobaric Levels
+Isobaric Levels (format: IsbL-XXXX)
 ---------------
-`variable` is one of {'ABSV', 'DEPR', 'HGT', 'MU-VT-LI', 'RH', 'SHWINX', 'SPFH', 'TMP',
-       'UGRD', 'VGRD', 'VVEL', 'WDIR', 'WIND'}
-`level` is "ISBL_####" where #### is one of
-    {'1', 5', '10', '20', '30', '50', '100', '150',
-    '175', '200', '225', '250', '275', '300', '350', '400', '450', '500',
-    '550', '600', '650', '700', '750', '800', '850', '875', '900', '925',
-    '950', '970', '985', '1000', '1015'}
+Pressure levels (hPa): 0001, 0005, 0010, 0020, 0030, 0050, 0100, 0150, 0175, 0200, 0225, 0250, 0275,
+0300, 0350, 0400, 0450, 0500, 0550, 0600, 0650, 0700, 0750, 0800, 0850, 0875, 0900, 0925, 0950, 0970, 0985, 1000, 1015
 """
 
 _variable = {
-    "ABSV",
-    "ACPCP",
-    "ALBDO",
-    "APCP",
+    "AbsoluteVorticity",
+    "AirTemp",
+    "Albedo",
     "CAPE",
     "CIN",
-    "CWAT",
-    "DEPR",
-    "DLWRF",
-    "DPT",
-    "DSWRF",
-    "GUST_MAX",
-    "GUST_MIN",
-    "GUST",
-    "HGT",
-    "HPBL",
-    "KX",
-    "LHTFL",
-    "MU-VT-LI",
-    "NLWRS",
-    "NSWRS",
-    "PRATE",
-    "PRES",
-    "PRMSL",
-    "PTYPE",
-    "RH",
-    "SDEN",
-    "SFCWRO",
-    "SHTFL",
-    "SHWINX",
-    "SKINT",
-    "SNOD",
-    "SOILVIC",
-    "SOILW",
-    "SPFH",
-    "TCDC",
-    "TMAX",
-    "TMIN",
-    "TMP",
-    "TOTALX",
-    "TSOIL",
-    "UGRD",
-    "ULWRF",
-    "VGRD",
-    "VVEL",
-    "WDIR",
-    "WEAFR",
-    "WEAPE",
-    "WEARN",
-    "WEASN",
-    "WIND",
+    "CloudWater",
+    "ConvectivePrecip-Accum",
+    "DewPointDepression",
+    "DownwardLongwaveRadiationFlux-Accum",
+    "DownwardShortwaveRadiationFlux-Accum",
+    "FreezingRain-Accum24h",
+    "FreezingRain-Accum12h",
+    "FreezingRain-Accum6h",
+    "FreezingRain-Accum3h",
+    "FreezingRain-Accum1h",
+    "FreezingRain-Accum",
+    "GeopotentialHeight",
+    "HighLowPressure",
+    "Humidex",
+    "IcePellets-Accum24h",
+    "IcePellets-Accum12h",
+    "IcePellets-Accum6h",
+    "IcePellets-Accum3h",
+    "IcePellets-Accum1h",
+    "IcePellets-Accum",
+    "LatentHeatNetFlux",
+    "LiftedIndex-MU-VT",
+    "NetLongwaveRadiationFlux-Accum",
+    "NetShortwaveRadiationFlux-Accum",
+    "O3MixingRatio",
+    "O3",
+    "PlanetaryBoundaryLayerHeight",
+    "Precip-Accum24h",
+    "Precip-Accum12h",
+    "Precip-Accum6h",
+    "Precip-Accum3h",
+    "Precip-Accum1h",
+    "Precip-Accum",
+    "PrecipRate_Sfc",
+    "PrecipType-Instant",
+    "Pressure",
+    "RadiativeTemp",
+    "Rain-Accum24h",
+    "Rain-Accum12h",
+    "Rain-Accum6h",
+    "Rain-Accum3h",
+    "Rain-Accum1h",
+    "RelativeHumidity",
+    "Runoff-Accum",
+    "SensibleHeatNetFlux",
+    "ShowalterIndex",
+    "Snow-Accum24h",
+    "Snow-Accum12h",
+    "Snow-Accum6h",
+    "Snow-Accum3h",
+    "Snow-Accum1h",
+    "SnowDensity",
+    "SnowDepth",
+    "SoilVolumetricIceContent",
+    "SpecificHumidity",
+    "Thickness",
+    "TotalCloudCover",
+    "TotalTotalsIndex",
+    "UVIndex-ClearSky",
+    "UVIndex",
+    "UpwardLongwaveRadiationFlux",
+    "VerticalVelocity",
+    "WindChill",
+    "WindDir",
+    "WindGust-Max",
+    "WindGust-Min",
+    "WindGust",
+    "WindSpeed",
+    "WindU",
+    "WindV",
 }
 
 _level = {
-    "DBLL_100",
-    "DBLY_10",
-    "EATM_0",
-    "ISBL_1",
-    "ISBL_10",
-    "ISBL_100",
-    "ISBL_1000",
-    "ISBL_1015",
-    "ISBL_150",
-    "ISBL_175",
-    "ISBL_20",
-    "ISBL_200",
-    "ISBL_225",
-    "ISBL_250",
-    "ISBL_275",
-    "ISBL_30",
-    "ISBL_300",
-    "ISBL_350",
-    "ISBL_400",
-    "ISBL_450",
-    "ISBL_5",
-    "ISBL_50",
-    "ISBL_500",
-    "ISBL_550",
-    "ISBL_600",
-    "ISBL_650",
-    "ISBL_700",
-    "ISBL_750",
-    "ISBL_800",
-    "ISBL_850",
-    "ISBL_875",
-    "ISBL_900",
-    "ISBL_925",
-    "ISBL_950",
-    "ISBL_970",
-    "ISBL_985",
-    "ISBY_1000-500",
-    "MSL_0",
-    "NTAT_0",
-    "PVU_1",
-    "PVU_1.5",
-    "PVU_2",
-    "SFC_0",
-    "TGL_10",
-    "TGL_120",
-    "TGL_2",
-    "TGL_40",
-    "TGL_80",
+    "DBS-0to1cm",
+    "DBS-0to10cm",
+    "EAtm",
+    "IsbL-0850to0700",
+    "IsbL-1000to0500",
+    "IsbL-1000to0850",
+    "IsbL-0001",
+    "IsbL-0010",
+    "IsbL-0100",
+    "IsbL-1000",
+    "IsbL-1015",
+    "IsbL-0150",
+    "IsbL-0175",
+    "IsbL-0020",
+    "IsbL-0200",
+    "IsbL-0225",
+    "IsbL-0250",
+    "IsbL-0275",
+    "IsbL-0030",
+    "IsbL-0300",
+    "IsbL-0350",
+    "IsbL-0400",
+    "IsbL-0450",
+    "IsbL-0005",
+    "IsbL-0050",
+    "IsbL-0500",
+    "IsbL-0550",
+    "IsbL-0600",
+    "IsbL-0650",
+    "IsbL-0700",
+    "IsbL-0750",
+    "IsbL-0800",
+    "IsbL-0850",
+    "IsbL-0875",
+    "IsbL-0900",
+    "IsbL-0925",
+    "IsbL-0950",
+    "IsbL-0970",
+    "IsbL-0985",
+    "MSL",
+    "NTAtm",
+    "PVU-1",
+    "PVU-1.5",
+    "PVU-2",
+    "Sfc",
+    "AGL-10m",
+    "AGL-120m",
+    "AGL-2m",
+    "AGL-40m",
+    "AGL-80m",
 }
 
 
 class gdps:
     def template(self):
+        if self.product is None:
+            self.product = "15km"
+
+        product_aliases = {
+            "15km/grib2/lat_lon": "15km",
+        }
+        self.product = product_aliases.get(self.product, self.product)
+
         if not hasattr(self, "variable"):
             print(
                 f"GDPS requires an argument for 'variable'. Here are some ideas:\n{_variable}."
             )
             print(
-                f"For full list of files, see https://dd.weather.gc.ca/{self.date:%Y%m%d}/WXO-DD/model_gem_global/15km/grib2/lat_lon/"
+                f"For full list of files, see https://dd.weather.gc.ca/{self.date:%Y%m%d}/WXO-DD/model_gdps/15km/"
             )
         if not hasattr(self, "level"):
             print(
                 f"GDPS requires an argument for 'level'. Here are some ideas:\n{_level}"
             )
             print(
-                f"For full list of files, see https://dd.weather.gc.ca/{self.date:%Y%m%d}/WXO-DD/model_gem_global/15km/grib2/lat_lon/"
+                f"For full list of files, see https://dd.weather.gc.ca/{self.date:%Y%m%d}/WXO-DD/model_gdps/15km/"
             )
 
         self.DESCRIPTION = "Canada's Global Deterministic Prediction System (GDPS)"
@@ -164,11 +189,11 @@ class gdps:
             "Datamart product description": "https://eccc-msc.github.io/open-data/msc-data/nwp_gdps/readme_gdps-datamart_en/#data-location",
         }
         self.PRODUCTS = {
-            "15km/grib2/lat_lon": "global domain",
+            "15km": "global domain",
         }
-        PATH = f"{self.date:%H}/{self.fxx:03d}/CMC_glb_{self.variable}_{self.level}_latlon.15x.15_{self.date:%Y%m%d%H}_P{self.fxx:03d}.grib2"
+        PATH = f"{self.date:%H}/{self.fxx:03d}/{self.date:%Y%m%dT%HZ}_MSC_GDPS_{self.variable}_{self.level}_LatLon0.15_PT{self.fxx:03d}H.grib2"
         self.SOURCES = {
-            "msc": f"https://dd.weather.gc.ca/{self.date:%Y%m%d}/WXO-DD/model_gem_global/{self.product}/{PATH}"
+            "msc": f"https://dd.weather.gc.ca/{self.date:%Y%m%d}/WXO-DD/model_gdps/{self.product}/{PATH}"
         }
 
         self.IDX_SUFFIX = [".grb2.idx", ".idx", ".grib.idx"]
