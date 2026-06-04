@@ -68,10 +68,11 @@ For optional features, if you are on Linux, make sure wgrib2 is installed and in
    example_zarr.ipynb
 
 .. toctree::
+   :glob:
    :maxdepth: 1
    :caption: Gallery
 
-   ./models/*
+   models/*
 
 
 
