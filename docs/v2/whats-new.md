@@ -2,7 +2,7 @@
 
 Herbie v2 introduces major architectural improvements, better performance, and several new features designed to make working with numerical weather prediction (NWP) data easier and more flexible.
 
-The v2 API was introduced with Herbie 2026.5.0, and is imported as follows
+The v2 API was introduced with Herbie 2026.6.0, and is imported as follows
 
 ```python
 from herbie.v2 import Herbie

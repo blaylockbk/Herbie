@@ -77,14 +77,15 @@ Create a Herbie Object
              step=12
          )
 
-      Or use model class via the Herbie namespace:
+      Or, use model class via the Herbie namespace. You can still use ``datetime`` to specify the desired date:
 
       .. code-block:: python
 
          from herbie.v2 import Herbie
+         from datetime import datetime
 
          H = Herbie.HRRR(
-            "2025-01-01",
+            datetime(2025, 1, 1),
             step=12
          )
 
@@ -93,7 +94,6 @@ Create a Herbie Object
 Forecast Lead Time
 ------------------
 
-The ``fxx`` parameter has been renamed to ``step``.
 
 .. grid:: 2
 
@@ -101,13 +101,22 @@ The ``fxx`` parameter has been renamed to ``step``.
 
       .. code-block:: python
 
-         H = Herbie("2025-01-01", model="hrrr", fxx=6)
+         H = Herbie(
+            "2025-01-01",
+            model="hrrr",
+            fxx=6
+         )
 
    .. grid-item-card:: v2
 
+      The ``fxx`` parameter has been renamed to ``step``.
+
       .. code-block:: python
 
-         H = HRRR("2025-01-01", step=6)
+         H = HRRR(
+            "2025-01-01",
+            step=6
+         )
 
       You can also use a ``timedelta``:
 
@@ -125,7 +134,6 @@ The ``fxx`` parameter has been renamed to ``step``.
 Inventory
 ---------
 
-Inventories are now **Polars DataFrames**, which support fast expression-based filtering.
 
 .. grid:: 2
 
@@ -140,6 +148,8 @@ Inventories are now **Polars DataFrames**, which support fast expression-based f
          H.inventory(r"TMP:/d+ mb")
 
    .. grid-item-card:: v2
+
+      Inventories are now **Polars DataFrames**, which support fast expression-based filtering.
 
       Same regex search strings work from v1, but you may also use Polars expressions to filter the inventory enabling more flexible filtering.
 
