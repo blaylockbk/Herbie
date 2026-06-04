@@ -52,6 +52,8 @@ Create a Herbie Object
 
    .. grid-item-card:: v1
 
+      Specify model with ``model=`` argument
+
       .. code-block:: python
 
          from herbie import Herbie
@@ -64,6 +66,8 @@ Create a Herbie Object
 
    .. grid-item-card:: v2
 
+      Import and use a Herbie model class
+
       .. code-block:: python
 
          from herbie.v2 import HRRR
@@ -73,13 +77,13 @@ Create a Herbie Object
              step=12
          )
 
-Or via the namespace:
+      Or use model class via the Herbie namespace:
 
-.. code-block:: python
+      .. code-block:: python
 
-   from herbie.v2 import Herbie
+         from herbie.v2 import Herbie
 
-   H = Herbie.HRRR("2025-01-01", step=12)
+         H = Herbie.HRRR("2025-01-01", step=12)
 
 ----
 
@@ -102,13 +106,13 @@ The ``fxx`` parameter has been renamed to ``step``.
 
          H = HRRR("2025-01-01", step=6)
 
-You can also use a ``timedelta``:
+      You can also use a ``timedelta``:
 
-.. code-block:: python
+      .. code-block:: python
 
-   from datetime import timedelta
+         from datetime import timedelta
 
-   H = HRRR("2025-01-01", step=timedelta(hours=6))
+         H = HRRR("2025-01-01", step=timedelta(hours=6))
 
 ----
 
@@ -135,11 +139,11 @@ Inventories are now **Polars DataFrames**, which support fast expression-based f
              pl.col("variable") == "TMP"
          )
 
-Benefits:
+      Benefits:
 
-- Faster performance
-- Flexible filtering
-- Access to source metadata
+      - Faster performance
+      - Flexible filtering
+      - Access to source metadata
 
 ----
 
@@ -160,11 +164,11 @@ Download Fields
 
          H.download("TMP:2 m")
 
-The basic workflow is unchanged, but downloads now:
+      The basic workflow is unchanged, but...
 
-- Run subsets in **parallel threads**
-- Display **Rich progress bars**
-- Preserve the **remote file path structure**
+      - Downloads each subset group in **parallel threads**
+      - Displays **Rich progress bars**
+      - Preserves the **remote file path structure**
 
 ----
 
@@ -185,8 +189,7 @@ Load Data with xarray
 
          ds = H.xarray("TMP:2 m")
 
-If multiple hypercubes are present, v2 returns an **xarray DataTree** rather
-than flattening them.
+      If multiple hypercubes are present, v2 returns an **xarray DataTree** rather than flattening them.
 
 ----
 
@@ -219,7 +222,7 @@ Checking Data Availability
 FastHerbie Changes
 ------------------
 
-``FastHerbie`` has been redesigned.
+
 
 .. grid:: 2
 
@@ -228,6 +231,8 @@ FastHerbie Changes
       Focused primarily on downloading many files quickly.
 
    .. grid-item-card:: v2
+
+      ``FastHerbie`` has been completely redesigned.
 
       Now enables **building custom GRIB files from multiple model runs**.
 
