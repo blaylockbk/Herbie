@@ -56,6 +56,7 @@ For optional features, if you are on Linux, make sure wgrib2 is installed and in
 
    whats-new
    migration-guide
+   migration-guide-alt
 
 .. toctree::
    :maxdepth: 1
