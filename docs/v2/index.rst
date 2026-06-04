@@ -71,7 +71,8 @@ For optional features, if you are on Linux, make sure wgrib2 is installed and in
    :maxdepth: 1
    :caption: Gallery
 
-   models/*
+   models/HRRR.ipynb
+   models/RRFS.ipynb
 
 
 
