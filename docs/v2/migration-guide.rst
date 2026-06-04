@@ -83,7 +83,10 @@ Create a Herbie Object
 
          from herbie.v2 import Herbie
 
-         H = Herbie.HRRR("2025-01-01", step=12)
+         H = Herbie.HRRR(
+            "2025-01-01",
+            step=12
+         )
 
 ----
 
@@ -112,7 +115,10 @@ The ``fxx`` parameter has been renamed to ``step``.
 
          from datetime import timedelta
 
-         H = HRRR("2025-01-01", step=timedelta(hours=6))
+         H = HRRR(
+            "2025-01-01",
+            step=timedelta(hours=6)
+         )
 
 ----
 
@@ -129,7 +135,13 @@ Inventories are now **Polars DataFrames**, which support fast expression-based f
 
          H.inventory("TMP:2 m")
 
+      .. code-block:: python
+
+         H.inventory(r"TMP:/d+ mb")
+
    .. grid-item-card:: v2
+
+      Same regex search strings work from v1, but you may also use Polars expressions to filter the inventory enabling more flexible filtering.
 
       .. code-block:: python
 
@@ -139,11 +151,15 @@ Inventories are now **Polars DataFrames**, which support fast expression-based f
              pl.col("variable") == "TMP"
          )
 
-      Benefits:
+         inv.filter(
+             [
+               pl.col("variable") == "TMP",
+               pl.col("level").str.ends_with("mb"),
+             ]
 
-      - Faster performance
-      - Flexible filtering
-      - Access to source metadata
+         )
+
+      The dataframe also includes the source path to the index file, which make the new FastHerbie features possible.
 
 ----
 
@@ -200,18 +216,19 @@ Checking Data Availability
 
    .. grid-item-card:: v1
 
-      Source checking was mostly implicit.
+      Source checking was mostly implicit. File existence was checked when the Herbie object was created.
 
    .. grid-item-card:: v2
 
-      You can explicitly resolve sources:
+      Herbie only checks for file existence when you ask to retrieve data (i.e., using the inventory, download, or xarray methods). You may also explicitly resolve sources to inspect them yourself:
 
       .. code-block:: python
 
          # Default resolution
+         # Look for first available file
          H.resolve()
 
-         # Check a specific source
+         # Check existence at a specific source
          H.resolve("google")
 
          # Check all sources
