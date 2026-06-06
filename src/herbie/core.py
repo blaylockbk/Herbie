@@ -908,7 +908,7 @@ class Herbie:
                 + df.loc[:, "param":]
                 .astype(str)
                 .apply(lambda x: x.str.cat(sep=":"), axis=1)
-                .replace(":nan:", ":")
+                .str.replace(":nan:", ":")
                 + ":"
             )
 
