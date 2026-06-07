@@ -35,8 +35,14 @@ def test_gfs():
     H.xarray(filter)
 
 def test_graphcast():
+
+    end_date = datetime(2026,5,5)
+    the_date = today-timedelta(hours=12)
+    if the_date > end_date:
+        the_date = end_date
+
     H = Herbie(
-        today-timedelta(hours=12),
+        the_date,
         priority="aws",
         product="pgrb2.0p25",
         model="graphcast",
