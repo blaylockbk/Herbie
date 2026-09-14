@@ -6,7 +6,7 @@ HELP = r"""
 Herbie(date, model='rrfs', ...)
 
 fxx : int
-product : {"prs", "2dfld", "testbed", "ififip"}
+product : {"prs", "2dfld", "testbed", "ififip", "subh"}
 domain : {"conus", "alaska", "hawaii", "puerto rico", "na"}
 
 If product="natlev", then domain should be "na"
@@ -27,6 +27,7 @@ class rrfs:
             "2dfld": "2D surface/post-processed fields",
             "testbed": "testbed fields",
             "ififip": "icing/freezing fields",
+            "subh": "Subhourly grids (available with 2D fields only)"
         }
 
         # Format the product parameter
@@ -34,6 +35,13 @@ class rrfs:
             self.product = "prslev"
         elif self.product == "2d":
             self.product = "2dfld"
+
+        # subhourly on RRFS is only 2D at this time.
+        # It requires both 2dfld and subh.
+        extra_subh = ""
+        if self.product == "subh":
+            self.product = "2dfld"
+            extra_subh = ".subh"
 
         # Format the domain parameter (default to conus)
         domain_map = {"alaska": "ak", "hawaii": "hi", "puerto rico": "pr"}
@@ -59,12 +67,12 @@ class rrfs:
             "aws": (
                 f"https://noaa-rrfs-ops-pds.s3.amazonaws.com/"
                 f"rrfs.{self.date:%Y%m%d/%H}/"
-                f"rrfs.t{self.date:%H}z.{self.product}.{resolution}.f{self.fxx:03d}.{self.domain}.grib2"
+                f"rrfs.t{self.date:%H}z.{self.product}.{resolution}{extra_subh}.f{self.fxx:03d}.{self.domain}.grib2"
             ),
             "nomads": (
                 f"https://nomads.ncep.noaa.gov/pub/data/nccf/com/rrfs/v1.0/"
                 f"rrfs.{self.date:%Y%m%d/%H}/"
-                f"rrfs.t{self.date:%H}z.{self.product}.{resolution}.f{self.fxx:03d}.{self.domain}.grib2"
+                f"rrfs.t{self.date:%H}z.{self.product}.{resolution}{extra_subh}.f{self.fxx:03d}.{self.domain}.grib2"
             ),
 
         }
