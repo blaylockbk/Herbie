@@ -6,9 +6,7 @@ HELP = r"""
 Herbie(date, model='rrfs', ...)
 
 fxx : int
-product : {"prs", "nat", "2dfld", "testbed", "ififip"}
-member : {None, int}
-    None for deterministic run, int (1-5) for ensemble members
+product : {"prs", "2dfld", "testbed", "ififip"}
 domain : {"conus", "alaska", "hawaii", "puerto rico", "na"}
 
 If product="natlev", then domain should be "na"
@@ -19,7 +17,7 @@ class rrfs:
     def template(self):
         self.DESCRIPTION = "Rapid Refresh Forecast System (RRFS)"
         self.DETAILS = {
-            "aws product description": "https://registry.opendata.aws/noaa-rrfs/",
+            "aws product description": "https://registry.opendata.aws/noaa-rrfs-ops/",
         }
         self.HELP = HELP
 
@@ -34,8 +32,8 @@ class rrfs:
         # Format the product parameter
         if self.product == "prs":
             self.product = "prslev"
-        elif self.product == "nat":
-            self.product = "natlev"
+        elif self.product == "2d":
+            self.product = "2dfld"
 
         # Format the domain parameter (default to conus)
         domain_map = {"alaska": "ak", "hawaii": "hi", "puerto rico": "pr"}
@@ -46,36 +44,37 @@ class rrfs:
             self.domain = domain_map.get(self.domain, self.domain)
 
         # Resolution depends on the domain
-        resolution = "2p5km" if self.domain in ("hi", "pr") else "3km"
+        if self.domain in ("hi", "pr"):
+            resolution = "2p5km"
+        elif self.domain in ("na"):
+            resolution = "13km"
+        else:
+            resolution = "3km"
+
 
         # Ensemble member (int) vs deterministic (None/other)
         self.member = getattr(self, "member", None)
 
-        if isinstance(self.member, int):
-            member_str = f"m{self.member:03d}"
-            # Ensemble members are only available for the "na" domain
-            self.SOURCES = {
-                "aws": (
-                    f"https://noaa-rrfs-pds.s3.amazonaws.com/"
-                    f"rrfs_a/rrfsens.{self.date:%Y%m%d/%H}/{member_str}/"
-                    f"rrfs.t{self.date:%H}z.{member_str}.nbmfld.{resolution}.f{self.fxx:03d}.na.grib2"
-                ),
-            }
-        else:
-            self.SOURCES = {
-                "aws": (
-                    f"https://noaa-rrfs-pds.s3.amazonaws.com/"
-                    f"rrfs_a/rrfs.{self.date:%Y%m%d/%H}/"
-                    f"rrfs.t{self.date:%H}z.{self.product}.{resolution}.f{self.fxx:03d}.{self.domain}.grib2"
-                ),
-            }
+        self.SOURCES = {
+            "aws": (
+                f"https://noaa-rrfs-ops-pds.s3.amazonaws.com/"
+                f"rrfs.{self.date:%Y%m%d/%H}/"
+                f"rrfs.t{self.date:%H}z.{self.product}.{resolution}.f{self.fxx:03d}.{self.domain}.grib2"
+            ),
+            "nomads": (
+                f"https://nomads.ncep.noaa.gov/pub/data/nccf/com/rrfs/v1.0/"
+                f"rrfs.{self.date:%Y%m%d/%H}/"
+                f"rrfs.t{self.date:%H}z.{self.product}.{resolution}.f{self.fxx:03d}.{self.domain}.grib2"
+            ),
+
+        }
 
         self.LOCALFILE = f"{self.get_remoteFileName}"
 
-
+# prototype version -
 class rrfs_old:
     def template(self):
-        self.DESCRIPTION = "Rapid Refresh Forecast System (RRFS) Ensemble"
+        self.DESCRIPTION = "Rapid Refresh Forecast System (RRFS) (prototype)"
         self.DETAILS = {
             "aws product description": "https://registry.opendata.aws/noaa-rrfs/",
         }

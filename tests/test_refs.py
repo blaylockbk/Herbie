@@ -13,12 +13,12 @@ save_dir = config["default"]["save_dir"] / "Herbie-Tests-Data/"
 
 
 
-def test_rrfs_prslev_defaults_to_conus():
-    """prslev product should default domain to 'conus'."""
+def test_refs_ffri_defaults_to_conus():
+    """ffri product should default domain to 'conus'."""
     H = Herbie(
         today,
-        model="rrfs",
-        product="prslev",
+        model="refs",
+        product="ffri",
         fxx=0,
         save_dir=save_dir,
     )
@@ -35,12 +35,12 @@ def test_rrfs_prslev_defaults_to_conus():
         ("conus", "conus"),
     ],
 )
-def test_rrfs_domain_mapping(domain_in, domain_out):
+def test_refs_domain_mapping(domain_in, domain_out):
     """Domain long names should be mapped to their abbreviations."""
     H = Herbie(
         today,
-        model="rrfs",
-        product="prslev",
+        model="refs",
+        product="mean",
         domain=domain_in,
         fxx=0,
         save_dir=save_dir,
@@ -48,15 +48,15 @@ def test_rrfs_domain_mapping(domain_in, domain_out):
     assert H.domain == domain_out
 
 
-def test_rrfs_2dfld_product_accepted():
-    """2dfld should be a valid product and default to domain='conus'."""
+def test_refs_sprd_product_accepted():
+    """sprd should be a valid product and default to domain='conus'."""
     H = Herbie(
         today,
-        model="rrfs",
-        product="2dfld",
+        model="refs",
+        product="sprd",
         fxx=0,
         save_dir=save_dir,
     )
-    assert H.product == "2dfld"
+    assert H.product == "sprd"
     assert H.domain == "conus"
-    assert "2dfld" in H.SOURCES["aws"]
+    assert "sprd" in H.SOURCES["aws"]
