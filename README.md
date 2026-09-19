@@ -1,6 +1,10 @@
 <div align="center">
 
-![Herbie Logo](https://github.com/blaylockbk/Herbie/blob/main/images/logo_new/Herbie-logo.png?raw=True)
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/blaylockbk/Herbie/main/docs/_static/logo_v2/herbie-dark-mode.svg">
+  <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/blaylockbk/Herbie/main/docs/_static/logo_v2/herbie-light-mode.svg">
+  <img alt="Herbie Logo" src="https://raw.githubusercontent.com/blaylockbk/Herbie/main/docs/_static/logo_v2/herbie-light-mode.svg">
+</picture>
 
 # Herbie: Download Weather Forecast Model Data in Python 🏁
 
