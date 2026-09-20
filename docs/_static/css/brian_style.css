@@ -2,6 +2,20 @@
     --pst-color-on-background: #f0ead2;
 }
 
+.homepage-logo-dark {
+    display: none;
+}
+
+html[data-theme="dark"] .homepage-logo-light,
+body[data-theme="dark"] .homepage-logo-light {
+    display: none;
+}
+
+html[data-theme="dark"] .homepage-logo-dark,
+body[data-theme="dark"] .homepage-logo-dark {
+    display: inline;
+}
+
 /* .bd-header[data-theme="light"] {
     background: #f0ead2 !important;
 }

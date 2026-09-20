@@ -6,11 +6,8 @@
 
 .. raw :: html
 
-    <picture>
-      <source media="(prefers-color-scheme: dark)" srcset="_static/logo_v2/herbie-dark-mode.svg">
-      <source media="(prefers-color-scheme: light)" srcset="_static/logo_v2/herbie-light-mode.svg">
-      <img alt="Herbie Logo" src="_static/logo_v2/herbie-light-mode.svg" style="background-color:transparent;">
-    </picture>
+     <img class="homepage-logo homepage-logo-light" alt="Herbie Logo" src="_static/logo_v2/herbie-light-mode.svg" style="background-color:transparent;">
+     <img class="homepage-logo homepage-logo-dark" alt="Herbie Logo" src="_static/logo_v2/herbie-dark-mode.svg" style="background-color:transparent;">
 
 
 
