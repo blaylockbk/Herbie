@@ -138,6 +138,11 @@ html_theme_options = {
     "navbar_center": ["navbar-nav"],
     "footer_start": ["copyright"],
     "footer_center": ["sphinx-version"],
+    "announcement": (
+        "🚧 <b>Herbie v2</b> is in active development — a redesigned API with "
+        "Polars, Rich, and a cleaner model interface. "
+        "<a href='/en/stable/v2/index.html'>See the v2 preview docs →</a>"
+    ),
 }
 
 html_sidebars = {}

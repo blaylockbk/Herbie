@@ -1,0 +1,38 @@
+=========
+herbie.v2
+=========
+
+
+I recommend importing the Herbie Namespace or a specific model directly
+
+
+.. code-block:: python
+
+   from herbie.v2 import Herbie
+
+   H = Herbie.HRRR('2025-01-01')
+
+.. code-block:: python
+
+   from herbie.v2 import HRRR
+
+   H = HRRR('2025-01-01')
+
+
+.. toctree::
+    :maxdepth: 2
+
+.. currentmodule:: herbie.v2
+
+.. autosummary::
+   :toctree: _autosummary
+
+   Herbie
+   _base
+   _config
+   _download
+   _inventory
+   _search_help
+   _sources
+   _xarray
+   fast
