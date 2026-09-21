@@ -6,7 +6,7 @@ HELP = r"""
 Herbie(date, model='rrfs', ...)
 
 fxx : int
-product : {"prs", "2dfld", "testbed", "ififip", "subh"}
+product : {"prs", "prslevnomads", "2dfld", "2dfldnomads", "testbed", "ififip", "subh"}
 domain : {"conus", "alaska", "hawaii", "puerto rico", "na"}
 
 If product="natlev", then domain should be "na"
@@ -23,8 +23,10 @@ class rrfs:
 
         self.PRODUCTS = {
             "prslev": "pressure level fields",
+            "prslevnomads": "pressure level fields, ensemble",
             "natlev": "native level fields",
             "2dfld": "2D surface/post-processed fields",
+            "2dfldnomads": "2D surface/post-processed fields, ensemble",
             "testbed": "testbed fields",
             "ififip": "icing/freezing fields",
             "subh": "Subhourly grids (available with 2D fields only)"
@@ -63,19 +65,32 @@ class rrfs:
         # Ensemble member (int) vs deterministic (None/other)
         self.member = getattr(self, "member", None)
 
-        self.SOURCES = {
-            "aws": (
-                f"https://noaa-rrfs-ops-pds.s3.amazonaws.com/"
-                f"rrfs.{self.date:%Y%m%d/%H}/"
-                f"rrfs.t{self.date:%H}z.{self.product}.{resolution}{extra_subh}.f{self.fxx:03d}.{self.domain}.grib2"
-            ),
-            "nomads": (
-                f"https://nomads.ncep.noaa.gov/pub/data/nccf/com/rrfs/v1.0/"
-                f"rrfs.{self.date:%Y%m%d/%H}/"
-                f"rrfs.t{self.date:%H}z.{self.product}.{resolution}{extra_subh}.f{self.fxx:03d}.{self.domain}.grib2"
-            ),
-
-        }
+        if self.member is None:
+            self.SOURCES = {
+                "aws": (
+                    f"https://noaa-rrfs-ops-pds.s3.amazonaws.com/"
+                    f"rrfs.{self.date:%Y%m%d/%H}/"
+                    f"rrfs.t{self.date:%H}z.{self.product}.{resolution}{extra_subh}.f{self.fxx:03d}.{self.domain}.grib2"
+                ),
+                "nomads": (
+                    f"https://nomads.ncep.noaa.gov/pub/data/nccf/com/rrfs/v1.0/"
+                    f"rrfs.{self.date:%Y%m%d/%H}/"
+                    f"rrfs.t{self.date:%H}z.{self.product}.{resolution}{extra_subh}.f{self.fxx:03d}.{self.domain}.grib2"
+                ),
+            }
+        else:  # member > 1 is specified
+            self.SOURCES = {
+                "aws": (
+                    f"https://noaa-rrfs-ops-pds.s3.amazonaws.com/"
+                    f"rrfsens.{self.date:%Y%m%d/%H}/m{self.member:03d}/"
+                    f"rrfs.t{self.date:%H}z.m{self.member:03d}.{self.product}.{resolution}{extra_subh}.f{self.fxx:03d}.{self.domain}.grib2"
+                ),
+                "nomads": (
+                    f"https://nomads.ncep.noaa.gov/pub/data/nccf/com/rrfs/v1.0/"
+                    f"rrfsens.{self.date:%Y%m%d/%H}/m{self.member:03d}/"
+                    f"rrfs.t{self.date:%H}z.m{self.member:03d}.{self.product}.{resolution}{extra_subh}.f{self.fxx:03d}.{self.domain}.grib2"
+                ),
+            }
 
         self.LOCALFILE = f"{self.get_remoteFileName}"
 

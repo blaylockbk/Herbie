@@ -2,6 +2,8 @@
 RRFS Ensemble Forecast System (REFS)
 """
 
+import warnings
+
 HELP = r"""
 Herbie(date, model='refs', ...)
 
@@ -41,20 +43,24 @@ class refs:
             self.domain = getattr(self, "domain", None) or "conus"
             self.domain = domain_map.get(self.domain, self.domain)
 
+        if self.fxx==0:
+            warnings.warn(
+                            "REFS does not include fxx=0, using fxx=1 instead."
+                        )
+            self.fxx = 1
 
         self.SOURCES = {
             "aws": (
                 f"https://noaa-rrfs-ops-pds.s3.amazonaws.com/"
-                f"refs.{self.date:%Y%m%d/%H}/"
+                f"refs.{self.date:%Y%m%d/%H}/ensprod/"
                 f"refs.t{self.date:%H}z.{self.product}.f{self.fxx:02d}.{self.domain}.grib2"
             ),
             "nomads": (
-                f"https://nomads.ncep.noaa.gov/pub/data/nccf/com/rrfs/v1.0/"
-                f"rrfsens.{self.date:%Y%m%d/%H}/"
+                f"https://nomads.ncep.noaa.gov/pub/data/nccf/com/refs/v1.0/"
+                f"refs.{self.date:%Y%m%d/%H}/ensprod/"
                 f"refs.t{self.date:%H}z.{self.product}.f{self.fxx:02d}.{self.domain}.grib2"
             ),
 
         }
 
         self.LOCALFILE = f"{self.get_remoteFileName}"
-
