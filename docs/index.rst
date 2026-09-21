@@ -6,7 +6,8 @@
 
 .. raw :: html
 
-   <img src="_static/logo_new/Herbie-logo.png" style="background-color:transparent;">
+     <img class="homepage-logo homepage-logo-light" alt="Herbie Logo" src="_static/logo_v2/herbie-light-mode.svg" style="background-color:transparent;">
+     <img class="homepage-logo homepage-logo-dark" alt="Herbie Logo" src="_static/logo_v2/herbie-dark-mode.svg" style="background-color:transparent;">
 
 
 
