@@ -19,7 +19,7 @@ def test_refs_ffri_defaults_to_conus():
         today,
         model="refs",
         product="ffri",
-        fxx=0,
+        fxx=1,
         save_dir=save_dir,
     )
     assert H.domain == "conus"
@@ -42,7 +42,7 @@ def test_refs_domain_mapping(domain_in, domain_out):
         model="refs",
         product="mean",
         domain=domain_in,
-        fxx=0,
+        fxx=1,
         save_dir=save_dir,
     )
     assert H.domain == domain_out
@@ -54,7 +54,7 @@ def test_refs_sprd_product_accepted():
         today,
         model="refs",
         product="sprd",
-        fxx=0,
+        fxx=1,
         save_dir=save_dir,
     )
     assert H.product == "sprd"
