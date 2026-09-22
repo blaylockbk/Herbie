@@ -91,6 +91,26 @@ def test_rrfs_prslev_defaults_to_conus():
     assert H.domain == "conus"
 
 
+def test_rrfs_product_formatting():
+    """prs product should map to, 2d map to 2dfld."""
+    H1 = Herbie(
+        today,
+        model="rrfs",
+        product="prs",
+        fxx=0,
+        save_dir=save_dir,
+    )
+    H2 = Herbie(
+        today,
+        model="rrfs",
+        product="2d",
+        fxx=0,
+        save_dir=save_dir,
+    )
+    assert H1.product == "prslev"
+    assert H2.product == "2dfld"
+
+
 @pytest.mark.parametrize(
     "domain_in,domain_out",
     [

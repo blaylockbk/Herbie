@@ -48,6 +48,31 @@ def test_refs_domain_mapping(domain_in, domain_out):
     assert H.domain == domain_out
 
 
+def test_refs_fxx_0():
+    """fxx=1 should return warning and change fxx to 1."""
+    with pytest.warns(UserWarning, match="REFS does not") as warn:
+        H = Herbie(
+            today,
+            model="refs",
+            product="mean",
+            fxx=0,
+            save_dir=save_dir,
+        )
+        assert H.fxx == 1
+
+
+def test_refs_ffri_maps_to_conus():
+    """if pfduct is ffri, domain should be set to conus."""
+    H = Herbie(
+        today,
+        model="refs",
+        product="ffri",
+        fxx=1,
+        save_dir=save_dir,
+    )
+    assert H.domain == "conus"
+
+
 def test_refs_sprd_product_accepted():
     """sprd should be a valid product and default to domain='conus'."""
     H = Herbie(
