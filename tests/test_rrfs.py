@@ -92,6 +92,7 @@ def test_rrfs_product_formatting():
         ("alaska", "ak"),
         ("hawaii", "hi"),
         ("puerto rico", "pr"),
+        ("na", "na"),
         ("conus", "conus"),
     ],
 )
