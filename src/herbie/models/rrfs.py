@@ -54,7 +54,6 @@ class rrfs:
         else:
             resolution = "3km"
 
-
         # Ensemble member (int) vs deterministic (None/other)
         self.member = getattr(self, "member", None)
 
