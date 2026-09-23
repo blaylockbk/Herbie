@@ -6,10 +6,9 @@ HELP = r"""
 Herbie(date, model='rrfs', ...)
 
 fxx : int
-product : {"prs", "prslevnomads", "2dfld", "2dfldnomads", "testbed", "ififip", "subh"}
+product : {"prslev", "prslevnomads", "2dfld", "2dfldnomads", "subh"}
 domain : {"conus", "alaska", "hawaii", "puerto rico", "na"}
 
-If product="natlev", then domain should be "na"
 """
 
 
@@ -24,11 +23,8 @@ class rrfs:
         self.PRODUCTS = {
             "prslev": "pressure level fields",
             "prslevnomads": "pressure level fields, ensemble",
-            "natlev": "native level fields",
             "2dfld": "2D surface/post-processed fields",
             "2dfldnomads": "2D surface/post-processed fields, ensemble",
-            "testbed": "testbed fields",
-            "ififip": "icing/freezing fields",
             "subh": "Subhourly grids (available with 2D fields only)"
         }
 
@@ -47,11 +43,8 @@ class rrfs:
 
         # Format the domain parameter (default to conus)
         domain_map = {"alaska": "ak", "hawaii": "hi", "puerto rico": "pr"}
-        if self.product == "natlev":
-            self.domain = "na"
-        else:
-            self.domain = getattr(self, "domain", None) or "conus"
-            self.domain = domain_map.get(self.domain, self.domain)
+        self.domain = getattr(self, "domain", None) or "conus"
+        self.domain = domain_map.get(self.domain, self.domain)
 
         # Resolution depends on the domain
         if self.domain in ("hi", "pr"):
