@@ -10,8 +10,6 @@ Herbie(date, model='refs', ...)
 fxx : int
 product : {"mean", "sprd", "pmmn", "lpmm", "avrg", "prob", "eas", "ffri"}
 domain : {"conus", "alaska", "hawaii", "puerto rico", "na"}
-
-If product="natlev", then domain should be "na"
 """
 
 
