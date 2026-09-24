@@ -12,6 +12,47 @@ today = datetime(now.year, now.month, now.day) - timedelta(hours=12)
 save_dir = config["default"]["save_dir"] / "Herbie-Tests-Data/"
 
 
+def test_rrfs():
+    H = Herbie(
+        today,
+        model="rrfs",
+        fxx=12,
+        save_dir=save_dir,
+        overwrite=True,
+    )
+
+    assert H.grib, "RRFS grib2 file not found"
+    assert H.idx, "RRFS index file not found"
+
+
+def test_rrfs_ens():
+    H = Herbie(
+        today,
+        model="rrfs",
+        product='2dfldnomads',
+        fxx=12,
+        member=1,
+        save_dir=save_dir,
+        overwrite=True,
+    )
+
+    assert H.grib, "RRFS (ensemble) grib2 file not found"
+    assert H.idx, "RRFS (ensemble) index file not found"
+
+
+def test_rrfs_subh():
+    H = Herbie(
+        today,
+        model="rrfs",
+        product='subh',
+        fxx=12,
+        save_dir=save_dir,
+        overwrite=True,
+    )
+
+    assert H.grib, "RRFS (subh) grib2 file not found"
+    assert H.idx, "RRFS (subh) index file not found"
+
 
 def test_rrfs_prslev_defaults_to_conus():
     """prslev product should default domain to 'conus'."""
@@ -23,6 +64,26 @@ def test_rrfs_prslev_defaults_to_conus():
         save_dir=save_dir,
     )
     assert H.domain == "conus"
+
+
+def test_rrfs_product_formatting():
+    """prs product should map to, 2d map to 2dfld."""
+    H1 = Herbie(
+        today,
+        model="rrfs",
+        product="prs",
+        fxx=0,
+        save_dir=save_dir,
+    )
+    H2 = Herbie(
+        today,
+        model="rrfs",
+        product="2d",
+        fxx=0,
+        save_dir=save_dir,
+    )
+    assert H1.product == "prslev"
+    assert H2.product == "2dfld"
 
 
 @pytest.mark.parametrize(
