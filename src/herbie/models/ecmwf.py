@@ -20,18 +20,33 @@ from datetime import datetime
 
 class ifs:
     def template(self):
+
+        POSSIBLE_VALUES = {
+            "type": ["tf", "fc", "fcmean", "cf", "pf", "em", "ep", "es"],
+            "stream": ["oper", "wave", "scda", "scwv", "enfo", "waef", "mmsa"],
+            "resol": ["0p25", "0p1", "0p4-beta"],
+        }
+        LEVTYPE_FILES = {"sfc": "-sfc", "sol": "-sfc", "pl": "-pl"}
+        SFC_ONLY_STREAMS = {"wave", "waef", "scwv"}
+        IFS_50R1_DATE = datetime(2026, 5, 12, tzinfo=self.date.tzinfo)
+        
         # Allow a user to select the deprecated 0p4-beta resolution,
         # but default to the 0p25 product if resolution is not specified.
         # Sounds like the 0p4-beta product will be deprecated in May 2024.
+        # Resolutoin 0p1 is available since 20-10-2026
         if not hasattr(self, "resolution") or self.resolution is None:
             self.resolution = "0p25"
             if self.date < datetime(2024, 2, 1):
                 self.resolution = "0p4-beta"
-
+                
+        is self.resolution not in POSSIBLE_VALUES["resol"]:
+            raise ValueError(f"Bad resolution {self.resolution}")
+        
         self.DESCRIPTION = "ECMWF Open Data - Integrated Forecast System"
         self.DETAILS = {
             "ECMWF": "https://confluence.ecmwf.int/display/DAC/ECMWF+open+data%3A+real-time+forecasts+from+IFS+and+AIFS",
         }
+        # this is ECMWF stream
         self.PRODUCTS = {
             "oper": "operational high-resolution forecast, atmospheric fields",
             "enfo": "ensemble forecast, atmospheric fields",
@@ -46,11 +61,18 @@ class ifs:
         # https://data.ecmwf.int/forecasts/20240229/00z/ifs/0p25/oper/20240229000000-0h-oper-fc.grib2
 
         # IFS_50R1_DATE
-        if self.date >= datetime(2026, 5, 12, tzinfo=self.date.tzinfo):
+        if self.date >= IFS_50R1_DATE:
             if self.product == "scda":
                 self.product = "oper"
             if self.product == "scwv":
                 self.product = "wave"
+
+        if self.product not in POSSIBLE_VALUES["stream"]:
+            raise ValueError(f"Bad product {self.product}")
+
+        # file pattern "{_yyyymmddHHMMSS}-{step}h-{_stream}-{type}{_levfile}.{_extension}"
+        # product_suffix = {type}{_levfile}
+        
 
         # product suffix
         if self.product in ["enfo", "waef"]:
