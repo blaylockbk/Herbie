@@ -34,11 +34,11 @@ jobs:
         uses: conda-incubator/setup-miniconda@v4
         with:
           python-version: ${{ matrix.python-version }}
-          miniforge-version: latest
-          #use-mamba: true
+          miniconda-version: latest
+          use-mamba: true
           auto-update-conda: true
           environment-file: ci/environment.yml
-          #mamba-version: "*"
+          mamba-version: "*"
           activate-environment: herbie-test
           auto-activate-base: false
           channels: conda-forge
