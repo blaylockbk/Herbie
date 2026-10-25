@@ -31,22 +31,23 @@ SPLIT_RESOLUTIONS = {"0p1"}
 # Resolutions only produced by the IFS model
 IFS_ONLY_RESOLUTIONS = {"0p1"}
 
-def level_files(product, resolution, type, for_index):
+def level_files(product, resolution, type, index):
     # Files at a split resolution are separated into single level ("-sfc")
     # and pressure level ("-pl") files. If no levtype is requested, both are
     # returned so that the result matches what the single file would contain.
     if resolution not in SPLIT_RESOLUTIONS or type == "tf":
-        return [""]
+        return ""
 
     if product in SFC_ONLY_STREAMS:
-            return [LEVTYPE_FILES["sfc"]]
+            return LEVTYPE_FILES["sfc"]
 
-    levtypes = [x for x in for_index.get("levtype", []) if x in LEVTYPE_FILES]
-    if not levtypes:
-        #levtypes = ["sfc", "pl"]
-        levtypes = ["sfc"]
+    idx = index.get("levtype", [])
+    if idx in LEVTYPE_FILES:
+        levtype = idx
+    if not levtype:
+        levtype = "sfc"
 
-    return list(dict.fromkeys(LEVTYPE_FILES[x] for x in levtypes))
+    return LEVTYPE_FILES[levtype]
 
 
 class ifs:
@@ -98,8 +99,7 @@ class ifs:
         # file pattern "{_yyyymmddHHMMSS}-{step}h-{_stream}-{type}{_levfile}.{_extension}"
         # product_suffix = {type}{_levfile}
         self.type = "" # could by fc ef or tf
-        _levfile = level_files(self.product, self.resolution, self.type, {"levtype":"sfc"})[0]
-        print(_levfile)
+        _levfile = level_files(self.product, self.resolution, self.type, {"levtype":"sfc"})
 
         # product suffix
         if self.product in ["enfo", "waef"]:
@@ -117,8 +117,6 @@ class ifs:
                 f"{self.date:%Y%m%d/%Hz}/ifs/{self.resolution}/{self.product}"
                 f"/{self.date:%Y%m%d%H%M%S}-{self.fxx}h-{self.product}-{product_suffix}.grib2"
             )
-
-        print(post_root)
 
         # If user asks for 'oper' or 'wave', still look for data in scda and waef for the short cut-off high resolution forecast.
         self.SOURCES = {
