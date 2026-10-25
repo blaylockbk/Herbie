@@ -31,12 +31,12 @@ jobs:
           fetch-depth: 2
 
       - name: Set up Conda (Miniforge + Mamba)
-        uses: conda-incubator/setup-miniconda@v3
+        uses: conda-incubator/setup-miniconda@v4
         with:
           python-version: ${{ matrix.python-version }}
           miniforge-version: latest
           #use-mamba: true
-          #auto-update-conda: true
+          auto-update-conda: true
           environment-file: ci/environment.yml
           #mamba-version: "*"
           activate-environment: herbie-test
