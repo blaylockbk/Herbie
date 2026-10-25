@@ -87,6 +87,7 @@ class TestIFS01:
         H = Herbie(
             yesterday,
             model="ifs",
+            product="oper",
             resolution="0p1",
             save_dir=save_dir,
             overwrite=True,
@@ -110,6 +111,7 @@ class TestIFS01:
         H = Herbie(
             date,
             model="ifs",
+            product="oper",
             resolution="0p1",
             save_dir=save_dir,
             overwrite=True,
