@@ -63,7 +63,7 @@ def test_graphcast():
 
 def test_gfs_ncei_historical_anl():
     H = Herbie(
-        datetime(2015, 1, 15),
+        datetime(2015, 8, 9, 6),
         priority="ncei_historical_analysis",
         product="0.5-degree",
         model="gfs",
