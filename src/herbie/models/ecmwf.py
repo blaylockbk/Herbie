@@ -32,7 +32,7 @@ SPLIT_RESOLUTIONS = {"0p1"}
 IFS_ONLY_RESOLUTIONS = {"0p1"}
 
 
-def level_files(product, resolution, type, index):
+def level_files(product, resolution, type, levtype):
     # Files at a split resolution are separated into single level ("-sfc")
     # and pressure level ("-pl") files. If no levtype is requested, both are
     # returned so that the result matches what the single file would contain.
@@ -42,10 +42,7 @@ def level_files(product, resolution, type, index):
     if product in SFC_ONLY_STREAMS:
         return LEVTYPE_FILES["sfc"]
 
-    idx = index.get("levtype", [])
-    if idx in LEVTYPE_FILES:
-        levtype = idx
-    if not levtype:
+    if levtype is None or levtype not in LEVTYPE_FILES:
         levtype = "sfc"
 
     return LEVTYPE_FILES[levtype]
@@ -67,6 +64,9 @@ class ifs:
                 self.resolution = "0p4-beta"
             else:
                 self.resolution = "0p1"
+
+        if not hasattr(self, "levtype") or self.levtype is None:
+            self.levtype = "sfc"
 
         if self.resolution not in POSSIBLE_VALUES["resol"]:
             raise ValueError(
@@ -109,7 +109,7 @@ class ifs:
         # product_suffix = {type}{_levfile}
         self.type = ""  # could by fc or ef or tf (tf not manage by Herbie)
         _levfile = level_files(
-            self.product, self.resolution, self.type, {"levtype": "sfc"}
+            self.product, self.resolution, self.type, self.levtype
         )
 
         # product suffix

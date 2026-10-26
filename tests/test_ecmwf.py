@@ -19,7 +19,7 @@ DATES = [
 
 FILTERS = [
     ":10(?:u|v):",  # 10 meter wind variables
-    ":t:",  # temperature at all levels
+    ":2t:",  # temperature at all levels
 ]
 
 
@@ -90,21 +90,40 @@ def test_ifs_xarray(date, filter):
 class TestIFS01:
     """Tests for ECMWF's IFS 0p1 model."""
 
-    def test_ifs0p1_yesterday(self):
-        """Test downloading AIFS data from yesterday."""
+    def test_ifs0p1sfc_yesterday(self):
+        """Test downloading IFS 0p1 surface data from yesterday."""
         H = Herbie(
             yesterday,
             model="ifs",
             product="oper",
             resolution="0p1",
+            levtype="sfc",
             save_dir=save_dir,
             overwrite=True,
         )
 
-        assert H.grib, "AIFS GRIB file not found"
-        assert H.idx, "AIFS index file not found"
+        assert H.grib, "IFS GRIB file not found"
+        assert H.idx, "IFS index file not found"
 
         ds = H.xarray(":10(?:u|v):")
+        assert len(ds)
+
+    def test_ifs0p1pl_yesterday(self):
+        """Test downloading IFS 0p1 pressure levels data from yesterday."""
+        H = Herbie(
+            yesterday,
+            model="ifs",
+            product="oper",
+            resolution="0p1",
+            levtype="pl",
+            save_dir=save_dir,
+            overwrite=True,
+        )
+
+        assert H.grib, "IFS GRIB file not found"
+        assert H.idx, "IFS index file not found"
+
+        ds = H.xarray(":(?:u|v):")
         assert len(ds)
 
     @pytest.mark.parametrize(
