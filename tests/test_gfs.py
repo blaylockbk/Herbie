@@ -34,10 +34,10 @@ def test_gfs():
 
     H.xarray(filter)
 
-def test_graphcast():
 
-    end_date = datetime(2026,5,5)
-    the_date = today-timedelta(hours=12)
+def test_graphcast():
+    end_date = datetime(2026, 5, 5)
+    the_date = today - timedelta(hours=12)
     if the_date > end_date:
         the_date = end_date
 
@@ -53,13 +53,14 @@ def test_graphcast():
 
     assert H.grib, "GFS grib2 file not found"
     assert H.idx, "GFS index file not found"
-    
+
     filter = "HGT:500 mb"
     f = H.download(filter)
     assert H.get_localFilePath(filter).exists(), "File doesn't exist!"
     f.unlink()
 
     H.xarray(filter)
+
 
 def test_gfs_ncei_historical_anl():
     H = Herbie(

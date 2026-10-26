@@ -16,7 +16,7 @@ for model in models:
 
 @pytest.mark.parametrize("model", models)
 def test_FastHerbie(model):
-    DATES = { 
+    DATES = {
         "hrrr": pd.date_range("2022-01-01", "2022-01-01 02:00", freq="1h"),
         "gfs": pd.date_range("2022-01-01", "2022-01-01 02:00", freq="6h"),
         "gefs": pd.date_range("2022-01-01", "2022-01-01 02:00", freq="6h"),
@@ -27,9 +27,9 @@ def test_FastHerbie(model):
         "gefs": "TMP:2 m",
     }
     FXX = {
-        "hrrr": range(0,3),
-        "gfs": range(0,3),
-        "gefs": range(0,1),
+        "hrrr": range(0, 3),
+        "gfs": range(0, 3),
+        "gefs": range(0, 1),
     }
     KWARGS = {
         "hrrr": {},
@@ -45,7 +45,7 @@ def test_FastHerbie(model):
         DATES[model], fxx=FXX[model], save_dir=save_dir, model=model, **KWARGS[model]
     )
 
-    assert len(FH) == len(DATES[model])*len(FXX[model])
+    assert len(FH) == len(DATES[model]) * len(FXX[model])
 
     # Download subset of these files
     FH.download(DATA_VARS[model])
