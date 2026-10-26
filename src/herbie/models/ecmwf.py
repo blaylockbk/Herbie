@@ -54,15 +54,19 @@ def level_files(product, resolution, type, index):
 class ifs:
     def template(self):
         IFS_50R1_DATE = datetime(2026, 5, 12, tzinfo=self.date.tzinfo)
+        IFS_0P1_DATE = datetime(2026, 10, 20, tzinfo=self.date.tzinfo)
 
         # Allow a user to select the deprecated 0p4-beta resolution,
         # but default to the 0p25 product if resolution is not specified.
         # Sounds like the 0p4-beta product will be deprecated in May 2024.
         # Resolutoin 0p1 is available since 20-10-2026
         if not hasattr(self, "resolution") or self.resolution is None:
-            self.resolution = "0p25"
-            if self.date < datetime(2024, 2, 1, tzinfo=self.date.tzinfo):
+            if datetime(2024, 2, 1, tzinfo=self.date.tzinfo) <= self.date < IFS_0P1_DATE:
+                self.resolution = "0p25"
+            elif self.date < datetime(2024, 2, 1, tzinfo=self.date.tzinfo):
                 self.resolution = "0p4-beta"
+            else:
+                self.resolution = "0p1"
 
         if self.resolution not in POSSIBLE_VALUES["resol"]:
             raise ValueError(
@@ -94,6 +98,8 @@ class ifs:
             if self.product == "scwv":
                 self.product = "wave"
 
+        if self.product is None:
+            self.product = "oper"
         if self.product not in POSSIBLE_VALUES["stream"]:
             raise ValueError(
                 f"Bad `product={self.product!r}`. `product` must be one of {POSSIBLE_VALUES['stream']}"
@@ -101,7 +107,7 @@ class ifs:
 
         # file pattern "{_yyyymmddHHMMSS}-{step}h-{_stream}-{type}{_levfile}.{_extension}"
         # product_suffix = {type}{_levfile}
-        self.type = ""  # could by fc ef or tf
+        self.type = ""  # could by fc or ef or tf (tf not manage by Herbie)
         _levfile = level_files(
             self.product, self.resolution, self.type, {"levtype": "sfc"}
         )
