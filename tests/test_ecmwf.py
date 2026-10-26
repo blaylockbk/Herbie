@@ -64,8 +64,7 @@ def test_ifs_download_partial(date):
     assert H.get_localFilePath(":2t:").exists()
     f.unlink()
 
-# Seems to have problem with old IFS 0.4deg
-@pytest.mark.parametrize("date", DATES[1:])
+@pytest.mark.parametrize("date", DATES)
 def test_ifs_azure_download_partial(date):
     H = Herbie(
         date,
