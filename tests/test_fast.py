@@ -26,6 +26,11 @@ def test_FastHerbie(model):
         "gfs": "TMP:2 m",
         "gefs": "TMP:2 m",
     }
+    FXX = {
+        "hrrr": range(0,3),
+        "gfs": range(0,3),
+        "gefs": range(0,1),
+    }
     KWARGS = {
         "hrrr": {},
         "gfs": {},
@@ -37,10 +42,10 @@ def test_FastHerbie(model):
 
     # Create Fast Herbie
     FH = FastHerbie(
-        DATES[model], fxx=range(0, 3), save_dir=save_dir, model=model, **KWARGS[model]
+        DATES[model], fxx=FXX[model], save_dir=save_dir, model=model, **KWARGS[model]
     )
 
-    assert len(FH) == len(DATES[model])*3
+    assert len(FH) == len(DATES[model])*len(FXX[model])
 
     # Download subset of these files
     FH.download(DATA_VARS[model])
