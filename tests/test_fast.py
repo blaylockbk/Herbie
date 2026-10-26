@@ -6,13 +6,15 @@ import pytest
 
 save_dir = config["default"]["save_dir"] / "Herbie-Tests-Data/"
 
+models = ["hrrr", "gfs", "gefs"]
 # Remove all previous test data
-for i in (save_dir / "hrrr").rglob("*"):
-    if i.is_file():
-        i.unlink()
+for model in models:
+    for i in (save_dir / model).rglob("*"):
+        if i.is_file():
+            i.unlink()
 
 
-@pytest.mark.parametrize("model", ["hrrr", "gfs", "gefs"])
+@pytest.mark.parametrize("model", models)
 def test_FastHerbie(model):
     DATES = { 
         "hrrr": pd.date_range("2022-01-01", "2022-01-01 02:00", freq="1h"),
