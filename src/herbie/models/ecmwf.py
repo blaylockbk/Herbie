@@ -31,6 +31,7 @@ SPLIT_RESOLUTIONS = {"0p1"}
 # Resolutions only produced by the IFS model
 IFS_ONLY_RESOLUTIONS = {"0p1"}
 
+
 def level_files(product, resolution, type, index):
     # Files at a split resolution are separated into single level ("-sfc")
     # and pressure level ("-pl") files. If no levtype is requested, both are
@@ -39,7 +40,7 @@ def level_files(product, resolution, type, index):
         return ""
 
     if product in SFC_ONLY_STREAMS:
-            return LEVTYPE_FILES["sfc"]
+        return LEVTYPE_FILES["sfc"]
 
     idx = index.get("levtype", [])
     if idx in LEVTYPE_FILES:
@@ -51,11 +52,9 @@ def level_files(product, resolution, type, index):
 
 
 class ifs:
-
     def template(self):
-
         IFS_50R1_DATE = datetime(2026, 5, 12, tzinfo=self.date.tzinfo)
-        
+
         # Allow a user to select the deprecated 0p4-beta resolution,
         # but default to the 0p25 product if resolution is not specified.
         # Sounds like the 0p4-beta product will be deprecated in May 2024.
@@ -64,10 +63,12 @@ class ifs:
             self.resolution = "0p25"
             if self.date < datetime(2024, 2, 1, tzinfo=self.date.tzinfo):
                 self.resolution = "0p4-beta"
-                
+
         if self.resolution not in POSSIBLE_VALUES["resol"]:
-            raise ValueError(f"Bad resolution {self.resolution}")
-        
+            raise ValueError(
+                f"Bad `resolution={self.resolution!r}. `resolution` must be one of {POSSIBLE_VALUES['resol']}"
+            )
+
         self.DESCRIPTION = "ECMWF Open Data - Integrated Forecast System"
         self.DETAILS = {
             "ECMWF": "https://confluence.ecmwf.int/display/DAC/ECMWF+open+data%3A+real-time+forecasts+from+IFS+and+AIFS",
@@ -94,12 +95,16 @@ class ifs:
                 self.product = "wave"
 
         if self.product not in POSSIBLE_VALUES["stream"]:
-            raise ValueError(f"Bad product {self.product}")
+            raise ValueError(
+                f"Bad `product={self.product!r}`. `product` must be one of {POSSIBLE_VALUES['stream']}"
+            )
 
         # file pattern "{_yyyymmddHHMMSS}-{step}h-{_stream}-{type}{_levfile}.{_extension}"
         # product_suffix = {type}{_levfile}
-        self.type = "" # could by fc ef or tf
-        _levfile = level_files(self.product, self.resolution, self.type, {"levtype":"sfc"})
+        self.type = ""  # could by fc ef or tf
+        _levfile = level_files(
+            self.product, self.resolution, self.type, {"levtype": "sfc"}
+        )
 
         # product suffix
         if self.product in ["enfo", "waef"]:
