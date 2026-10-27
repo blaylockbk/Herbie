@@ -20,9 +20,10 @@ class IFS(HerbieModel):
     """
     ECMWF Integrated Forecast System (IFS) open data.
 
-    The ECMWF open-data archive provides global NWP output at 0.25°
-    resolution (0.4° before 2024-02-01).  Updated as new forecasts
-    are published; not all lead times are available for all products.
+    The ECMWF open-data archive provides global NWP output at 0.1°
+    resolution (0.25° from 2024-02-01 through 2026-10-19, and 0.4°
+    before 2024-02-01).  Updated as new forecasts are published; not
+    all lead times are available for all products.
 
     Parameters
     ----------
@@ -49,6 +50,15 @@ class IFS(HerbieModel):
 
         Aliases: ``operational→oper``, ``ensemble→enfo``.
 
+    resolution : {'0p1', '0p25', '0p4-beta'}, optional
+        Grid resolution. Defaults to the resolution available on the
+        initialization date.
+    level_type : {'sfc', 'pl'}, default 'sfc'
+        Level type for 0.1° files, which are split into separate surface
+        and pressure-level files. ``'surface'`` is an alias for ``'sfc'``;
+        ``'prs'`` and ``'pressure'`` are aliases for ``'pl'``. Wave
+        products use surface files.
+
     Examples
     --------
     >>> from herbie.v2 import IFS
@@ -66,9 +76,23 @@ class IFS(HerbieModel):
     MODEL_DESCRIPTION = "ECMWF Open Data — Integrated Forecast System"
     MODEL_WEBSITES = {
         "ECMWF": "https://confluence.ecmwf.int/display/DAC/ECMWF+open+data%3A+real-time+forecasts",
+        "ECMWF Open Data": "https://www.ecmwf.int/en/forecasts/datasets/open-data",
     }
 
     PARAMS = {
+        "resolution": {
+            "default": None,
+            "valid": ["0p1", "0p25", "0p4-beta"],
+        },
+        "level_type": {
+            "default": "sfc",
+            "valid": ["sfc", "pl"],
+            "aliases": {
+                "surface": "sfc",
+                "prs": "pl",
+                "pressure": "pl",
+            },
+        },
         "product": {
             "default": "oper",
             "valid": ["oper", "enfo", "wave", "waef", "scda", "scwv", "mmsf"],
@@ -97,11 +121,22 @@ class IFS(HerbieModel):
         step = self.step
         product = self.params["product"]
 
-        # Resolution changed 2024-02-01
-        resolution = "0p4-beta" if d < datetime(2024, 2, 1) else "0p25"
+        resolution = self.params.get("resolution")
+        if resolution is None:
+            if d < datetime(2024, 2, 1):
+                resolution = "0p4-beta"
+            elif d < datetime(2026, 10, 20):
+                resolution = "0p25"
+            else:
+                resolution = "0p1"
+
+        level_type = self.params["level_type"]
+        if product in ("wave", "waef", "scwv"):
+            level_type = "sfc"
+        level_suffix = f"-{level_type}" if resolution == "0p1" else ""
 
         # Product suffix
-        product_suffix = "ef" if product in ("enfo", "waef") else "fc"
+        product_suffix = ("ef" if product in ("enfo", "waef") else "fc") + level_suffix
 
         # URL layout changed 2024-02-28 06Z
         if d < datetime(2024, 2, 28, 6):

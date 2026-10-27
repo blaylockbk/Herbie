@@ -95,7 +95,7 @@ extras = [
     "herbie-data[plot,metpy,scikit-learn]", # Didn't include pygrib on purpose
 ]
 v2 = [
-    "polars>=1.38.1",
+    "polars>=2.1.0",
     "pyarrow>=23.0.0",
     "rich[jupyter]>=14.3.3",
     "herbie-data[zarr]"
