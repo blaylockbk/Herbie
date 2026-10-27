@@ -12,42 +12,46 @@ today = datetime(now.year, now.month, now.day) - timedelta(hours=12)
 save_dir = config["default"]["save_dir"] / "Herbie-Tests-Data/"
 
 
-def test_rrfs_natlev_domain_forced_to_na():
-    """natlev product should always use domain='na', regardless of user input."""
+def test_rrfs():
     H = Herbie(
         today,
         model="rrfs",
-        product="natlev",
-        fxx=0,
+        fxx=12,
         save_dir=save_dir,
+        overwrite=True,
     )
-    assert H.domain == "na"
+
+    assert H.grib, "RRFS grib2 file not found"
+    assert H.idx, "RRFS index file not found"
 
 
-def test_rrfs_natlev_overrides_user_domain():
-    """Even if user passes domain='conus', natlev should force domain='na'."""
+def test_rrfs_ens():
     H = Herbie(
         today,
         model="rrfs",
-        product="natlev",
-        domain="conus",
-        fxx=0,
+        product='2dfldnomads',
+        fxx=12,
+        member=1,
         save_dir=save_dir,
+        overwrite=True,
     )
-    assert H.domain == "na"
+
+    assert H.grib, "RRFS (ensemble) grib2 file not found"
+    assert H.idx, "RRFS (ensemble) index file not found"
 
 
-def test_rrfs_nat_shorthand():
-    """The 'nat' shorthand should normalize to 'natlev' and use domain='na'."""
+def test_rrfs_subh():
     H = Herbie(
         today,
         model="rrfs",
-        product="nat",
-        fxx=0,
+        product='subh',
+        fxx=12,
         save_dir=save_dir,
+        overwrite=True,
     )
-    assert H.product == "natlev"
-    assert H.domain == "na"
+
+    assert H.grib, "RRFS (subh) grib2 file not found"
+    assert H.idx, "RRFS (subh) index file not found"
 
 
 def test_rrfs_prslev_defaults_to_conus():
@@ -60,6 +64,26 @@ def test_rrfs_prslev_defaults_to_conus():
         save_dir=save_dir,
     )
     assert H.domain == "conus"
+
+
+def test_rrfs_product_formatting():
+    """prs product should map to, 2d map to 2dfld."""
+    H1 = Herbie(
+        today,
+        model="rrfs",
+        product="prs",
+        fxx=0,
+        save_dir=save_dir,
+    )
+    H2 = Herbie(
+        today,
+        model="rrfs",
+        product="2d",
+        fxx=0,
+        save_dir=save_dir,
+    )
+    assert H1.product == "prslev"
+    assert H2.product == "2dfld"
 
 
 @pytest.mark.parametrize(
@@ -83,20 +107,6 @@ def test_rrfs_domain_mapping(domain_in, domain_out):
         save_dir=save_dir,
     )
     assert H.domain == domain_out
-
-
-def test_rrfs_natlev_file_exists():
-    """Verify the natlev URL actually resolves to a file on S3."""
-    H = Herbie(
-        today,
-        model="rrfs",
-        product="natlev",
-        fxx=0,
-        save_dir=save_dir,
-        overwrite=True,
-    )
-    assert H.grib, "RRFS natlev grib2 file not found"
-    assert H.idx, "RRFS natlev index file not found"
 
 
 def test_rrfs_2dfld_product_accepted():

@@ -17,21 +17,67 @@ https://www.ecmwf.int/en/about/media-centre/news/2024/ecmwf-releases-much-larger
 
 from datetime import datetime
 
+POSSIBLE_VALUES = {
+    "type": ["tf", "fc", "fcmean", "cf", "pf", "em", "ep", "es"],
+    "stream": ["oper", "wave", "scda", "scwv", "enfo", "waef", "mmsa"],
+    "resol": ["0p25", "0p1", "0p4-beta"],
+}
+LEVTYPE_FILES = {"sfc": "-sfc", "sol": "-sfc", "pl": "-pl"}
+SFC_ONLY_STREAMS = {"wave", "waef", "scwv"}
+
+# Resolutions whose GRIB files are split by level type into
+# "<name>-sfc.grib2" and "<name>-pl.grib2" instead of a single file
+SPLIT_RESOLUTIONS = {"0p1"}
+# Resolutions only produced by the IFS model
+IFS_ONLY_RESOLUTIONS = {"0p1"}
+
+
+def level_files(product, resolution, type, levtype):
+    # Files at a split resolution are separated into single level ("-sfc")
+    # and pressure level ("-pl") files. If no levtype is requested, both are
+    # returned so that the result matches what the single file would contain.
+    if resolution not in SPLIT_RESOLUTIONS or type == "tf":
+        return ""
+
+    if product in SFC_ONLY_STREAMS:
+        return LEVTYPE_FILES["sfc"]
+
+    if levtype is None or levtype not in LEVTYPE_FILES:
+        levtype = "sfc"
+
+    return LEVTYPE_FILES[levtype]
+
 
 class ifs:
     def template(self):
+        IFS_50R1_DATE = datetime(2026, 5, 12, tzinfo=self.date.tzinfo)
+        IFS_0P1_DATE = datetime(2026, 10, 20, tzinfo=self.date.tzinfo)
+
         # Allow a user to select the deprecated 0p4-beta resolution,
         # but default to the 0p25 product if resolution is not specified.
         # Sounds like the 0p4-beta product will be deprecated in May 2024.
+        # Resolutoin 0p1 is available since 20-10-2026
         if not hasattr(self, "resolution") or self.resolution is None:
-            self.resolution = "0p25"
-            if self.date < datetime(2024, 2, 1):
+            if datetime(2024, 2, 1, tzinfo=self.date.tzinfo) <= self.date < IFS_0P1_DATE:
+                self.resolution = "0p25"
+            elif self.date < datetime(2024, 2, 1, tzinfo=self.date.tzinfo):
                 self.resolution = "0p4-beta"
+            else:
+                self.resolution = "0p1"
+
+        if not hasattr(self, "levtype") or self.levtype is None:
+            self.levtype = "sfc"
+
+        if self.resolution not in POSSIBLE_VALUES["resol"]:
+            raise ValueError(
+                f"Bad `resolution={self.resolution!r}. `resolution` must be one of {POSSIBLE_VALUES['resol']}"
+            )
 
         self.DESCRIPTION = "ECMWF Open Data - Integrated Forecast System"
         self.DETAILS = {
             "ECMWF": "https://confluence.ecmwf.int/display/DAC/ECMWF+open+data%3A+real-time+forecasts+from+IFS+and+AIFS",
         }
+        # this is ECMWF stream
         self.PRODUCTS = {
             "oper": "operational high-resolution forecast, atmospheric fields",
             "enfo": "ensemble forecast, atmospheric fields",
@@ -45,13 +91,34 @@ class ifs:
         # example file
         # https://data.ecmwf.int/forecasts/20240229/00z/ifs/0p25/oper/20240229000000-0h-oper-fc.grib2
 
+        # IFS_50R1_DATE
+        if self.date >= IFS_50R1_DATE:
+            if self.product == "scda":
+                self.product = "oper"
+            if self.product == "scwv":
+                self.product = "wave"
+
+        if self.product is None:
+            self.product = "oper"
+        if self.product not in POSSIBLE_VALUES["stream"]:
+            raise ValueError(
+                f"Bad `product={self.product!r}`. `product` must be one of {POSSIBLE_VALUES['stream']}"
+            )
+
+        # file pattern "{_yyyymmddHHMMSS}-{step}h-{_stream}-{type}{_levfile}.{_extension}"
+        # product_suffix = {type}{_levfile}
+        self.type = ""  # could by fc or ef or tf (tf not manage by Herbie)
+        _levfile = level_files(
+            self.product, self.resolution, self.type, self.levtype
+        )
+
         # product suffix
         if self.product in ["enfo", "waef"]:
-            product_suffix = "ef"
+            product_suffix = "ef" + _levfile
         else:
-            product_suffix = "fc"
+            product_suffix = "fc" + _levfile
 
-        if self.date < datetime(2024, 2, 28, 6):
+        if self.date < datetime(2024, 2, 28, 6, tzinfo=self.date.tzinfo):
             post_root = (
                 f"{self.date:%Y%m%d/%Hz}/{self.resolution}/{self.product}"
                 f"/{self.date:%Y%m%d%H%M%S}-{self.fxx}h-{self.product}-{product_suffix}.grib2"

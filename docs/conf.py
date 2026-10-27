@@ -101,7 +101,7 @@ exclude_patterns = [
 # a list of builtin themes.
 #
 html_theme = "pydata_sphinx_theme"
-html_favicon = "_static/logo_new/Herbie-icon.ico"
+html_favicon = "_static/logo_v2/icon-option-2.svg"
 
 html_theme_options = {
     "external_links": [
@@ -128,8 +128,8 @@ html_theme_options = {
         },
     ],
     "logo": {
-        "image_light": "_static/logo_new/Herbie-logo.png",
-        "image_dark": "_static/logo_new/Herbie-logo.png",
+        "image_light": "_static/logo_v2/herbie-light-mode.svg",
+        "image_dark": "_static/logo_v2/herbie-dark-mode.svg",
     },
     "use_edit_page_button": True,
     "show_toc_level": 1,

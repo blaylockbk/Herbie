@@ -4,7 +4,7 @@ Herbie is a race car themed Python package.
 
 ## Font
 
-Franklin Gothic Heavy
+Exo 2 ([Google Fonts](https://fonts.google.com/specimen/Exo+2))
 
 ## Colors
 
@@ -41,5 +41,5 @@ Franklin Gothic Heavy
 
 ## Samples
 
-<img src="../../_static/logo_new/Herbie-logo.png" style='background-color:transparent;'>
-<img src="../../_static/logo_new/Herbie-logo-white.png" style='background-color:transparent;'>
+<img src="../../_static/logo_v2/herbie-light-mode.svg" style='background-color:transparent;'>
+<img src="../../_static/logo_v2/herbie-dark-mode.svg" style='background-color:transparent;'>

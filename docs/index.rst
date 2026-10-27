@@ -6,7 +6,8 @@
 
 .. raw :: html
 
-   <img src="_static/logo_new/Herbie-logo.png" style="background-color:transparent;">
+     <img class="homepage-logo homepage-logo-light" alt="Herbie Logo" src="_static/logo_v2/herbie-light-mode.svg" style="background-color:transparent;">
+     <img class="homepage-logo homepage-logo-dark" alt="Herbie Logo" src="_static/logo_v2/herbie-dark-mode.svg" style="background-color:transparent;">
 
 
 
@@ -98,7 +99,7 @@ Herbie provides access to many numerical weather prediction models, including:
 - **AI Global Ensemble Forecast System (AIGEFS)** - AI Global ensemble predictions
 - **Hybrid Global Ensemble Forecast System (HGEFS)** - Hybrid Global ensemble predictions
 - **National Blend of Models (NBM)** - Statistically blended forecasts
-- **Rapid Refresh Forecast System (RRFS)** - Next-generation RAP/HRRR *(prototype)*
+- **Rapid Refresh Forecast System (RRFS) and RRFS Ensemble Forecast System (REFS)** - Next-generation high-resolution model *(pre-implementation)*
 - **Real-Time/Un-Restricted Mesoscale Analysis (RTMA/URMA)** - Gridded observations
 - **Hurricane Analysis and Forecast System (HAFS)** - Tropical cyclone forecasts
 - **Climate Forecast System (CFS)** - Seasonal predictions

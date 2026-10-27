@@ -81,7 +81,8 @@ class gefs:
             "atmos.5": [f"p{i:02d}" for i in range(1, 31)] + ["c00", "spr", "avg"],
             "atmos.5b": [f"p{i:02d}" for i in range(1, 31)] + ["c00"],
             "atmos.25": [f"p{i:02d}" for i in range(1, 31)] + ["c00", "spr", "avg"],
-            "wave": [f"p{i:02d}" for i in range(1, 31)] + ["spread", "mean", "prob"],
+            "wave": [f"p{i:02d}" for i in range(1, 31)]
+            + ["c00", "spread", "mean", "prob"],
             "chem.5": None,
             "chem.25": None,
         }
@@ -264,7 +265,7 @@ class aigefs:
         }
 
         self.IDX_SUFFIX = [".grib2.idx"]
-        self.LOCALFILE = f"aigefs.t{self.date:%H}z.{self.product}.{self.member}.f{self.fxx:03d}"
+        self.LOCALFILE = f"{self.get_remoteFileName}"
 
 
 class hgefs:
@@ -327,4 +328,4 @@ class hgefs:
         }
 
         self.IDX_SUFFIX = [".grib2.idx"]
-        self.LOCALFILE = f"hgefs.t{self.date:%H}z.{self.product}.{self.member}.f{self.fxx:03d}"
+        self.LOCALFILE = f"{self.get_remoteFileName}"

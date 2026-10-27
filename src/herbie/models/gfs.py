@@ -33,7 +33,7 @@ class gfs:
                 "https://microsoft.github.io/AIforEarthDataSets/data/noaa-gfs.html",
             ],
             "aws document": "https://registry.opendata.aws/noaa-gfs-bdp-pds",
-            "NCAR Research Data Archive (RDA)": "https://rda.ucar.edu/datasets/d084001/",
+            "NCAR Research Data Archive (RDA)": "https://gdex.ucar.edu/datasets/d084001/",
             "NCEI": "https://www.ncei.noaa.gov/products/weather-climate-models/global-forecast",
         }
 
@@ -65,7 +65,7 @@ class gfs:
                 "nomads": f"https://nomads.ncep.noaa.gov/pub/data/nccf/com/gfs/prod/{post_root}",
                 "google": f"https://storage.googleapis.com/global-forecast-system/{post_root}",
                 "azure": f"https://noaagfs.blob.core.windows.net/gfs/{post_root}",
-                "ncar_rda": f"https://data.rda.ucar.edu/d084001/{self.date:%Y/%Y%m%d}/gfs.0p25.{self.date:%Y%m%d%H}.f{self.fxx:03d}.grib2",
+                "ncar_rda": f"https://gdex.ucar.edu/data/d084001/{self.date:%Y/%Y%m%d}/gfs.0p25.{self.date:%Y%m%d%H}.f{self.fxx:03d}.grib2",
             }
             self.IDX_SUFFIX = [".idx", ".grb2.inv"]
         else:
@@ -84,8 +84,8 @@ class gfs:
             self.SOURCES = {
                 "ncei_analysis": f"https://www.ncei.noaa.gov/data/global-forecast-system/access/grid-{grid_num:03d}-{self.product}/analysis/{self.date:%Y%m/%Y%m%d}/gfs_{grid_num}_{self.date:%Y%m%d_%H%M}_{self.fxx:03d}.grb2",
                 "ncei_forecast": f"https://www.ncei.noaa.gov/data/global-forecast-system/access/grid-{grid_num:03d}-{self.product}/forecast/{self.date:%Y%m/%Y%m%d}/gfs_{grid_num}_{self.date:%Y%m%d_%H%M}_{self.fxx:03d}.grb2",
-                "ncar_rda": f"https://data.rda.ucar.edu/d084001/{self.date:%Y/%Y%m%d}/gfs.0p25.{self.date:%Y%m%d%H}.f{self.fxx:03d}.grib2",
-                "ncei_historical_analysis": f"https://www.ncei.noaa.gov/data/global-forecast-system/access/historical/analysis/{self.date:%Y%m/%Y%m%d}/gfsanl_{grid_num}_{self.date:%Y%m%d_%H%M}_{self.fxx:03d}.grb2",
+                "ncar_rda": f"https://gdex.ucar.edu/data/d084001/{self.date:%Y/%Y%m%d}/gfs.0p25.{self.date:%Y%m%d%H}.f{self.fxx:03d}.grib2",
+                "ncei_historical_analysis": f"https://www.ncei.noaa.gov/oa/prod-model/global-forecast-system/access/grid-{grid_num:03d}-{self.product}/analysis/{self.date:%Y%m/%Y%m%d}/gfs_{grid_num}_{self.date:%Y%m%d_%H%M}_{self.fxx:03d}.grb2",
             }
             self.IDX_SUFFIX = [".grb2.inv", ".idx", ".inv"]
         self.LOCALFILE = f"{self.get_remoteFileName}"

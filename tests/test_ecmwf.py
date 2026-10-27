@@ -19,13 +19,37 @@ DATES = [
 
 FILTERS = [
     ":10(?:u|v):",  # 10 meter wind variables
-    ":t:",  # temperature at all levels
+    ":2t:",  # temperature at all levels
 ]
 
 
 @pytest.mark.parametrize("date", DATES)
 def test_ifs_download(date):
     H = Herbie(date, model="ifs", product="oper", save_dir=save_dir, overwrite=True)
+
+    # Test full file download
+    f = H.download()
+    assert H.get_localFilePath().exists()
+    f.unlink()
+
+
+@pytest.mark.parametrize("date", DATES)
+def test_ifs_scda_download(date):
+    # use minus to avoid early download
+    date6 = date - timedelta(hours=6)
+    H = Herbie(date6, model="ifs", product="scda", save_dir=save_dir, overwrite=True)
+
+    # Test full file download
+    f = H.download()
+    assert H.get_localFilePath().exists()
+    f.unlink()
+
+
+@pytest.mark.parametrize("date", DATES)
+def test_ifs_scwv_download(date):
+    # use minus to avoid early download
+    date6 = date - timedelta(hours=6)
+    H = Herbie(date6, model="ifs", product="scwv", save_dir=save_dir, overwrite=True)
 
     # Test full file download
     f = H.download()
@@ -42,7 +66,14 @@ def test_ifs_download_partial(date):
 
 @pytest.mark.parametrize("date", DATES)
 def test_ifs_azure_download_partial(date):
-    H = Herbie(date, model="ifs", product="oper", priority="azure", save_dir=save_dir, overwrite=True)
+    H = Herbie(
+        date,
+        model="ifs",
+        product="oper",
+        priority="azure",
+        save_dir=save_dir,
+        overwrite=True,
+    )
     f = H.download(":2t:")
     assert H.get_localFilePath(":2t:").exists()
     f.unlink()
@@ -54,6 +85,66 @@ def test_ifs_xarray(date, filter):
     H.xarray(filter, remove_grib=False)
     assert H.get_localFilePath(filter).exists()
     H.get_localFilePath(filter).unlink()
+
+
+class TestIFS01:
+    """Tests for ECMWF's IFS 0p1 model."""
+
+    def test_ifs0p1sfc_yesterday(self):
+        """Test downloading IFS 0p1 surface data from yesterday."""
+        H = Herbie(
+            yesterday,
+            model="ifs",
+            product="oper",
+            resolution="0p1",
+            levtype="sfc",
+            save_dir=save_dir,
+            overwrite=True,
+        )
+
+        assert H.grib, "IFS GRIB file not found"
+        assert H.idx, "IFS index file not found"
+
+        ds = H.xarray(":10(?:u|v):")
+        assert len(ds)
+
+    def test_ifs0p1pl_yesterday(self):
+        """Test downloading IFS 0p1 pressure levels data from yesterday."""
+        H = Herbie(
+            yesterday,
+            model="ifs",
+            product="oper",
+            resolution="0p1",
+            levtype="pl",
+            save_dir=save_dir,
+            overwrite=True,
+        )
+
+        assert H.grib, "IFS GRIB file not found"
+        assert H.idx, "IFS index file not found"
+
+        ds = H.xarray(":(?:u|v):")
+        assert len(ds)
+
+    @pytest.mark.parametrize(
+        "date",
+        (
+            datetime(2026, 10, 21, 0),
+            datetime(2026, 10, 21, 6),
+        ),
+    )
+    def test_ifs0p1_path_changes(self, date):
+        """Test files are valid on dates the paths changed."""
+        H = Herbie(
+            date,
+            model="ifs",
+            product="oper",
+            resolution="0p1",
+            save_dir=save_dir,
+            overwrite=True,
+        )
+        assert H.grib
+        assert H.idx
 
 
 class TestAIFS:

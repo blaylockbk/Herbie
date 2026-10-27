@@ -6,19 +6,30 @@ import pytest
 
 save_dir = config["default"]["save_dir"] / "Herbie-Tests-Data/"
 
+models = ["hrrr", "gfs", "gefs"]
 # Remove all previous test data
-for i in (save_dir / "hrrr").rglob("*"):
-    if i.is_file():
-        i.unlink()
+for model in models:
+    for i in (save_dir / model).rglob("*"):
+        if i.is_file():
+            i.unlink()
 
 
-@pytest.mark.parametrize("model", ["hrrr", "gfs", "gefs"])
+@pytest.mark.parametrize("model", models)
 def test_FastHerbie(model):
-    DATES = pd.date_range("2022-01-01", "2022-01-01 02:00", freq="1h")
+    DATES = {
+        "hrrr": pd.date_range("2022-01-01", "2022-01-01 02:00", freq="1h"),
+        "gfs": pd.date_range("2022-01-01", "2022-01-01 02:00", freq="6h"),
+        "gefs": pd.date_range("2022-01-01", "2022-01-01 02:00", freq="6h"),
+    }
     DATA_VARS = {
         "hrrr": "TMP:2 m",
         "gfs": "TMP:2 m",
         "gefs": "TMP:2 m",
+    }
+    FXX = {
+        "hrrr": range(0, 3),
+        "gfs": range(0, 3),
+        "gefs": range(0, 1),
     }
     KWARGS = {
         "hrrr": {},
@@ -31,10 +42,10 @@ def test_FastHerbie(model):
 
     # Create Fast Herbie
     FH = FastHerbie(
-        DATES, fxx=range(0, 3), save_dir=save_dir, model=model, **KWARGS[model]
+        DATES[model], fxx=FXX[model], save_dir=save_dir, model=model, **KWARGS[model]
     )
 
-    assert len(FH) == 9
+    assert len(FH) == len(DATES[model]) * len(FXX[model])
 
     # Download subset of these files
     FH.download(DATA_VARS[model])
