@@ -42,6 +42,12 @@ Datetime = Union[datetime, pd.Timestamp, str]
 
 log = logging.getLogger(__name__)
 
+# Microsoft Planetary Computer endpoint that signs Azure blob URLs with a
+# short-lived SAS token. See Herbie._sign_azure_url.
+AZURE_SAS_SIGN_ENDPOINT = (
+    "https://planetarycomputer.microsoft.com/api/sas/v1/sign?href="
+)
+
 # Location of wgrib2 command, if it exists. Required to make missing idx files.
 wgrib2 = which("wgrib2")
 
@@ -420,6 +426,47 @@ class Herbie:
             print("🤝🏻⛔ Bad handshake with pando? Am I able to move on?")
             pass
 
+    def _sign_azure_url(self, url: str, timeout: int = 30) -> str:
+        """
+        Get a signed URL for a Microsoft Planetary Computer blob.
+
+        Azure's Big Data Program blobs are read through a short-lived SAS token
+        obtained from the Planetary Computer signing endpoint.
+
+        Parameters
+        ----------
+        url : str
+            The unsigned ``blob.core.windows.net`` URL.
+        timeout : int
+            Seconds to wait for the signing endpoint. Without a timeout a
+            stalled connection to the token service hangs the search
+            indefinitely.
+
+        Returns
+        -------
+        The signed URL.
+
+        Raises
+        ------
+        requests.exceptions.RequestException
+            The signing endpoint could not be reached or returned an error
+            status.
+        ValueError
+            The signing endpoint replied with something other than a signed
+            URL, which it does for a rate-limited or rejected request.
+        """
+        response = requests.get(AZURE_SAS_SIGN_ENDPOINT + url, timeout=timeout)
+        response.raise_for_status()
+        try:
+            # A rejected or throttled request still returns 200 with a payload
+            # that has no 'href', and a proxy may return HTML that is not JSON
+            # at all. Both used to raise straight out of the source search.
+            return response.json()["href"]
+        except (ValueError, KeyError, TypeError) as error:
+            raise ValueError(
+                f"Azure's SAS token service did not return a signed URL for {url}"
+            ) from error
+
     def _check_grib(self, url: str, min_content_length: int = 10) -> bool:
         """
         Check that the GRIB2 URL exist and is of useful length.
@@ -463,12 +510,7 @@ class Herbie:
 
             try:
                 if "blob.core.windows.net" in idx_url:
-                    dl_url = (
-                        "https://planetarycomputer.microsoft.com/api/sas/v1/sign?href="
-                        + idx_url
-                    )
-                    response = requests.get(dl_url)
-                    idx_url = response.json()["href"]
+                    idx_url = self._sign_azure_url(idx_url)
                 idx_exists = requests.head(idx_url).ok
             except Exception as e:
                 if verbose:
@@ -514,29 +556,37 @@ class Herbie:
 
         # Ok, NOW we are ready to search for the remote GRIB2 files...
         for source in self.SOURCES:
-            if "pando" in source:
-                # Sometimes pando returns a bad handshake. Pinging
-                # pando first can help prevent that.
-                self._ping_pando()
+            # Each source is checked independently: the point of having several
+            # is that the others can answer when one cannot. An exception raised
+            # while checking one source used to abandon the whole search, so a
+            # TLS error behind a corporate proxy, a DNS failure, or a rejected
+            # Azure SAS request meant the remaining sources were never tried
+            # even though they would have served the file (see #246).
+            try:
+                if "pando" in source:
+                    # Sometimes pando returns a bad handshake. Pinging
+                    # pando first can help prevent that.
+                    self._ping_pando()
 
-            # Get the file URL for the source and determine if the
-            # GRIB2 file and the index file exist. If found, store the
-            # URL for the GRIB2 file and the .idx file.
-            if "azure" in source:
-                download_url = (
-                    "https://planetarycomputer.microsoft.com/api/sas/v1/sign?href="
-                    + self.SOURCES[source]
+                # Get the file URL for the source and determine if the
+                # GRIB2 file and the index file exist. If found, store the
+                # URL for the GRIB2 file and the .idx file.
+                if "azure" in source:
+                    grib_url = self._sign_azure_url(self.SOURCES[source])
+                else:
+                    grib_url = self.SOURCES[source]
+                if source.startswith("local"):
+                    grib_path = Path(grib_url)
+                    if grib_path.exists():
+                        return (grib_path, source)
+                elif self._check_grib(grib_url):
+                    return (grib_url, source)
+            except Exception as error:
+                log.warning(
+                    f"Herbie could not check the GRIB file at source {source!r} "
+                    f"({error!r}). Trying the next source."
                 )
-                response = requests.get(download_url)
-                grib_url = response.json()["href"]
-            else:
-                grib_url = self.SOURCES[source]
-            if source.startswith("local"):
-                grib_path = Path(grib_url)
-                if grib_path.exists():
-                    return (grib_path, source)
-            elif self._check_grib(grib_url):
-                return (grib_url, source)
+                continue
 
         return (None, None)
 
@@ -583,34 +633,34 @@ class Herbie:
 
         # Ok, NOW we are ready to search for the remote GRIB2 files...
         for source in self.SOURCES:
-            if "pando" in source:
-                # Sometimes pando returns a bad handshake. Pinging
-                # pando first can help prevent that.
-                self._ping_pando()
+            # Checked independently, for the same reason as in find_grib.
+            try:
+                if "pando" in source:
+                    # Sometimes pando returns a bad handshake. Pinging
+                    # pando first can help prevent that.
+                    self._ping_pando()
 
-            # Get the file URL for the source and determine if the
-            # GRIB2 file and the index file exist. If found, store the
-            # URL for the GRIB2 file and the .idx file.
-            if "azure" in source:
-                download_url = (
-                    "https://planetarycomputer.microsoft.com/api/sas/v1/sign?href="
-                    + self.SOURCES[source]
+                if source.startswith("local"):
+                    local_grib = Path(self.SOURCES[source])
+                    local_idx = local_grib.with_suffix(self.IDX_SUFFIX[0])
+                    if local_idx.exists():
+                        return (local_idx, "local")
+                else:
+                    # Azure blob URLs are signed by _check_idx, which appends
+                    # the index suffix first and so has to sign the URL it
+                    # actually requests. Signing here as well produced a token
+                    # for the GRIB file that was then discarded unused, while
+                    # still being able to abort the entire search.
+                    idx_exists, idx_url = self._check_idx(self.SOURCES[source])
+
+                    if idx_exists:
+                        return (idx_url, source)
+            except Exception as error:
+                log.warning(
+                    f"Herbie could not check the index file at source {source!r} "
+                    f"({error!r}). Trying the next source."
                 )
-                response = requests.get(download_url)
-                grib_url = response.json()["href"]
-            else:
-                grib_url = self.SOURCES[source]
-
-            if source.startswith("local"):
-                local_grib = Path(grib_url)
-                local_idx = local_grib.with_suffix(self.IDX_SUFFIX[0])
-                if local_idx.exists():
-                    return (local_idx, "local")
-            else:
-                idx_exists, idx_url = self._check_idx(self.SOURCES[source])
-
-                if idx_exists:
-                    return (idx_url, source)
+                continue
 
         return (None, None)
 
