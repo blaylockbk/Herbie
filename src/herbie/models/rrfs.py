@@ -25,7 +25,7 @@ class rrfs:
             "prslevnomads": "pressure level fields, ensemble",
             "2dfld": "2D surface/post-processed fields",
             "2dfldnomads": "2D surface/post-processed fields, ensemble",
-            "subh": "Subhourly grids (available with 2D fields only)"
+            "subh": "Subhourly grids (available with 2D fields only)",
         }
 
         # Format the product parameter
