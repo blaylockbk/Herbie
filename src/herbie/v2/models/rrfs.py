@@ -7,9 +7,9 @@ RRFS and REFS replace NAM, HREF, SREF, and HiresW effective August 31, 2026
 
 Classes
 -------
-RRFSTemplate       Deterministic RRFS — CONUS, Alaska, Hawaii, Puerto Rico
-RRFSFireWxTemplate Deterministic RRFS — relocatable 1.5 km fire weather domain
-REFSTemplate       RRFS Ensemble Forecast System (ensemble products)
+RRFS               Deterministic RRFS — CONUS, Alaska, Hawaii, Puerto Rico, NA
+RRFSFireWx         Deterministic RRFS — relocatable 1.5 km fire weather domain
+REFS               RRFS Ensemble Forecast System (ensemble products)
 
 References
 ----------
@@ -33,6 +33,7 @@ _DOMAIN_RESOLUTION = {
     "ak": "3km",
     "hi": "2p5km",
     "pr": "2p5km",
+    "na": "13km",
 }
 
 
@@ -53,16 +54,16 @@ class RRFS(HerbieModel):
     step : int, default 0
         Forecast lead time in hours.
         Max 84 h for 00/06/12/18z cycles; max 18 h for all other cycles.
-    product : {'prslev', '2dfld', 'subh'}, default 'prslev'
-        Output product type.
-    domain : {'conus', 'ak', 'hi', 'pr'}, default 'conus'
+    product : {'prslev', 'prslevnomads', '2dfld', '2dfldnomads', 'subh'}, default 'prslev'
+        Output product type. The ``*nomads`` products are ensemble products.
+    domain : {'conus', 'ak', 'hi', 'pr', 'na'}, default 'conus'
         Output domain / grid.
+    member : int, optional
+        Ensemble member. When provided, RRFS ensemble URLs are used.
 
     Notes
     -----
-    AWS, Google, and Azure bucket names are not yet officially confirmed;
-    the names used here follow the convention of similar NOAA model buckets
-    and should be verified once the data goes live.
+    RRFS files are available from the NOAA open-data bucket and NOMADS.
     """
 
     MODEL_NAME = "RRFS"
@@ -76,7 +77,7 @@ class RRFS(HerbieModel):
     PARAMS = {
         "product": {
             "default": "prslev",
-            "valid": ["prslev", "2dfld", "subh"],
+            "valid": ["prslev", "prslevnomads", "2dfld", "2dfldnomads", "subh"],
             "aliases": {
                 "prs": "prslev",
                 "pressure": "prslev",
@@ -88,27 +89,34 @@ class RRFS(HerbieModel):
             "descriptions": {
                 "prslev": "3D pressure-level fields",
                 "2dfld": "2D surface and diagnostic fields",
-                "subh": "2D surface fields — sub-hourly output (15/30/45 min within each hour)",
+                "prslevnomads": "Pressure-level ensemble fields",
+                "2dfldnomads": "2D surface and diagnostic ensemble fields",
+                "subh": "2D surface fields — sub-hourly output",
             },
         },
         "domain": {
             "default": "conus",
-            "valid": ["conus", "ak", "hi", "pr"],
+            "valid": ["conus", "ak", "hi", "pr", "na"],
             "aliases": {
                 "alaska": "ak",
                 "hawaii": "hi",
                 "puerto_rico": "pr",
+                "puerto rico": "pr",
             },
             "descriptions": {
                 "conus": "Contiguous US — Lambert Conformal 3 km (1799×1059)",
                 "ak": "Alaska — Polar Stereographic 3 km (1649×1105)",
                 "hi": "Hawaii — Mercator 2.5 km (321×225)",
                 "pr": "Puerto Rico — Mercator 2.5 km (544×310)",
+                "na": "North America — 13 km",
             },
         },
         "step": {
             "default": 0,
             "valid": range(0, 85),
+        },
+        "member": {
+            "default": None,
         },
     }
 
@@ -119,37 +127,38 @@ class RRFS(HerbieModel):
         step = self.params["step"]
         product = self.params["product"]
         domain = self.params["domain"]
+        member = self.params.get("member")
 
         res = _DOMAIN_RESOLUTION[domain]
 
-        # Build filename based on product type:
-        #   prslev: rrfs.tCCz.prslev.{res}.fFFF.{domain}.grib2
-        #   2dfld:  rrfs.tCCz.2dfld.{res}.fFFF.{domain}.grib2
-        #   subh:   rrfs.tCCz.2dfld.{res}.subh.fFFF.{domain}.grib2
-        if product == "prslev":
-            fname = f"rrfs.t{d:%H}z.prslev.{res}.f{step:03d}.{domain}.grib2"
-        elif product == "2dfld":
-            fname = f"rrfs.t{d:%H}z.2dfld.{res}.f{step:03d}.{domain}.grib2"
-        elif product == "subh":
-            fname = f"rrfs.t{d:%H}z.2dfld.{res}.subh.f{step:03d}.{domain}.grib2"
+        # Sub-hourly data is published as the 2D product with an extra suffix.
+        extra_subh = ""
+        if product == "subh":
+            product = "2dfld"
+            extra_subh = ".subh"
 
-        stage = "prod" if d >= _RRFS_IMPL_DATE else "para"
         dirpath = f"rrfs.{d:%Y%m%d}/{d:%H}"
-        path = f"{dirpath}/{fname}"
-
-        idx = [".idx", ".grib2.idx"]
-        nomads_base = f"https://nomads.ncep.noaa.gov/pub/data/nccf/com/rrfs/{stage}"
+        if member is None:
+            fname = (
+                f"rrfs.t{d:%H}z.{product}.{res}{extra_subh}."
+                f"f{step:03d}.{domain}.grib2"
+            )
+            path = f"{dirpath}/{fname}"
+            aws_base = "https://noaa-rrfs-ops-pds.s3.amazonaws.com"
+            nomads_base = "https://nomads.ncep.noaa.gov/pub/data/nccf/com/rrfs/v1.0"
+        else:
+            member_dir = f"m{member:03d}"
+            fname = (
+                f"rrfs.t{d:%H}z.{member_dir}.{product}.{res}{extra_subh}."
+                f"f{step:03d}.{domain}.grib2"
+            )
+            path = f"rrfsens.{d:%Y%m%d}/{d:%H}/{member_dir}/{fname}"
+            aws_base = "https://noaa-rrfs-ops-pds.s3.amazonaws.com"
+            nomads_base = "https://nomads.ncep.noaa.gov/pub/data/nccf/com/rrfs/v1.0"
 
         return {
-            "nomads": GribSource(f"{nomads_base}/{path}", idx),
-            "aws": GribSource(f"https://noaa-rrfs-pds.s3.amazonaws.com/{path}", idx),
-            "google": GribSource(
-                f"https://storage.googleapis.com/rapid-refresh-forecast-system/{path}",
-                idx,
-            ),
-            "azure": GribSource(
-                f"https://noaarrfs.blob.core.windows.net/rrfs/{path}", idx
-            ),
+            "aws": GribSource(f"{aws_base}/{path}"),
+            "nomads": GribSource(f"{nomads_base}/{path}"),
         }
 
     def get_remote_urls(self) -> dict[str, str]:
