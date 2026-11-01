@@ -256,6 +256,40 @@ def _copy_extent(self, src_ax):
     return self.get_extent(crs=pc)
 
 
+def _scatterplot(self, data, x="longitude", y="latitude", **kwargs):
+    """
+    Add a dataframe scatter plot to a Cartopy axes.
+
+    Parameters
+    ----------
+    data : dataframe
+        A dataframe supported by Narwhals, containing the coordinate and
+        optional semantic columns. It is converted to pandas for plotting.
+    x, y : str
+        Columns for longitude and latitude, respectively.
+    **kwargs
+        Additional keyword arguments passed to ``seaborn.scatterplot``,
+        such as ``hue``, ``style``, or ``size``.
+
+    Returns
+    -------
+    matplotlib.axes.Axes
+        The axes with the scatter plot.
+    """
+    try:
+        import narwhals as nw
+        import seaborn as sns
+    except ImportError as e:
+        raise ImportError(
+            "EasyMap.scatterplot requires narwhals and seaborn; "
+            "install it with `pip install 'herbie-data[plot]'`."
+        ) from e
+
+    plot_data = nw.from_native(data).to_pandas()
+    kwargs.setdefault("transform", pc)
+    return sns.scatterplot(data=plot_data, x=x, y=y, ax=self, **kwargs)
+
+
 ########################################################################
 # Main Functions
 def check_cartopy_axes(
@@ -570,6 +604,7 @@ class EasyMap:
         .adjust_extent
         .center_extent
         .copy_extent
+        .scatterplot
 
         Parameters
         ----------
@@ -618,6 +653,12 @@ class EasyMap:
         >>> ax = EasyMap().ax
         >>> feat = ax.EasyMap
         >>> feat.OCEAN().STATES()
+
+        Add a scatter plot from a dataframe supported by Narwhals, such as a
+        pandas or Polars DataFrame (requires ``pip install 'herbie-data[plot]'``):
+
+        >>> ax = EasyMap().ax
+        >>> ax.scatterplot(df, hue="station_type")
         """
         self.scale = scale
         self.ax = ax
@@ -691,6 +732,7 @@ class EasyMap:
         self.ax.__class__.adjust_extent = _adjust_extent
         self.ax.__class__.center_extent = _center_extent
         self.ax.__class__.copy_extent = _copy_extent
+        self.ax.__class__.scatterplot = _scatterplot
 
     # ========================
     # Commonly needed features
