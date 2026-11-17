@@ -1,5 +1,5 @@
 """
-NOTE: The Rapid Refresh Forecast System is under development and is rapidly changing
+A Herbie template for the Rapid Refresh Forecast System (RRFS) model.
 """
 
 HELP = r"""
@@ -65,7 +65,7 @@ class rrfs:
                     f"rrfs.t{self.date:%H}z.{self.product}.{resolution}{extra_subh}.f{self.fxx:03d}.{self.domain}.grib2"
                 ),
                 "nomads": (
-                    f"https://nomads.ncep.noaa.gov/pub/data/nccf/com/rrfs/v1.0/"
+                    f"https://nomads.ncep.noaa.gov/pub/data/nccf/com/rrfs/prod/"
                     f"rrfs.{self.date:%Y%m%d/%H}/"
                     f"rrfs.t{self.date:%H}z.{self.product}.{resolution}{extra_subh}.f{self.fxx:03d}.{self.domain}.grib2"
                 ),
@@ -78,7 +78,7 @@ class rrfs:
                     f"rrfs.t{self.date:%H}z.m{self.member:03d}.{self.product}.{resolution}{extra_subh}.f{self.fxx:03d}.{self.domain}.grib2"
                 ),
                 "nomads": (
-                    f"https://nomads.ncep.noaa.gov/pub/data/nccf/com/rrfs/v1.0/"
+                    f"https://nomads.ncep.noaa.gov/pub/data/nccf/com/rrfs/prod/"
                     f"rrfsens.{self.date:%Y%m%d/%H}/m{self.member:03d}/"
                     f"rrfs.t{self.date:%H}z.m{self.member:03d}.{self.product}.{resolution}{extra_subh}.f{self.fxx:03d}.{self.domain}.grib2"
                 ),

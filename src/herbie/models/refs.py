@@ -54,7 +54,7 @@ class refs:
                 f"refs.t{self.date:%H}z.{self.product}.f{self.fxx:02d}.{self.domain}.grib2"
             ),
             "nomads": (
-                f"https://nomads.ncep.noaa.gov/pub/data/nccf/com/refs/v1.0/"
+                f"https://nomads.ncep.noaa.gov/pub/data/nccf/com/refs/prod/"
                 f"refs.{self.date:%Y%m%d/%H}/ensprod/"
                 f"refs.t{self.date:%H}z.{self.product}.f{self.fxx:02d}.{self.domain}.grib2"
             ),
