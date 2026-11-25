@@ -33,9 +33,17 @@ import subprocess
 
 
 def run_command(cmd):
+    """Run a command given as a list of arguments and return its stdout.
+
+    The command is run without a shell, so file paths, region names and
+    extents are passed to wgrib2 as single arguments and are never
+    interpreted by a shell.
+    """
+    if cmd[0] is None:
+        raise FileNotFoundError("wgrib2 was not found on your PATH.")
     p = subprocess.run(
-        cmd,
-        shell=True,
+        [str(i) for i in cmd],
+        shell=False,
         capture_output=True,
         encoding="utf-8",
         check=True,
@@ -51,7 +59,7 @@ class _WGRIB2:
 
     def inventory(self, FILE):
         """Return wgrib2-style inventory of GRIB2 file."""
-        cmd = f"{self.wgrib2} -s {Path(FILE).expand()}"
+        cmd = [self.wgrib2, "-s", Path(FILE).expand()]
         return run_command(cmd)
 
     def create_inventory_file(self, path, suffix=".grib2"):
@@ -137,9 +145,18 @@ class _WGRIB2:
 
         OUTFILES = []
         for f in files:
-            OUTFILE = path.parent / f"{name}_{path.name}"
+            OUTFILE = f.parent / f"{name}_{f.name}"
 
-            cmd = f"{self.wgrib2} {Path(path).expand()} -small_grib {lon_min}:{lon_max} {lat_min}:{lat_max} {OUTFILE} -set_grib_type same"
+            cmd = [
+                self.wgrib2,
+                f,
+                "-small_grib",
+                f"{lon_min}:{lon_max}",
+                f"{lat_min}:{lat_max}",
+                OUTFILE,
+                "-set_grib_type",
+                "same",
+            ]
 
             run_command(cmd)
 
@@ -170,7 +187,7 @@ class _WGRIB2:
         path : path-like
             Path to the grib2 file.
         """
-        cmd = f"{self.wgrib2} -vector_dir {Path(path).expand()}"
+        cmd = [self.wgrib2, "-vector_dir", Path(path).expand()]
 
         out = run_command(cmd)
         relative = {i.split(":")[-1] for i in out.split()}

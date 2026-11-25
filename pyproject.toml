@@ -61,6 +61,8 @@ dev = [
     "scipy>=1.17.0",     # only needed for test writing netcdf file
     "cartopy>=0.25.0",
     "metpy>=1.7.1",
+    "polars>=2.1.0",
+    "herbie-data[plot]",
 ]
 docs = [
     "autodocsumm>=0.2.14",
@@ -81,7 +83,13 @@ docs = [
 
 
 [project.optional-dependencies]
-plot = ["cartopy>=0.25.0", "matplotlib>=3.10.0", "metpy>=1.7.1"]
+plot = [
+    "cartopy>=0.25.0",
+    "matplotlib>=3.10.0",
+    "metpy>=1.7.1",
+    "narwhals>=1.17.1",
+    "seaborn>=0.13.2",
+]
 metpy = ["metpy>=1.7.1"]
 scikit-learn = ["scikit-learn>=1.8.0"]
 
@@ -133,6 +141,9 @@ log_level = "DEBUG"
 testpaths = ["tests"]
 xfail_strict = true
 markers = []
+
+[tool.uv.sources]
+herbie-data = { workspace = true }
 
 [project.scripts]
 herbie = "herbie.cli:main"

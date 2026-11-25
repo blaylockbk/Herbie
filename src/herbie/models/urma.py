@@ -27,15 +27,22 @@ class urma:
             "anl": "Analysis",
             "err": "Analysis Forecast Error",
             "ges": "Forecasts",
-            "pcp": "Precipitation Field",
+            "pcp_01": "1 hr Precipitation Field",
         }
 
-        if self.product != "pcp":
+        if self.product != "pcp_01":
             PATH = f"urma2p5.{self.date:%Y%m%d}/urma2p5.t{self.date:%H}z.2dvar{self.product}_ndfd.grb2_wexp"
             self.SOURCES = {
                 "aws": f"https://noaa-urma-pds.s3.amazonaws.com/{PATH}",
                 "nomads": f"https://nomads.ncep.noaa.gov/pub/data/nccf/com/urma/prod/{PATH}",
             }
+        elif self.product == "pcp_01":
+            PATH = f"urma2p5.{self.date:%Y%m%d}/urma2p5.{self.date:%Y%m%d%H}.{self.product}h.wexp.grb2"
+            self.SOURCES = {
+                "aws": f"https://noaa-urma-pds.s3.amazonaws.com/{PATH}",
+                "nomads": f"https://nomads.ncep.noaa.gov/pub/data/nccf/com/urma/prod/{PATH}",
+            }
+                
         else:
             raise NotImplementedError(
                 "The URMA model template needs some work. Please edit open a pull request. https://github.com/blaylockbk/Herbie/blob/main/src/herbie/models/urma.py"

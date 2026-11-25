@@ -170,6 +170,8 @@ class hrdps:
             "continental": "Continental domain (2.5 km)",
             "north": "North domain (3 km)",
         }
+        self.AVAILABLE_VARIABLES = sorted(_variable)
+        self.AVAILABLE_LEVELS = sorted(_level)
 
         if self.product == "continental":
             resolution = "2.5km"

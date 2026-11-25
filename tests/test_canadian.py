@@ -32,6 +32,9 @@ hrdps_north_url = (
     f"https://dd.weather.gc.ca/{yesterday_12z:%Y%m%d}/WXO-DD/model_hrdps/north"
 )
 rdps_url = f"https://dd.weather.gc.ca/{yesterday_12z:%Y%m%d}/WXO-DD/model_rdps"
+gdps_url = f"https://dd.weather.gc.ca/{yesterday_12z:%Y%m%d}/WXO-DD/model_gdps"
+reps_url = f"https://dd.weather.gc.ca/{yesterday_12z:%Y%m%d}/WXO-DD/ensemble/reps"
+geps_url = f"https://dd.weather.gc.ca/{yesterday_12z:%Y%m%d}/WXO-DD/ensemble/geps"
 
 save_dir = config["default"]["save_dir"] / "Herbie-Tests-Data/"
 
@@ -123,6 +126,92 @@ class TestRDPS:
             model="rdps",
             variable="AirTemp",
             level="IsbL-0550",
+            overwrite=True,
+            save_dir=save_dir,
+        )
+        assert H
+        f = H.download()
+        assert H.get_localFilePath().exists()
+        f.unlink()
+
+
+class TestGDPS:
+    @pytest.mark.skipif(
+        not requests.head(
+            gdps_url,
+            timeout=5,
+        ).ok,
+        reason=f"{gdps_url} not reachable",
+    )
+    def test_gdps_download(self):
+        H = Herbie(
+            yesterday_12z,
+            model="gdps",
+            variable="AirTemp",
+            level="IsbL-0550",
+            overwrite=True,
+            save_dir=save_dir,
+        )
+        assert H
+        f = H.download()
+        assert H.get_localFilePath().exists()
+        f.unlink()
+
+    def test_gdps_alias_download(self):
+        H = Herbie(
+            yesterday_12z,
+            model="gdps",
+            product="15km/grib2/lat_lon",
+            variable="AirTemp",
+            level="IsbL-0550",
+            overwrite=True,
+            save_dir=save_dir,
+        )
+        assert H
+        f = H.download()
+        assert H.get_localFilePath().exists()
+        f.unlink()
+
+class TestREPS:
+    @pytest.mark.skipif(
+        not requests.head(
+            reps_url,
+            timeout=5,
+        ).ok,
+        reason=f"{reps_url} not reachable",
+    )
+    def test_reps_download(self):
+        H = Herbie(
+            yesterday_12z,
+            fxx=6,
+            model="reps",
+            variable="AICEP",
+            level="SFC",
+            overwrite=True,
+            save_dir=save_dir,
+        )
+        assert H
+        f = H.download()
+        assert H.get_localFilePath().exists()
+        f.unlink()
+
+
+class TestGEPS:
+    @pytest.mark.skipif(
+        not requests.head(
+            geps_url,
+            timeout=5,
+        ).ok,
+        reason=f"{geps_url} not reachable",
+    )
+    def test_geps_download(self):
+        H = Herbie(
+            yesterday_12z,
+            fxx=6,
+            model="geps",
+            product="geps-raw",
+            variable="TMP",
+            level="ISBL_1000",
             overwrite=True,
             save_dir=save_dir,
         )

@@ -387,7 +387,7 @@ class Herbie:
         _models = {m for m in dir(model_templates) if not m.startswith("__")}
         _products = set(self.PRODUCTS)
 
-        assert self.date < pd.Timestamp.utcnow().tz_localize(None), (
+        assert self.date < pd.Timestamp.now("UTC").tz_localize(None), (
             "🔮 `date` cannot be in the future."
         )
         assert self.model in _models, f"`model` must be one of {_models}"
@@ -908,7 +908,7 @@ class Herbie:
                 + df.loc[:, "param":]
                 .astype(str)
                 .apply(lambda x: x.str.cat(sep=":"), axis=1)
-                .replace(":nan:", ":")
+                .str.replace(":nan:", ":")
                 + ":"
             )
 
@@ -1098,8 +1098,29 @@ class Herbie:
                             grib_source,
                             headers=headers,
                             timeout=30,
+                            stream=True,
                         )
                         response.raise_for_status()
+
+                        # Guard: if the server did not honor the Range
+                        # request, each group would silently download the
+                        # entire file and append it, ballooning disk usage.
+                        if response.status_code != 206:
+                            content_length = response.headers.get(
+                                "Content-Length", "unknown"
+                            )
+                            response.close()
+                            raise RuntimeError(
+                                f"Range request not honored: server returned "
+                                f"HTTP {response.status_code} "
+                                f"(Content-Length: {content_length}). "
+                                f"This can happen when a network proxy or "
+                                f"VPN strips the Range header. Try downloading "
+                                f"the full file first, then subset locally:\n"
+                                f"  full_file = Herbie(...).download()\n"
+                                f"  Herbie(...).download(search=...)"
+                            )
+
                         data = response.content
 
                     # Write or append to output file
