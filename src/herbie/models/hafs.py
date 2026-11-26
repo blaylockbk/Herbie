@@ -14,19 +14,25 @@ class Storms:
 
     @functools.cached_property
     def id_to_name(self):
-        URL = "https://nomads.ncep.noaa.gov/pub/data/nccf/com/hafs/prod/inphfsa/"
-        messages = set(
-            re.findall(
-                r"message\d+",
-                requests.get(URL).text,
-            )
-        )
-
+        base_url = "https://nomads.ncep.noaa.gov/pub/data/nccf/com/hafs/prod/"
         storms = {}
-        for message in messages:
-            text = requests.get(URL + message).text
-            center, storm_id, storm_name, _ = re.split(r"\s+", text, maxsplit=3)
-            storms[storm_id.lower()] = storm_name.lower()
+        for subdir in ("inphfsb/", "inphfsa/"):
+            url = base_url + subdir
+            response = requests.get(url)
+            if not response.ok:
+                continue
+            messages = set(re.findall(r"message\d+", response.text))
+            for message in messages:
+                msg_response = requests.get(url + message)
+                if not msg_response.ok:
+                    continue
+                text = msg_response.text.strip()
+                if not text:
+                    continue
+                parts = re.split(r"\s+", text, maxsplit=3)
+                if len(parts) >= 3:
+                    _center, storm_id, storm_name = parts[:3]
+                    storms[storm_id.lower()] = storm_name.lower()
         return storms
 
     @functools.cached_property
@@ -35,6 +41,38 @@ class Storms:
 
 
 S = Storms()
+
+
+def _configure_storm(template_obj) -> None:
+    if not getattr(template_obj, "storm", None):
+        raise ValueError(
+            "`storm` must be specified for HAFS (e.g., storm='13l' or storm='lee')."
+        )
+
+    if template_obj.storm.isalpha():
+        # It looks like the user gave a storm name.
+        # Convert that to the storm id.
+        template_obj.storm = S.name_to_id.get(template_obj.storm.lower())
+        if template_obj.storm is None:
+            raise ValueError(f"`storm` should be one of {S.name_to_id.keys()}")
+
+    template_obj.storm = template_obj.storm.lower()
+    template_obj.storm_name = S.id_to_name.get(template_obj.storm)
+
+    storm_label = (
+        f"{template_obj.storm.upper()}-{template_obj.storm_name.title()}"
+        if template_obj.storm_name
+        else template_obj.storm.upper()
+    )
+
+    template_obj.PRODUCTS = {
+        "storm.atm": storm_label,
+        "storm.sat": storm_label,
+        "parent.atm": storm_label,
+        "parent.sat": storm_label,
+        "parent.swath": storm_label,
+        "ww3": storm_label,
+    }
 
 
 class hafsa:
@@ -47,23 +85,7 @@ class hafsa:
             "Hurricane Forecast Improvement Program": "https://hfip.org/hafs",
         }
 
-        if self.storm.isalpha():
-            # It looks like the user gave a storm name.
-            # Convert that to the storm id.
-            self.storm = S.name_to_id.get(self.storm.lower())
-            if self.storm is None:
-                raise ValueError(f"`storm` should be one of {S.name_to_id.keys()}")
-
-        self.storm_name = S.id_to_name.get(self.storm)
-
-        self.PRODUCTS = {
-            "storm.atm": f"{self.storm.upper()}-{self.storm_name.title()}",
-            "storm.sat": f"{self.storm.upper()}-{self.storm_name.title()}",
-            "parent.atm": f"{self.storm.upper()}-{self.storm_name.title()}",
-            "parent.sat": f"{self.storm.upper()}-{self.storm_name.title()}",
-            "parent.swath": f"{self.storm.upper()}-{self.storm_name.title()}",
-            "ww3": f"{self.storm.upper()}-{self.storm_name.title()}",
-        }
+        _configure_storm(self)
 
         self.flavor = "a"
 
@@ -89,23 +111,7 @@ class hafsb:
             "Hurricane Forecast Improvement Program": "https://hfip.org/hafs",
         }
 
-        if self.storm.isalpha():
-            # It looks like the user gave a storm name.
-            # Convert that to the storm id.
-            self.storm = S.name_to_id.get(self.storm.lower())
-            if self.storm is None:
-                raise ValueError(f"`storm` should be one of {S.name_to_id.keys()}")
-
-        self.storm_name = S.id_to_name.get(self.storm)
-
-        self.PRODUCTS = {
-            "storm.atm": f"{self.storm.upper()}-{self.storm_name.title()}",
-            "storm.sat": f"{self.storm.upper()}-{self.storm_name.title()}",
-            "parent.atm": f"{self.storm.upper()}-{self.storm_name.title()}",
-            "parent.sat": f"{self.storm.upper()}-{self.storm_name.title()}",
-            "parent.swath": f"{self.storm.upper()}-{self.storm_name.title()}",
-            "ww3": f"{self.storm.upper()}-{self.storm_name.title()}",
-        }
+        _configure_storm(self)
 
         self.flavor = "b"
 
