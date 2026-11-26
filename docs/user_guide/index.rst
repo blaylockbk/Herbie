@@ -38,6 +38,7 @@ User Guide
 
    tutorial/accessor_notebooks/index
    tutorial/EasyMap.ipynb
+   tutorial/EasyMap-advanced.ipynb
    tutorial/paint
    tutorial/wgrib2-wrapper.ipynb
 

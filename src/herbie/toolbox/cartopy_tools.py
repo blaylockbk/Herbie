@@ -23,6 +23,10 @@ but is not yet supported by Cartopy.
 """
 
 import urllib.request
+from collections.abc import Sequence
+from datetime import date, datetime
+from pathlib import Path
+from typing import Any, Literal, TypedDict, cast
 
 import cartopy.crs as ccrs
 import cartopy.feature as feature
@@ -36,9 +40,6 @@ from cartopy.io import shapereader
 from cartopy.mpl.geoaxes import GeoAxes
 from metpy.plots import USCOUNTIES
 
-from typing import Literal
-from pathlib import Path
-
 try:
     import geopandas
 except Exception:
@@ -48,6 +49,46 @@ except Exception:
     pass
 
 ExtentPadding = Literal["auto"] | float | dict[str, float]
+MapExtent = (
+    Literal["NW", "SW", "NE", "SE", "CONUS"]
+    | list[float]
+    | tuple[float, float, float, float]
+    | xr.Dataset
+    | xr.DataArray
+    | None
+)
+EasyMapTheme = Literal[
+    "default",
+    "dark",
+    "grey",
+    "gray",
+    "mario",
+    "star_wars",
+    "mono",
+    "colorblind_friendly",
+    "muted",
+    "print",
+    "high_contrast",
+    "ocean",
+    "retro",
+    "night",
+    "candy",
+]
+
+
+class ThemeStyle(TypedDict):
+    """Color fields used by an EasyMap theme."""
+
+    land: str
+    land1: str
+    water: str
+    edgecolor: str
+    playa: str
+    lake: str
+    river: str
+    alpha_mask: str
+    facecolor: str | None
+
 
 pc = ccrs.PlateCarree()
 pc._threshold = 0.01  # https://github.com/SciTools/cartopy/issues/8
@@ -80,23 +121,57 @@ def to_360(lon):
 
 
 # Map extent regions.
-_extents = dict(
-    NW=(-180, 0, 0, 90),
-    SW=(-180, 0, -90, 0),
-    NE=(0, 180, 0, 90),
-    SE=(0, 180, -90, 0),
-    CONUS=(-130, -60, 20, 55),
-)
+_extents = {
+    "NW": (-180, 0, 0, 90),
+    "SW": (-180, 0, -90, 0),
+    "NE": (0, 180, 0, 90),
+    "SE": (0, 180, -90, 0),
+    "CONUS": (-130, -60, 20, 55),
+}
+
+
+def _normalize_extent(
+    extent: MapExtent,
+) -> tuple[float, float, float, float] | None:
+    if extent is None:
+        return None
+    if isinstance(extent, str):
+        if extent not in _extents:
+            valid_extents = ", ".join(sorted(_extents))
+            raise ValueError(
+                f"Unknown extent {extent!r}. Choose from: {valid_extents}."
+            )
+        return _extents[extent]
+    if isinstance(extent, (list, tuple)):
+        if len(extent) != 4:
+            raise ValueError(
+                "Extent must contain (min_lon, max_lon, min_lat, max_lat)."
+            )
+        return extent[0], extent[1], extent[2], extent[3]
+
+    if "latitude" in extent.coords and "longitude" in extent.coords:
+        extent = extent.rename({"latitude": "lat", "longitude": "lon"})
+    if "lon" not in extent.coords or "lat" not in extent.coords:
+        raise ValueError(
+            "Extent data must include longitude/latitude or lon/lat coordinates."
+        )
+    lon = to_180(extent["lon"])
+    return (
+        float(lon.min().item()),
+        float(lon.max().item()),
+        float(extent["lat"].min().item()),
+        float(extent["lat"].max().item()),
+    )
 
 
 ########################################################################
 # Methods attached to axes created by `EasyMap`
 def _adjust_extent(
-    self,
+    self: GeoAxes,
     pad: ExtentPadding = "auto",
     fraction: float = 0.05,
     verbose: bool = False,
-):
+) -> tuple[float, float, float, float]:
     """
     Adjust the extent of an existing cartopy axes.
 
@@ -121,7 +196,8 @@ def _adjust_extent(
         The default 0.05 will give 5% padding on each side.
     """
     # Can't shrink the map extent by more than half in each direction, duh.
-    assert fraction > -0.5, "Fraction must be larger than -0.5."
+    if fraction <= -0.5:
+        raise ValueError("Fraction must be larger than -0.5.")
 
     crs = self.projection
 
@@ -131,6 +207,7 @@ def _adjust_extent(
         pad = {}
 
     if isinstance(pad, dict):
+        pad = dict(pad)
         xmin, xmax = self.get_xlim()
         default_pad = (xmax - xmin) * fraction
         pad.setdefault("default", default_pad)
@@ -154,15 +231,15 @@ def _adjust_extent(
 
 
 def _center_extent(
-    self,
-    lon: int | float | None = None,
-    lat: int | float | None = None,
+    self: GeoAxes,
+    lon: float | None = None,
+    lat: float | None = None,
     city: str | None = None,
     state: str | None = None,
     *,
     pad: ExtentPadding = "auto",
     verbose: bool = False,
-):
+) -> tuple[float, float, float, float]:
     """
     Change the map extent to be centered on a point and adjust padding.
 
@@ -191,13 +268,17 @@ def _center_extent(
         places = shapereader.natural_earth("10m", "cultural", "populated_places")
         df = geopandas.read_file(places)
         point = df[df.NAME == city]
-        assert len(point) > 0, f"🏙 Sorry, the city '{city}' was not found."
+        if point.empty:
+            raise ValueError(f"Sorry, the city {city!r} was not found.")
         lat = point.LATITUDE.item()
         lon = point.LONGITUDE.item()
     elif state is not None:
         state_center = state_polygon(state).centroid
         lon = state_center.x
         lat = state_center.y
+
+    if lon is None or lat is None:
+        raise ValueError("Provide both lon and lat, or specify city or state.")
 
     # Convert input lat/lon in degrees to the crs units
     lon, lat = crs.transform_point(lon, lat, src_crs=pc)
@@ -231,7 +312,7 @@ def _center_extent(
     return self.get_extent(crs=crs)
 
 
-def _copy_extent(self, src_ax):
+def _copy_extent(self: GeoAxes, src_ax: GeoAxes) -> tuple[float, float, float, float]:
     """
     Copy the extent from an axes.
 
@@ -257,7 +338,13 @@ def _copy_extent(self, src_ax):
     return self.get_extent(crs=pc)
 
 
-def _scatterplot(self, data, x="longitude", y="latitude", **kwargs):
+def _scatterplot(
+    self: GeoAxes,
+    data: Any,
+    x: str = "longitude",
+    y: str = "latitude",
+    **kwargs: Any,
+) -> GeoAxes:
     """
     Add a dataframe scatter plot to a Cartopy axes.
 
@@ -294,7 +381,11 @@ def _scatterplot(self, data, x="longitude", y="latitude", **kwargs):
 ########################################################################
 # Main Functions
 def check_cartopy_axes(
-    ax: GeoAxes | None = None, crs=pc, *, fignum: int | None = None, verbose: bool = False
+    ax: GeoAxes | None = None,
+    crs: ccrs.CRS = pc,
+    *,
+    fignum: int | None = None,
+    verbose: bool | Literal["debug"] = False,
 ) -> GeoAxes:
     """
     Check if an axes is a cartopy axes, else create a new cartopy axes.
@@ -321,19 +412,19 @@ def check_cartopy_axes(
     # A cartopy axes should be of type `cartopy.mpl.geoaxes.GeoAxesSubplot`
     # One way to check that is to see if ax has the 'coastlines' attribute.
     if ax is None:
-        current_axes = plt.gca()
-        if hasattr(current_axes, "coastlines"):
-            if verbose:
-                print("🌎 Using the current cartopy axes.")
-            return current_axes
-        else:
+        fig = plt.gcf()
+        if fig.axes:
+            current_axes = fig.gca()
+            if hasattr(current_axes, "coastlines"):
+                if verbose:
+                    print("🌎 Using the current cartopy axes.")
+                return current_axes
             if verbose:
                 print(
                     f"🌎 The current axes is not a cartopy axes. Will create a new cartopy axes with crs={crs.__class__}."
                 )
-            # Create a new cartopy axes on the active figure without destroying existing subplots
-            fig = plt.gcf()
-            return fig.add_subplot(1, 1, 1, projection=crs)
+        # Avoid plt.gca() on an empty figure; it creates a stray regular axes.
+        return fig.add_subplot(1, 1, 1, projection=crs)
     else:
         if hasattr(ax, "coastlines"):
             if verbose:
@@ -356,7 +447,7 @@ def get_ETOPO1(
 
     Download the data from http://iridl.ldeo.columbia.edu/SOURCES/.NOAA/.NGDC
 
-    An alternatvie source is https://ngdc.noaa.gov/mgg/global/, but the
+    An alternative source is https://ngdc.noaa.gov/mgg/global/, but the
     Dataset may have a different structure.
 
 
@@ -428,14 +519,14 @@ def get_ETOPO1(
 
 
 def inset_global_map(
-    ax,
+    ax: GeoAxes,
     x: float = 0.95,
     y: float = 0.95,
     size: float = 0.3,
-    theme: Literal["dark", "grey", "mario", "star_wars", "monochrome", "colorblind_friendly", "muted"] | None = None,
+    theme: EasyMapTheme | None = None,
     facecolor: str = "#f88d0083",
     kind: Literal["point", "area"] = "area",
-):
+) -> GeoAxes:
     """Add an inset map showing the location of the main map on the globe.
 
     This was pieced together from these resources
@@ -569,7 +660,7 @@ def state_polygon(
     return poly
 
 
-EASYMAP_THEMES = {
+EASYMAP_THEMES: dict[str, ThemeStyle] = {
     "default": {
         "land": "#efefdb",
         "land1": "#dbdbdb",
@@ -577,6 +668,7 @@ EASYMAP_THEMES = {
         "edgecolor": ".15",
         "playa": "#FDA65473",
         "lake": feature.COLORS.get("water", "#97b6e1"),
+        "river": "#97b6e1",
         "alpha_mask": "w",
         "facecolor": None,
     },
@@ -587,6 +679,7 @@ EASYMAP_THEMES = {
         "edgecolor": ".5",
         "playa": "#4D311A73",
         "lake": "#0f2b38",
+        "river": "#0f2b38",
         "alpha_mask": "k",
         "facecolor": "#060613",
     },
@@ -597,6 +690,7 @@ EASYMAP_THEMES = {
         "edgecolor": ".5",
         "playa": "#42424273",
         "lake": "#ffffff",
+        "river": "#ffffff",
         "alpha_mask": "w",
         "facecolor": "#bdbdbd",
     },
@@ -606,7 +700,8 @@ EASYMAP_THEMES = {
         "water": "#5c94fc",
         "edgecolor": "#000000",
         "playa": "#c84c0c",
-        "lake": "#5c94fc",
+        "lake": "#00A800",
+        "river": "#00A800",
         "alpha_mask": "w",
         "facecolor": "#f8e0b0",
     },
@@ -617,16 +712,18 @@ EASYMAP_THEMES = {
         "edgecolor": "#2b67ff",
         "playa": "#c2b280",
         "lake": "#000000",
+        "river": "#000000",
         "alpha_mask": "k",
         "facecolor": "#333333",
     },
-    "monochrome": {
+    "mono": {
         "land": "#e0e0e0",
         "land1": "#f0f0f0",
         "water": "#ffffff",
         "edgecolor": "#000000",
         "playa": "#cccccc",
         "lake": "#ffffff",
+        "river": "#ffffff",
         "alpha_mask": "w",
         "facecolor": "#e0e0e0",
     },
@@ -637,6 +734,7 @@ EASYMAP_THEMES = {
         "edgecolor": "#000000",
         "playa": "#d55e00",
         "lake": "#56b4e9",
+        "river": "#56b4e9",
         "alpha_mask": "w",
         "facecolor": "#f0e442",
     },
@@ -647,8 +745,75 @@ EASYMAP_THEMES = {
         "edgecolor": "#636e72",
         "playa": "#e2e6e9",
         "lake": "#e4ecf1",
+        "river": "#e4ecf1",
         "alpha_mask": "w",
         "facecolor": "#f1f0e8",
+    },
+    "print": {
+        "land": "#e8e8e8",
+        "land1": "#c8c8c8",
+        "water": "#ffffff",
+        "edgecolor": "#333333",
+        "playa": "#a6a6a6",
+        "lake": "#ffffff",
+        "river": "#ffffff",
+        "alpha_mask": "w",
+        "facecolor": "#e8e8e8",
+    },
+    "high_contrast": {
+        "land": "#f0e442",
+        "land1": "#e69f00",
+        "water": "#0072b2",
+        "edgecolor": "#111111",
+        "playa": "#d55e00",
+        "lake": "#56b4e9",
+        "river": "#56b4e9",
+        "alpha_mask": "w",
+        "facecolor": "#f0e442",
+    },
+    "ocean": {
+        "land": "#f5e6cc",
+        "land1": "#c9b79c",
+        "water": "#003b5c",
+        "edgecolor": "#194b5a",
+        "playa": "#c17c4a",
+        "lake": "#2a9d8f",
+        "river": "#003b5c",
+        "alpha_mask": "w",
+        "facecolor": "#f5e6cc",
+    },
+    "retro": {
+        "land": "#e8c999",
+        "land1": "#d9b77e",
+        "water": "#4f8a8b",
+        "edgecolor": "#3e3a34",
+        "playa": "#bd6e4b",
+        "lake": "#4f8a8b",
+        "river": "#4f8a8b",
+        "alpha_mask": "w",
+        "facecolor": "#e8c999",
+    },
+    "night": {
+        "land": "#263849",
+        "land1": "#374b5c",
+        "water": "#0b1f33",
+        "edgecolor": "#d9e2ec",
+        "playa": "#9c6644",
+        "lake": "#1f6f8b",
+        "river": "#0b1f33",
+        "alpha_mask": "k",
+        "facecolor": "#263849",
+    },
+    "candy": {
+        "land": "#f4a7c3",
+        "land1": "#cdb4db",
+        "water": "#7bdff2",
+        "edgecolor": "#563d7c",
+        "playa": "#f7c59f",
+        "lake": "#7bdff2",
+        "river": "#7bdff2",
+        "alpha_mask": "w",
+        "facecolor": "#f4a7c3",
     },
 }
 EASYMAP_THEMES["gray"] = EASYMAP_THEMES["grey"]
@@ -665,29 +830,32 @@ class EasyMap:
     All feature methods (e.g., `OCEAN()`, `LAND()`, `PLACES()`) return
     the `EasyMap` instance itself, allowing you to chain them together.
     The fully constructed Cartopy `GeoAxes` is accessible via the `.ax`
-    attribute.
+    attribute. Extent and scatter helpers are also available directly on
+    the `EasyMap` instance for editor completion and type checking.
 
     Examples
     --------
-    >>> ax = EasyMap().OCEAN().LAND().STATES().ax
+    >>> map_ = EasyMap().OCEAN().LAND().STATES()
+    >>> ax = map_.ax
+    >>> map_.adjust_extent(pad=0.5)
     """
 
     def __init__(
         self,
         scale: Literal["110m", "50m", "10m"] = "110m",
         ax: GeoAxes | None = None,
-        crs=pc,
+        crs: ccrs.CRS = pc,
         *,
-        figsize=None,
-        fignum: int = None,
-        dpi: int = None,
-        theme: Literal["dark", "grey", "mario", "star_wars", "monochrome", "colorblind_friendly", "muted"] | None = None,
+        figsize: float | Sequence[float] | None = None,
+        fignum: int | None = None,
+        dpi: int | None = None,
+        theme: EasyMapTheme | None = None,
         add_coastlines: bool = True,
         facecolor: str | None = None,
-        coastlines_kw={},
-        verbose: bool = False,
-        **kwargs,
-    ):
+        coastlines_kw: dict[str, Any] | None = None,
+        verbose: bool | Literal["debug"] = False,
+        **kwargs: Any,
+    ) -> None:
         """
         Initialize a Cartopy axes.
 
@@ -703,7 +871,7 @@ class EasyMap:
 
         Parameters
         ----------
-        scale : {'10m', '50m' 110m'}
+        scale : {'10m', '50m', '110m'}
             The cartopy feature's level of detail.
             .. note::  The ``'10m'`` scale for OCEAN and LAND takes a *long* time.
         ax : plot axes
@@ -712,7 +880,7 @@ class EasyMap:
         crs : cartopy.crs
             Coordinate reference system (aka "projection") to create new map
             if no cartopy axes is given. Default is ccrs.PlateCarree.
-        theme : {None, 'dark', 'grey', 'gray', 'mario', 'star_wars', 'monochrome', 'colorblind_friendly', 'muted'}
+        theme : {None, 'default', 'dark', 'grey', 'gray', 'mario', 'star_wars', 'mono', 'colorblind_friendly', 'muted', 'print', 'high_contrast', 'ocean', 'retro', 'night', 'candy'}
             Use alternative color themes for land and water.
 
             .. figure:: _static/BB_maps/common_features-1.png
@@ -722,11 +890,11 @@ class EasyMap:
             For convince, the coastlines are added to the axes by default.
             This can be turned off and instead controlled with the COASTLINES
             method.
-        coastlines_kw : dict
+        coastlines_kw : dict or None
             kwargs for the default COASTLINES method.
 
-        figsize : tuple or float
-            Set the figure size.
+        figsize : sequence of two floats, float, or None
+            Set the figure size. A single number makes a square figure.
             If single number given, then will make a square figure.
         fignum : int
             If given, create a new figure and supblot for the given crs.
@@ -734,6 +902,8 @@ class EasyMap:
             several figures instead of plotting on the same figure.)
         dpi : int
             Set the figure dpi
+        verbose : bool or {'debug'}
+            Print setup messages, or print feature details with ``"debug"``.
 
         Examples
         --------
@@ -752,23 +922,38 @@ class EasyMap:
         Add a scatter plot from a dataframe supported by Narwhals, such as a
         pandas or Polars DataFrame (requires ``pip install 'herbie-data[plot]'``):
 
-        >>> ax = EasyMap().ax
-        >>> ax.scatterplot(df, hue="station_type")
+        >>> map_ = EasyMap()
+        >>> map_.scatterplot(df, hue="station_type")
+        >>> ax = map_.ax
+
+        The equivalent ``ax.scatterplot(...)`` method remains available for
+        compatibility with existing code.
         """
         self.scale = scale
-        self.ax: GeoAxes = ax
         self.crs = crs
         self.figsize = figsize
         self.fignum = fignum
         self.dpi = dpi
-        self.theme = "default" if theme is None else theme.lower()
-        if self.theme not in EASYMAP_THEMES:
-            self.theme = "default"
+        normalized_theme = "default" if theme is None else theme.lower()
+        if normalized_theme not in EASYMAP_THEMES:
+            valid_themes = ", ".join(sorted(EASYMAP_THEMES))
+            raise ValueError(
+                f"Unknown theme {normalized_theme!r}. Choose from: {valid_themes}."
+            )
+        self.theme: EasyMapTheme = cast(EasyMapTheme, normalized_theme)
         self.verbose = verbose
-        self.kwargs = kwargs
+        self.kwargs: dict[str, Any] = kwargs
 
-        self.ax = check_cartopy_axes(
-            ax=self.ax, crs=self.crs, fignum=self.fignum, verbose=self.verbose
+        if figsize is not None and not isinstance(figsize, (int, float)):
+            if len(figsize) != 2:
+                raise ValueError(
+                    "figsize must be a number or a sequence of two values."
+                )
+            figsize = (figsize[0], figsize[1])
+            self.figsize = figsize
+
+        self.ax: GeoAxes = check_cartopy_axes(
+            ax=ax, crs=self.crs, fignum=self.fignum, verbose=self.verbose
         )
 
         # In a round-about way, you can get this EasyMap object from the axes
@@ -778,7 +963,7 @@ class EasyMap:
 
         self.kwargs.setdefault("linewidth", 0.75)
 
-        self.theme_dict = EASYMAP_THEMES[self.theme]
+        self.theme_dict: ThemeStyle = EASYMAP_THEMES[self.theme]
 
         self.land = self.theme_dict["land"]
         self.land1 = self.theme_dict["land1"]
@@ -804,13 +989,13 @@ class EasyMap:
 
         if add_coastlines:
             # Default map will automatically add COASTLINES
-            self.COASTLINES(**coastlines_kw)
+            self.COASTLINES(**(coastlines_kw or {}))
 
         if figsize is not None:
-            if hasattr(figsize, "__len__"):
-                self.ax.figure.set_size_inches(self.figsize[0], self.figsize[1])
+            if isinstance(figsize, Sequence):
+                self.ax.figure.set_size_inches(figsize[0], figsize[1])
             else:
-                self.ax.figure.set_size_inches(self.figsize, self.figsize)
+                self.ax.figure.set_size_inches(figsize, figsize)
         if dpi is not None:
             self.ax.figure.set_dpi(self.dpi)
 
@@ -820,9 +1005,53 @@ class EasyMap:
         self.ax.__class__.copy_extent = _copy_extent
         self.ax.__class__.scatterplot = _scatterplot
 
+    def adjust_extent(
+        self,
+        pad: ExtentPadding = "auto",
+        fraction: float = 0.05,
+        verbose: bool = False,
+    ) -> tuple[float, float, float, float]:
+        """Adjust the visible map extent and return its bounds."""
+        return _adjust_extent(self.ax, pad=pad, fraction=fraction, verbose=verbose)
+
+    def center_extent(
+        self,
+        lon: float | None = None,
+        lat: float | None = None,
+        city: str | None = None,
+        state: str | None = None,
+        *,
+        pad: ExtentPadding = "auto",
+        verbose: bool = False,
+    ) -> tuple[float, float, float, float]:
+        """Center the map on coordinates, a city, or a state and return bounds."""
+        return _center_extent(
+            self.ax,
+            lon=lon,
+            lat=lat,
+            city=city,
+            state=state,
+            pad=pad,
+            verbose=verbose,
+        )
+
+    def copy_extent(self, src_ax: GeoAxes) -> tuple[float, float, float, float]:
+        """Copy the visible extent from another Cartopy axes and return bounds."""
+        return _copy_extent(self.ax, src_ax)
+
+    def scatterplot(
+        self,
+        data: Any,
+        x: str = "longitude",
+        y: str = "latitude",
+        **kwargs: Any,
+    ) -> GeoAxes:
+        """Plot a Narwhals-supported dataframe on this map."""
+        return _scatterplot(self.ax, data, x=x, y=y, **kwargs)
+
     # ========================
     # Commonly needed features
-    def COASTLINES(self, **kwargs) -> "EasyMap":
+    def COASTLINES(self, **kwargs: Any) -> "EasyMap":
         """Add coastlines to map."""
         kwargs = {"zorder": 100, "facecolor": "none"} | self.kwargs | kwargs
         self.ax.add_feature(feature.COASTLINE.with_scale(self.scale), **kwargs)
@@ -830,7 +1059,7 @@ class EasyMap:
             print("🐛 COASTLINES:", kwargs)
         return self
 
-    def BORDERS(self, **kwargs) -> "EasyMap":
+    def BORDERS(self, **kwargs: Any) -> "EasyMap":
         """Add country borders to map (ecludes coastlines)."""
         kwargs = {"linewidth": 0.5} | self.kwargs | kwargs
         self.ax.add_feature(feature.BORDERS.with_scale(self.scale), **kwargs)
@@ -838,7 +1067,7 @@ class EasyMap:
             print("🐛 BORDERS:", kwargs)
         return self
 
-    def STATES(self, **kwargs) -> "EasyMap":
+    def STATES(self, **kwargs: Any) -> "EasyMap":
         """State and Province borders.
 
         Note: If scale="110m", only the US States are drawn.
@@ -851,7 +1080,7 @@ class EasyMap:
             print("🐛 STATES:", kwargs)
         return self
 
-    def STATES2(self, **kwargs) -> "EasyMap":
+    def STATES2(self, **kwargs: Any) -> "EasyMap":
         """States and Provinces (US, Canada, Australia, Brazil, China, Inda, etc.).
 
         Alternative source for data than provided by STATES.
@@ -869,19 +1098,21 @@ class EasyMap:
             print("🐛 STATES2:", kwargs)
         return self
 
-    def COUNTIES(self, counties_scale="20m", **kwargs) -> "EasyMap":
+    def COUNTIES(
+        self, counties_scale: Literal["20m", "5m", "500k"] = "20m", **kwargs: Any
+    ) -> "EasyMap":
         """Add US counties to map."""
         _counties_scale = {"20m", "5m", "500k"}
-        assert (
-            counties_scale in _counties_scale
-        ), f"counties_scale must be {_counties_scale}"
+        assert counties_scale in _counties_scale, (
+            f"counties_scale must be {_counties_scale}"
+        )
         kwargs = {"linewidth": 0.33, "alpha": 0.15} | self.kwargs | kwargs
         self.ax.add_feature(USCOUNTIES.with_scale(counties_scale), **kwargs)
         if self.verbose == "debug":
             print("🐛 COUNTIES:", kwargs)
         return self
 
-    def OCEAN(self, **kwargs) -> "EasyMap":
+    def OCEAN(self, **kwargs: Any) -> "EasyMap":
         """Add color-filled ocean area to map."""
         kwargs = {"edgecolor": "none", "facecolor": self.water} | self.kwargs | kwargs
 
@@ -890,27 +1121,44 @@ class EasyMap:
             print("🐛 OCEAN:", kwargs)
         return self
 
-    def LAND(self, **kwargs) -> "EasyMap":
+    def LAND(self, **kwargs: Any) -> "EasyMap":
         """Add color-filled land area to map."""
-        kwargs = {"edgecolor": "none", "linewidth": 0, "facecolor": self.land} | self.kwargs | kwargs
+        kwargs = (
+            {"edgecolor": "none", "linewidth": 0, "facecolor": self.land}
+            | self.kwargs
+            | kwargs
+        )
 
         self.ax.add_feature(feature.LAND.with_scale(self.scale), **kwargs)
         if self.verbose == "debug":
             print("🐛 LAND:", kwargs)
         return self
 
-    def RIVERS(self, **kwargs) -> "EasyMap":
+    def RIVERS(self, **kwargs: Any) -> "EasyMap":
         """Add rivers to map."""
-        kwargs = {"linewidth": 0.3, "color": self.water} | self.kwargs | kwargs
+        kwargs = {"linewidth": 0.3} | self.kwargs | kwargs
+        color = kwargs.pop("color", None)
+        if color is not None:
+            kwargs["edgecolor"] = color
+        elif kwargs.get("edgecolor") == self.theme_dict["edgecolor"]:
+            kwargs["edgecolor"] = self.theme_dict["river"]
 
         self.ax.add_feature(feature.RIVERS.with_scale(self.scale), **kwargs)
         if self.verbose == "debug":
             print("🐛 RIVERS:", kwargs)
         return self
 
-    def LAKES(self, **kwargs) -> "EasyMap":
+    def LAKES(self, **kwargs: Any) -> "EasyMap":
         """Add color-filled lake area to map."""
-        kwargs = {"linewidth": 0, "facecolor": self.theme_dict["lake"], "edgecolor": self.theme_dict["lake"]} | self.kwargs | kwargs
+        kwargs = (
+            {
+                "linewidth": 0,
+                "facecolor": self.theme_dict["lake"],
+                "edgecolor": self.theme_dict["lake"],
+            }
+            | self.kwargs
+            | kwargs
+        )
 
         self.ax.add_feature(feature.LAKES.with_scale(self.scale), **kwargs)
         if self.verbose == "debug":
@@ -925,8 +1173,8 @@ class EasyMap:
         *,
         top: Literal["ice", "bedrock"] = "ice",
         kind: Literal["pcolormesh", "contourf"] = "pcolormesh",
-        extent=None,
-        **kwargs,
+        extent: MapExtent = None,
+        **kwargs: Any,
     ) -> "EasyMap":
         """
         Add terrain data from ETOPO1 dataset to map.
@@ -953,32 +1201,13 @@ class EasyMap:
         """
         da = get_ETOPO1(top=top, coarsen=coarsen)
 
-        if extent:
-            if isinstance(extent, (list, tuple)):
-                assert (
-                    len(extent) == 4
-                ), "extent tuple must be len 4 (minLon, maxLon, minLat, maxLat)"
-            elif isinstance(extent, str):
-                assert (
-                    extent in _extents
-                ), f"extent string must be one of {_extents.keys()}"
-                extent = _extents[extent]
-            elif hasattr(extent, "coords"):
-                # Get extent from lat/lon bounds in xarray DataSet
-                extent = extent.rename({"latitude": "lat", "longitude": "lon"})
-                extent["lon"] = to_180(extent["lon"])
-                extent = (
-                    extent.lon.min().item(),
-                    extent.lon.max().item(),
-                    extent.lat.min().item(),
-                    extent.lat.max().item(),
-                )
-
+        extent_bounds = _normalize_extent(extent)
+        if extent_bounds is not None:
             da = da.where(
-                (da.lon >= extent[0])
-                & (da.lon <= extent[1])
-                & (da.lat >= extent[2])
-                & (da.lat <= extent[3])
+                (da.lon >= extent_bounds[0])
+                & (da.lon <= extent_bounds[1])
+                & (da.lat >= extent_bounds[2])
+                & (da.lat <= extent_bounds[3])
             )
 
         # Get "land" points (elevation is 0 and above, crude estimation)
@@ -1006,8 +1235,8 @@ class EasyMap:
         *,
         top: Literal["ice", "bedrock"] = "ice",
         kind: Literal["pcolormesh", "contourf"] = "pcolormesh",
-        extent=None,
-        **kwargs,
+        extent: MapExtent = None,
+        **kwargs: Any,
     ) -> "EasyMap":
         """
         Add bathymetry data from ETOPO1 dataset to map.
@@ -1034,32 +1263,13 @@ class EasyMap:
         """
         da = get_ETOPO1(top=top, coarsen=coarsen)
 
-        if extent:
-            if isinstance(extent, (list, tuple)):
-                assert (
-                    len(extent) == 4
-                ), "extent tuple must be len 4 (minLon, maxLon, minLat, maxLat)"
-            elif isinstance(extent, str):
-                assert (
-                    extent in _extents
-                ), f"extent string must be one of {_extents.keys()}"
-                extent = _extents[extent]
-            elif hasattr(extent, "coords"):
-                # Get extent from lat/lon bounds in xarray DataSet
-                extent = extent.rename({"latitude": "lat", "longitude": "lon"})
-                extent["lon"] = to_180(extent["lon"])
-                extent = (
-                    extent.lon.min().item(),
-                    extent.lon.max().item(),
-                    extent.lat.min().item(),
-                    extent.lat.max().item(),
-                )
-
+        extent_bounds = _normalize_extent(extent)
+        if extent_bounds is not None:
             da = da.where(
-                (da.lon >= extent[0])
-                & (da.lon <= extent[1])
-                & (da.lat >= extent[2])
-                & (da.lat <= extent[3])
+                (da.lon >= extent_bounds[0])
+                & (da.lon <= extent_bounds[1])
+                & (da.lat >= extent_bounds[2])
+                & (da.lat <= extent_bounds[3])
             )
 
         # Get "water" points (elevation is 0 and above, crude estimation)
@@ -1081,9 +1291,13 @@ class EasyMap:
 
         return self
 
-    def PLAYAS(self, **kwargs) -> "EasyMap":
+    def PLAYAS(self, **kwargs: Any) -> "EasyMap":
         """Add color-filled playa area to map."""
-        kwargs = {"linewidth": 0, "facecolor": self.theme_dict["playa"], "edgecolor": "none"} | self.kwargs | kwargs
+        kwargs = (
+            {"linewidth": 0, "facecolor": self.theme_dict["playa"], "edgecolor": "none"}
+            | self.kwargs
+            | kwargs
+        )
 
         playa = feature.NaturalEarthFeature("physical", "playas", "10m")
         self.ax.add_feature(playa, **kwargs)
@@ -1091,16 +1305,22 @@ class EasyMap:
             print("🐛 PLAYAS:", kwargs)
         return self
 
-    def TIMEZONE(self, **kwargs) -> "EasyMap":
+    def TIMEZONE(self, **kwargs: Any) -> "EasyMap":
         """Add timezone boundaries to map."""
-        kwargs = {"linewidth": 0.2, "facecolor": "none", "linestyle": ":"} | self.kwargs | kwargs
+        kwargs = (
+            {"linewidth": 0.2, "facecolor": "none", "linestyle": ":"}
+            | self.kwargs
+            | kwargs
+        )
         tz = feature.NaturalEarthFeature("cultural", "time_zones", "10m")
         self.ax.add_feature(tz, **kwargs)
         if self.verbose == "debug":
             print("🐛 TIMEZONE:", kwargs)
         return self
 
-    def ROADS(self, road_types=None, **kwargs) -> "EasyMap":
+    def ROADS(
+        self, road_types: str | Sequence[str] | None = None, **kwargs: Any
+    ) -> "EasyMap":
         """
         Add major roads to map.
 
@@ -1116,7 +1336,11 @@ class EasyMap:
         "length_km", etc. Filters for each of these could be added if I
         need them later.
         """
-        kwargs = {"edgecolor": "#b30000", "facecolor": "none", "linewidth": 0.2} | self.kwargs | kwargs
+        kwargs = (
+            {"edgecolor": "#b30000", "facecolor": "none", "linewidth": 0.2}
+            | self.kwargs
+            | kwargs
+        )
 
         if road_types is None:
             # Plot all roadways
@@ -1129,9 +1353,9 @@ class EasyMap:
             shpfilename = shapereader.natural_earth("10m", "cultural", "roads")
             df = geopandas.read_file(shpfilename)
             _types = df["type"].unique()
-            assert np.all(
-                [i in _types for i in road_types]
-            ), f"`ROADS_kwargs['type']` must be a list of these: {_types}"
+            assert np.all([i in _types for i in road_types]), (
+                f"`ROADS_kwargs['type']` must be a list of these: {_types}"
+            )
             road_geom = df.loc[
                 df["type"].apply(lambda x: x in road_types)
             ].geometry.values
@@ -1147,8 +1371,8 @@ class EasyMap:
         rank: int = 2,
         scatter: bool = True,
         labels: bool = True,
-        label_kw={},
-        scatter_kw={},
+        label_kw: dict[str, Any] | None = None,
+        scatter_kw: dict[str, Any] | None = None,
     ) -> "EasyMap":
         """
         Add points and labels for major cities to map.
@@ -1165,9 +1389,8 @@ class EasyMap:
         labels : bool
             Add city name labels
         """
-        scatter_kw.setdefault("marker", ".")
-        label_kw.setdefault("fontweight", "bold")
-        label_kw.setdefault("alpha", 0.5)
+        scatter_kw = {"marker": "."} | (scatter_kw or {})
+        label_kw = {"fontweight": "bold", "alpha": 0.5} | (label_kw or {})
 
         places = shapereader.natural_earth("10m", "cultural", "populated_places")
         df = geopandas.read_file(places)
@@ -1195,7 +1418,7 @@ class EasyMap:
             "terrain-background", "terrain", "toner-background", "toner", "watercolor"
         ] = "terrain-background",
         zoom: int = 3,
-        alpha=1,
+        alpha: float = 1,
     ) -> "EasyMap":
         """
         Add Stamen map tiles to background.
@@ -1242,7 +1465,7 @@ class EasyMap:
 
         return self
 
-    def OSM(self, zoom: int = 1, alpha=1) -> "EasyMap":
+    def OSM(self, zoom: int = 1, alpha: float = 1) -> "EasyMap":
         """
         Add Open Street Map tiles as background image.
 
@@ -1275,16 +1498,16 @@ class EasyMap:
 
         return self
 
-    def STOCK(self, **kwargs) -> "EasyMap":
+    def STOCK(self, **kwargs: Any) -> "EasyMap":
         """Show stock image background (suitable for full-globe images)."""
         self.ax.stock_img()
         return self
 
     def NASA(
         self,
-        DATE,
-        layer="VIIRS_NOAA20_CorrectedReflectance_TrueColor",
-        pixels=1000,
+        DATE: date | datetime,
+        layer: str = "VIIRS_NOAA20_CorrectedReflectance_TrueColor",
+        pixels: int = 1000,
     ) -> "EasyMap":
         """Add NASA image from Global Imagery Browse Service (GIBS).
 
@@ -1344,14 +1567,14 @@ class EasyMap:
     # Other map elements
     def DOMAIN(
         self,
-        x,
-        y=None,
+        x: xr.Dataset | xr.DataArray | np.ndarray,
+        y: np.ndarray | None = None,
         *,
         text: str | None = None,
         method: Literal["fill", "cutout", "border"] = "cutout",
-        facealpha: Literal[0] | Literal[1] | float = 0.25,
-        text_kwargs={},
-        **kwargs,
+        facealpha: float = 0.25,
+        text_kwargs: dict[str, Any] | None = None,
+        **kwargs: Any,
     ) -> "EasyMap":
         """
         Add a polygon of the domain boundary to a map.
@@ -1384,7 +1607,7 @@ class EasyMap:
 
         ####################################################################
         # Determine how to handle output...xarray or numpy
-        if isinstance(x, (xr.core.dataset.Dataset, xr.core.dataarray.DataArray)):
+        if isinstance(x, (xr.Dataset, xr.DataArray)):
             if self.verbose:
                 print("process input as xarray")
 
@@ -1462,8 +1685,9 @@ class EasyMap:
             )
 
         if text:
-            text_kwargs.setdefault("verticalalignment", "bottom")
-            text_kwargs.setdefault("fontsize", 15)
+            text_kwargs = {"verticalalignment": "bottom", "fontsize": 15} | (
+                text_kwargs or {}
+            )
             xx, yy = outside[0]
             self.ax.text(xx + 0.2, yy + 0.2, text, transform=pc, **text_kwargs)
 
@@ -1471,6 +1695,22 @@ class EasyMap:
         self.domain_polygon_latlon = domain_polygon_latlon
         return self
 
-    def INSET_GLOBE(self, **kwargs):
-        """Add an axis showing a global inset map."""
-        return inset_global_map(self.ax, **kwargs)
+    def INSET_GLOBE(
+        self,
+        x: float = 0.95,
+        y: float = 0.95,
+        size: float = 0.3,
+        theme: EasyMapTheme | None = None,
+        facecolor: str = "#f88d0083",
+        kind: Literal["point", "area"] = "area",
+    ) -> GeoAxes:
+        """Add a global inset map highlighting this map's location."""
+        return inset_global_map(
+            self.ax,
+            x=x,
+            y=y,
+            size=size,
+            theme=theme,
+            facecolor=facecolor,
+            kind=kind,
+        )
