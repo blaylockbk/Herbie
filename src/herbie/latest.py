@@ -96,6 +96,7 @@ def HerbieWait(
     priority=["aws", "nomads"],
     wait_for="5min",
     check_interval="15s",
+    wait_for_index=False,
     **kwargs,
 ):
     """Wait for the latest model grid to become available.
@@ -119,9 +120,13 @@ def HerbieWait(
         from NOMADS your IP address will get blocked.)
     wait_for : timedelta or Pandas-parsable Timedelta str
         Length of time Herbie will wait for data.
-    check_every : int (seconds), timedelta, Pandas-parsable Timedelta str
+    check_interval : int (seconds), timedelta, Pandas-parsable Timedelta str
         Frequency Herbie will look for data again, as a pandas-parsable
         timedelta string (e.g., '30s') or an int representing seconds.
+    wait_for_index : bool
+        If True, also wait for the index file of a remote GRIB file. The
+        GRIB file and its index are not always published at the same time,
+        and downloading a subset needs the index. Default False.
     **kwargs
         Any other input you want passed to the Herbie class.
     """
@@ -130,20 +135,29 @@ def HerbieWait(
 
     timer = pd.Timestamp("now")
 
+    def missing(H):
+        """Whether the GRIB file (or, if requested, its remote index) is missing."""
+        if H.grib is None:
+            return True
+        # A local file can be indexed on the fly; only a remote index is waited for.
+        return wait_for_index and H.idx is None and H.grib_source != "local"
+
     H = Herbie(run, model=model, priority=priority, **kwargs)
 
-    # If H.grib does not exist, wait for it
-    while H.grib is None:
+    # If H.grib (or its index) does not exist, wait for it
+    while missing(H):
         # Wait for the specified check interval
         time.sleep(check_interval)
 
         # Try again; break out of loop if successful
         H = Herbie(run, model=model, priority=priority, **kwargs)
-        if H.grib is not None:
+        if not missing(H):
             break
 
         # Error out if timeout is exceeded
         if (pd.Timestamp("now") - timer) >= pd.Timedelta(wait_for):
             raise TimeoutError(f"Herbie did not find data in time: {H}")
 
-    return Herbie(run, model=model, priority=priority, **kwargs)
+    # Return the object that was checked: making a new one could find a
+    # different source, or none.
+    return H
